@@ -1,4 +1,4 @@
-/.idea
+.idea/
 *.class
-/target
+target/
 AIM4.iml
