@@ -34,7 +34,7 @@ import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import aim4.gui.component.LabeledSlider;
-import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.intersection.setup.BasicSimSetup;
 
 /**
  * The autonomous driver only simulation parameter panel.

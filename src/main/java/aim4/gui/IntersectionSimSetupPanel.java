@@ -43,16 +43,16 @@ import javax.swing.JScrollPane;
 
 import aim4.gui.parampanel.AutoDriverOnlyParamPanel;
 import aim4.gui.parampanel.TrafficSignalParamPanel;
-import aim4.sim.setup.ApproxStopSignSimSetup;
-import aim4.sim.setup.ApproxNPhasesTrafficSignalSimSetup;
-import aim4.sim.setup.AutoDriverOnlySimSetup;
-import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.SimSetup;
+import aim4.sim.intersection.setup.ApproxStopSignSimSetup;
+import aim4.sim.intersection.setup.ApproxNPhasesTrafficSignalSimSetup;
+import aim4.sim.intersection.setup.AutoDriverOnlySimSetup;
+import aim4.sim.intersection.setup.BasicSimSetup;
+import aim4.sim.intersection.setup.SimSetup;
 
 /**
  * The simulation setup panel.
  */
-public class SimSetupPanel extends JPanel implements ItemListener {
+public class IntersectionSimSetupPanel extends JPanel implements ItemListener {
 
   private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
    *
    * @param initSimSetup  the initial simulation setup
    */
-  public SimSetupPanel(BasicSimSetup initSimSetup) {
+  public IntersectionSimSetupPanel(BasicSimSetup initSimSetup) {
     this.simSetup = initSimSetup;
 
     // create the combo box pane

@@ -1,4 +1,4 @@
 .idea/
-*.class
 target/
+*.class
 AIM4.iml

@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4;
 
 import aim4.gui.Viewer;
-import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.intersection.setup.BasicSimSetup;
 
 /**
  * The default main class to show the GUI.
