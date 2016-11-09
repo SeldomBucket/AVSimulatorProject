@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.intersection.setup;
+package aim4.sim.setup;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -37,7 +37,7 @@ import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.GridMap;
 import aim4.map.GridMapUtil;
-import aim4.sim.intersection.AutoDriverOnlySimulator;
+import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 
 /**

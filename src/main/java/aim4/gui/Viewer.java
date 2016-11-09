@@ -47,7 +47,15 @@ import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.io.IOException;
 
-import javax.swing.*;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
 
 import aim4.config.Constants;
 import aim4.config.Debug;
@@ -58,11 +66,11 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
-import aim4.sim.intersection.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
+import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
 import aim4.sim.Simulator.SimStepResult;
-import aim4.sim.intersection.setup.BasicSimSetup;
-import aim4.sim.intersection.setup.SimFactory;
-import aim4.sim.intersection.setup.SimSetup;
+import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.setup.SimFactory;
+import aim4.sim.setup.SimSetup;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSimView;
 
@@ -71,8 +79,8 @@ import aim4.vehicle.VehicleSimView;
  * AIM Simulator while watching the vehicles in real time.
  */
 public class Viewer extends JFrame implements ActionListener, KeyListener,
-        MouseListener, ItemListener,
-        ViewerDebugView {
+                                              MouseListener, ItemListener,
+                                              ViewerDebugView {
 
   // ///////////////////////////////
   // CONSTANTS
@@ -392,22 +400,14 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   /** The number of generated images */
   int imageCounter;
   // GUI Items
-  /** The tab pane */
-  private JTabbedPane tabbedPane;
   /** The main pane */
   private JPanel mainPanel;
-  /** The lane pane */
-  private JPanel lanePanel;
   /** The card layout for the canvas */
   private CardLayout canvasCardLayout;
-  /** The card layout for the lane canvas */
-  private CardLayout laneCardLayout;
   /** The canvas on which to draw the state of the simulator. */
   private Canvas canvas;
-  /** The canvas on which to draw the state of the lane simulator */
-  private Canvas laneCanvas;
   /** The simulation setup pane */
-  private IntersectionSimSetupPanel intersectionSimSetupPanel;
+  private SimSetupPanel simSetupPanel;
   /** The status pane on which to display statistics. */
   private StatusPanelContainer statusPanel;
   /** The Start/Pause/Resume Button */
@@ -477,7 +477,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     targetSimSpeed = DEFAULT_SIM_SPEED;
     // the frame rate cannot be not larger than the simulation cycle
     targetFrameRate =
-            Math.min(DEFAULT_TARGET_FRAME_RATE, SimConfig.CYCLES_PER_SECOND);
+        Math.min(DEFAULT_TARGET_FRAME_RATE, SimConfig.CYCLES_PER_SECOND);
     this.nextFrameTime = 0; // undefined yet.
 
     this.recording = false;
@@ -512,7 +512,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     // Apple specific property.
     System.setProperty("apple.laf.useScreenMenuBar", "true");
     System.setProperty("com.apple.mrj.application.apple.menu.about.name",
-            "AIM Viewer");
+        "AIM Viewer");
     // Make sure that the program quits when we close the window
     setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -631,12 +631,12 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     menuBar.add(menu);
     // View->Show simulation time
     showSimulationTimeMenuItem = new JCheckBoxMenuItem("Show Simulation Time",
-            IS_SHOW_SIMULATION_TIME);
+        IS_SHOW_SIMULATION_TIME);
     showSimulationTimeMenuItem.addItemListener(this);
     menu.add(showSimulationTimeMenuItem);
     // View->Show VIN numbers
     showVinMenuItem = new JCheckBoxMenuItem("Show VINs",
-            IS_SHOW_VIN_BY_DEFAULT);
+        IS_SHOW_VIN_BY_DEFAULT);
     showVinMenuItem.addItemListener(this);
     menu.add(showVinMenuItem);
     // View->Show IM Shapes
@@ -657,12 +657,9 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    * Create all components in the viewer
    */
   private void createComponents() {
-    tabbedPane = new JTabbedPane();
     mainPanel = new JPanel();
-    lanePanel = new JPanel();
     canvas = new Canvas(this);
-    laneCanvas = new Canvas(this);
-    intersectionSimSetupPanel = new IntersectionSimSetupPanel(initSimSetup);
+    simSetupPanel = new SimSetupPanel(initSimSetup);
     statusPanel = new StatusPanelContainer(this);
     startButton = new JButton("Start");
     startButton.addActionListener(this);
@@ -679,17 +676,12 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     canvasCardLayout = new CardLayout();
     mainPanel.setLayout(canvasCardLayout);
     mainPanel.setPreferredSize(new Dimension(PREF_MAX_CANVAS_WIDTH,
-            PREF_MAX_CANVAS_HEIGHT));
-
-    laneCardLayout = new CardLayout();
-    lanePanel.setLayout(laneCardLayout);
-    lanePanel.setPreferredSize(new Dimension(PREF_MAX_CANVAS_WIDTH,
-            PREF_MAX_CANVAS_HEIGHT));
+        PREF_MAX_CANVAS_HEIGHT));
 
     // create the pane for containing the sim setup pane
-    JPanel intersectionSetupPane = new JPanel();
-    intersectionSetupPane.setBackground(Canvas.GRASS_COLOR);
-    intersectionSetupPane.setLayout(new GridBagLayout());
+    JPanel panel1 = new JPanel();
+    panel1.setBackground(Canvas.GRASS_COLOR);
+    panel1.setLayout(new GridBagLayout());
     GridBagConstraints c1 = new GridBagConstraints();
     c1.gridx = 0;
     c1.gridy = 0;
@@ -697,19 +689,12 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     c1.weightx = 1.0;
     c1.weighty = 1.0;
     c1.insets = new Insets(SIM_SETUP_PANE_GAP,
-            SIM_SETUP_PANE_GAP,
-            SIM_SETUP_PANE_GAP,
-            SIM_SETUP_PANE_GAP);
-    intersectionSetupPane.add(intersectionSimSetupPanel, c1);
-
-    JPanel laneSetupPane = new JPanel();
-    laneSetupPane.setBackground(Canvas.GRASS_COLOR);
-    //laneSetupPane.setLayout(new GridBagLayout());
-    //laneSetupPane.add(intersectionSimSetupPanel, c1);
-
+        SIM_SETUP_PANE_GAP,
+        SIM_SETUP_PANE_GAP,
+        SIM_SETUP_PANE_GAP);
+    panel1.add(simSetupPanel, c1);
     // add the panel to the top layer
-    mainPanel.add(intersectionSetupPane, "SIM_SETUP_PANEL");
-    lanePanel.add(laneSetupPane, "SIM_SETUP_PANEL");
+    mainPanel.add(panel1, "SIM_SETUP_PANEL");
 
     // create ...
 //    JPanel panel2 = new JPanel();
@@ -728,11 +713,6 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
 
     // add the canvas to the second layer
     mainPanel.add(canvas, "CANVAS");
-    lanePanel.add(laneCanvas, "CANVAS");
-
-    //add sim panels to the tabpane
-    tabbedPane.addTab("AIM", mainPanel);
-    tabbedPane.addTab("LANE", lanePanel);
 
     // set the group layout
     Container pane = getContentPane();
@@ -745,24 +725,24 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
     layout.setAutoCreateContainerGaps(false);
     // layout for the horizontal axis
     layout.setHorizontalGroup(layout.createParallelGroup(
-            GroupLayout.Alignment.LEADING).addComponent(tabbedPane).addGroup(layout.createSequentialGroup().addGroup(
-            layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(
-                    startButton,
-                    DEFAULT_BUTTON_WIDTH,
-                    GroupLayout.DEFAULT_SIZE,
-                    DEFAULT_BUTTON_WIDTH).addComponent(
-                    stepButton, DEFAULT_BUTTON_WIDTH,
-                    GroupLayout.DEFAULT_SIZE,
-                    DEFAULT_BUTTON_WIDTH)).addComponent(
-            statusPanel)));
+        GroupLayout.Alignment.LEADING).addComponent(mainPanel).addGroup(layout.createSequentialGroup().addGroup(
+        layout.createParallelGroup(GroupLayout.Alignment.LEADING).addComponent(
+        startButton,
+        DEFAULT_BUTTON_WIDTH,
+        GroupLayout.DEFAULT_SIZE,
+        DEFAULT_BUTTON_WIDTH).addComponent(
+        stepButton, DEFAULT_BUTTON_WIDTH,
+        GroupLayout.DEFAULT_SIZE,
+        DEFAULT_BUTTON_WIDTH)).addComponent(
+        statusPanel)));
     // layout for the vertical axis
     layout.setVerticalGroup(
-            layout.createSequentialGroup().addComponent(tabbedPane).addGroup(
-                    layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
-                            startButton).addComponent(stepButton)).addComponent(statusPanel,
-                            DEFAULT_STATUS_PANE_HEIGHT,
-                            GroupLayout.DEFAULT_SIZE,
-                            DEFAULT_STATUS_PANE_HEIGHT)));
+        layout.createSequentialGroup().addComponent(mainPanel).addGroup(
+        layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
+        startButton).addComponent(stepButton)).addComponent(statusPanel,
+        DEFAULT_STATUS_PANE_HEIGHT,
+        GroupLayout.DEFAULT_SIZE,
+        DEFAULT_STATUS_PANE_HEIGHT)));
   }
 
   // ///////////////////////////////
@@ -861,7 +841,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    * The handler when the user pressed the start button.
    */
   private void startButtonHandler() {
-    startButtonHandler(intersectionSimSetupPanel.getSimSetup());
+    startButtonHandler(simSetupPanel.getSimSetup());
   }
 
   /**
@@ -984,9 +964,9 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    */
   private void createSimThread() {
     if (0 < targetSimSpeed
-            && targetSimSpeed < TURBO_SIM_SPEED) {
+        && targetSimSpeed < TURBO_SIM_SPEED) {
       long timerDelay =
-              (long) (1000.0 * SimConfig.TIME_STEP / targetSimSpeed);
+          (long) (1000.0 * SimConfig.TIME_STEP / targetSimSpeed);
       simThread = new SimThread(false, timerDelay);
     } else {
       long timerDelay;
@@ -1046,7 +1026,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    */
   public void setTargetFrameRate(double targetFrameRate) {
     this.targetFrameRate =
-            Math.min(targetFrameRate, SimConfig.CYCLES_PER_SECOND);
+        Math.min(targetFrameRate, SimConfig.CYCLES_PER_SECOND);
 
     if (simThread != null) {
       if (simThread.isTurboMode()) {
@@ -1074,7 +1054,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
 
     if (simStepResult instanceof AutoDriverOnlySimStepResult) {
       AutoDriverOnlySimStepResult simStepResult2 =
-              (AutoDriverOnlySimStepResult) simStepResult;
+          (AutoDriverOnlySimStepResult) simStepResult;
       for (int vin : simStepResult2.getCompletedVINs()) {
         Debug.removeVehicleColor(vin);
       }
@@ -1090,7 +1070,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
    */
   private boolean updateScreenForOneStepInFastRunningMode() {
     return (0.0 < targetFrameRate)
-            && (targetFrameRate < SimConfig.CYCLES_PER_SECOND);
+        && (targetFrameRate < SimConfig.CYCLES_PER_SECOND);
   }
 
   /**
@@ -1117,7 +1097,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
         updateScreen();
         saveScreenShot();
         nextFrameTime =
-                System.currentTimeMillis() + (long) (1000.0 / targetFrameRate);
+            System.currentTimeMillis() + (long) (1000.0 / targetFrameRate);
       }
     } // else targetFrameRate == 0.0 then do nothing
   }
@@ -1140,8 +1120,8 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   private void saveScreenShot() {
     if (recording && imageDir != null) {
       String outFileName =
-              imageDir + "/" + Constants.LEADING_ZEROES.format(imageCounter++)
-                      + ".png";
+          imageDir + "/" + Constants.LEADING_ZEROES.format(imageCounter++)
+          + ".png";
       canvas.saveScreenShot(outFileName);
     }
   }
@@ -1249,21 +1229,21 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
   public void keyPressed(KeyEvent e) {
     if (simThread != null) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_ENTER:
+      case KeyEvent.VK_ENTER:
+        startButtonHandler();
+        break;
+      case KeyEvent.VK_SPACE:
+        if (simThread.isPaused()) {
+          stepButtonHandler();
+        } else {
           startButtonHandler();
-          break;
-        case KeyEvent.VK_SPACE:
-          if (simThread.isPaused()) {
-            stepButtonHandler();
-          } else {
-            startButtonHandler();
-          }
-          break;
-        case KeyEvent.VK_ESCAPE:
-          resetSimProcess();
-          break;
-        default:
-          // do nothing
+        }
+        break;
+      case KeyEvent.VK_ESCAPE:
+        resetSimProcess();
+        break;
+      default:
+      // do nothing
       }
     } // else ignore the event
   }
@@ -1345,7 +1325,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
       if (sim != null) {
         Point2D rightClickPoint = canvas.getMapPosition(e.getX(), e.getY());
         System.err.printf("Right click at (%.0f, %.0f)\n",
-                rightClickPoint.getX(), rightClickPoint.getY());
+            rightClickPoint.getX(), rightClickPoint.getY());
         // print the lane id
         for (Road r : sim.getMap().getRoads()) {
           for (Lane l : r.getLanes()) {
@@ -1448,7 +1428,7 @@ public class Viewer extends JFrame implements ActionListener, KeyListener,
       }
     } else {
       System.err.printf("Must start the simulator before starting "
-              + "UdpListener.\n");
+          + "UdpListener.\n");
     }
   }
 

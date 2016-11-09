@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.intersection.setup;
+package aim4.sim.setup;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -36,20 +36,20 @@ import aim4.driver.pilot.V2IPilot;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.GridMap;
 import aim4.map.GridMapUtil;
-import aim4.sim.intersection.AutoDriverOnlySimulator;
+import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 
 /**
  * The setup for the simulator in which the intersections are controlled
- * by stop signs.
+ * by N-phases traffic signals.
  */
-public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
-                                         implements SimSetup {
+public class ApproxNPhasesTrafficSignalSimSetup extends BasicSimSetup
+                                                implements SimSetup {
 
-  /** The duration of the green signal */
-  private double greenLightDuration = 30.0;
-  /** The duration of the yellow signal */
-  private double yellowLightDuration = 30.0;
+  /** The name of the file containing the traffic signal phases */
+  private String trafficSignalPhaseFileName;
+  /** The name of the file containing the traffic volume information */
+  private String trafficVolumeFileName;
 
   /////////////////////////////////
   // CONSTRUCTORS
@@ -57,40 +57,30 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
 
   /**
    * Create the setup for the simulator in which the intersections are
-   * controlled by stop signs.
+   * controlled by N-phases traffic signals.
    *
-   * @param basicSimSetup  the basic simulator setup
+   * @param basicSimSetup               the basic simulator setup
+   * @param trafficSignalPhaseFileName  the name of the file containing the
+   *                                    traffic signal phase
    */
-  public ApproxSimpleTrafficSignalSimSetup(BasicSimSetup basicSimSetup) {
+  public ApproxNPhasesTrafficSignalSimSetup(BasicSimSetup basicSimSetup,
+                                            String trafficSignalPhaseFileName) {
     super(basicSimSetup);
+
+    this.trafficSignalPhaseFileName = trafficSignalPhaseFileName;
+    this.trafficVolumeFileName = null;
   }
 
-
-  /**
-   * Create the setup for the simulator in which the intersections are
-   * controlled by stop signs.
-   *
-   * @param columns                     the number of columns
-   * @param rows                        the number of rows
-   * @param laneWidth                   the width of lanes
-   * @param speedLimit                  the speed limit
-   * @param lanesPerRoad                the number of lanes per road
-   * @param medianSize                  the median size
-   * @param distanceBetween             the distance between intersections
-   * @param trafficLevel                the traffic level
-   * @param stopDistBeforeIntersection  the stopping distance before
-   */
-  public ApproxSimpleTrafficSignalSimSetup(int columns, int rows,
-                                           double laneWidth, double speedLimit,
-                                           int lanesPerRoad,
-                                           double medianSize,
-                                           double distanceBetween,
-                                           double trafficLevel,
-                                           double stopDistBeforeIntersection) {
-    super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
-          medianSize, distanceBetween, trafficLevel,
-          stopDistBeforeIntersection);
-  }
+//  public ApproxNPhasesTrafficSignalSimSetup(int columns, int rows,
+//                                     double laneWidth, double speedLimit,
+//                                     int lanesPerRoad,
+//                                     double medianSize, double distanceBetween,
+//                                     double trafficLevel,
+//                                     double stopDistBeforeIntersection) {
+//    super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
+//          medianSize, distanceBetween, trafficLevel,
+//          stopDistBeforeIntersection);
+//  }
 
 
   /////////////////////////////////
@@ -98,21 +88,13 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
   /////////////////////////////////
 
   /**
-   * Set the duration of the green signals
+   * Set the traffic volume according to the specification in a file.
    *
-   * @param greenLightDuration  the duration of the green signals
+   * @param trafficVolumeFileName  the name of the file containing the
+   *                               traffic volume information
    */
-  public void setGreenLightDuration(double greenLightDuration) {
-    this.greenLightDuration = greenLightDuration;
-  }
-
-  /**
-   * Set the duration of the yellow signals
-   *
-   * @param yellowLightDuration  the duration of the yellow signals
-   */
-  public void setYellowLightDuration(double yellowLightDuration) {
-    this.yellowLightDuration = yellowLightDuration;
+  public void setTrafficVolume(String trafficVolumeFileName) {
+    this.trafficVolumeFileName = trafficVolumeFileName;
   }
 
   /**
@@ -141,14 +123,12 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
 
     Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE = false;
 
-    GridMapUtil.setApproxSimpleTrafficLightManagers(layout,
-                                                       currentTime,
-                                                       gridConfig,
-                                                       greenLightDuration,
-                                                       yellowLightDuration);
+    GridMapUtil.setApproxNPhasesTrafficLightManagers(
+        layout, currentTime, gridConfig, trafficSignalPhaseFileName);
 
     if (numOfColumns == 1 && numOfRows == 1) {
-      GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+      GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
+      // GridLayoutUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
     } else {
       GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
     }
