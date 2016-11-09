@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.gui;
+package aim4.gui.setuppanel;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -52,7 +52,7 @@ import aim4.sim.setup.SimSetup;
 /**
  * The simulation setup panel.
  */
-public class SimSetupPanel extends JPanel implements ItemListener {
+public class AIMSimSetupPanel extends JPanel implements ItemListener {
 
   private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class SimSetupPanel extends JPanel implements ItemListener {
    *
    * @param initSimSetup  the initial simulation setup
    */
-  public SimSetupPanel(BasicSimSetup initSimSetup) {
+  public AIMSimSetupPanel(BasicSimSetup initSimSetup) {
     this.simSetup = initSimSetup;
 
     // create the combo box pane

@@ -147,7 +147,7 @@ public class AdminControlPanel extends JPanel
         e.getSource() == straightButton) {
       int imId = Debug.getTargetIMid();
       if (imId >= 0) {
-        Simulator sim = viewer.getSimulator();
+        Simulator sim = viewer.getSelectedSimulator();
         IntersectionManager im0 =
           sim.getMap().getIntersectionManagers().get(imId);
         assert im0.getId() == imId;

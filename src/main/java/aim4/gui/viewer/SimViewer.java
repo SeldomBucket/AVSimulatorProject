@@ -1,0 +1,872 @@
+package aim4.gui.viewer;
+
+import aim4.config.Constants;
+import aim4.config.Debug;
+import aim4.config.SimConfig;
+import aim4.gui.*;
+import aim4.gui.Canvas;
+import aim4.gui.frame.VehicleInfoFrame;
+import aim4.gui.setuppanel.AIMSimSetupPanel;
+import aim4.im.IntersectionManager;
+import aim4.map.Road;
+import aim4.map.lane.Lane;
+import aim4.sim.AutoDriverOnlySimulator;
+import aim4.sim.Simulator;
+import aim4.sim.UdpListener;
+import aim4.sim.setup.BasicSimSetup;
+import aim4.sim.setup.SimFactory;
+import aim4.sim.setup.SimSetup;
+import aim4.util.Util;
+import aim4.vehicle.VehicleSimView;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.awt.geom.Point2D;
+
+/**
+ * Created by Callum on 09/11/2016.
+ */
+public abstract class SimViewer extends JPanel implements KeyListener,
+        MouseListener,
+        ViewerDebugView {
+    // ///////////////////////////////
+    // CONSTANTS
+    // ///////////////////////////////
+    /**
+     * The number of simulation seconds per GUI second. If it is larger than or
+     * equal to <code>TURBO_SIM_SPEED</code>, the simulation will run as fast as
+     * possible.
+     */
+    public static final double DEFAULT_SIM_SPEED = 15.0;
+    /**
+     * The number of screen updates per GUI second. If it is larger than or
+     * equal to SimConfig.CYCLES_PER_SECOND, the screen will be updated at
+     * every time step of the simulation.
+     */
+    public static final double DEFAULT_TARGET_FRAME_RATE = 20.0;
+    /**
+     * Preferred maximum width for the canvas, in pixels. {@value} pixels.
+     */
+    private static final int PREF_MAX_CANVAS_WIDTH = 650;
+    /**
+     * Preferred maximum height for the canvas, in pixels. {@value} pixels.
+     */
+    private static final int PREF_MAX_CANVAS_HEIGHT = 650;
+    /**
+     * The inset size of the setup panels
+     */
+    private static final int SIM_SETUP_PANE_GAP = 50;
+    /**
+     * The simulation speed (simulation seconds per GUI second) at or beyond which
+     * the turbo mode is on (i.e., the simulation will run as fast as possible)
+     */
+    public static final double TURBO_SIM_SPEED = 15.0;
+
+    // ///////////////////////////////
+    // PRIVATE FIELDS
+    // ///////////////////////////////
+    /**
+     * Reference to StatusPanelContainer
+     */
+    private StatusPanelContainer statusPanel;
+    /**
+     * The Simulator running in this Viewer.
+     */
+    protected Simulator sim;
+    /**
+     * The simulation's thread
+     */
+    private SimThread simThread;
+    /**
+     * UDP listener
+     */
+    private UdpListener udpListener;
+    /**
+     * The target simulation speed
+     */
+    private double targetSimSpeed;
+    /**
+     * The target frame rate
+     */
+    private double targetFrameRate;
+    /**
+     * The time of the next screen update in millisecond
+     */
+    private long nextFrameTime;
+    // recording
+    // TODO: reset imageCounter after reset the simulator
+    /**
+     * Whether or not to save the screen during simulation
+     */
+    private boolean recording;
+    /**
+     * Image's directino
+     */
+    private String imageDir;
+    /**
+     * The number of generated images
+     */
+    private int imageCounter;
+    // GUI Items
+    /**
+     * The main pane
+     */
+    private JPanel mainPanel;
+    /**
+     * Sim Setup Panel
+     */
+    private JPanel simSetupPanel;
+    /**
+     * The card layout for the canvas
+     */
+    private CardLayout canvasCardLayout;
+    /**
+     * The canvas on which to draw the state of the simulator.
+     */
+    protected aim4.gui.Canvas canvas;
+
+    public SimViewer(StatusPanelContainer statusPanel, JPanel simSetupPanel) {
+        this.statusPanel = statusPanel;
+        this.simSetupPanel = simSetupPanel;
+        this.sim = null;
+        this.udpListener = null;
+        this.simThread = null;
+        targetSimSpeed = DEFAULT_SIM_SPEED;
+        // the frame rate cannot be not larger than the simulation cycle
+        targetFrameRate =
+                Math.min(DEFAULT_TARGET_FRAME_RATE, SimConfig.CYCLES_PER_SECOND);
+        this.nextFrameTime = 0; // undefined yet.
+
+        this.recording = false;
+        this.imageDir = null;
+        this.imageCounter = 0;
+
+        createComponents();
+        setComponentsLayout();
+        setVisible(true);
+    }
+
+    /////////////////////////////////
+    // NESTED CLASSES
+    /////////////////////////////////
+    //
+    // TODO: SimThread should be a SwingWorker; but it works fine now.
+    // http://java.sun.com/docs/books/tutorial/uiswing/concurrency/worker.html
+    //
+
+    /**
+     * The simulation thread that holds the simulation process.
+     */
+    public class SimThread implements Runnable {
+
+        // ///////////////////////////////
+        // PRIVATE FIELDS
+        // ///////////////////////////////
+        /**
+         * The simulation thread
+         */
+        private volatile Thread blinker;
+        /**
+         * Whether the turbo mode is on
+         */
+        private boolean isTurboMode;
+        /**
+         * In the turbo mode, it is the duration of each execution period In
+         * the non turbo mode, it is the time period between simulation steps
+         */
+        private long timeDelay;
+        /**
+         * Whether the stepping mode is on
+         */
+        private boolean isSteppingMode;
+        /**
+         * Whether the simulation is stopped
+         */
+        private boolean isStopped;
+
+        // ///////////////////////////////
+        // CONSTRUCTORS
+        // ///////////////////////////////
+
+        /**
+         * Create a simulation thread.
+         *
+         * @param isTurboMode Whether the turbo mode is on
+         * @param timeDelay   The time delay
+         */
+        public SimThread(boolean isTurboMode, long timeDelay) {
+            this.blinker = null;
+            this.isTurboMode = isTurboMode;
+            this.timeDelay = timeDelay;
+            this.isSteppingMode = false;
+            this.isStopped = false;
+        }
+
+        // ///////////////////////////////
+        // PUBLIC METHODS
+        // ///////////////////////////////
+
+        // information retrieval
+
+        /**
+         * Whether the thread is stopped.
+         *
+         * @return Whether the thread is stopped.
+         */
+        public boolean isPaused() {
+            return isStopped;
+        }
+
+        /**
+         * Whether the thread is in the turbo mode.
+         *
+         * @return Whether the thread is in the turbo mode.
+         */
+        public boolean isTurboMode() {
+            return isTurboMode;
+        }
+
+        // Settings
+
+        /**
+         * Set whether the turbo mode is on
+         *
+         * @param isTurboMode Whether the turbo mode is on
+         */
+        public synchronized void setTurboMode(boolean isTurboMode) {
+            this.isTurboMode = isTurboMode;
+        }
+
+        /**
+         * Set whether the stepping mode is on
+         *
+         * @param isSteppingMode Whether the stepping mode is on
+         */
+        public synchronized void setSteppingMode(boolean isSteppingMode) {
+            this.isSteppingMode = isSteppingMode;
+        }
+
+        /**
+         * Set the time delay.
+         *
+         * @param timeDelay the time delay.
+         */
+        public synchronized void setTimeDelay(long timeDelay) {
+            this.timeDelay = timeDelay;
+        }
+
+        // ///////////////////////////////
+        // PUBLIC METHODS
+        // ///////////////////////////////
+
+        // thread control
+
+        /**
+         * Start the simulation thread.
+         */
+        public synchronized void start() {
+            assert blinker == null;
+            this.blinker = new Thread(this, "AIM4 Simulator Thread");
+            blinker.start();
+        }
+
+        /**
+         * Terminate/Kill this simulation thread.
+         */
+        public synchronized void terminate() {
+            assert blinker != null;
+            blinker = null;
+        }
+
+        /**
+         * Pause this simulation thread
+         */
+        public void pause() {
+            // must have no synchronized keyword in order to avoid
+            // funny behavior when the user clicks the "Pause" button.
+            assert !isStopped;
+            isStopped = true;
+        }
+
+        /**
+         * Resume this simulation thread
+         */
+        public synchronized void resume() {
+            assert isStopped;
+            isStopped = false;
+        }
+
+        // ///////////////////////////////
+        // PUBLIC METHODS
+        // ///////////////////////////////
+
+        // the run() function of the thread
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public void run() {
+            Thread thisThread = Thread.currentThread();
+            while (blinker == thisThread) {
+                if (isStopped) {
+                    try {
+                        Thread.sleep(10L); // just sleep for a very short moment
+                    } catch (InterruptedException e) {
+                        // do nothing
+                    }
+                } else if (isTurboMode) {
+                    runTurboMode();
+                } else {
+                    runNormalMode();
+                }
+                // in any case, give other threads a chance to execute
+                Thread.yield();
+            }
+            System.err.printf("The simulation has terminated.\n");
+        }
+
+        /**
+         * Run the thread in the turbo mode.
+         */
+        private synchronized void runTurboMode() {
+            double nextFastRunningStepTime = System.currentTimeMillis() + timeDelay;
+            while (!isStopped) {
+                runSimulationStep();
+                // give GUI a chance to update the screen
+                if (!updateScreenForOneStepInFastRunningMode()) {
+                    break;
+                }
+                // only one simulation step in stepping mode
+                if (isSteppingMode) {
+                    break;
+                }
+                // check to see whether the time is up
+                if (System.currentTimeMillis() >= nextFastRunningStepTime) {
+                    break;
+                }
+            }
+            // give GUI a chance to update the screen
+            updateScreenInTurboMode();
+            // if in stepping mode, just stop until resume() is called
+            if (isSteppingMode) {
+                isStopped = true;
+            }
+        }
+
+        /**
+         * Run the thread in the normal mode.
+         */
+        private synchronized void runNormalMode() {
+            long nextInvokeTime = System.currentTimeMillis() + timeDelay;
+            // Advance the simulation for one step
+            runSimulationStep();
+            // give GUI a chance to update the screen
+            updateScreenInNormalMode();
+            // if in stepping mode, just stop until resume() is called
+            if (isSteppingMode) {
+                isStopped = true;
+            } else {
+                // else may sleep for a while
+                long t = nextInvokeTime - System.currentTimeMillis();
+                if (t > 0) {
+                    try {
+                        Thread.sleep(t);
+                    } catch (InterruptedException e) {
+                        // do nothing
+                    }
+                } else {
+                    // System.err.printf("Warning: Simulation is slower than GUI\n");
+                }
+            }
+        }
+
+    }
+
+    // //////////////////////////////////////////////////
+    // Methods invoked by SimThread
+    // //////////////////////////////////////////////////
+
+    /**
+     * Run the simulation
+     */
+    protected Simulator.SimStepResult runSimulationStep() {
+        Debug.clearShortTermDebugPoints();
+        Simulator.SimStepResult simStepResult = sim.step(SimConfig.TIME_STEP);
+
+        return simStepResult;
+    }
+
+    /**
+     * Update screen after a simulation step for the fast running mode
+     *
+     * @return true if the simulation's thread should continue to execute; false
+     * if the simulation's thread should take a break and call
+     * updateScreenInFastRunningMode();
+     */
+    private boolean updateScreenForOneStepInFastRunningMode() {
+        return (0.0 < targetFrameRate)
+                && (targetFrameRate < SimConfig.CYCLES_PER_SECOND);
+    }
+
+    /**
+     * Update screen after an execution period in the fast running mode
+     */
+    private void updateScreenInTurboMode() {
+        if (0.0 < targetFrameRate) {
+            updateScreen();
+            saveScreenShot();
+        }
+    }
+
+    /**
+     * Update screen for the non fast running mode
+     */
+    private void updateScreenInNormalMode() {
+
+        if (targetFrameRate >= SimConfig.CYCLES_PER_SECOND) {
+            // update as fast as possible
+            updateScreen();
+            saveScreenShot();
+        } else if (0.0 < targetFrameRate) {
+            if (System.currentTimeMillis() > nextFrameTime) {
+                updateScreen();
+                saveScreenShot();
+                nextFrameTime =
+                        System.currentTimeMillis() + (long) (1000.0 / targetFrameRate);
+            }
+        } // else targetFrameRate == 0.0 then do nothing
+    }
+
+    // //////////////////////////////////////////////////
+    // Basic fucntions for GUI updates
+    // //////////////////////////////////////////////////
+
+    /**
+     * Update the screen
+     */
+    private void updateScreen() {
+        canvas.update();
+        statusPanel.update();
+    }
+
+    /**
+     * Save a screenshot
+     */
+    private void saveScreenShot() {
+        if (recording && imageDir != null) {
+            String outFileName =
+                    imageDir + "/" + Constants.LEADING_ZEROES.format(imageCounter++)
+                            + ".png";
+            canvas.saveScreenShot(outFileName);
+        }
+    }
+
+    // //////////////////////////////////////////////////
+    // GUI Methods
+    // //////////////////////////////////////////////////
+
+    /**
+     * Create all components in the viewer
+     */
+    private void createComponents() {
+        mainPanel = new JPanel();
+        canvas = new Canvas(this);
+
+        // Make self key listener
+        setFocusable(true);
+        requestFocusInWindow();
+        addKeyListener(this);
+    }
+
+    /**
+     * Set the layout of the viewer
+     */
+    private void setComponentsLayout() {
+        // set the card layout for the layered pane
+        canvasCardLayout = new CardLayout();
+        mainPanel.setLayout(canvasCardLayout);
+        mainPanel.setPreferredSize(new Dimension(PREF_MAX_CANVAS_WIDTH,
+                PREF_MAX_CANVAS_HEIGHT));
+
+        // create the pane for containing the sim setup pane
+        JPanel panel1 = new JPanel();
+        panel1.setBackground(Canvas.GRASS_COLOR);
+        panel1.setLayout(new GridBagLayout());
+        GridBagConstraints c1 = new GridBagConstraints();
+        c1.gridx = 0;
+        c1.gridy = 0;
+        c1.fill = GridBagConstraints.BOTH;
+        c1.weightx = 1.0;
+        c1.weighty = 1.0;
+        c1.insets = new Insets(SIM_SETUP_PANE_GAP,
+                SIM_SETUP_PANE_GAP,
+                SIM_SETUP_PANE_GAP,
+                SIM_SETUP_PANE_GAP);
+        panel1.add(simSetupPanel, c1);
+        // add the panel to the top layer
+        mainPanel.add(panel1, "SIM_SETUP_PANEL");
+        // add the canvas to the second layer
+        mainPanel.add(canvas, "CANVAS");
+    }
+
+    // ///////////////////////////////
+    // PUBLIC METHODS
+    // ///////////////////////////////
+
+    /**
+     * Get the simulator object.
+     *
+     * @return the simulator object; null if the simulator object has not been
+     * created.
+     */
+    public Simulator getSimulator() {
+        return sim;
+    }
+
+    public void showCard(ViewerCardType cardType) {
+        canvasCardLayout.show(mainPanel, cardType.toString());
+    }
+
+    public void initWithMap() {
+        canvas.initWithGivenMap(sim.getMap());
+    }
+
+    public void cleanUp() {
+        canvas.cleanUp();
+    }
+
+    public void requestCanvasFocusInWindow() {
+        canvas.requestFocusInWindow();
+    }
+
+    /**
+     * The handler when the user pressed the step button.
+     */
+    public void stepButtonHandler() {
+        stepSimProcess();
+    }
+
+    public void printDataCollectionLinesData(String outFileName) {
+        sim.getMap().printDataCollectionLinesData(outFileName);
+    }
+
+    public boolean isRecording() {
+        return recording;
+    }
+
+    public void setRecording(boolean recording) {
+        this.recording = recording;
+    }
+
+    public void setImageDir(String imageDir) {
+        this.imageDir = imageDir;
+    }
+
+    public void setImageCounter(int imageCounter) {
+        this.imageCounter = imageCounter;
+    }
+
+    public void setIsShowSimulationTime(boolean showSimulationTime) {
+        this.canvas.setIsShowSimulationTime(showSimulationTime);
+    }
+
+    public void setIsShowVin(boolean showVin) {
+        this.canvas.setIsShowVin(showVin);
+    }
+
+    public void setIsShowIMDebugShapes(boolean useIMDebugShapes) {
+        this.canvas.setIsShowIMDebugShapes(useIMDebugShapes);
+    }
+
+    public void updateCavas() {
+        this.canvas.update();
+    }
+
+    // ///////////////////////////////
+    // Simulation controls
+    // ///////////////////////////////
+
+    /**
+     * Start the simulation process.
+     *
+     */
+    public void startSimProcess() {
+        nextFrameTime = System.currentTimeMillis();
+        simThread.start();
+    }
+
+    /**
+     * Creates the simulation instance
+     *
+     */
+    public void createSimulator(SimSetup simSetup) {
+        assert sim == null && udpListener == null;
+        // create the simulator
+        sim = SimFactory.makeSimulator(simSetup);
+        // create the simulation thread
+        createSimThread();
+    }
+
+
+    /**
+     * Pause the simulation process.
+     */
+    public void pauseSimProcess() {
+        assert simThread != null && !simThread.isPaused();
+        simThread.pause();
+    }
+
+
+    /**
+     * Resume the simulation process.
+     */
+    public void resumeSimProcess() {
+        assert simThread != null && simThread.isPaused();
+
+        simThread.setSteppingMode(false);
+        simThread.resume();
+        nextFrameTime = System.currentTimeMillis();
+    }
+
+    /**
+     * Step the simulation process.
+     */
+    public void stepSimProcess() {
+        assert simThread != null && simThread.isPaused();
+
+        simThread.setSteppingMode(true);
+        simThread.resume();
+    }
+
+    /**
+     * Reset the simulation process.
+     */
+    public void resetSimProcess() {
+        assert simThread != null;
+
+        simThread.terminate();
+        if (simThread.isPaused()) {
+            simThread.setSteppingMode(false);
+            simThread.resume();
+        }
+        simThread = null;
+        sim = null;
+
+        if (udpListener != null) {
+            stopUdpListening();
+        }
+    }
+
+    public boolean udpListenerHasStarted() {
+        return udpListener.hasStarted();
+    }
+
+    // ///////////////////////////////
+    // PROTECTED METHODS
+    // ///////////////////////////////
+
+    /**
+     * Returns the SimThread
+     */
+    protected SimThread getSimThread() {
+        return simThread;
+    }
+
+    // ///////////////////////////////
+    // ABSTRACT METHODS
+    // ///////////////////////////////
+
+    /**
+     * The handler when the user pressed the start button.
+     */
+    public abstract void startButtonHandler();
+
+    // ///////////////////////////////
+    // interface's event handlers
+    // ///////////////////////////////
+
+
+    // //////////////////////////////////////////////////
+    // Private methods for interface's event handlers
+    // //////////////////////////////////////////////////
+
+    /**
+     * Initialize the default Simulator to use.
+     */
+    private void createSimThread() {
+        if (0 < targetSimSpeed
+                && targetSimSpeed < TURBO_SIM_SPEED) {
+            long timerDelay =
+                    (long) (1000.0 * SimConfig.TIME_STEP / targetSimSpeed);
+            simThread = new SimThread(false, timerDelay);
+        } else {
+            long timerDelay;
+            if (targetFrameRate < SimConfig.CYCLES_PER_SECOND) {
+                timerDelay = (long) (1000.0 / targetFrameRate);
+            } else {
+                timerDelay = (long) (1000.0 / SimConfig.CYCLES_PER_SECOND);
+            }
+            simThread = new SimThread(true, timerDelay);
+        }
+    }
+
+
+    /**
+     * Set the target simulation speed.
+     *
+     * @param simSpeed  set the target simulation speed
+     */
+    public void setTargetSimSpeed(double simSpeed) {
+        this.targetSimSpeed = simSpeed;
+        if (simThread != null) {
+            if (Util.isDoubleZero(simSpeed)) {
+                long timerDelay = (long) (1000.0 * SimConfig.TIME_STEP / 0.1);
+                simThread.setTimeDelay(timerDelay);
+                simThread.setTurboMode(false);
+                if (!simThread.isPaused()) {
+                    pauseSimProcess();
+                }
+            } else if (Util.isDoubleEqualOrGreater(simSpeed, TURBO_SIM_SPEED)) {
+                long timerDelay;
+                if (targetFrameRate < SimConfig.CYCLES_PER_SECOND) {
+                    timerDelay = (long) (1000.0 / targetFrameRate);
+                } else {
+                    timerDelay = (long) (1000.0 / SimConfig.CYCLES_PER_SECOND);
+                }
+                simThread.setTimeDelay(timerDelay);
+                simThread.setTurboMode(true);
+                if (simThread.isPaused()) {
+                    resumeSimProcess();
+                }
+            } else {
+                long timerDelay = (long) (1000.0 * SimConfig.TIME_STEP / simSpeed);
+                simThread.setTimeDelay(timerDelay);
+                simThread.setTurboMode(false);
+                if (simThread.isPaused()) {
+                    resumeSimProcess();
+                }
+            }
+        }
+        canvas.requestFocusInWindow();
+    }
+
+    /**
+     * Set the target frame rate.
+     *
+     * @param targetFrameRate the target frame rate
+     */
+    public void setTargetFrameRate(double targetFrameRate) {
+        this.targetFrameRate =
+                Math.min(targetFrameRate, SimConfig.CYCLES_PER_SECOND);
+
+        if (simThread != null) {
+            if (simThread.isTurboMode()) {
+                long timerDelay;
+                if (0.0 < targetFrameRate) {
+                    timerDelay = (long) (1000.0 / targetFrameRate);
+                } else {
+                    timerDelay = (long) (1000.0 / 10.0);
+                }
+                simThread.setTimeDelay(timerDelay);
+            }
+        }
+    }
+
+    // ///////////////////////////////
+    // KeyListener interface
+    // ///////////////////////////////
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (simThread != null) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ENTER:
+                    startButtonHandler();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    if (simThread.isPaused()) {
+                        stepButtonHandler();
+                    } else {
+                        startButtonHandler();
+                    }
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    resetSimProcess();
+                    break;
+                default:
+                    // do nothing
+            }
+        } // else ignore the event
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
+    }
+
+    // /////////////////////////////////////
+    // UDP listening menu item handlers
+    // /////////////////////////////////////
+
+    /**
+     * Start the UDP listening.
+     */
+    private void startUdpListening() {
+        if (sim != null) {
+            if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
+                System.err.print("Starting UDP listener...\n");
+            }
+
+            // create the UDP listener thread
+            udpListener = new UdpListener(sim);
+            udpListener.start();
+        } else {
+            System.err.printf("Must start the simulator before starting "
+                    + "UdpListener.\n");
+        }
+    }
+
+    /**
+     * Stop the UDP listening
+     */
+    private void stopUdpListening() {
+
+        if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
+            System.err.print("Stopping UDP listener...\n");
+        }
+
+        udpListener.stop();
+    }
+
+    public void removeUdpListener() {
+        udpListener = null;
+    }
+
+    /////////////////////////////////
+    // DEBUG
+    /////////////////////////////////
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void highlightVehicle(int vin) {
+        canvas.highlightVehicle(vin);
+
+    }
+
+}

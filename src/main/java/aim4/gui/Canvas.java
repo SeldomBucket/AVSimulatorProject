@@ -68,6 +68,7 @@ import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
 import aim4.driver.coordinator.V2ICoordinator;
+import aim4.gui.viewer.SimViewer;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
 import aim4.im.v2i.RequestHandler.TrafficSignalRequestHandler;
@@ -289,7 +290,7 @@ public class Canvas extends JPanel implements ComponentListener,
   /**
    * the viewer
    */
-  private Viewer viewer;
+  private SimViewer viewer;
   /**
    * Whether other threads can update the canvas via update()
    */
@@ -316,7 +317,7 @@ public class Canvas extends JPanel implements ComponentListener,
    *
    * @param viewer the viewer object
    */
-  public Canvas(Viewer viewer) {
+  public Canvas(SimViewer viewer) {
     this.viewer = viewer;
 
     basicMap = null;

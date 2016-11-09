@@ -116,7 +116,7 @@ public class StatPanel extends JPanel
    */
   @Override
   public void update() {
-    Simulator sim = viewer.getSimulator();
+    Simulator sim = viewer.getSelectedSimulator();
     if (sim != null) {
       // Current Time
       currentTimeLabel.update(sim.getSimulationTime());

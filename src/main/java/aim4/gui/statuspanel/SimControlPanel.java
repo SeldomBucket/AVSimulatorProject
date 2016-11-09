@@ -39,6 +39,7 @@ import aim4.config.SimConfig;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.Viewer;
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.viewer.SimViewer;
 
 /**
  * The Speed Control Panel
@@ -72,18 +73,18 @@ public class SimControlPanel extends JPanel
     this.viewer = viewer;
     targetSimSpeedSlider =
       new LabeledSlider(
-        0.0, Viewer.TURBO_SIM_SPEED,
-        Math.min(Viewer.DEFAULT_SIM_SPEED, Viewer.TURBO_SIM_SPEED),
+        0.0, SimViewer.TURBO_SIM_SPEED,
+        Math.min(SimViewer.DEFAULT_SIM_SPEED, SimViewer.TURBO_SIM_SPEED),
         1.0, 0.25,
         "Simulation Speed: %.1f simulation second / second",
         "%.1f", this);
-    targetSimSpeedSlider.setTickLabel(Viewer.TURBO_SIM_SPEED, "max",
+    targetSimSpeedSlider.setTickLabel(SimViewer.TURBO_SIM_SPEED, "max",
                                 "Simulation Speed: %s");
 
     targetFrameRateSlider =
       new LabeledSlider(
         0.0, SimConfig.CYCLES_PER_SECOND,
-        Math.min(Viewer.DEFAULT_TARGET_FRAME_RATE, SimConfig.CYCLES_PER_SECOND),
+        Math.min(SimViewer.DEFAULT_TARGET_FRAME_RATE, SimConfig.CYCLES_PER_SECOND),
         5.0, 1.0,
         "Target frame rate: %.0f frame / second", "%.0f",
         this);
