@@ -30,53 +30,29 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui;
 
-import java.awt.CardLayout;
 import java.awt.Container;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.geom.Point2D;
 import java.io.IOException;
-import java.rmi.activation.ActivationInstantiator;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import aim4.config.Constants;
 import aim4.config.Debug;
-import aim4.config.SimConfig;
-import aim4.gui.frame.VehicleInfoFrame;
-import aim4.gui.setuppanel.AIMSimSetupPanel;
 import aim4.gui.viewer.AIMSimViewer;
 import aim4.gui.viewer.SimViewer;
-import aim4.im.IntersectionManager;
-import aim4.map.Road;
-import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
-import aim4.sim.UdpListener;
-import aim4.sim.AutoDriverOnlySimulator.AutoDriverOnlySimStepResult;
-import aim4.sim.Simulator.SimStepResult;
-import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.SimFactory;
-import aim4.sim.setup.SimSetup;
-import aim4.util.Util;
-import aim4.vehicle.VehicleSimView;
 
 /**
  * The viewer is a Graphical User Interface (GUI) that allows a user to run the
  * AIM Simulator while watching the vehicles in real time.
  */
-public class Viewer extends JFrame implements ActionListener, ItemListener {
+public class Viewer extends JFrame implements ActionListener, ItemListener, KeyListener {
 
     // ///////////////////////////////
     // CONSTANTS
@@ -110,7 +86,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     private static final int DEFAULT_STATUS_PANE_HEIGHT = 200; // px
 
     // ///////////////////////////////
-    // PRIVATE FIELDS
+    // GUI ELEMENTS
     // ///////////////////////////////
     /** Tabbed pane containing all of the simulation viewers */
     private JTabbedPane tabbedPane;
@@ -159,7 +135,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     // ///////////////////////////////
     // CLASS CONSTRUCTORS
     // ///////////////////////////////
-
     /**
      * Create a new viewer object.
      */
@@ -195,7 +170,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     // ///////////////////////////////
     // GUI METHODS
     // ///////////////////////////////
-
     /**
      * Create a new GUI and show it.
      *
@@ -213,13 +187,14 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
         createMenuBar();
         createTabbedPane();
         createStatusPanel();
+        addKeyListener(this);
         setComponentsLayout();
         pack(); // pick the layout and show it
         setVisible(true);
         initGUIsetting();
 
         if (isRunNow) {
-            selectedViewer.startButtonHandler();
+            startSimProcess();
             selectedViewer.requestCanvasFocusInWindow();
         }
     }
@@ -355,7 +330,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
             }
         });
 
-        aimViewer = new AIMSimViewer(statusPanel);
+        aimViewer = new AIMSimViewer(statusPanel, this);
 
         tabbedPane.add("AIM", aimViewer);
 
@@ -363,7 +338,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     }
 
     /**
-     * Create all components in the viewer
+     * Create status panel components
      */
     private void createStatusPanel() {
         statusPanel = new StatusPanelContainer(this);
@@ -407,18 +382,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
                                 DEFAULT_STATUS_PANE_HEIGHT,
                                 GroupLayout.DEFAULT_SIZE,
                                 DEFAULT_STATUS_PANE_HEIGHT)));
-    }
-
-    public Simulator getSelectedSimulator() {
-        return selectedViewer.getSimulator();
-    }
-
-    public void setTargetSimSpeed(double target) {
-        selectedViewer.setTargetSimSpeed(target);
-    }
-
-    public void setTargetFrameRate(double target) {
-        selectedViewer.setTargetFrameRate(target);
     }
 
     /**
@@ -492,16 +455,52 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     }
 
     // ///////////////////////////////
+    // ACCESSORS
+    // ///////////////////////////////
+    public Simulator getSelectedSimulator() {
+        return selectedViewer.getSimulator();
+    }
+
+    public void setTargetSimSpeed(double target) {
+        selectedViewer.setTargetSimSpeed(target);
+    }
+
+    public void setTargetFrameRate(double target) {
+        selectedViewer.setTargetFrameRate(target);
+    }
+
+    // ///////////////////////////////
     // SIM METHODS
     // ///////////////////////////////
+    /**
+     * The handler when the user pressed the start button.
+     */
+    private void startButtonHandler() {
+        if (selectedViewer.isSimThreadNull()) {
+            startSimProcess();
+        } else if (!selectedViewer.isSimThreadPaused()) {
+            pauseSimProcess();
+        } else {
+            resumeSimProcess();
+            startMenuItem.setText("Start");
+            stepMenuItem.setEnabled(false);
+            resetMenuItem.setEnabled(false);
+            dumpDataMenuItem.setEnabled(false);
+            startUdpListenerMenuItem.setEnabled(false);
+            clearDebugPointsMenuItem.setEnabled(false);
+        }
+    }
+
+    public void stepButtonHandler() {
+        selectedViewer.stepSimProcess();
+    }
 
     /**
      * Start the simulation process.
      *
-     * @param initSimSetup the initial simulation setup.
      */
-    public void startSimProcess(SimSetup initSimSetup) {
-        selectedViewer.createSimulator(initSimSetup);
+    public void startSimProcess() {
+        selectedViewer.createSimulator();
         // initialize the GUI
         setSimStartGUIsetting();
         // start the thread
@@ -521,7 +520,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
         startMenuItem.setText("Resume");
         stepMenuItem.setEnabled(true);
     }
-
 
     /**
      * Resume the simulation process.
@@ -551,6 +549,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
         if (selectedViewer.udpListenerHasStarted()) {
             startUdpListenerMenuItem.setEnabled(false);
             stopUdpListenerMenuItem.setEnabled(true);
+            selectedViewer.startUdpListening();
         } else {
             System.err.printf("Failed to start UDP listener...\n");
         }
@@ -565,6 +564,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
         if (!selectedViewer.udpListenerHasStarted()) {
             startUdpListenerMenuItem.setEnabled(true);
             stopUdpListenerMenuItem.setEnabled(false);
+            selectedViewer.stopUdpListening();
             selectedViewer.removeUdpListener();
         } else {
             System.err.printf("Failed to stop UDP listener...\n");
@@ -574,7 +574,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     // ///////////////////////////////////////////
     // ActionListener interface for menu items
     // ///////////////////////////////////////////
-
     /**
      * {@inheritDoc}
      */
@@ -603,10 +602,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     } else
     */
         if (e.getSource() == startMenuItem || e.getSource() == startButton) {
-            selectedViewer.startButtonHandler();
+            startButtonHandler();
             selectedViewer.requestCanvasFocusInWindow();
         } else if (e.getSource() == stepMenuItem || e.getSource() == stepButton) {
-            selectedViewer.stepButtonHandler();
+            stepButtonHandler();
             selectedViewer.requestCanvasFocusInWindow();
         } else if (e.getSource() == resetMenuItem) {
             resetSimProcess();
@@ -666,7 +665,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
     // ///////////////////////////////
     // ItemListener interface
     // ///////////////////////////////
-
     /**
      * {@inheritDoc}
      */
@@ -696,6 +694,49 @@ public class Viewer extends JFrame implements ActionListener, ItemListener {
             }
             selectedViewer.updateCavas();
         }
+    }
+
+    // ///////////////////////////////
+    // KeyListener interface
+    // ///////////////////////////////
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (!selectedViewer.isSimThreadNull()) {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_ENTER:
+                    startButtonHandler();
+                    break;
+                case KeyEvent.VK_SPACE:
+                    if (selectedViewer.isSimThreadPaused()) {
+                        stepButtonHandler();
+                    } else {
+                        startButtonHandler();
+                    }
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    resetSimProcess();
+                    break;
+                default:
+                    // do nothing
+            }
+        } // else ignore the event
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyReleased(KeyEvent e) {
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void keyTyped(KeyEvent e) {
     }
 
 }

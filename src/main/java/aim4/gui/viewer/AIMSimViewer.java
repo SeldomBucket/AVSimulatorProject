@@ -2,8 +2,9 @@ package aim4.gui.viewer;
 
 import aim4.config.Debug;
 import aim4.gui.StatusPanelContainer;
+import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
-import aim4.gui.setuppanel.AIMSimSetupPanel;
+import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
@@ -20,8 +21,17 @@ import java.awt.geom.Point2D;
  * Created by Callum on 09/11/2016.
  */
 public class AIMSimViewer extends SimViewer {
-    public AIMSimViewer(StatusPanelContainer statusPanel){
-        super(statusPanel, new AIMSimSetupPanel(new BasicSimSetup(1, // columns
+    public AIMSimViewer(StatusPanelContainer statusPanel, Viewer viewer){
+        super(statusPanel, viewer, new BasicSimSetup(1, // columns
+                1, // rows
+                4, // lane width
+                25.0, // speed limit
+                3, // lanes per road
+                1, // median size
+                150, // distance between
+                0.28, // traffic level
+                1.0 // stop distance before intersection
+        ), new SimSetupPanel(new BasicSimSetup(1, // columns
                 1, // rows
                 4, // lane width
                 25.0, // speed limit
@@ -33,13 +43,6 @@ public class AIMSimViewer extends SimViewer {
         )));
     }
 
-    /**
-     * The initial configuration of the simulation */
-    private BasicSimSetup initSimSetup;
-    /**
-     * The simulation setup pane
-     */
-    private AIMSimSetupPanel aimSimSetupPanel;
     /** The frame for showing a vehicle information */
     private VehicleInfoFrame vehicleInfoFrame;
 
@@ -56,35 +59,9 @@ public class AIMSimViewer extends SimViewer {
         return simStepResult;
     }
 
-    @Override
-    /**
-     * The handler when the user pressed the start button.
-     */
-    public void startButtonHandler() {
-        startButtonHandler(aimSimSetupPanel.getSimSetup());
-    }
-
-    /**
-     * The handler when the user pressed the start button.
-     *
-     * @param initSimSetup  the initial simulation setup
-     */
-    private void startButtonHandler(SimSetup initSimSetup) {
-        if (getSimThread() == null) {
-            createSimulator(initSimSetup);
-            startSimProcess();
-        } else if (!getSimThread().isPaused()) {
-            pauseSimProcess();
-        } else {
-            resumeSimProcess();
-        }
-    }
-
-
     // ///////////////////////////////
     // MouseListener interface
     // ///////////////////////////////
-
     /**
      * {@inheritDoc}
      */

@@ -5,19 +5,11 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.gui.*;
 import aim4.gui.Canvas;
-import aim4.gui.frame.VehicleInfoFrame;
-import aim4.gui.setuppanel.AIMSimSetupPanel;
-import aim4.im.IntersectionManager;
-import aim4.map.Road;
-import aim4.map.lane.Lane;
-import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
-import aim4.sim.setup.BasicSimSetup;
 import aim4.sim.setup.SimFactory;
 import aim4.sim.setup.SimSetup;
 import aim4.util.Util;
-import aim4.vehicle.VehicleSimView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -27,7 +19,7 @@ import java.awt.geom.Point2D;
 /**
  * Created by Callum on 09/11/2016.
  */
-public abstract class SimViewer extends JPanel implements KeyListener,
+public abstract class SimViewer extends JPanel implements
         MouseListener,
         ViewerDebugView {
     // ///////////////////////////////
@@ -64,16 +56,40 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     public static final double TURBO_SIM_SPEED = 15.0;
 
     // ///////////////////////////////
-    // PRIVATE FIELDS
+    // GUI ELEMENTS
     // ///////////////////////////////
+    /**
+     * The main pane
+     */
+    private JPanel mainPanel;
+    /**
+     * Sim Setup Panel
+     */
+    private JPanel simSetupPanel;
+    /**
+     * The card layout for the canvas
+     */
+    private CardLayout canvasCardLayout;
+    /**
+     * The canvas on which to draw the state of the simulator.
+     */
+    protected Canvas canvas;
     /**
      * Reference to StatusPanelContainer
      */
     private StatusPanelContainer statusPanel;
+
+    // ///////////////////////////////
+    // SIM COMPONENTS
+    // ///////////////////////////////
     /**
      * The Simulator running in this Viewer.
      */
     protected Simulator sim;
+    /**
+     * The SimSetup for the current simulator
+     */
+    protected SimSetup simSetup;
     /**
      * The simulation's thread
      */
@@ -94,7 +110,10 @@ public abstract class SimViewer extends JPanel implements KeyListener,
      * The time of the next screen update in millisecond
      */
     private long nextFrameTime;
-    // recording
+
+    // ///////////////////////////////
+    // RECORDING COMPONENTS
+    // ///////////////////////////////
     // TODO: reset imageCounter after reset the simulator
     /**
      * Whether or not to save the screen during simulation
@@ -108,26 +127,18 @@ public abstract class SimViewer extends JPanel implements KeyListener,
      * The number of generated images
      */
     private int imageCounter;
-    // GUI Items
-    /**
-     * The main pane
-     */
-    private JPanel mainPanel;
-    /**
-     * Sim Setup Panel
-     */
-    private JPanel simSetupPanel;
-    /**
-     * The card layout for the canvas
-     */
-    private CardLayout canvasCardLayout;
-    /**
-     * The canvas on which to draw the state of the simulator.
-     */
-    protected aim4.gui.Canvas canvas;
 
-    public SimViewer(StatusPanelContainer statusPanel, JPanel simSetupPanel) {
+    // ///////////////////////////////
+    // CLASS CONSTRUCTORS
+    // ///////////////////////////////
+    /**
+     * Creates the SimViewer
+     * @param statusPanel A reference to the StatusPanelContainer in Viewer
+     * @param simSetupPanel A JPanel with the setup controls for the SimViewer
+     */
+    public SimViewer(StatusPanelContainer statusPanel, Viewer viewer, SimSetup initSimSetup, JPanel simSetupPanel) {
         this.statusPanel = statusPanel;
+        this.simSetup = initSimSetup;
         this.simSetupPanel = simSetupPanel;
         this.sim = null;
         this.udpListener = null;
@@ -142,7 +153,7 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         this.imageDir = null;
         this.imageCounter = 0;
 
-        createComponents();
+        createComponents(viewer);
         setComponentsLayout();
         setVisible(true);
     }
@@ -154,7 +165,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     // TODO: SimThread should be a SwingWorker; but it works fine now.
     // http://java.sun.com/docs/books/tutorial/uiswing/concurrency/worker.html
     //
-
     /**
      * The simulation thread that holds the simulation process.
      */
@@ -188,7 +198,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         // ///////////////////////////////
         // CONSTRUCTORS
         // ///////////////////////////////
-
         /**
          * Create a simulation thread.
          *
@@ -208,7 +217,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         // ///////////////////////////////
 
         // information retrieval
-
         /**
          * Whether the thread is stopped.
          *
@@ -228,7 +236,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         }
 
         // Settings
-
         /**
          * Set whether the turbo mode is on
          *
@@ -261,7 +268,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         // ///////////////////////////////
 
         // thread control
-
         /**
          * Start the simulation thread.
          */
@@ -302,7 +308,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         // ///////////////////////////////
 
         // the run() function of the thread
-
         /**
          * {@inheritDoc}
          */
@@ -387,7 +392,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     // //////////////////////////////////////////////////
     // Methods invoked by SimThread
     // //////////////////////////////////////////////////
-
     /**
      * Run the simulation
      */
@@ -442,7 +446,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     // //////////////////////////////////////////////////
     // Basic fucntions for GUI updates
     // //////////////////////////////////////////////////
-
     /**
      * Update the screen
      */
@@ -466,18 +469,16 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     // //////////////////////////////////////////////////
     // GUI Methods
     // //////////////////////////////////////////////////
-
     /**
      * Create all components in the viewer
      */
-    private void createComponents() {
+    private void createComponents(Viewer viewer) {
         mainPanel = new JPanel();
-        canvas = new Canvas(this);
+        canvas = new Canvas(this, viewer);
 
         // Make self key listener
         setFocusable(true);
         requestFocusInWindow();
-        addKeyListener(this);
     }
 
     /**
@@ -512,9 +513,8 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     }
 
     // ///////////////////////////////
-    // PUBLIC METHODS
+    // ACCESSORS
     // ///////////////////////////////
-
     /**
      * Get the simulator object.
      *
@@ -525,72 +525,134 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         return sim;
     }
 
+    /**
+     * Is the SimViewer currently recording
+     * @return A boolean indicating whether the SimViewer is recording
+     */
+    public boolean isRecording() {
+        return recording;
+    }
+
+    /**
+     * Returns true if simThread is null
+     * @return A boolean indicating if simThread is null.
+     */
+    public boolean isSimThreadNull() {
+        return simThread == null;
+    }
+
+    /**
+     * Returns true if simThread is paused
+     * @return A boolean indicating if simThread is paused.
+     */
+    public boolean isSimThreadPaused() {
+        return simThread.isPaused();
+    }
+
+    /**
+     * Sets the boolean indicating whether the SimViewer is recording
+     * @param recording A boolean indicating whether the SimViewer is recording
+     */
+    public void setRecording(boolean recording) {
+        this.recording = recording;
+    }
+
+    /**
+     * Sets the image directory name where the recorded frames are stored
+     * @param imageDir The directory where recorded frames are stored
+     */
+    public void setImageDir(String imageDir) {
+        this.imageDir = imageDir;
+    }
+
+    /**
+     * Sets the number of generated images
+     * @param imageCounter The number of generated images
+     */
+    public void setImageCounter(int imageCounter) {
+        this.imageCounter = imageCounter;
+    }
+
+    // ///////////////////////////////
+    // CANVAS MANIPULATORS
+    // ///////////////////////////////
+
+    /**
+     * Changes the card displayed in the SimViewer
+     * @param cardType The card type to change to
+     */
     public void showCard(ViewerCardType cardType) {
         canvasCardLayout.show(mainPanel, cardType.toString());
     }
 
+    /**
+     * Calls initWithGivenMap() on the canvas using the map provided by sim.getMap().
+     */
     public void initWithMap() {
         canvas.initWithGivenMap(sim.getMap());
     }
 
+    /**
+     * Calls cleanUp() on the canvas
+     */
     public void cleanUp() {
         canvas.cleanUp();
     }
 
+    /**
+     * Calls requestFocusInWindow() on the canvas
+     */
     public void requestCanvasFocusInWindow() {
         canvas.requestFocusInWindow();
     }
 
     /**
-     * The handler when the user pressed the step button.
+     * Set whether to show the simulation time on the canvas.
+     * @param showSimulationTime whether to show the simulation time
      */
-    public void stepButtonHandler() {
-        stepSimProcess();
-    }
-
-    public void printDataCollectionLinesData(String outFileName) {
-        sim.getMap().printDataCollectionLinesData(outFileName);
-    }
-
-    public boolean isRecording() {
-        return recording;
-    }
-
-    public void setRecording(boolean recording) {
-        this.recording = recording;
-    }
-
-    public void setImageDir(String imageDir) {
-        this.imageDir = imageDir;
-    }
-
-    public void setImageCounter(int imageCounter) {
-        this.imageCounter = imageCounter;
-    }
-
     public void setIsShowSimulationTime(boolean showSimulationTime) {
         this.canvas.setIsShowSimulationTime(showSimulationTime);
     }
 
+    /**
+     * Set whether to show the VIN numbers.
+     *
+     * @param showVin whether to show the VIN numbers
+     */
     public void setIsShowVin(boolean showVin) {
         this.canvas.setIsShowVin(showVin);
     }
 
+    /**
+     * Set whether or not the canvas draws the IM shapes.
+     *
+     * @param useIMDebugShapes  whether or not the canvas should draw the shapes
+     */
     public void setIsShowIMDebugShapes(boolean useIMDebugShapes) {
         this.canvas.setIsShowIMDebugShapes(useIMDebugShapes);
     }
 
+    /**
+     * Calls update() on the canvas
+     */
     public void updateCavas() {
         this.canvas.update();
     }
 
     // ///////////////////////////////
-    // Simulation controls
+    // SIMULATION CONTROLS
     // ///////////////////////////////
 
     /**
+     * Calls printDataCollectionLinesData() on the Map provided by sim.getMap().
+     * @param outFileName The file name to print the data collection lines to.
+     */
+    public void printDataCollectionLinesData(String outFileName) {
+        sim.getMap().printDataCollectionLinesData(outFileName);
+    }
+
+    /**
      * Start the simulation process.
-     *
      */
     public void startSimProcess() {
         nextFrameTime = System.currentTimeMillis();
@@ -599,16 +661,14 @@ public abstract class SimViewer extends JPanel implements KeyListener,
 
     /**
      * Creates the simulation instance
-     *
      */
-    public void createSimulator(SimSetup simSetup) {
-        assert sim == null && udpListener == null;
+    public void createSimulator() {
+        assert sim == null && udpListener == null && simSetup != null;
         // create the simulator
         sim = SimFactory.makeSimulator(simSetup);
         // create the simulation thread
         createSimThread();
     }
-
 
     /**
      * Pause the simulation process.
@@ -617,7 +677,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         assert simThread != null && !simThread.isPaused();
         simThread.pause();
     }
-
 
     /**
      * Resume the simulation process.
@@ -659,39 +718,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         }
     }
 
-    public boolean udpListenerHasStarted() {
-        return udpListener.hasStarted();
-    }
-
-    // ///////////////////////////////
-    // PROTECTED METHODS
-    // ///////////////////////////////
-
-    /**
-     * Returns the SimThread
-     */
-    protected SimThread getSimThread() {
-        return simThread;
-    }
-
-    // ///////////////////////////////
-    // ABSTRACT METHODS
-    // ///////////////////////////////
-
-    /**
-     * The handler when the user pressed the start button.
-     */
-    public abstract void startButtonHandler();
-
-    // ///////////////////////////////
-    // interface's event handlers
-    // ///////////////////////////////
-
-
-    // //////////////////////////////////////////////////
-    // Private methods for interface's event handlers
-    // //////////////////////////////////////////////////
-
     /**
      * Initialize the default Simulator to use.
      */
@@ -711,7 +737,6 @@ public abstract class SimViewer extends JPanel implements KeyListener,
             simThread = new SimThread(true, timerDelay);
         }
     }
-
 
     /**
      * Set the target simulation speed.
@@ -774,63 +799,17 @@ public abstract class SimViewer extends JPanel implements KeyListener,
         }
     }
 
-    // ///////////////////////////////
-    // KeyListener interface
-    // ///////////////////////////////
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (simThread != null) {
-            switch (e.getKeyCode()) {
-                case KeyEvent.VK_ENTER:
-                    startButtonHandler();
-                    break;
-                case KeyEvent.VK_SPACE:
-                    if (simThread.isPaused()) {
-                        stepButtonHandler();
-                    } else {
-                        startButtonHandler();
-                    }
-                    break;
-                case KeyEvent.VK_ESCAPE:
-                    resetSimProcess();
-                    break;
-                default:
-                    // do nothing
-            }
-        } // else ignore the event
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void keyReleased(KeyEvent e) {
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void keyTyped(KeyEvent e) {
-    }
-
     // /////////////////////////////////////
     // UDP listening menu item handlers
     // /////////////////////////////////////
-
     /**
      * Start the UDP listening.
      */
-    private void startUdpListening() {
+    public void startUdpListening() {
         if (sim != null) {
             if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
                 System.err.print("Starting UDP listener...\n");
             }
-
             // create the UDP listener thread
             udpListener = new UdpListener(sim);
             udpListener.start();
@@ -843,23 +822,31 @@ public abstract class SimViewer extends JPanel implements KeyListener,
     /**
      * Stop the UDP listening
      */
-    private void stopUdpListening() {
-
+    public void stopUdpListening() {
         if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
             System.err.print("Stopping UDP listener...\n");
         }
-
         udpListener.stop();
     }
 
+    /**
+     * Sets the udpListener to null.
+     */
     public void removeUdpListener() {
         udpListener = null;
+    }
+
+    /**
+     * Returns a boolean indicating whether the udpListener has started.
+     * @return A boolean indicating whether the udpListener has started.
+     */
+    public boolean udpListenerHasStarted() {
+        return udpListener.hasStarted();
     }
 
     /////////////////////////////////
     // DEBUG
     /////////////////////////////////
-
     /**
      * {@inheritDoc}
      */

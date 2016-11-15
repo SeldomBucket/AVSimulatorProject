@@ -288,9 +288,13 @@ public class Canvas extends JPanel implements ComponentListener,
    */
   private Graphics2D displayBuffer;
   /**
-   * the viewer
+   * the simViewer
    */
-  private SimViewer viewer;
+  private SimViewer simViewer;
+  /**
+   * The viewer
+   */
+  private Viewer viewer;
   /**
    * Whether other threads can update the canvas via update()
    */
@@ -315,9 +319,10 @@ public class Canvas extends JPanel implements ComponentListener,
   /**
    * Create a new canvas.
    *
-   * @param viewer the viewer object
+   * @param simViewer the simViewer object
    */
-  public Canvas(SimViewer viewer) {
+  public Canvas(SimViewer simViewer, Viewer viewer) {
+    this.simViewer = simViewer;
     this.viewer = viewer;
 
     basicMap = null;
@@ -349,7 +354,7 @@ public class Canvas extends JPanel implements ComponentListener,
     isShowVin = Viewer.IS_SHOW_VIN_BY_DEFAULT;
     isShowIMDebugShapes = Viewer.IS_SHOW_IM_DEBUG_SHAPES_BY_DEFAULT;
 
-    addMouseListener(viewer);
+    addMouseListener(simViewer);
     addKeyListener(viewer);
     addComponentListener(this);
     addMouseListener(this);
@@ -725,7 +730,7 @@ public class Canvas extends JPanel implements ComponentListener,
     // draw the map
     drawImageOnBuffer(displayBuffer, getMapImageTable(scaleIndex));
     // Get the simulator
-    Simulator sim = viewer.getSimulator();
+    Simulator sim = simViewer.getSimulator();
     // if the simulator exists, draw the current view
     if (sim != null) {
       Collection<IntersectionManager> ims =
@@ -1324,7 +1329,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param vin  the VIN number of the vehicle
    */
   public void highlightVehicle(int vin) {
-    Simulator sim = viewer.getSimulator();
+    Simulator sim = simViewer.getSimulator();
     if (sim != null) {
       VehicleSimView vehicle = sim.getActiveVehicle(vin);
       if (vehicle != null) {

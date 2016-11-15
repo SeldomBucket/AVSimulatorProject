@@ -52,7 +52,7 @@ import aim4.sim.setup.SimSetup;
 /**
  * The simulation setup panel.
  */
-public class AIMSimSetupPanel extends JPanel implements ItemListener {
+public class SimSetupPanel extends JPanel implements ItemListener {
 
   private static final long serialVersionUID = 1L;
 
@@ -78,7 +78,7 @@ public class AIMSimSetupPanel extends JPanel implements ItemListener {
    *
    * @param initSimSetup  the initial simulation setup
    */
-  public AIMSimSetupPanel(BasicSimSetup initSimSetup) {
+  public SimSetupPanel(BasicSimSetup initSimSetup) {
     this.simSetup = initSimSetup;
 
     // create the combo box pane
