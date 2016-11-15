@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui;
 
-import java.awt.Container;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -84,6 +84,14 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
      * The height of the status pane. {@value} pixels.
      */
     private static final int DEFAULT_STATUS_PANE_HEIGHT = 200; // px
+    /**
+     * Preferred maximum width for the canvas, in pixels. {@value} pixels.
+     */
+    private static final int PREF_MAX_CANVAS_WIDTH = 650;
+    /**
+     * Preferred maximum height for the canvas, in pixels. {@value} pixels.
+     */
+    private static final int PREF_MAX_CANVAS_HEIGHT = 650;
 
     // ///////////////////////////////
     // GUI ELEMENTS
@@ -185,8 +193,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
 
         // Build the GUI
         createMenuBar();
-        createTabbedPane();
         createStatusPanel();
+        createTabbedPane();
         addKeyListener(this);
         setComponentsLayout();
         pack(); // pick the layout and show it
@@ -353,6 +361,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
      * Set the layout of the viewer
      */
     private void setComponentsLayout() {
+        tabbedPane.setPreferredSize(new Dimension(PREF_MAX_CANVAS_WIDTH, PREF_MAX_CANVAS_HEIGHT));
+
         // set the group layout
         Container pane = getContentPane();
         GroupLayout layout = new GroupLayout(pane);

@@ -60,10 +60,6 @@ public abstract class SimViewer extends JPanel implements
     // GUI ELEMENTS
     // ///////////////////////////////
     /**
-     * The main pane
-     */
-    private JPanel mainPanel;
-    /**
      * Sim Setup Panel
      */
     private SimSetupPanel simSetupPanel;
@@ -469,7 +465,6 @@ public abstract class SimViewer extends JPanel implements
      * Create all components in the viewer
      */
     private void createComponents(Viewer viewer) {
-        mainPanel = new JPanel();
         canvas = new Canvas(this, viewer);
 
         // Make self key listener
@@ -483,9 +478,7 @@ public abstract class SimViewer extends JPanel implements
     private void setComponentsLayout() {
         // set the card layout for the layered pane
         canvasCardLayout = new CardLayout();
-        mainPanel.setLayout(canvasCardLayout);
-        mainPanel.setPreferredSize(new Dimension(PREF_MAX_CANVAS_WIDTH,
-                PREF_MAX_CANVAS_HEIGHT));
+        this.setLayout(canvasCardLayout);
 
         // create the pane for containing the sim setup pane
         JPanel panel1 = new JPanel();
@@ -503,9 +496,9 @@ public abstract class SimViewer extends JPanel implements
                 SIM_SETUP_PANE_GAP);
         panel1.add(simSetupPanel, c1);
         // add the panel to the top layer
-        mainPanel.add(panel1, "SIM_SETUP_PANEL");
+        this.add(panel1, "SIM_SETUP_PANEL");
         // add the canvas to the second layer
-        mainPanel.add(canvas, "CANVAS");
+        this.add(canvas, "CANVAS");
     }
 
     // ///////////////////////////////
@@ -578,7 +571,7 @@ public abstract class SimViewer extends JPanel implements
      * @param cardType The card type to change to
      */
     public void showCard(ViewerCardType cardType) {
-        canvasCardLayout.show(mainPanel, cardType.toString());
+        canvasCardLayout.show(this, cardType.toString());
     }
 
     /**
