@@ -5,16 +5,17 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.gui.*;
 import aim4.gui.Canvas;
+import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
 import aim4.sim.setup.SimFactory;
 import aim4.sim.setup.SimSetup;
+import aim4.sim.setup.aim.AIMSimSetup;
 import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
-import java.awt.geom.Point2D;
 
 /**
  * Created by Callum on 09/11/2016.
@@ -65,7 +66,7 @@ public abstract class SimViewer extends JPanel implements
     /**
      * Sim Setup Panel
      */
-    private JPanel simSetupPanel;
+    private SimSetupPanel simSetupPanel;
     /**
      * The card layout for the canvas
      */
@@ -87,7 +88,7 @@ public abstract class SimViewer extends JPanel implements
      */
     protected Simulator sim;
     /**
-     * The SimSetup for the current simulator
+     * The aim4.sim.setup.SimSetup for the current simulator
      */
     protected SimSetup simSetup;
     /**
@@ -136,7 +137,7 @@ public abstract class SimViewer extends JPanel implements
      * @param statusPanel A reference to the StatusPanelContainer in Viewer
      * @param simSetupPanel A JPanel with the setup controls for the SimViewer
      */
-    public SimViewer(StatusPanelContainer statusPanel, Viewer viewer, SimSetup initSimSetup, JPanel simSetupPanel) {
+    public SimViewer(StatusPanelContainer statusPanel, Viewer viewer, SimSetup initSimSetup, SimSetupPanel simSetupPanel) {
         this.statusPanel = statusPanel;
         this.simSetup = initSimSetup;
         this.simSetupPanel = simSetupPanel;

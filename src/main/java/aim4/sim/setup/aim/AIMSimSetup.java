@@ -28,29 +28,34 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.setup;
+package aim4.sim.setup.aim;
 
 import aim4.sim.Simulator;
-import aim4.sim.setup.aim.AIMSimSetup;
-import aim4.vehicle.VinRegistry;
-
-// TODO: probably remove this class
+import aim4.sim.setup.SimSetup;
 
 /**
- * A simulator factory.
+ * The simulator setup.
  */
-public class SimFactory {
+public interface AIMSimSetup extends SimSetup {
 
   /**
-   * Create a simulator.
+   * Set the traffic level.
    *
-   * @param simSetup  the simulation setup
-   * @return a simulator
+   * @param trafficLevel  the traffic level
    */
-  public static Simulator makeSimulator(SimSetup simSetup) {
-    VinRegistry.reset();   // TODO: should make it part of the simulator
-    System.gc();
-    return simSetup.getSimulator();
-  }
+  void setTrafficLevel(double trafficLevel);
 
+  /**
+   * Set the stopping distance before intersection.
+   *
+   * @param stopDistBeforeIntersection  the stopping distance
+   */
+  void setStopDistBeforeIntersection(double stopDistBeforeIntersection);
+
+  /**
+   * Get the simulator.
+   *
+   * @return the simulator
+   */
+  Simulator getSimulator();
 }

@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.setup;
+package aim4.sim.setup.aim;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -41,57 +41,63 @@ import aim4.sim.Simulator;
 
 /**
  * The setup for the simulator in which the intersections are controlled
- * by N-phases traffic signals.
+ * by stop signs.
  */
-public class ApproxNPhasesTrafficSignalSimSetup extends BasicSimSetup
-                                                implements SimSetup {
+public class ApproxStopSignSimSetup extends BasicSimSetup
+                                         implements AIMSimSetup {
 
-  /** The name of the file containing the traffic signal phases */
-  private String trafficSignalPhaseFileName;
-  /** The name of the file containing the traffic volume information */
-  private String trafficVolumeFileName;
+  /** The name of the file containing the traffic volume data */
+  private String trafficVolumeFileName = null;
+
 
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Create the setup for the simulator in which the intersections are
-   * controlled by N-phases traffic signals.
+   * Create a setup for the simulator in which the intersections are controlled
+   * by stop signs.
    *
-   * @param basicSimSetup               the basic simulator setup
-   * @param trafficSignalPhaseFileName  the name of the file containing the
-   *                                    traffic signal phase
+   * @param basicSimSetup   the basic simulator setup
    */
-  public ApproxNPhasesTrafficSignalSimSetup(BasicSimSetup basicSimSetup,
-                                            String trafficSignalPhaseFileName) {
+  public ApproxStopSignSimSetup(BasicSimSetup basicSimSetup) {
     super(basicSimSetup);
-
-    this.trafficSignalPhaseFileName = trafficSignalPhaseFileName;
-    this.trafficVolumeFileName = null;
   }
 
-//  public ApproxNPhasesTrafficSignalSimSetup(int columns, int rows,
-//                                     double laneWidth, double speedLimit,
-//                                     int lanesPerRoad,
-//                                     double medianSize, double distanceBetween,
-//                                     double trafficLevel,
-//                                     double stopDistBeforeIntersection) {
-//    super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
-//          medianSize, distanceBetween, trafficLevel,
-//          stopDistBeforeIntersection);
-//  }
-
+  /**
+   * Create a setup for the simulator in which the intersections are controlled
+   * by stop signs.
+   *
+   * @param columns                     the number of columns
+   * @param rows                        the number of rows
+   * @param laneWidth                   the width of lanes
+   * @param speedLimit                  the speed limit
+   * @param lanesPerRoad                the number of lanes per road
+   * @param medianSize                  the median size
+   * @param distanceBetween             the distance between intersections
+   * @param trafficLevel                the traffic level
+   * @param stopDistBeforeIntersection  the stopping distance before
+   */
+  public ApproxStopSignSimSetup(int columns, int rows,
+                                double laneWidth, double speedLimit,
+                                int lanesPerRoad,
+                                double medianSize, double distanceBetween,
+                                double trafficLevel,
+                                double stopDistBeforeIntersection) {
+    super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
+          medianSize, distanceBetween, trafficLevel,
+          stopDistBeforeIntersection);
+  }
 
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////
 
   /**
-   * Set the traffic volume according to the specification in a file.
+   * Set the name of the file containing the traffic volume data.
    *
-   * @param trafficVolumeFileName  the name of the file containing the
-   *                               traffic volume information
+   * @param trafficVolumeFileName  the name of the file containing the traffic
+   *                               volume data
    */
   public void setTrafficVolume(String trafficVolumeFileName) {
     this.trafficVolumeFileName = trafficVolumeFileName;
@@ -115,22 +121,26 @@ public class ApproxNPhasesTrafficSignalSimSetup extends BasicSimSetup
     ReservationGridManager.Config gridConfig =
       new ReservationGridManager.Config(SimConfig.TIME_STEP,
                                         SimConfig.GRID_TIME_STEP,
-                                        0.1,
-                                        0.15,
-                                        0.15,
+                                        0.0,
+                                        0.0,
+                                        0.0,
                                         true,
                                         1.0);
 
+    SimConfig.MUST_STOP_BEFORE_INTERSECTION = true;
     Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE = false;
 
-    GridMapUtil.setApproxNPhasesTrafficLightManagers(
-        layout, currentTime, gridConfig, trafficSignalPhaseFileName);
+    GridMapUtil.setApproxStopSignManagers(layout, currentTime,
+                                             gridConfig);
 
-    if (numOfColumns == 1 && numOfRows == 1) {
-      GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
-      // GridLayoutUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+    if (trafficVolumeFileName == null) {
+      if (numOfColumns == 1 && numOfRows == 1) {
+        GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+      } else {
+        GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+      }
     } else {
-      GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+      GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
     }
 
     V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =

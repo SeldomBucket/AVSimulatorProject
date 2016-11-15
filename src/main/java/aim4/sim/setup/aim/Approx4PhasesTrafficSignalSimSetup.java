@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.setup;
+package aim4.sim.setup.aim;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
@@ -41,10 +41,10 @@ import aim4.sim.Simulator;
 
 /**
  * The setup for the simulator in which the intersections are controlled
- * by stop signs.
+ * by 4-phases traffic signals.
  */
-public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
-                                         implements SimSetup {
+public class Approx4PhasesTrafficSignalSimSetup extends BasicSimSetup
+                                                implements AIMSimSetup {
 
   /** The duration of the green signal */
   private double greenLightDuration = 30.0;
@@ -56,19 +56,18 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
   /////////////////////////////////
 
   /**
-   * Create the setup for the simulator in which the intersections are
-   * controlled by stop signs.
+   * Create a setup for the simulator in which the intersections are
+   * controlled by 4-phases traffic signals.
    *
    * @param basicSimSetup  the basic simulator setup
    */
-  public ApproxSimpleTrafficSignalSimSetup(BasicSimSetup basicSimSetup) {
+  public Approx4PhasesTrafficSignalSimSetup(BasicSimSetup basicSimSetup) {
     super(basicSimSetup);
   }
 
-
   /**
-   * Create the setup for the simulator in which the intersections are
-   * controlled by stop signs.
+   * Create a setup for the simulator in which the intersections are
+   * controlled by 4-phases traffic signals.
    *
    * @param columns                     the number of columns
    * @param rows                        the number of rows
@@ -80,18 +79,17 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
    * @param trafficLevel                the traffic level
    * @param stopDistBeforeIntersection  the stopping distance before
    */
-  public ApproxSimpleTrafficSignalSimSetup(int columns, int rows,
-                                           double laneWidth, double speedLimit,
-                                           int lanesPerRoad,
-                                           double medianSize,
-                                           double distanceBetween,
-                                           double trafficLevel,
-                                           double stopDistBeforeIntersection) {
+  public Approx4PhasesTrafficSignalSimSetup(int columns, int rows,
+                                            double laneWidth, double speedLimit,
+                                            int lanesPerRoad,
+                                            double medianSize,
+                                            double distanceBetween,
+                                            double trafficLevel,
+                                            double stopDistBeforeIntersection) {
     super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
           medianSize, distanceBetween, trafficLevel,
           stopDistBeforeIntersection);
   }
-
 
   /////////////////////////////////
   // PUBLIC METHODS
@@ -141,11 +139,11 @@ public class ApproxSimpleTrafficSignalSimSetup extends BasicSimSetup
 
     Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE = false;
 
-    GridMapUtil.setApproxSimpleTrafficLightManagers(layout,
-                                                       currentTime,
-                                                       gridConfig,
-                                                       greenLightDuration,
-                                                       yellowLightDuration);
+    GridMapUtil.setApprox4PhasesTrafficLightManagers(layout,
+                                                 currentTime,
+                                                 gridConfig,
+                                                 greenLightDuration,
+                                                 yellowLightDuration);
 
     if (numOfColumns == 1 && numOfRows == 1) {
       GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);

@@ -4,14 +4,13 @@ import aim4.config.Debug;
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
-import aim4.gui.setuppanel.SimSetupPanel;
+import aim4.gui.setuppanel.AIMSimSetupPanel;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
-import aim4.sim.setup.BasicSimSetup;
-import aim4.sim.setup.SimSetup;
+import aim4.sim.setup.aim.BasicSimSetup;
 import aim4.vehicle.VehicleSimView;
 
 import java.awt.event.MouseEvent;
@@ -31,7 +30,7 @@ public class AIMSimViewer extends SimViewer {
                 150, // distance between
                 0.28, // traffic level
                 1.0 // stop distance before intersection
-        ), new SimSetupPanel(new BasicSimSetup(1, // columns
+        ), new AIMSimSetupPanel(new BasicSimSetup(1, // columns
                 1, // rows
                 4, // lane width
                 25.0, // speed limit

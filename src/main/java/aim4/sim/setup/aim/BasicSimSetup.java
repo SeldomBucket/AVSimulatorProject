@@ -28,14 +28,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim.setup;
+package aim4.sim.setup.aim;
 
 import aim4.sim.Simulator;
 
 /**
  * The basic simulator setup
  */
-public class BasicSimSetup implements SimSetup {
+public class BasicSimSetup implements AIMSimSetup {
   /** The number of columns */
   protected int numOfColumns;
   /** The number of rows */
