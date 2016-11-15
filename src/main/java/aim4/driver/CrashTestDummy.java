@@ -33,7 +33,7 @@ package aim4.driver;
 import java.awt.geom.Point2D;
 
 import aim4.config.Debug;
-import aim4.driver.pilot.V2IPilot;
+import aim4.driver.aim.pilot.V2IPilot;
 import aim4.map.lane.Lane;
 import aim4.vehicle.AutoVehicleDriverView;
 

@@ -42,7 +42,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aim4.config.Debug;
-import aim4.driver.ProxyDriver;
+import aim4.driver.aim.ProxyDriver;
 import aim4.msg.udp.Real2ProxyCancel;
 import aim4.msg.udp.Real2ProxyDone;
 import aim4.msg.udp.Real2ProxyMsg;

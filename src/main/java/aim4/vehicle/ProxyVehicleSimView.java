@@ -32,7 +32,7 @@ package aim4.vehicle;
 
 import java.net.SocketAddress;
 
-import aim4.driver.ProxyDriver;
+import aim4.driver.aim.ProxyDriver;
 import aim4.msg.udp.Real2ProxyMsg;
 
 /**

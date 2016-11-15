@@ -28,8 +28,9 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver;
+package aim4.driver.aim;
 
+import aim4.driver.aim.AutoDriver;
 import aim4.map.BasicMap;
 import aim4.map.lane.Lane;
 import aim4.vehicle.AutoVehicleDriverView;

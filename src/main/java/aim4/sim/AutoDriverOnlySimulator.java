@@ -49,9 +49,9 @@ import java.util.TreeMap;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.AutoDriver;
-import aim4.driver.DriverSimView;
-import aim4.driver.ProxyDriver;
+import aim4.driver.aim.AutoDriver;
+import aim4.driver.DriverSimModel;
+import aim4.driver.aim.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
 import aim4.map.DataCollectionLine;
@@ -554,7 +554,7 @@ public class AutoDriverOnlySimulator implements Simulator {
         AutoVehicleSimView autoVehicle = (AutoVehicleSimView)vehicle;
 
         if (autoVehicle.isVehicleTracking()) {
-          DriverSimView driver = autoVehicle.getDriver();
+          DriverSimModel driver = autoVehicle.getDriver();
           Lane targetLane = autoVehicle.getTargetLaneForVehicleTracking();
           Point2D pos = autoVehicle.getPosition();
           double dst = targetLane.distanceAlongLane(pos);
@@ -673,7 +673,7 @@ public class AutoDriverOnlySimulator implements Simulator {
    */
   private void provideTrafficLightSignal(HumanDrivenVehicleSimView vehicle) {
     // TODO: implement it later
-//    DriverSimView driver = vehicle.getDriver();
+//    DriverSimModel driver = vehicle.getDriver();
 //    Lane currentLane = driver.getCurrentLane();
 //    Point2D pos = vehicle.getPosition();
 //    IntersectionManager im = currentLane.getLaneIM().

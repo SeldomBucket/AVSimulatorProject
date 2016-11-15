@@ -28,16 +28,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.pilot;
+package aim4.driver.aim.pilot;
 
 import java.util.Iterator;
 import java.util.Queue;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.driver.AutoDriver;
+import aim4.driver.aim.AutoDriver;
 import aim4.driver.DriverUtil;
-import aim4.driver.coordinator.V2ICoordinator.ReservationParameter;
+import aim4.driver.aim.coordinator.V2ICoordinator.ReservationParameter;
 import aim4.vehicle.AutoVehicleDriverView;
 import aim4.vehicle.VehicleUtil;
 

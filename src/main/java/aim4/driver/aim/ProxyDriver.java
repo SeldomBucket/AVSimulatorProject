@@ -28,34 +28,56 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.navigator;
+package aim4.driver.aim;
 
-import aim4.driver.AutoDriver;
-import aim4.im.IntersectionManager;
+import aim4.driver.aim.AutoDriver;
+import aim4.map.BasicMap;
 import aim4.map.Road;
+import aim4.map.SpawnPoint;
+import aim4.vehicle.AutoVehicleDriverView;
 
 /**
- * An agent that chooses which way a vehicle should go, and uses information
- * from a {@link AutoDriver} to do so.
+ * A proxy driver.
  */
-public interface Navigator {
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
+public class ProxyDriver extends AutoDriver {
 
   /**
-   * Given the current Road, the IntersectionManager being approached, and
-   * a destination Road, find a road that leave the IntersectionManager that
-   * will lead to the destination Road.
+   * Construct a proxy driver.
    *
-   * @param current     the Road on which the vehicle is currently traveling
-   * @param im          the IntersectionManager the vehicle is approaching
-   * @param destination the Road on which the vehicle would ultimately like to
-   *                    end up
-   * @return            a road to take out of the intersection governed by
-   *                    the given IntersectionManager
+   * @param vehicle the vehicle object
+   * @param basicMap  the map object
    */
-  Road navigate(Road current, IntersectionManager im, Road destination);
+  public ProxyDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
+    super(vehicle, basicMap);
+    // TODO Auto-generated constructor stub
+  }
+
+  /**
+   * Take control actions for driving the agent's Vehicle.  This allows
+   * both the Coordinator and the Pilot to act (in that order).
+   */
+  @Override
+  public void act() {
+  }
+
+  /**
+   * Get where this DriverAgent is coming from.
+   *
+   * @return the Road where this DriverAgent is coming from
+   */
+  @Override
+  public SpawnPoint getSpawnPoint() {
+    return null;
+  }
+
+  /**
+   * Get where this DriverAgent is going.
+   *
+   * @return the Road where this DriverAgent is going
+   */
+  @Override
+  public Road getDestination() {
+    return null;
+  }
 
 }

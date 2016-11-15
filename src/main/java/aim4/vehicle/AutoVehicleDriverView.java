@@ -32,7 +32,7 @@ package aim4.vehicle;
 
 import java.util.List;
 
-import aim4.driver.AutoDriver;
+import aim4.driver.aim.AutoDriver;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;

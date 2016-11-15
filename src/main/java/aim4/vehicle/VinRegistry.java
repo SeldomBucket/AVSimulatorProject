@@ -34,6 +34,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import aim4.driver.aim.AIMDriver;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 
@@ -104,8 +105,10 @@ public class VinRegistry {
     int vin = vinGenerator;
     vinToVehicle.put(vin, new WeakReference<VehicleSimView>(vehicle));
     vinToVehicleSpec.put(vin, vehicle.getSpec());
-    vinToSpawnPoint.put(vin, vehicle.getDriver().getSpawnPoint());
-    vinToDestRoad.put(vin, vehicle.getDriver().getDestination());
+    if(vehicle.getDriver() instanceof AIMDriver) { //TODO: Ugly, fix.
+      vinToSpawnPoint.put(vin, ((AIMDriver) vehicle.getDriver()).getSpawnPoint());
+      vinToDestRoad.put(vin, ((AIMDriver) vehicle.getDriver()).getDestination());
+    }
 
     vehicle.setVIN(vin);
 
@@ -132,12 +135,14 @@ public class VinRegistry {
       vinToVehicle.put(vin, new WeakReference<VehicleSimView>(vehicle));
       vinToVehicleSpec.put(vin, vehicle.getSpec());
       // TODO: think how to resolve the problem.
-      if (vehicle.getDriver() != null) {
-        vinToSpawnPoint.put(vin, vehicle.getDriver().getSpawnPoint());
-        vinToDestRoad.put(vin, vehicle.getDriver().getDestination());
-      } else {
-        vinToSpawnPoint.put(vin, null);
-        vinToDestRoad.put(vin, null);
+      if(vehicle.getDriver() instanceof AIMDriver) { //TODO: Ugly, fix.
+          if (vehicle.getDriver() != null) {
+              vinToSpawnPoint.put(vin, ((AIMDriver) vehicle.getDriver()).getSpawnPoint());
+              vinToDestRoad.put(vin, ((AIMDriver) vehicle.getDriver()).getDestination());
+          } else {
+              vinToSpawnPoint.put(vin, null);
+              vinToDestRoad.put(vin, null);
+          }
       }
 
       vehicle.setVIN(vin);

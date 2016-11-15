@@ -28,64 +28,82 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.coordinator;
+package aim4.driver.aim.coordinator;
 
-import aim4.driver.AutoDriver;
-import aim4.driver.pilot.V2IPilot;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AccelSchedule;
 
 /**
- * The coordinator when there is no intersection.
+ * The result of arrival estimations.
  */
-public class NoIntersectionCoordinator implements Coordinator {
+public class ArrivalEstimationResult {
 
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////
 
-  // vehicle and agents
+  /**
+   * The arrival time.
+   */
+  double arrivalTime;
 
   /**
-   * The sub-agent that controls physical manipulation of the vehicle
+   * The arrival velocity.
    */
-  private V2IPilot pilot;
+  double arrivalVelocity;
+
+  /**
+   * The acceleration schedule.
+   */
+  AccelSchedule accelSchedule;
 
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Create an coordinator to coordinate a vehicle.
+   * Construct an arrival estimation result object.
    *
-   * @param vehicle  the Vehicle to coordinate
-   * @param driver   the driver
+   * @param arrivalTime      the arrival time
+   * @param arrivalVelocity  the arrival velocity
+   * @param accelSchedule    the acceleration schedule
    */
-  public NoIntersectionCoordinator(AutoVehicleDriverView vehicle,
-                                   AutoDriver driver) {
-    pilot = new V2IPilot(vehicle, driver);
+  public ArrivalEstimationResult(double arrivalTime,
+                                 double arrivalVelocity,
+                                 AccelSchedule accelSchedule) {
+    this.arrivalTime = arrivalTime;
+    this.arrivalVelocity = arrivalVelocity;
+    this.accelSchedule = accelSchedule;
   }
-
 
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////
 
   /**
-   * {@inheritDoc}
+   * Get the arrival time.
+   *
+   * @return the arrival time.
    */
-  @Override
-  public void act() {
-    pilot.simpleThrottleAction();
-    // TODO:  think how to remove dontEnterIntersection()
-    // in simpleThrottleAction()
+  public double getArrivalTime() {
+    return arrivalTime;
   }
 
   /**
-   * {@inheritDoc}
+   * Get the arrival velocity.
+   *
+   * @return the arrival velocity.
    */
-  @Override
-  public boolean isTerminated() {
-    return false;
+  public double getArrivalVelocity() {
+    return arrivalVelocity;
+  }
+
+  /**
+   * Get the acceleration schedule.
+   *
+   * @return the acceleration schedule.
+   */
+  public AccelSchedule getAccelSchedule() {
+    return accelSchedule;
   }
 
 }

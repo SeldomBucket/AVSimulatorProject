@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.navigator;
+package aim4.driver.aim.navigator;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -274,9 +274,9 @@ public class BasicNavigator implements Navigator {
   /**
    * Find the fastest path
    *
-   * @param current     the Road on which the vehicle is currently traveling
+   * @param currentRoad     the Road on which the vehicle is currently traveling
    * @param im          the IntersectionManager the vehicle is approaching
-   * @param destination the Road on which the vehicle would ultimately like to
+   * @param destinationRoad the Road on which the vehicle would ultimately like to
    *                    end up
    * @return  The fastest road
    */
@@ -304,9 +304,9 @@ public class BasicNavigator implements Navigator {
   /**
    * Find the fastest path by A* search
    *
-   * @param current     the Road on which the vehicle is currently traveling
+   * @param currentRoad     the Road on which the vehicle is currently traveling
    * @param im          the IntersectionManager the vehicle is approaching
-   * @param destination the Road on which the vehicle would ultimately like to
+   * @param destRoad the Road on which the vehicle would ultimately like to
    *                    end up
    * @return  The fastest road
    */

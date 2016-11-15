@@ -28,26 +28,64 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.coordinator;
+package aim4.driver.aim.coordinator;
+
+import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.pilot.V2IPilot;
+import aim4.vehicle.AutoVehicleDriverView;
 
 /**
- * An agent that controls the coordination of an auto vehicle driver view
- * with other Vehicles and with intersection managers. This type of
- * agent can send various messages between Vehicles and IntersectionManagers
- * as well as altering the state of the CoordinatingDriverAgent of which it is
- * a part to reflect the current reservation status.
+ * The coordinator when there is no intersection.
  */
-public interface Coordinator {
-  /**
-   * Receive, process, and send messages between Vehicles and
-   * IntersectionManagers, and maintain the reservation status in
-   * the Vehicle.
-   */
-  void act();
+public class NoIntersectionCoordinator implements Coordinator {
+
+  /////////////////////////////////
+  // PRIVATE FIELDS
+  /////////////////////////////////
+
+  // vehicle and agents
 
   /**
-   * Whether of not the coordinator has finished its job.
+   * The sub-agent that controls physical manipulation of the vehicle
    */
-  boolean isTerminated();
+  private V2IPilot pilot;
+
+  /////////////////////////////////
+  // CONSTRUCTORS
+  /////////////////////////////////
+
+  /**
+   * Create an coordinator to coordinate a vehicle.
+   *
+   * @param vehicle  the Vehicle to coordinate
+   * @param driver   the driver
+   */
+  public NoIntersectionCoordinator(AutoVehicleDriverView vehicle,
+                                   AutoDriver driver) {
+    pilot = new V2IPilot(vehicle, driver);
+  }
+
+
+  /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public void act() {
+    pilot.simpleThrottleAction();
+    // TODO:  think how to remove dontEnterIntersection()
+    // in simpleThrottleAction()
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public boolean isTerminated() {
+    return false;
+  }
 
 }

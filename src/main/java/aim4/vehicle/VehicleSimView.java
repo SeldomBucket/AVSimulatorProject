@@ -36,7 +36,7 @@ import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.Queue;
 
-import aim4.driver.AutoDriver;
+import aim4.driver.aim.AutoDriver;
 import aim4.msg.v2i.V2IMessage;
 
 /**

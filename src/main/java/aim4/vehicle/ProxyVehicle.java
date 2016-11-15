@@ -48,7 +48,7 @@ import aim4.map.lane.Lane;
 import aim4.msg.v2i.Request;
 import aim4.msg.v2i.Cancel;
 import aim4.config.Debug;
-import aim4.driver.ProxyDriver;
+import aim4.driver.aim.ProxyDriver;
 import aim4.msg.udp.Real2ProxyPVUpdate;
 import aim4.msg.v2i.V2IMessage;
 import aim4.msg.v2i.Request.Proposal;

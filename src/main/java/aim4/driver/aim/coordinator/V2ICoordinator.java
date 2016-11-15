@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.coordinator;
+package aim4.driver.aim.coordinator;
 
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -38,12 +38,12 @@ import java.util.Queue;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.Constants.TurnDirection;
-import aim4.driver.AutoDriver;
-import aim4.driver.AutoDriverCoordinatorView;
+import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AutoDriverCoordinatorView;
 import aim4.driver.DriverUtil;
-import aim4.driver.navigator.BasicNavigator;
-import aim4.driver.navigator.Navigator;
-import aim4.driver.pilot.V2IPilot;
+import aim4.driver.aim.navigator.BasicNavigator;
+import aim4.driver.aim.navigator.Navigator;
+import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
 import aim4.map.BasicMap;
@@ -2067,7 +2067,7 @@ public class V2ICoordinator implements Coordinator {
 
       ArrivalEstimationResult result = null;
       try {
-        result = aim4.driver.coordinator.VelocityFirstArrivalEstimation
+        result = aim4.driver.aim.coordinator.VelocityFirstArrivalEstimation
           .estimate(time1, v1, dTotal, vTop, vEndMax, accel, decel);
       } catch(ArrivalEstimationException e) {
         if (isDebugging) {

@@ -28,55 +28,26 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver;
-
-import aim4.map.BasicMap;
-import aim4.map.Road;
-import aim4.map.SpawnPoint;
-import aim4.vehicle.AutoVehicleDriverView;
+package aim4.driver.aim.coordinator;
 
 /**
- * A proxy driver.
+ * An agent that controls the coordination of an auto vehicle driver view
+ * with other Vehicles and with intersection managers. This type of
+ * agent can send various messages between Vehicles and IntersectionManagers
+ * as well as altering the state of the CoordinatingDriverAgent of which it is
+ * a part to reflect the current reservation status.
  */
-public class ProxyDriver extends AutoDriver {
+public interface Coordinator {
+  /**
+   * Receive, process, and send messages between Vehicles and
+   * IntersectionManagers, and maintain the reservation status in
+   * the Vehicle.
+   */
+  void act();
 
   /**
-   * Construct a proxy driver.
-   *
-   * @param vehicle the vehicle object
-   * @param basicMap  the map object
+   * Whether of not the coordinator has finished its job.
    */
-  public ProxyDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
-    super(vehicle, basicMap);
-    // TODO Auto-generated constructor stub
-  }
-
-  /**
-   * Take control actions for driving the agent's Vehicle.  This allows
-   * both the Coordinator and the Pilot to act (in that order).
-   */
-  @Override
-  public void act() {
-  }
-
-  /**
-   * Get where this DriverAgent is coming from.
-   *
-   * @return the Road where this DriverAgent is coming from
-   */
-  @Override
-  public SpawnPoint getSpawnPoint() {
-    return null;
-  }
-
-  /**
-   * Get where this DriverAgent is going.
-   *
-   * @return the Road where this DriverAgent is going
-   */
-  @Override
-  public Road getDestination() {
-    return null;
-  }
+  boolean isTerminated();
 
 }

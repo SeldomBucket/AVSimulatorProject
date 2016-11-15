@@ -28,13 +28,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver;
+package aim4.driver.aim;
 
 import java.awt.geom.Area;
 
-import aim4.driver.coordinator.NoIntersectionCoordinator;
-import aim4.driver.coordinator.V2ICoordinator;
-import aim4.driver.coordinator.Coordinator;
+import aim4.driver.Driver;
+import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
+import aim4.driver.aim.coordinator.V2ICoordinator;
+import aim4.driver.aim.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
 import aim4.map.BasicMap;
 import aim4.vehicle.AutoVehicleDriverView;
@@ -45,9 +46,9 @@ import aim4.vehicle.AutoVehicleDriverView;
  * of two sub-agents, a {@link Coordinator} and a Pilot. The two
  * agents communicate by setting state in this class.
  */
-public class AutoDriver extends Driver
+public class AutoDriver extends AIMDriver
                         implements AutoDriverCoordinatorView,
-                                   AutoDriverPilotView {
+        AutoDriverPilotView {
 
   /////////////////////////////////
   // PRIVATE FIELDS

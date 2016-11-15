@@ -28,82 +28,34 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.coordinator;
+package aim4.driver.aim.navigator;
 
-import aim4.vehicle.AccelSchedule;
+import aim4.driver.aim.AutoDriver;
+import aim4.im.IntersectionManager;
+import aim4.map.Road;
 
 /**
- * The result of arrival estimations.
+ * An agent that chooses which way a vehicle should go, and uses information
+ * from a {@link AutoDriver} to do so.
  */
-public class ArrivalEstimationResult {
-
-  /////////////////////////////////
-  // PRIVATE FIELDS
-  /////////////////////////////////
-
-  /**
-   * The arrival time.
-   */
-  double arrivalTime;
-
-  /**
-   * The arrival velocity.
-   */
-  double arrivalVelocity;
-
-  /**
-   * The acceleration schedule.
-   */
-  AccelSchedule accelSchedule;
-
-  /////////////////////////////////
-  // CONSTRUCTORS
-  /////////////////////////////////
-
-  /**
-   * Construct an arrival estimation result object.
-   *
-   * @param arrivalTime      the arrival time
-   * @param arrivalVelocity  the arrival velocity
-   * @param accelSchedule    the acceleration schedule
-   */
-  public ArrivalEstimationResult(double arrivalTime,
-                                 double arrivalVelocity,
-                                 AccelSchedule accelSchedule) {
-    this.arrivalTime = arrivalTime;
-    this.arrivalVelocity = arrivalVelocity;
-    this.accelSchedule = accelSchedule;
-  }
+public interface Navigator {
 
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////
 
   /**
-   * Get the arrival time.
+   * Given the current Road, the IntersectionManager being approached, and
+   * a destination Road, find a road that leave the IntersectionManager that
+   * will lead to the destination Road.
    *
-   * @return the arrival time.
+   * @param current     the Road on which the vehicle is currently traveling
+   * @param im          the IntersectionManager the vehicle is approaching
+   * @param destination the Road on which the vehicle would ultimately like to
+   *                    end up
+   * @return            a road to take out of the intersection governed by
+   *                    the given IntersectionManager
    */
-  public double getArrivalTime() {
-    return arrivalTime;
-  }
-
-  /**
-   * Get the arrival velocity.
-   *
-   * @return the arrival velocity.
-   */
-  public double getArrivalVelocity() {
-    return arrivalVelocity;
-  }
-
-  /**
-   * Get the acceleration schedule.
-   *
-   * @return the acceleration schedule.
-   */
-  public AccelSchedule getAccelSchedule() {
-    return accelSchedule;
-  }
+  Road navigate(Road current, IntersectionManager im, Road destination);
 
 }

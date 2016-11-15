@@ -66,8 +66,8 @@ import javax.swing.SwingUtilities;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.AutoDriver;
-import aim4.driver.coordinator.V2ICoordinator;
+import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.gui.viewer.SimViewer;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
