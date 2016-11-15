@@ -88,10 +88,6 @@ public abstract class SimViewer extends JPanel implements
      */
     protected Simulator sim;
     /**
-     * The aim4.sim.setup.SimSetup for the current simulator
-     */
-    protected SimSetup simSetup;
-    /**
      * The simulation's thread
      */
     private SimThread simThread;
@@ -137,9 +133,8 @@ public abstract class SimViewer extends JPanel implements
      * @param statusPanel A reference to the StatusPanelContainer in Viewer
      * @param simSetupPanel A JPanel with the setup controls for the SimViewer
      */
-    public SimViewer(StatusPanelContainer statusPanel, Viewer viewer, SimSetup initSimSetup, SimSetupPanel simSetupPanel) {
+    public SimViewer(StatusPanelContainer statusPanel, Viewer viewer, SimSetupPanel simSetupPanel) {
         this.statusPanel = statusPanel;
-        this.simSetup = initSimSetup;
         this.simSetupPanel = simSetupPanel;
         this.sim = null;
         this.udpListener = null;
@@ -664,6 +659,7 @@ public abstract class SimViewer extends JPanel implements
      * Creates the simulation instance
      */
     public void createSimulator() {
+        SimSetup simSetup = simSetupPanel.getSimSetup();
         assert sim == null && udpListener == null && simSetup != null;
         // create the simulator
         sim = SimFactory.makeSimulator(simSetup);

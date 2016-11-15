@@ -21,16 +21,7 @@ import java.awt.geom.Point2D;
  */
 public class AIMSimViewer extends SimViewer {
     public AIMSimViewer(StatusPanelContainer statusPanel, Viewer viewer){
-        super(statusPanel, viewer, new BasicSimSetup(1, // columns
-                1, // rows
-                4, // lane width
-                25.0, // speed limit
-                3, // lanes per road
-                1, // median size
-                150, // distance between
-                0.28, // traffic level
-                1.0 // stop distance before intersection
-        ), new AIMSimSetupPanel(new BasicSimSetup(1, // columns
+        super(statusPanel, viewer, new AIMSimSetupPanel(new BasicSimSetup(1, // columns
                 1, // rows
                 4, // lane width
                 25.0, // speed limit
