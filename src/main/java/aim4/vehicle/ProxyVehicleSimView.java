@@ -38,7 +38,7 @@ import aim4.msg.udp.Real2ProxyMsg;
 /**
  * The interface of a proxy vehicle from the viewpoint of a simulator.
  */
-public interface ProxyVehicleSimView extends AutoVehicleSimView {
+public interface ProxyVehicleSimView extends AutoVehicleSimModel {
 
   /**
    * {@inheritDoc}

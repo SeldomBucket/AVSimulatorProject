@@ -48,7 +48,7 @@ import aim4.noise.DoubleGauge;
  * The basic autonomous vehicle.
  */
 public class BasicAutoVehicle extends BasicVehicle
-                              implements AutoVehicleSimView {
+                              implements AutoVehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS

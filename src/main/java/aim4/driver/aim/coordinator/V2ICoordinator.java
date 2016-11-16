@@ -58,12 +58,12 @@ import aim4.msg.v2i.Done;
 import aim4.msg.v2i.Request;
 import aim4.util.Util;
 import aim4.vehicle.AccelSchedule;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 
 /**
  * An agent that autonomously controls the coordination of a
- * {@link AutoVehicleDriverView} with other Vehicles and with
+ * {@link aim4.vehicle.AutoVehicleDriverModel} with other Vehicles and with
  * {@link IntersectionManager}s. This agent is capable of both V2V and
  * V2I coordination, and uses the current readings of
  * the vehicle and state in the CoordinatingDriverAgent, along with an
@@ -323,7 +323,7 @@ public class V2ICoordinator implements Coordinator {
     private EnumMap<State,StateHandler> stateHandlers;
 
     /** The Vehicle being coordinated by this coordinator. */
-    private AutoVehicleDriverView vehicle;
+    private AutoVehicleDriverModel vehicle;
 
     /** The driver of which this coordinator is a part. */
     private AutoDriverCoordinatorView driver;
@@ -347,7 +347,7 @@ public class V2ICoordinator implements Coordinator {
      * @param pilot      the pilot
      * @param navigator  the navigator
      */
-    public LaneChangeController(AutoVehicleDriverView vehicle,
+    public LaneChangeController(AutoVehicleDriverModel vehicle,
                                 AutoDriverCoordinatorView driver,
                                 V2IPilot pilot,
                                 Navigator navigator) {
@@ -828,7 +828,7 @@ public class V2ICoordinator implements Coordinator {
   // vehicle and agents
 
   /** The Vehicle being coordinated by this coordinator. */
-  private AutoVehicleDriverView vehicle;
+  private AutoVehicleDriverModel vehicle;
 
   /** The driver of which this coordinator is a part. */
   private AutoDriverCoordinatorView driver;
@@ -909,7 +909,7 @@ public class V2ICoordinator implements Coordinator {
    * @param driver   the driver
    * @param basicMap the map
    */
-  public V2ICoordinator(AutoVehicleDriverView vehicle,
+  public V2ICoordinator(AutoVehicleDriverModel vehicle,
                         AutoDriver driver,
                         BasicMap basicMap) {
     this.vehicle = vehicle;

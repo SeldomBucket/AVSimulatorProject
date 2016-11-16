@@ -33,7 +33,7 @@ package aim4.driver.aim;
 import aim4.driver.Driver;
 import aim4.im.IntersectionManager;
 import aim4.map.lane.Lane;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 
 /**
  * Autonomous driver from the viewpoint of pilots.
@@ -45,7 +45,7 @@ public interface AutoDriverPilotView {
    *
    * @return the Vehicle this DriverAgent is controlling
    */
-  AutoVehicleDriverView getVehicle();
+  AutoVehicleDriverModel getVehicle();
 
   /**
    * Get the Lane the DriverAgent is currently following.

@@ -587,7 +587,7 @@ public class VehicleUtil {
    * @param vehicle  the vehicle
    * @return the distance to the Vehicle in front of this one, in meters
    */
-  public static double distanceToCarInFront(AutoVehicleDriverView vehicle) {
+  public static double distanceToCarInFront(AutoVehicleDriverModel vehicle) {
     switch(vehicle.getLRFMode()) {
     case DISABLED:
       // The laser range finder isn't on, so there's no good value in it

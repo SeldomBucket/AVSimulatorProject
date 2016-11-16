@@ -62,13 +62,8 @@ import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
-import aim4.vehicle.AutoVehicleSimView;
-import aim4.vehicle.BasicAutoVehicle;
-import aim4.vehicle.HumanDrivenVehicleSimView;
-import aim4.vehicle.ProxyVehicleSimView;
-import aim4.vehicle.VehicleSpec;
-import aim4.vehicle.VinRegistry;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.*;
+import aim4.vehicle.AutoVehicleSimModel;
 
 /**
  * The autonomous drivers only simulator.
@@ -361,7 +356,7 @@ public class AutoDriverOnlySimulator implements Simulator {
     // the speed limit in the lane
     double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
     // Obtain a Vehicle
-    AutoVehicleSimView vehicle =
+    AutoVehicleSimModel vehicle =
       new BasicAutoVehicle(spec,
                            spawnPoint.getPosition(),
                            spawnPoint.getHeading(),
@@ -503,8 +498,8 @@ public class AutoDriverOnlySimulator implements Simulator {
     // Vehicles.
     for(VehicleSimView vehicle: vinToVehicles.values()) {
       // If the vehicle is autonomous
-      if (vehicle instanceof AutoVehicleSimView) {
-        AutoVehicleSimView autoVehicle = (AutoVehicleSimView)vehicle;
+      if (vehicle instanceof AutoVehicleSimModel) {
+        AutoVehicleSimModel autoVehicle = (AutoVehicleSimModel)vehicle;
 
         switch(autoVehicle.getLRFMode()) {
         case DISABLED:
@@ -550,8 +545,8 @@ public class AutoDriverOnlySimulator implements Simulator {
     // Vehicle Tracking
     for(VehicleSimView vehicle: vinToVehicles.values()) {
       // If the vehicle is autonomous
-      if (vehicle instanceof AutoVehicleSimView) {
-        AutoVehicleSimView autoVehicle = (AutoVehicleSimView)vehicle;
+      if (vehicle instanceof AutoVehicleSimModel) {
+        AutoVehicleSimModel autoVehicle = (AutoVehicleSimModel)vehicle;
 
         if (autoVehicle.isVehicleTracking()) {
           DriverSimModel driver = autoVehicle.getDriver();
@@ -750,8 +745,8 @@ public class AutoDriverOnlySimulator implements Simulator {
     // Go through each vehicle and deliver each of its messages
     for(VehicleSimView vehicle : vinToVehicles.values()) {
       // Start with V2I messages
-      if (vehicle instanceof AutoVehicleSimView) {
-        AutoVehicleSimView sender = (AutoVehicleSimView)vehicle;
+      if (vehicle instanceof AutoVehicleSimModel) {
+        AutoVehicleSimModel sender = (AutoVehicleSimModel)vehicle;
         Queue<V2IMessage> v2iOutbox = sender.getV2IOutbox();
         while(!v2iOutbox.isEmpty()) {
           V2IMessage msg = v2iOutbox.poll();
@@ -783,8 +778,8 @@ public class AutoDriverOnlySimulator implements Simulator {
       for(Iterator<I2VMessage> i2vIter = senderIM.outboxIterator();
           i2vIter.hasNext();) {
         I2VMessage msg = i2vIter.next();
-        AutoVehicleSimView vehicle =
-          (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
+        AutoVehicleSimModel vehicle =
+          (AutoVehicleSimModel)VinRegistry.getVehicleFromVIN(
             msg.getVin());
         // Calculate the distance the message must travel
         double txDistance =
@@ -811,8 +806,8 @@ public class AutoDriverOnlySimulator implements Simulator {
 //    // Go through each vehicle and deliver each of its messages
 //    for(VehicleSimView vehicle : vinToVehicles.values()) {
 //      // Then do V2V messages.
-//      if (vehicle instanceof AutoVehicleSimView) {
-//        AutoVehicleSimView sender = (AutoVehicleSimView)vehicle;
+//      if (vehicle instanceof AutoVehicleSimModel) {
+//        AutoVehicleSimModel sender = (AutoVehicleSimModel)vehicle;
 //        for(V2VMessage msg : sender.getV2VOutbox()) {
 //          if(msg.isBroadcast()) {
 //            // If it's a broadcast message, we save it and worry about it later
@@ -820,8 +815,8 @@ public class AutoDriverOnlySimulator implements Simulator {
 //          } else {
 //            // Otherwise, we just deliver it! Woo!
 //            // TODO: need to check whether the vehicle is AutoVehicleSpec
-//            AutoVehicleSimView receiver =
-//              (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
+//            AutoVehicleSimModel receiver =
+//              (AutoVehicleSimModel)VinRegistry.getVehicleFromVIN(
 //                msg.getDestinationID());
 //            // Calculate the distance the message must travel
 //            double txDistance =
@@ -852,13 +847,13 @@ public class AutoDriverOnlySimulator implements Simulator {
 ////      }
 //      // Determine who sent this message
 //      // TODO: need to check whether the vehicle is AutoVehicleSpec
-//      AutoVehicleSimView sender =
-//        (AutoVehicleSimView)VinRegistry.getVehicleFromVIN(
+//      AutoVehicleSimModel sender =
+//        (AutoVehicleSimModel)VinRegistry.getVehicleFromVIN(
 //          msg.getSourceID());
 //      // Deliver to each vehicle
 //      for(VehicleSimView vehicle : vinToVehicles.values()) {
-//        if (vehicle instanceof AutoVehicleSimView) {
-//          AutoVehicleSimView receiver = (AutoVehicleSimView)vehicle;
+//        if (vehicle instanceof AutoVehicleSimModel) {
+//          AutoVehicleSimModel receiver = (AutoVehicleSimModel)vehicle;
 //          // Except the one that sent it
 //          if(sender != receiver) {
 //            // Find out how far away they are
@@ -934,8 +929,8 @@ public class AutoDriverOnlySimulator implements Simulator {
       // TODO: this should be replaced with destination zone.
       if(!v.getShape().intersects(mapBoundary)) {
         // Process all the things we need to from this vehicle
-        if (v instanceof AutoVehicleSimView) {
-          AutoVehicleSimView v2 = (AutoVehicleSimView)v;
+        if (v instanceof AutoVehicleSimModel) {
+          AutoVehicleSimModel v2 = (AutoVehicleSimModel)v;
           totalBitsTransmittedByCompletedVehicles += v2.getBitsTransmitted();
           totalBitsReceivedByCompletedVehicles += v2.getBitsReceived();
         }

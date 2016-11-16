@@ -38,10 +38,10 @@ import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
 import aim4.map.BasicMap;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 
 /**
- * An agent that drives a {@link AutoVehicleDriverView} while coordinating with
+ * An agent that drives a {@link aim4.vehicle.AutoVehicleDriverModel} while coordinating with
  * {@link IntersectionManager}s and other Vehicles.  Such an agent consists
  * of two sub-agents, a {@link Coordinator} and a Pilot. The two
  * agents communicate by setting state in this class.
@@ -55,7 +55,7 @@ public class AutoDriver extends AIMDriver
   /////////////////////////////////
 
   /** The vehicle this driver will control */
-  private AutoVehicleDriverView vehicle;
+  private AutoVehicleDriverModel vehicle;
 
   /** The sub-agent that controls coordination */
   private Coordinator coordinator;
@@ -83,7 +83,7 @@ public class AutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
+  public AutoDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
     this.vehicle = vehicle;
     this.basicMap = basicMap;
     coordinator = null;
@@ -132,7 +132,7 @@ public class AutoDriver extends AIMDriver
    * @return the Vehicle this DriverAgent is controlling
    */
   @Override
-  public AutoVehicleDriverView getVehicle() {
+  public AutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 
@@ -259,7 +259,7 @@ public class AutoDriver extends AIMDriver
    * @param area  the area
    * @return      whether the Vehicle is currently in the area
    */
-  private static boolean intersects(AutoVehicleDriverView v, Area area) {
+  private static boolean intersects(AutoVehicleDriverModel v, Area area) {
     // TODO: move this function to somewhere else.
 
     // As a quick check, see if the front or rear point is in the intersection

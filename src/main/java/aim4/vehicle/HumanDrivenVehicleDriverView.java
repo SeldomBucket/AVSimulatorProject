@@ -36,7 +36,7 @@ import aim4.noise.DoubleGauge;
 /**
  * The interface of a manually-driven vehicle from the viewpoint of a driver.
  */
-public interface HumanDrivenVehicleDriverView extends VehicleDriverView {
+public interface HumanDrivenVehicleDriverView extends VehicleDriverModel {
 
   /**
    * Get the state of the traffic light of the current lane at

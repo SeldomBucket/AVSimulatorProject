@@ -39,7 +39,7 @@ import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.component.FormattedLabel;
-import aim4.vehicle.AutoVehicleSimView;
+import aim4.vehicle.AutoVehicleSimModel;
 import aim4.vehicle.VehicleSimView;
 import aim4.vehicle.VinRegistry;
 
@@ -141,8 +141,8 @@ public class VehicleInfoPanel extends JPanel
       // Acceleration
       vehicleAccelerationLabel.update(v.getAcceleration());
 
-      if (v instanceof AutoVehicleSimView) {
-        AutoVehicleSimView v2 = (AutoVehicleSimView) v;
+      if (v instanceof AutoVehicleSimModel) {
+        AutoVehicleSimModel v2 = (AutoVehicleSimModel) v;
         // Data Transmitted
         vehicleTransmittedLabel.update(v2.getBitsTransmitted()
           / (double) (Constants.BITS_PER_BYTE * Constants.BYTES_PER_KB));

@@ -30,10 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.driver.aim.AutoDriver;
 import aim4.map.BasicMap;
 import aim4.map.lane.Lane;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 
 /**
  * An autonomous V2V driver.
@@ -93,7 +92,7 @@ public class AutoV2VDriver extends AutoDriver {
   /////////////////////////////////
 
   /** The vehicle this driver will control */
-  private AutoVehicleDriverView vehicle;
+  private AutoVehicleDriverModel vehicle;
 
   /////////////////////////////////
   // PRIVATE METHODS
@@ -131,7 +130,7 @@ public class AutoV2VDriver extends AutoDriver {
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoV2VDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
+  public AutoV2VDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
     super(vehicle, basicMap);  // TODO: temporarily make it compilable. remove it later.
     this.vehicle = vehicle;
     // TODO Auto-generated constructor stub
@@ -143,7 +142,7 @@ public class AutoV2VDriver extends AutoDriver {
    * @return the Vehicle this DriverAgent is controlling
    */
   @Override
-  public AutoVehicleDriverView getVehicle() {
+  public AutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 

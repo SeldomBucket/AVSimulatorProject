@@ -33,7 +33,7 @@ package aim4.vehicle;
 /**
  * The interface of an autonomous vehicle from the viewpoint of a simulator.
  */
-public interface AutoVehicleSimView extends AutoVehicleDriverView,
+public interface AutoVehicleSimModel extends AutoVehicleDriverModel,
                                             VehicleSimView {
 
   /**

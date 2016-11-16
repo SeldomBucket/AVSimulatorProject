@@ -87,7 +87,7 @@ import aim4.msg.v2i.Request;
 import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
 import aim4.util.Util;
-import aim4.vehicle.AutoVehicleSimView;
+import aim4.vehicle.AutoVehicleSimModel;
 import aim4.vehicle.VehicleSimView;
 import java.io.InputStream;
 
@@ -871,7 +871,7 @@ public class Canvas extends JPanel implements ComponentListener,
       infos.add(Integer.toString(vehicle.getVIN()));
     }
 
-    if (vehicle instanceof AutoVehicleSimView
+    if (vehicle instanceof AutoVehicleSimModel
         && vehicle.getDriver() instanceof AutoDriver) {
       AutoDriver da = (AutoDriver) vehicle.getDriver();
       if (da.getCurrentCoordinator() instanceof V2ICoordinator) {
@@ -883,7 +883,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {
@@ -902,7 +902,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {

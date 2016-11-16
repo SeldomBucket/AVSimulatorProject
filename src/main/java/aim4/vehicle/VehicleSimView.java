@@ -42,7 +42,7 @@ import aim4.msg.v2i.V2IMessage;
 /**
  * The interface of a vehicle from the viewpoint of a simulator.
  */
-public interface VehicleSimView extends VehicleDriverView {
+public interface VehicleSimView extends VehicleDriverModel {
 
   /**
    * Set the VIN number of this Vehicle.
