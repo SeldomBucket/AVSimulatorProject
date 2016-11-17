@@ -39,7 +39,7 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.util.Registry;
 import aim4.util.Util;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * An agent to manage an intersection. This is an abstract class
@@ -186,7 +186,7 @@ public class IntersectionManager {
    * @return        whether the Vehicle is currently entirely contained within
    *                the Area governed by this IntersectionManager
    */
-  public boolean contains(VehicleSimView vehicle) {
+  public boolean contains(AIMVehicleSimModel vehicle) {
     // Get all corners of the vehicle and make sure they are inside the
     // intersection.
     for(Point2D corner : vehicle.getCornerPoints()) {

@@ -87,8 +87,9 @@ import aim4.msg.v2i.Request;
 import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
 import aim4.util.Util;
-import aim4.vehicle.AutoVehicleSimView;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.vehicle.aim.AIMAutoVehicleSimModel;
+
 import java.io.InputStream;
 
 /**
@@ -742,7 +743,7 @@ public class Canvas extends JPanel implements ComponentListener,
         }
       }
       // draw the vehicles
-      for (VehicleSimView v : sim.getActiveVehicles()) {
+      for (AIMVehicleSimModel v : sim.getActiveVehicles()) {
         drawVehicle(displayBuffer, v, sim.getSimulationTime());
       }
       // draw the traffic lights
@@ -759,7 +760,7 @@ public class Canvas extends JPanel implements ComponentListener,
       // draw tracks
       // drawTracks(displayBuffer);
       // lastly, draw the vehicles' information string
-      for (VehicleSimView v : sim.getActiveVehicles()) {
+      for (AIMVehicleSimModel v : sim.getActiveVehicles()) {
         drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
       }
       // Finally display the new image
@@ -806,7 +807,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param currentTime  the current simulated time
    */
   private void drawVehicle(Graphics2D buffer,
-                           VehicleSimView vehicle,
+                           AIMVehicleSimModel vehicle,
                            double currentTime) {
     // whether the vehicle is selected
     boolean selectedVehicle = (Debug.getTargetVIN() == vehicle.getVIN());
@@ -862,7 +863,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param currentTime  the current simulated time
    */
   private void drawVehicleInfoString(Graphics2D buffer,
-                                     VehicleSimView vehicle,
+                                     AIMVehicleSimModel vehicle,
                                      double currentTime) {
     List<String> infos = new LinkedList<String>();
 
@@ -871,7 +872,7 @@ public class Canvas extends JPanel implements ComponentListener,
       infos.add(Integer.toString(vehicle.getVIN()));
     }
 
-    if (vehicle instanceof AutoVehicleSimView
+    if (vehicle instanceof AIMAutoVehicleSimModel
         && vehicle.getDriver() instanceof AutoDriver) {
       AutoDriver da = (AutoDriver) vehicle.getDriver();
       if (da.getCurrentCoordinator() instanceof V2ICoordinator) {
@@ -883,7 +884,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {
@@ -902,7 +903,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {
@@ -1331,7 +1332,7 @@ public class Canvas extends JPanel implements ComponentListener,
   public void highlightVehicle(int vin) {
     Simulator sim = simViewer.getSimulator();
     if (sim != null) {
-      VehicleSimView vehicle = sim.getActiveVehicle(vin);
+      AIMVehicleSimModel vehicle = sim.getActiveVehicle(vin);
       if (vehicle != null) {
         displayBuffer.setPaint(HIGHLIGHTED_VEHICLE_COLOR);
         displayBuffer.setStroke(HIGHLIGHTED_VEHICLE_STROKE);

@@ -28,39 +28,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.vehicle;
+package aim4.vehicle.aim;
 
-import aim4.im.LightState;
-import aim4.noise.DoubleGauge;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
- * The interface of a manually-driven vehicle from the viewpoint of a driver.
+ * The interface of an autonomous vehicle from the viewpoint of a simulator.
  */
-public interface HumanDrivenVehicleDriverView extends VehicleDriverView {
+public interface AIMAutoVehicleSimModel extends AIMAutoVehicleDriverModel,
+        AIMVehicleSimModel {
 
   /**
-   * Get the state of the traffic light of the current lane at
-   * the upcoming intersection.  Return null if there is no
-   * upcoming intersection.
-   */
-   LightState getLightState();
-
-  /**
-   * Set the state of the traffic light of the current lane at
-   * the upcoming intersection.
+   * Set whether or not the laser range finder is sensing anything. This
+   * should only be called by the actual physical simulator when it is
+   * providing sensing information to the Vehicle.
    *
-   * @param s  the state of the traffic light. null if there is
-   *           no upcoming intersection
+   * @param sensing whether or not the laser range finder is sensing anything
    */
-  void setLightState(LightState s);
+  void setLRFSensing(boolean sensing);
 
-  /**
-   * Get this Vehicle's interval-to-vehicle-in-front gauge. This should
-   * <b>only</b> be followed by a call to <code>read</code>, <b>except</b> in
-   * the actual physical simulator which is allowed to set these values.
-   *
-   * @return the Vehicle's interval-to-vehicle-in-front gauge
-   */
-  DoubleGauge getIntervalometer();
+
 
 }

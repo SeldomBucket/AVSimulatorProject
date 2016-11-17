@@ -41,7 +41,7 @@ import aim4.noise.DoubleGauge;
 /**
  * The interface of an autonomous vehicle from the viewpoint of a driver.
  */
-public interface AutoVehicleDriverView extends VehicleDriverView {
+public interface AutoVehicleDriverModel extends VehicleDriverModel {
 
   /////////////////////////////////
   // NESTED CLASSES

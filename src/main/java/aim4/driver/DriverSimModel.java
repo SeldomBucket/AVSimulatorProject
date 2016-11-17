@@ -32,10 +32,8 @@ package aim4.driver;
 
 import java.util.Set;
 
-import aim4.map.Road;
-import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
-import aim4.vehicle.VehicleDriverView;
+import aim4.vehicle.VehicleDriverModel;
 
 /**
  * A driver from simulators' viewpoint.
@@ -66,7 +64,7 @@ public interface DriverSimModel {
    *
    * @return the Vehicle this DriverAgent is controlling
    */
-  VehicleDriverView getVehicle();
+  VehicleDriverModel getVehicle();
 
 
   /////////////////////////////////

@@ -35,7 +35,7 @@ import java.awt.geom.Point2D;
 import aim4.config.Debug;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.map.lane.Lane;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 
 /**
  * A driver agent that only steers and changes lanes when appropriate.
@@ -47,7 +47,7 @@ public class CrashTestDummy extends Driver {
   /////////////////////////////////
 
   /** The vehicle this driver will control */
-  private AutoVehicleDriverView vehicle;
+  private AutoVehicleDriverModel vehicle;
 
   /** The Lane in which the vehicle should exit the intersection. */
   private Lane departureLane;
@@ -67,7 +67,7 @@ public class CrashTestDummy extends Driver {
    * @param departureLane the Lane in which the vehicle should depart the
    *                      intersection
    */
-  public CrashTestDummy(AutoVehicleDriverView vehicle,
+  public CrashTestDummy(AutoVehicleDriverModel vehicle,
                         Lane arrivalLane, Lane departureLane) {
     this.vehicle = vehicle;
     setCurrentLane(arrivalLane);
@@ -109,7 +109,7 @@ public class CrashTestDummy extends Driver {
    * {@inheritDoc}
    */
   @Override
-  public AutoVehicleDriverView getVehicle() {
+  public AutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 

@@ -44,11 +44,12 @@ import aim4.noise.DoubleGauge;
 import aim4.util.GeomMath;
 import aim4.util.GeomUtil;
 import aim4.util.Util;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * The most basic form of a vehicle.
  */
-public abstract class BasicVehicle implements VehicleSimView {
+public abstract class BasicVehicle implements AIMVehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS

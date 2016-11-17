@@ -39,11 +39,11 @@ import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.map.lane.Lane;
 import aim4.util.GeomMath;
-import aim4.vehicle.AutoVehicleDriverView;
-import aim4.vehicle.VehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.VehicleDriverModel;
 
 /**
- * An agent that drives a {@link AutoVehicleDriverView}.
+ * An agent that drives a {@link AutoVehicleDriverModel}.
  */
 public abstract class Driver implements DriverSimModel {
 
@@ -85,9 +85,9 @@ public abstract class Driver implements DriverSimModel {
   @Override
   public void act() {
     if (Debug.isTargetVIN(getVehicle().getVIN())) {
-      if (getVehicle() instanceof AutoVehicleDriverView) {  // TODO: it is ugly
-        AutoVehicleDriverView autoVehicle =
-          (AutoVehicleDriverView)getVehicle();
+      if (getVehicle() instanceof AutoVehicleDriverModel) {  // TODO: it is ugly
+        AutoVehicleDriverModel autoVehicle =
+          (AutoVehicleDriverModel)getVehicle();
         if (autoVehicle.getIntervalometer().read() < MAX_INTERVAL_DISPLAY_DIST){
           Debug.addShortTermDebugPoint(
             new DebugPoint(
@@ -112,7 +112,7 @@ public abstract class Driver implements DriverSimModel {
    * @return the Vehicle this driver agent is controlling
    */
   @Override
-  public abstract VehicleDriverView getVehicle();
+  public abstract VehicleDriverModel getVehicle();
 
   /////////////////////////////////
   // PUBLIC METHODS

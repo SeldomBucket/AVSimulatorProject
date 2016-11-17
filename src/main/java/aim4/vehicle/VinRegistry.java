@@ -37,6 +37,7 @@ import java.util.Map;
 import aim4.driver.aim.AIMDriver;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * The Vehicle Registry, the class that issues VIN to vehicles.
@@ -55,8 +56,8 @@ public class VinRegistry {
   /**
    * A map from VINs to Vehicles.
    */
-  private static Map<Integer,WeakReference<VehicleSimView>> vinToVehicle =
-    new HashMap<Integer,WeakReference<VehicleSimView>>();
+  private static Map<Integer,WeakReference<AIMVehicleSimModel>> vinToVehicle =
+    new HashMap<Integer,WeakReference<AIMVehicleSimModel>>();
 
   /**
    * A map from VINs to VehicleSpec.
@@ -88,7 +89,7 @@ public class VinRegistry {
    */
   public static void reset() {
     vinGenerator = 1000;
-    vinToVehicle = new HashMap<Integer,WeakReference<VehicleSimView>>();
+    vinToVehicle = new HashMap<Integer,WeakReference<AIMVehicleSimModel>>();
     vinToVehicleSpec = new HashMap<Integer,VehicleSpec>();
     vinToSpawnPoint = new HashMap<Integer,SpawnPoint>();
     vinToDestRoad = new HashMap<Integer,Road>();
@@ -100,10 +101,10 @@ public class VinRegistry {
    * @param vehicle  the vehicle
    * @return  a new VIN for the vehicle
    */
-  public static int registerVehicle(VehicleSimView vehicle) {
+  public static int registerVehicle(AIMVehicleSimModel vehicle) {
     assert vinToVehicle.get(vinGenerator) == null;
     int vin = vinGenerator;
-    vinToVehicle.put(vin, new WeakReference<VehicleSimView>(vehicle));
+    vinToVehicle.put(vin, new WeakReference<AIMVehicleSimModel>(vehicle));
     vinToVehicleSpec.put(vin, vehicle.getSpec());
     if(vehicle.getDriver() instanceof AIMDriver) { //TODO: Ugly, fix.
       vinToSpawnPoint.put(vin, ((AIMDriver) vehicle.getDriver()).getSpawnPoint());
@@ -124,7 +125,7 @@ public class VinRegistry {
    * @return true if the VIN has not been issued to other vehicle; false if
    *         the VIN has been used by other vehicle.
    */
-  public static boolean registerVehicleWithExistingVIN(VehicleSimView vehicle,
+  public static boolean registerVehicleWithExistingVIN(AIMVehicleSimModel vehicle,
                                                        int vin) {
     assert vin >= 0;
     if (vinToVehicle.containsKey(vin)) {
@@ -132,7 +133,7 @@ public class VinRegistry {
     } else {
       assert vehicle.getVIN() < 0;
 
-      vinToVehicle.put(vin, new WeakReference<VehicleSimView>(vehicle));
+      vinToVehicle.put(vin, new WeakReference<AIMVehicleSimModel>(vehicle));
       vinToVehicleSpec.put(vin, vehicle.getSpec());
       // TODO: think how to resolve the problem.
       if(vehicle.getDriver() instanceof AIMDriver) { //TODO: Ugly, fix.
@@ -189,13 +190,13 @@ public class VinRegistry {
    * @return the corresponding vehicle object; null if the vehicle object
    *         has been destroyed.
    */
-  public static VehicleSimView getVehicleFromVIN(int vin) {
-    WeakReference<VehicleSimView> wr = vinToVehicle.get(vin);
+  public static AIMVehicleSimModel getVehicleFromVIN(int vin) {
+    WeakReference<AIMVehicleSimModel> wr = vinToVehicle.get(vin);
     if(wr == null) {
       return null;
     }
     // Unwrap the reference
-    VehicleSimView v = wr.get();
+    AIMVehicleSimModel v = wr.get();
     // If it's null, then the Vehicle no longer exists
     if(v == null) {
       vinToVehicle.remove(vin);

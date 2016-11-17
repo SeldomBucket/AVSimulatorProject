@@ -39,7 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * The data collection line.
@@ -117,7 +117,7 @@ public class DataCollectionLine {
    * @param p2    the second point of the vehicle
    * @return whether the vehicle intersects the line
    */
-  public boolean intersect(VehicleSimView v, double time,
+  public boolean intersect(AIMVehicleSimModel v, double time,
                            Point2D p1, Point2D p2) {
     int vin = v.getVIN();
     if (!isNoRepeat

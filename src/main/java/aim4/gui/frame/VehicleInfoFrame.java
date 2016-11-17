@@ -31,9 +31,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.gui.frame;
 
 import aim4.config.Constants;
-import aim4.gui.Viewer;
 import aim4.gui.viewer.SimViewer;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.aim.AIMVehicleSimModel;
+
 import java.awt.Rectangle;
 import javax.swing.JFrame;
 
@@ -46,7 +46,7 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
   /** The current viewer object */
   SimViewer viewer;
   /** The vehicle */
-  VehicleSimView vehicle;
+  AIMVehicleSimModel vehicle;
 
   /** Creates new form VehicleInfoFrame */
   public VehicleInfoFrame(SimViewer viewer) {
@@ -64,7 +64,7 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
    *
    * @param vehicle  the vehicle
    */
-  public void setVehicle(VehicleSimView vehicle) {
+  public void setVehicle(AIMVehicleSimModel vehicle) {
     this.vehicle = vehicle;
     if (vehicle != null) {
       vinLabel.setText(Integer.toString(vehicle.getVIN()));

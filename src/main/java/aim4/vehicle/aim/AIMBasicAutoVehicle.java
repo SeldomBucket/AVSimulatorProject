@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.vehicle;
+package aim4.vehicle.aim;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -42,13 +42,16 @@ import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
 import aim4.noise.DoubleGauge;
+import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.BasicVehicle;
+import aim4.vehicle.VehicleSpec;
 
 
 /**
  * The basic autonomous vehicle.
  */
-public class BasicAutoVehicle extends BasicVehicle
-                              implements AutoVehicleSimView {
+public class AIMBasicAutoVehicle extends BasicVehicle
+                              implements AIMAutoVehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS
@@ -166,7 +169,7 @@ public class BasicAutoVehicle extends BasicVehicle
   /**
    * The current operating mode of the vehicle's laser range finder.
    */
-  private LRFMode lrfMode = LRFMode.DISABLED;
+  private AutoVehicleDriverModel.LRFMode lrfMode = AutoVehicleDriverModel.LRFMode.DISABLED;
 
   /**
    * A gauge indicating whether or not the Laser Range finder is currently
@@ -266,14 +269,14 @@ public class BasicAutoVehicle extends BasicVehicle
    * @param acceleration    the initial acceleration of the Vehicle
    * @param currentTime     the current time
    */
-  public BasicAutoVehicle(VehicleSpec spec,
-                          Point2D pos,
-                          double heading,
-                          double steeringAngle,
-                          double velocity,
-                          double targetVelocity,
-                          double acceleration,
-                          double currentTime) {
+  public AIMBasicAutoVehicle(VehicleSpec spec,
+                             Point2D pos,
+                             double heading,
+                             double steeringAngle,
+                             double velocity,
+                             double targetVelocity,
+                             double acceleration,
+                             double currentTime) {
     super(spec, pos, heading, velocity, steeringAngle, acceleration,
           targetVelocity, currentTime);
   }
@@ -325,9 +328,9 @@ public class BasicAutoVehicle extends BasicVehicle
    * Set the Vehicle's laser range finder operating mode.
    *
    * @param mode the new laser range finder mode
-   * @see        LRFMode
+   * @see        AutoVehicleDriverModel.LRFMode
    */
-  public void setLRFMode(LRFMode mode) {
+  public void setLRFMode(AutoVehicleDriverModel.LRFMode mode) {
     this.lrfMode = mode;
   }
 
@@ -335,7 +338,7 @@ public class BasicAutoVehicle extends BasicVehicle
    * {@inheritDoc}
    */
   @Override
-  public LRFMode getLRFMode() {
+  public AutoVehicleDriverModel.LRFMode getLRFMode() {
     return lrfMode;
   }
 

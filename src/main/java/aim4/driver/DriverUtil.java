@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver;
 
-import aim4.vehicle.VehicleDriverView;
+import aim4.vehicle.VehicleDriverModel;
 
 /**
  * A utility class for drivers.
@@ -69,7 +69,7 @@ public class DriverUtil {
    *
    * @return the lead distance
    */
-  public static double getLeadDistance(VehicleDriverView vehicle) {
+  public static double getLeadDistance(VehicleDriverModel vehicle) {
     return DEFAULT_LEAD_TIME * vehicle.gaugeVelocity() + MIN_LEAD_DIST;
   }
 
@@ -81,7 +81,7 @@ public class DriverUtil {
    * @return the maximum velocity at which the Vehicle should travel
    *         given the Lane in which it is
    */
-  public static double calculateMaxFeasibleVelocity(VehicleDriverView vehicle) {
+  public static double calculateMaxFeasibleVelocity(VehicleDriverModel vehicle) {
     // TODO: should remove this function
     // Whichever's smaller - speed limit or max velocity of the vehicle
     return Math.min(vehicle.getSpec().getMaxVelocity(),

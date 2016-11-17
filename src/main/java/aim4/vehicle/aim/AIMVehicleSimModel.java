@@ -28,46 +28,35 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.vehicle;
+package aim4.vehicle.aim;
 
-import java.net.SocketAddress;
+import java.awt.Shape;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.util.List;
+import java.util.Queue;
 
-import aim4.driver.aim.ProxyDriver;
-import aim4.msg.udp.Real2ProxyMsg;
+import aim4.driver.aim.AutoDriver;
+import aim4.msg.v2i.V2IMessage;
+import aim4.vehicle.VehicleDriverModel;
+import aim4.vehicle.VehicleSimModel;
 
 /**
- * The interface of a proxy vehicle from the viewpoint of a simulator.
+ * The interface of a vehicle from the viewpoint of a simulator.
  */
-public interface ProxyVehicleSimView extends AutoVehicleSimView {
+public interface AIMVehicleSimModel extends VehicleSimModel {
+  /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+  // messaging
 
   /**
-   * {@inheritDoc}
-   */
-  @Override
-  ProxyDriver getDriver();
-
-  /**
-   * Set this proxy vehicle's driver.
+   * Get the queue of V2I messages waiting to be delivered from this
+   * Vehicle.
    *
-   * @param driver  the new driver to control this Vehicle
+   * @return the queue of V2I messages to be delivered from this Vehicle
    */
-  void setDriver(ProxyDriver driver);
-
-  /**
-   * @return the socket address
-   */
-  SocketAddress getSa();
-
-  /**
-   * @param sa the new socket address to set
-   */
-  void setSa(SocketAddress sa);
-
-  /**
-   * Process the incoming Real2Proxy message
-   *
-   * @param msg  the Real2Proxy message
-   */
-  void processReal2ProxyMsg(Real2ProxyMsg msg);
+  Queue<V2IMessage> getV2IOutbox();
 
 }

@@ -28,55 +28,12 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.aim;
-
-import aim4.map.BasicMap;
-import aim4.map.Road;
-import aim4.map.SpawnPoint;
-import aim4.vehicle.AutoVehicleDriverModel;
+package aim4.vehicle.aim;
 
 /**
- * A proxy driver.
+ * The interface of a manually-driven vehicle from the viewpoint of a simulator.
  */
-public class ProxyDriver extends AutoDriver {
-
-  /**
-   * Construct a proxy driver.
-   *
-   * @param vehicle the vehicle object
-   * @param basicMap  the map object
-   */
-  public ProxyDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
-    super(vehicle, basicMap);
-    // TODO Auto-generated constructor stub
-  }
-
-  /**
-   * Take control actions for driving the agent's Vehicle.  This allows
-   * both the Coordinator and the Pilot to act (in that order).
-   */
-  @Override
-  public void act() {
-  }
-
-  /**
-   * Get where this DriverAgent is coming from.
-   *
-   * @return the Road where this DriverAgent is coming from
-   */
-  @Override
-  public SpawnPoint getSpawnPoint() {
-    return null;
-  }
-
-  /**
-   * Get where this DriverAgent is going.
-   *
-   * @return the Road where this DriverAgent is going
-   */
-  @Override
-  public Road getDestination() {
-    return null;
-  }
+public interface HumanDrivenVehicleSimModel extends HumanDrivenVehicleDriverModel,
+        AIMVehicleSimModel {
 
 }
