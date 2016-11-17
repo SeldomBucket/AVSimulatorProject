@@ -38,7 +38,7 @@ import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 /**
  * An autonomous V2V driver.
  */
-public class AutoV2VDriver extends AutoDriver {
+public class AutoV2VDriver extends AIMAutoDriver {
 
   /////////////////////////////////
   // NESTED CLASSES

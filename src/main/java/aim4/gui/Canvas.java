@@ -66,7 +66,7 @@ import javax.swing.SwingUtilities;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.gui.viewer.SimViewer;
 import aim4.im.IntersectionManager;
@@ -819,8 +819,8 @@ public class Canvas extends JPanel implements ComponentListener,
     } else if (Debug.getVehicleColor(vehicle.getVIN()) != null) {
       buffer.setPaint(Debug.getVehicleColor(vehicle.getVIN()));
     } else if (Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE) {
-      if (vehicle.getDriver() instanceof AutoDriver) {
-        AutoDriver autoDriver = (AutoDriver) vehicle.getDriver();
+      if (vehicle.getDriver() instanceof AIMAutoDriver) {
+        AIMAutoDriver autoDriver = (AIMAutoDriver) vehicle.getDriver();
         if (autoDriver.getCurrentCoordinator() instanceof V2ICoordinator) {
           V2ICoordinator coordinator =
               (V2ICoordinator) autoDriver.getCurrentCoordinator();
@@ -873,8 +873,8 @@ public class Canvas extends JPanel implements ComponentListener,
     }
 
     if (vehicle instanceof AIMAutoVehicleSimModel
-        && vehicle.getDriver() instanceof AutoDriver) {
-      AutoDriver da = (AutoDriver) vehicle.getDriver();
+        && vehicle.getDriver() instanceof AIMAutoDriver) {
+      AIMAutoDriver da = (AIMAutoDriver) vehicle.getDriver();
       if (da.getCurrentCoordinator() instanceof V2ICoordinator) {
         V2ICoordinator coordinator =
             (V2ICoordinator) da.getCurrentCoordinator();

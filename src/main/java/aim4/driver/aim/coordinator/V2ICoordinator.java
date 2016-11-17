@@ -38,7 +38,7 @@ import java.util.Queue;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.Constants.TurnDirection;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.AutoDriverCoordinatorView;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.navigator.BasicNavigator;
@@ -911,7 +911,7 @@ public class V2ICoordinator implements Coordinator {
    * @param basicMap the map
    */
   public V2ICoordinator(AIMAutoVehicleDriverModel vehicle,
-                        AutoDriver driver,
+                        AIMAutoDriver driver,
                         BasicMap basicMap) {
     this.vehicle = vehicle;
     this.driver = driver;

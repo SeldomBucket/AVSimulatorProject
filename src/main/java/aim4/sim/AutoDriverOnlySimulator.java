@@ -49,7 +49,7 @@ import java.util.TreeMap;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.DriverSimModel;
 import aim4.driver.aim.ProxyDriver;
 import aim4.im.IntersectionManager;
@@ -366,7 +366,7 @@ public class AutoDriverOnlySimulator implements Simulator {
                            spawnPoint.getAcceleration(),
                            spawnSpec.getSpawnTime());
     // Set the driver
-    AutoDriver driver = new AutoDriver(vehicle, basicMap);
+    AIMAutoDriver driver = new AIMAutoDriver(vehicle, basicMap);
     driver.setCurrentLane(lane);
     driver.setSpawnPoint(spawnPoint);
     driver.setDestination(spawnSpec.getDestinationRoad());

@@ -33,13 +33,12 @@ package aim4.driver.aim;
 import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
-import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * A proxy driver.
  */
-public class ProxyDriver extends AutoDriver {
+public class ProxyDriver extends AIMAutoDriver {
 
   /**
    * Construct a proxy driver.

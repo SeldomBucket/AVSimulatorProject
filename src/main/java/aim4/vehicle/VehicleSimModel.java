@@ -1,11 +1,10 @@
 package aim4.vehicle;
 
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.util.*;
 
 /**
  * Created by Callum on 17/11/2016.
@@ -30,7 +29,7 @@ public interface VehicleSimModel extends VehicleDriverModel {
      *
      * @param driver  the new driver to control this Vehicle
      */
-    void setDriver(AutoDriver driver);
+    void setDriver(AIMAutoDriver driver);
 
     /**
      * Check whether this vehicle's time is current.

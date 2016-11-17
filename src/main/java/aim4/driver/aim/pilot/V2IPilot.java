@@ -35,7 +35,7 @@ import java.util.Queue;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.coordinator.V2ICoordinator.ReservationParameter;
 import aim4.vehicle.AutoVehicleDriverModel;
@@ -78,7 +78,7 @@ public class V2IPilot extends BasicPilot {
 
   private AutoVehicleDriverModel vehicle;
 
-  private AutoDriver driver;
+  private AIMAutoDriver driver;
 
 
   // ///////////////////////////////
@@ -91,7 +91,7 @@ public class V2IPilot extends BasicPilot {
    * @param vehicle      the vehicle to control
    * @param driver       the driver
    */
-  public V2IPilot(AutoVehicleDriverModel vehicle, AutoDriver driver) {
+  public V2IPilot(AutoVehicleDriverModel vehicle, AIMAutoDriver driver) {
     this.vehicle = vehicle;
     this.driver = driver;
     stopDistanceBeforeIntersection = DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION;
@@ -114,7 +114,7 @@ public class V2IPilot extends BasicPilot {
    * Get the driver this pilot controls.
    */
   @Override
-  public AutoDriver getDriver() {
+  public AIMAutoDriver getDriver() {
     return driver;
   }
 

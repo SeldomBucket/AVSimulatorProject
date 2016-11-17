@@ -30,13 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.navigator;
 
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
 
 /**
  * An agent that chooses which way a vehicle should go, and uses information
- * from a {@link AutoDriver} to do so.
+ * from a {@link AIMAutoDriver} to do so.
  */
 public interface Navigator {
 

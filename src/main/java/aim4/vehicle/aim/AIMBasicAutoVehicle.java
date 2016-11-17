@@ -37,14 +37,9 @@ import java.util.List;
 import java.util.Queue;
 
 import aim4.config.Debug;
-import aim4.driver.aim.AutoDriver;
-import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
-import aim4.noise.DoubleGauge;
-import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.BasicAutoVehicle;
-import aim4.vehicle.BasicVehicle;
 import aim4.vehicle.VehicleSpec;
 
 

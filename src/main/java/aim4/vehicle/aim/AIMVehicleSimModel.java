@@ -30,15 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
-import java.awt.Shape;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.util.List;
 import java.util.Queue;
 
-import aim4.driver.aim.AutoDriver;
 import aim4.msg.v2i.V2IMessage;
-import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleSimModel;
 
 /**

@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.coordinator;
 
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.vehicle.AutoVehicleDriverModel;
 
@@ -61,7 +61,7 @@ public class NoIntersectionCoordinator implements Coordinator {
    * @param driver   the driver
    */
   public NoIntersectionCoordinator(AutoVehicleDriverModel vehicle,
-                                   AutoDriver driver) {
+                                   AIMAutoDriver driver) {
     pilot = new V2IPilot(vehicle, driver);
   }
 

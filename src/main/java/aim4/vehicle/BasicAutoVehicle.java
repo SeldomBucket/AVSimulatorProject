@@ -1,6 +1,6 @@
 package aim4.vehicle;
 
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.noise.DoubleGauge;
 
@@ -37,7 +37,7 @@ public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimMode
     /**
      * The Driver controlling this vehicle.
      */
-    private AutoDriver driver;
+    private AIMAutoDriver driver;
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -153,7 +153,7 @@ public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimMode
      * {@inheritDoc}
      */
     @Override
-    public AutoDriver getDriver() {
+    public AIMAutoDriver getDriver() {
         return driver;
     }
 
@@ -161,7 +161,7 @@ public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimMode
      * {@inheritDoc}
      */
     @Override
-    public void setDriver(AutoDriver driver) {
+    public void setDriver(AIMAutoDriver driver) {
         this.driver = driver;
     }
 

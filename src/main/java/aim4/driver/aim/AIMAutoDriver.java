@@ -47,7 +47,7 @@ import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
  * of two sub-agents, a {@link Coordinator} and a Pilot. The two
  * agents communicate by setting state in this class.
  */
-public class AutoDriver extends AIMDriver
+public class AIMAutoDriver extends AIMDriver
                         implements AutoDriverCoordinatorView,
         AutoDriverPilotView {
 
@@ -84,7 +84,7 @@ public class AutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
+  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
     this.vehicle = vehicle;
     this.basicMap = basicMap;
     coordinator = null;
