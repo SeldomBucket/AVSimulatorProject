@@ -33,6 +33,7 @@ package aim4.driver.aim;
 import aim4.map.BasicMap;
 import aim4.map.lane.Lane;
 import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * An autonomous V2V driver.
@@ -130,7 +131,7 @@ public class AutoV2VDriver extends AutoDriver {
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoV2VDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
+  public AutoV2VDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
     super(vehicle, basicMap);  // TODO: temporarily make it compilable. remove it later.
     this.vehicle = vehicle;
     // TODO Auto-generated constructor stub

@@ -39,6 +39,7 @@ import aim4.driver.aim.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
 import aim4.map.BasicMap;
 import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * An agent that drives a {@link AutoVehicleDriverModel} while coordinating with
@@ -55,7 +56,7 @@ public class AutoDriver extends AIMDriver
   /////////////////////////////////
 
   /** The vehicle this driver will control */
-  private AutoVehicleDriverModel vehicle;
+  private AIMAutoVehicleDriverModel vehicle;
 
   /** The sub-agent that controls coordination */
   private Coordinator coordinator;
@@ -83,7 +84,7 @@ public class AutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
+  public AutoDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
     this.vehicle = vehicle;
     this.basicMap = basicMap;
     coordinator = null;

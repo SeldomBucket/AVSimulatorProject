@@ -34,6 +34,7 @@ import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * A proxy driver.
@@ -46,7 +47,7 @@ public class ProxyDriver extends AutoDriver {
    * @param vehicle the vehicle object
    * @param basicMap  the map object
    */
-  public ProxyDriver(AutoVehicleDriverModel vehicle, BasicMap basicMap) {
+  public ProxyDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
     super(vehicle, basicMap);
     // TODO Auto-generated constructor stub
   }

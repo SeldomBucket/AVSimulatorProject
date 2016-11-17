@@ -60,6 +60,7 @@ import aim4.util.Util;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * An agent that autonomously controls the coordination of a
@@ -828,7 +829,7 @@ public class V2ICoordinator implements Coordinator {
   // vehicle and agents
 
   /** The Vehicle being coordinated by this coordinator. */
-  private AutoVehicleDriverModel vehicle;
+  private AIMAutoVehicleDriverModel vehicle;
 
   /** The driver of which this coordinator is a part. */
   private AutoDriverCoordinatorView driver;
@@ -909,7 +910,7 @@ public class V2ICoordinator implements Coordinator {
    * @param driver   the driver
    * @param basicMap the map
    */
-  public V2ICoordinator(AutoVehicleDriverModel vehicle,
+  public V2ICoordinator(AIMAutoVehicleDriverModel vehicle,
                         AutoDriver driver,
                         BasicMap basicMap) {
     this.vehicle = vehicle;
