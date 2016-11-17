@@ -30,23 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
+import aim4.vehicle.AutoVehicleSimModel;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * The interface of an autonomous vehicle from the viewpoint of a simulator.
  */
 public interface AIMAutoVehicleSimModel extends AIMAutoVehicleDriverModel,
-        AIMVehicleSimModel {
-
-  /**
-   * Set whether or not the laser range finder is sensing anything. This
-   * should only be called by the actual physical simulator when it is
-   * providing sensing information to the Vehicle.
-   *
-   * @param sensing whether or not the laser range finder is sensing anything
-   */
-  void setLRFSensing(boolean sensing);
-
-
-
+        AIMVehicleSimModel, AutoVehicleSimModel {
 }
