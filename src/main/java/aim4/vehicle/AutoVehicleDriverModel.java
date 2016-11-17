@@ -30,6 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle;
 
+import aim4.driver.AutoDriver;
+import aim4.driver.Driver;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.noise.DoubleGauge;
@@ -71,7 +73,7 @@ public interface AutoVehicleDriverModel extends VehicleDriverModel {
    * {@inheritDoc}
    */
   @Override
-  AIMAutoDriver getDriver();
+  AutoDriver getDriver();
 
   /////////////////////////////////
   // PUBLIC METHODS

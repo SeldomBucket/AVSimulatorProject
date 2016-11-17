@@ -1,5 +1,6 @@
 package aim4.vehicle;
 
+import aim4.driver.Driver;
 import aim4.driver.aim.AIMAutoDriver;
 
 import java.awt.*;
@@ -29,7 +30,7 @@ public interface VehicleSimModel extends VehicleDriverModel {
      *
      * @param driver  the new driver to control this Vehicle
      */
-    void setDriver(AIMAutoDriver driver);
+    void setDriver(Driver driver);
 
     /**
      * Check whether this vehicle's time is current.

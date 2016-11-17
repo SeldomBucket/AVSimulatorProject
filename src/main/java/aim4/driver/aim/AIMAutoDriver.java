@@ -32,7 +32,9 @@ package aim4.driver.aim;
 
 import java.awt.geom.Area;
 
+import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
+import aim4.driver.DriverSimModel;
 import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.driver.aim.coordinator.Coordinator;
