@@ -49,7 +49,7 @@ import aim4.vehicle.aim.AIMVehicleSimModel;
 /**
  * The most basic form of a vehicle.
  */
-public abstract class BasicVehicle implements AIMVehicleSimModel {
+public abstract class BasicVehicle implements VehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS

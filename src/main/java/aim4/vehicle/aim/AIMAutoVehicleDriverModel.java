@@ -53,4 +53,34 @@ public interface AIMAutoVehicleDriverModel extends AutoVehicleDriverModel {
      */
     V2IMessage getLastV2IMessage();
 
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
+
+    // communications system
+
+    /**
+     * Get the Vehicle's transmission power.
+     *
+     * @return the Vehicle's transmission power, in meters
+     */
+    double getTransmissionPower();
+
+    // communications systems (statistics)
+
+    /**
+     * Get the number of bits this Vehicle has received.
+     *
+     * @return the number of bits this Vehicle has received
+     */
+    int getBitsReceived();
+
+    /**
+     * Get the number of bits this Vehicle has transmitted.
+     *
+     * @return the number of bits this Vehicle has transmitted
+     */
+    int getBitsTransmitted();
+
+
 }
