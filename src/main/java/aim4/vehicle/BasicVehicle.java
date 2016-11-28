@@ -38,6 +38,7 @@ import java.util.List;
 
 import aim4.config.Constants;
 import aim4.config.Debug;
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 import aim4.map.track.TrackPosition;
 import aim4.noise.DoubleGauge;
@@ -48,7 +49,7 @@ import aim4.util.Util;
 /**
  * The most basic form of a vehicle.
  */
-public abstract class BasicVehicle implements VehicleSimView {
+public abstract class BasicVehicle implements VehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS

@@ -38,7 +38,7 @@ import java.util.Queue;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.Constants.TurnDirection;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.AutoDriverCoordinatorView;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.navigator.BasicNavigator;
@@ -46,7 +46,7 @@ import aim4.driver.aim.navigator.Navigator;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.Confirm;
@@ -58,12 +58,13 @@ import aim4.msg.v2i.Done;
 import aim4.msg.v2i.Request;
 import aim4.util.Util;
 import aim4.vehicle.AccelSchedule;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * An agent that autonomously controls the coordination of a
- * {@link AutoVehicleDriverView} with other Vehicles and with
+ * {@link AutoVehicleDriverModel} with other Vehicles and with
  * {@link IntersectionManager}s. This agent is capable of both V2V and
  * V2I coordination, and uses the current readings of
  * the vehicle and state in the CoordinatingDriverAgent, along with an
@@ -323,7 +324,7 @@ public class V2ICoordinator implements Coordinator {
     private EnumMap<State,StateHandler> stateHandlers;
 
     /** The Vehicle being coordinated by this coordinator. */
-    private AutoVehicleDriverView vehicle;
+    private AutoVehicleDriverModel vehicle;
 
     /** The driver of which this coordinator is a part. */
     private AutoDriverCoordinatorView driver;
@@ -347,7 +348,7 @@ public class V2ICoordinator implements Coordinator {
      * @param pilot      the pilot
      * @param navigator  the navigator
      */
-    public LaneChangeController(AutoVehicleDriverView vehicle,
+    public LaneChangeController(AutoVehicleDriverModel vehicle,
                                 AutoDriverCoordinatorView driver,
                                 V2IPilot pilot,
                                 Navigator navigator) {
@@ -565,13 +566,13 @@ public class V2ICoordinator implements Coordinator {
           driver.setCurrentLane(targetLane);  // set the targetLane immediately
           driver.addCurrentlyOccupiedLane(currentLane);
           // update the driver's state
-          setState(State.LC_CHANGING_LANE);
+          setState(LaneChangeController.State.LC_CHANGING_LANE);
           return true;  // check stopping condition immediately
         } else if (vehicle.gaugeTime() > initiateTimeLimit) { // fail and stop
           // must turn off the sensor
           vehicle.setVehicleTracking(false) ;
           isLaneChangeSuccessful = false;
-          setState(State.LC_TERMINAL_STATE);
+          setState(LaneChangeController.State.LC_TERMINAL_STATE);
           return false;
         } else {
           // keep going
@@ -605,7 +606,7 @@ public class V2ICoordinator implements Coordinator {
           driver.setCurrentLane(driver.getCurrentLane());
           // done
           isLaneChangeSuccessful = true;
-          setState(State.LC_TERMINAL_STATE);
+          setState(LaneChangeController.State.LC_TERMINAL_STATE);
           return false;
         } else {
           // do nothing; continue lane changing
@@ -828,7 +829,7 @@ public class V2ICoordinator implements Coordinator {
   // vehicle and agents
 
   /** The Vehicle being coordinated by this coordinator. */
-  private AutoVehicleDriverView vehicle;
+  private AIMAutoVehicleDriverModel vehicle;
 
   /** The driver of which this coordinator is a part. */
   private AutoDriverCoordinatorView driver;
@@ -907,15 +908,15 @@ public class V2ICoordinator implements Coordinator {
    *
    * @param vehicle  the Vehicle to coordinate
    * @param driver   the driver
-   * @param basicMap the map
+   * @param basicIntersectionMap the map
    */
-  public V2ICoordinator(AutoVehicleDriverView vehicle,
-                        AutoDriver driver,
-                        BasicMap basicMap) {
+  public V2ICoordinator(AIMAutoVehicleDriverModel vehicle,
+                        AIMAutoDriver driver,
+                        BasicIntersectionMap basicIntersectionMap) {
     this.vehicle = vehicle;
     this.driver = driver;
     this.pilot = new V2IPilot(vehicle, driver);
-    this.navigator = new BasicNavigator(vehicle.getSpec(), basicMap);
+    this.navigator = new BasicNavigator(vehicle.getSpec(), basicIntersectionMap);
 
     isDebugging = Debug.isTargetVIN(vehicle.getVIN());
 

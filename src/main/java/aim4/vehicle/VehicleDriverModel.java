@@ -33,12 +33,13 @@ package aim4.vehicle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 
 /**
  * The interface of a vehicle from the viewpoint of a driver.
  */
-public interface VehicleDriverView {
+public interface VehicleDriverModel {
 
   /**
    * Get the ID number of this vehicle.  If the vehicle does not have a

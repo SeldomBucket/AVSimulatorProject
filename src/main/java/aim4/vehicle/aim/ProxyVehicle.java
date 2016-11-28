@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.vehicle;
+package aim4.vehicle.aim;
 
 import java.awt.geom.Point2D;
 import java.util.LinkedList;
@@ -52,6 +52,8 @@ import aim4.driver.aim.ProxyDriver;
 import aim4.msg.udp.Real2ProxyPVUpdate;
 import aim4.msg.v2i.V2IMessage;
 import aim4.msg.v2i.Request.Proposal;
+import aim4.vehicle.BasicVehicle;
+import aim4.vehicle.VehicleSpecDatabase;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -61,8 +63,8 @@ import java.net.SocketAddress;
 /**
  * The proxy vehicle.
  */
-public class ProxyVehicle extends BasicAutoVehicle
-                          implements ProxyVehicleSimView {
+public class ProxyVehicle extends AIMBasicAutoVehicle
+                          implements ProxyVehicleSimModel {
 
   /////////////////////////////////
   // CONSTANTS
@@ -89,8 +91,6 @@ public class ProxyVehicle extends BasicAutoVehicle
   // PRIVATE FIELDS
   /////////////////////////////////
 
-  /** The proxy driver */
-  ProxyDriver driver;
   /** The socket address */
   SocketAddress sa;
   /** The last time stamp */
@@ -145,7 +145,7 @@ public class ProxyVehicle extends BasicAutoVehicle
    */
   @Override
   public ProxyDriver getDriver() {
-    return driver;
+    return (ProxyDriver) super.getDriver();
   }
 
   /**
@@ -153,7 +153,7 @@ public class ProxyVehicle extends BasicAutoVehicle
    */
   @Override
   public void setDriver(ProxyDriver driver) {
-    this.driver = driver;
+    super.setDriver(driver);
   }
 
   /////////////////////////////////
@@ -355,7 +355,7 @@ public class ProxyVehicle extends BasicAutoVehicle
   private void updateState(Real2ProxyPVUpdate up) {
     // System.err.printf("Update proxy vehicle state: %s\n", up);
     this.movement =
-        new MoveToTargetVelocityMovement(spec,
+        new BasicVehicle.MoveToTargetVelocityMovement(spec,
                                          up.position,
                                          up.heading,
                                          up.velocity,

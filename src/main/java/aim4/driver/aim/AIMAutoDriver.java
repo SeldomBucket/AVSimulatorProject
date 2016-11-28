@@ -32,22 +32,24 @@ package aim4.driver.aim;
 
 import java.awt.geom.Area;
 
-import aim4.driver.Driver;
+import aim4.driver.AutoDriver;
+import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
-import aim4.map.BasicMap;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.map.BasicIntersectionMap;
+import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
- * An agent that drives a {@link AutoVehicleDriverView} while coordinating with
+ * An agent that drives a {@link AutoVehicleDriverModel} while coordinating with
  * {@link IntersectionManager}s and other Vehicles.  Such an agent consists
  * of two sub-agents, a {@link Coordinator} and a Pilot. The two
  * agents communicate by setting state in this class.
  */
-public class AutoDriver extends AIMDriver
-                        implements AutoDriverCoordinatorView,
+public class AIMAutoDriver extends AIMDriver
+                        implements AutoDriverCoordinatorView, AutoDriver,
         AutoDriverPilotView {
 
   /////////////////////////////////
@@ -55,13 +57,13 @@ public class AutoDriver extends AIMDriver
   /////////////////////////////////
 
   /** The vehicle this driver will control */
-  private AutoVehicleDriverView vehicle;
+  private AIMAutoVehicleDriverModel vehicle;
 
   /** The sub-agent that controls coordination */
   private Coordinator coordinator;
 
   /** The map */
-  private BasicMap basicMap;
+  private BasicIntersectionMap basicIntersectionMap;
 
   /**
    * The IntersectionManager with which the driver is currently interacting.
@@ -83,9 +85,9 @@ public class AutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AutoDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
+  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
     this.vehicle = vehicle;
-    this.basicMap = basicMap;
+    this.basicIntersectionMap = basicIntersectionMap;
     coordinator = null;
     currentIM = null;
   }
@@ -110,7 +112,7 @@ public class AutoDriver extends AIMDriver
       // TODO: need to check type of intersection
       if (im != null) {
         currentIM = im;
-        coordinator = new V2ICoordinator(vehicle, this, basicMap);
+        coordinator = new V2ICoordinator(vehicle, this, basicIntersectionMap);
       } else {
         currentIM = null;
         coordinator = new NoIntersectionCoordinator(vehicle, this);
@@ -132,7 +134,7 @@ public class AutoDriver extends AIMDriver
    * @return the Vehicle this DriverAgent is controlling
    */
   @Override
-  public AutoVehicleDriverView getVehicle() {
+  public AIMAutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 
@@ -177,7 +179,7 @@ public class AutoDriver extends AIMDriver
   /**
    * Find the next IntersectionManager that the Vehicle will need to
    * interact with, in this Lane. This version
-   * overrides the version in {@link Driver}, but only to memoize it for
+   * overrides the version in {@link BasicDriver}, but only to memoize it for
    * speed.
    *
    * @return the nextIntersectionManager that the Vehicle will need
@@ -195,7 +197,7 @@ public class AutoDriver extends AIMDriver
   /**
    * Find the distance to the next intersection in the Lane in which
    * the Vehicle is, from the position at which the Vehicle is.  This version
-   * overrides the version in {@link Driver}, but only to memoize it for
+   * overrides the version in {@link BasicDriver}, but only to memoize it for
    * speed.
    *
    * @return the distance to the next intersection given the current Lane
@@ -259,7 +261,7 @@ public class AutoDriver extends AIMDriver
    * @param area  the area
    * @return      whether the Vehicle is currently in the area
    */
-  private static boolean intersects(AutoVehicleDriverView v, Area area) {
+  private static boolean intersects(AutoVehicleDriverModel v, Area area) {
     // TODO: move this function to somewhere else.
 
     // As a quick check, see if the front or rear point is in the intersection

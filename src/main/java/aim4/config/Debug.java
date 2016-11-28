@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import aim4.gui.ViewerDebugView;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 
 /**
  * The configuration for debugging purposes.
@@ -47,7 +47,7 @@ public class Debug {
   /**
    * A global variable referring to the global map.
    */
-  public static BasicMap currentMap;
+  public static BasicIntersectionMap currentMap;
 
   /**
    * A global variable referring to the GUI object.

@@ -28,46 +28,14 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.vehicle;
+package aim4.vehicle.aim;
 
-import java.net.SocketAddress;
-
-import aim4.driver.aim.ProxyDriver;
-import aim4.msg.udp.Real2ProxyMsg;
+import aim4.vehicle.AutoVehicleSimModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
- * The interface of a proxy vehicle from the viewpoint of a simulator.
+ * The interface of an autonomous vehicle from the viewpoint of a simulator.
  */
-public interface ProxyVehicleSimView extends AutoVehicleSimView {
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  ProxyDriver getDriver();
-
-  /**
-   * Set this proxy vehicle's driver.
-   *
-   * @param driver  the new driver to control this Vehicle
-   */
-  void setDriver(ProxyDriver driver);
-
-  /**
-   * @return the socket address
-   */
-  SocketAddress getSa();
-
-  /**
-   * @param sa the new socket address to set
-   */
-  void setSa(SocketAddress sa);
-
-  /**
-   * Process the incoming Real2Proxy message
-   *
-   * @param msg  the Real2Proxy message
-   */
-  void processReal2ProxyMsg(Real2ProxyMsg msg);
-
+public interface AIMAutoVehicleSimModel extends AIMAutoVehicleDriverModel,
+        AIMVehicleSimModel, AutoVehicleSimModel {
 }

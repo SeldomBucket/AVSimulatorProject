@@ -30,160 +30,149 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.driver.aim.AutoDriver;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.lane.Lane;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * An autonomous V2V driver.
  */
-public class AutoV2VDriver extends AutoDriver {
-
-  /////////////////////////////////
-  // NESTED CLASSES
-  /////////////////////////////////
-
-  /**
-   * Potential states that a CoordinatingDriverAgent can be in.  This is one
-   * aspect of how the two subagents, the Pilot and the Coordinator,
-   * communicate.
-   */
-  public enum State {
-    /**
-     * The agent has not yet initiated communication with the
-     * IntersectionManager and is determining what kind of management
-     * is present at the intersection.
-     */
-    ANALYZING_INTERSECTION_MANAGEMENT,
-
-    /** There was no intersection detected ahead - might just be too far. */
-    CRUISING,
+public class AutoV2VDriver extends AIMAutoDriver {
 
     /////////////////////////////////
-    // V2V STATES
+    // NESTED CLASSES
     /////////////////////////////////
 
     /**
-     * The agent is silently listening to the CLAIM messages of other vehicles
-     * nearing the intersection.
+     * Potential states that a CoordinatingDriverAgent can be in.  This is one
+     * aspect of how the two subagents, the Pilot and the Coordinator,
+     * communicate.
      */
-    V2V_LURKING,
-    /** The agent is preparing to broadcast a CLAIM message. */
-    V2V_CALCULATING_CLAIM,
+    public enum State {
+        /**
+         * The agent has not yet initiated communication with the
+         * IntersectionManager and is determining what kind of management
+         * is present at the intersection.
+         */
+        ANALYZING_INTERSECTION_MANAGEMENT,
+
+        /** There was no intersection detected ahead - might just be too far. */
+        CRUISING,
+
+        /////////////////////////////////
+        // V2V STATES
+        /////////////////////////////////
+
+        /**
+         * The agent is silently listening to the CLAIM messages of other vehicles
+         * nearing the intersection.
+         */
+        V2V_LURKING,
+        /** The agent is preparing to broadcast a CLAIM message. */
+        V2V_CALCULATING_CLAIM,
+        /**
+         * The agent is broadcasting a CLAIM message, but has not broadcast it
+         * long enough to cross the intersection safely.
+         */
+        V2V_CLAIMING,
+        /**
+         * The agent is still broadcasting a CLAIM message, and has broadcast
+         * it long enough to cross the intersection safely.
+         */
+        V2V_CLAIMED,
+        /**
+         * The agent is traversing the intersection in accordance with its CLAIM
+         * message.
+         */
+        V2V_TRAVERSING;
+    }
+
+    /////////////////////////////////
+    // PRIVATE METHODS
+    /////////////////////////////////
+
+    /** The vehicle this driver will control */
+    private AIMAutoVehicleDriverModel vehicle;
+
+    /////////////////////////////////
+    // PRIVATE METHODS
+    /////////////////////////////////
+
+    // reservation parameters
+
     /**
-     * The agent is broadcasting a CLAIM message, but has not broadcast it
-     * long enough to cross the intersection safely.
+     * Whether or not this driver agent currently has a valid reservation.
      */
-    V2V_CLAIMING,
+    private boolean hasReservation;
+
     /**
-     * The agent is still broadcasting a CLAIM message, and has broadcast
-     * it long enough to cross the intersection safely.
+     * The time at which the Vehicle should arrive at the intersection.
      */
-    V2V_CLAIMED,
+    private double arrivalTime;
+
     /**
-     * The agent is traversing the intersection in accordance with its CLAIM
-     * message.
+     * The velocity, in meters per second, at which the Vehicle should arrive
+     * at the intersection.
      */
-    V2V_TRAVERSING;
-  }
+    private double arrivalVelocity;
 
-  /////////////////////////////////
-  // PRIVATE METHODS
-  /////////////////////////////////
+    /**
+     * The Lane in which the Vehicle should arrive at the intersection.
+     */
+    private Lane arrivalLane;
 
-  /** The vehicle this driver will control */
-  private AutoVehicleDriverView vehicle;
+    /**
+     * The Lane in which the Vehicle will depart the intersection.
+     */
+    private Lane departureLane;
 
-  /////////////////////////////////
-  // PRIVATE METHODS
-  /////////////////////////////////
+    /////////////////////////////////
+    // CONSTRUCTORS
+    /////////////////////////////////
 
-  // reservation parameters
+    public AutoV2VDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
+        super(vehicle, basicIntersectionMap);  // TODO: temporarily make it compilable. remove it later.
+        this.vehicle = vehicle;
+        // TODO Auto-generated constructor stub
+    }
 
-  /**
-   * Whether or not this driver agent currently has a valid reservation.
-   */
-  private boolean hasReservation;
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
 
-  /**
-   * The time at which the Vehicle should arrive at the intersection.
-   */
-  private double arrivalTime;
+    // claim parameters
 
-  /**
-   * The velocity, in meters per second, at which the Vehicle should arrive
-   * at the intersection.
-   */
-  private double arrivalVelocity;
+    /**
+     * Set the parameters for this driver agent's Claim.  This method
+     * is used by the Coordinator to inform the Pilot about the Claim that the
+     * Coordinator has secured.
+     *
+     * @param arrivalTime         the time at which the Vehicle should arrive at
+     *                            the intersection
+     * @param arrivalVelocity     the minimum arrival Velocity in order to
+     *                            complete the Claim on time
+     * @param arrivalLane         the Lane in which the Vehicle should arrive at
+     *                            the intersection
+     * @param departureLane       the Lane in which the Vehicle should depart
+     *                            the intersection
+     */
+    public void setClaimParameters(double arrivalTime, double arrivalVelocity,
+                                   Lane arrivalLane, Lane departureLane) {
+        this.arrivalTime = arrivalTime;
+        this.arrivalVelocity = arrivalVelocity;
+        this.arrivalLane = arrivalLane;
+        this.departureLane = departureLane;
+    }
 
-  /**
-   * The Lane in which the Vehicle should arrive at the intersection.
-   */
-  private Lane arrivalLane;
-
-  /**
-   * The Lane in which the Vehicle will depart the intersection.
-   */
-  private Lane departureLane;
-
-  /////////////////////////////////
-  // CONSTRUCTORS
-  /////////////////////////////////
-
-  public AutoV2VDriver(AutoVehicleDriverView vehicle, BasicMap basicMap) {
-    super(vehicle, basicMap);  // TODO: temporarily make it compilable. remove it later.
-    this.vehicle = vehicle;
-    // TODO Auto-generated constructor stub
-  }
-
-  /**
-   * Get the Vehicle this DriverAgent is controlling.
-   *
-   * @return the Vehicle this DriverAgent is controlling
-   */
-  @Override
-  public AutoVehicleDriverView getVehicle() {
-    return vehicle;
-  }
-
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  // claim parameters
-
-  /**
-   * Set the parameters for this driver agent's Claim.  This method
-   * is used by the Coordinator to inform the Pilot about the Claim that the
-   * Coordinator has secured.
-   *
-   * @param arrivalTime         the time at which the Vehicle should arrive at
-   *                            the intersection
-   * @param arrivalVelocity     the minimum arrival Velocity in order to
-   *                            complete the Claim on time
-   * @param arrivalLane         the Lane in which the Vehicle should arrive at
-   *                            the intersection
-   * @param departureLane       the Lane in which the Vehicle should depart
-   *                            the intersection
-   */
-  public void setClaimParameters(double arrivalTime, double arrivalVelocity,
-                                 Lane arrivalLane, Lane departureLane) {
-    this.arrivalTime = arrivalTime;
-    this.arrivalVelocity = arrivalVelocity;
-    this.arrivalLane = arrivalLane;
-    this.departureLane = departureLane;
-  }
-
-  /**
-   * Inform the driver agent that the Claim it is currently holding has stood
-   * up for the required amount of time and can be used to cross the
-   * intersection.
-   */
-  public void finalizeClaimParameters() {
-    hasReservation = true;
-  }
+    /**
+     * Inform the driver agent that the Claim it is currently holding has stood
+     * up for the required amount of time and can be used to cross the
+     * intersection.
+     */
+    public void finalizeClaimParameters() {
+        hasReservation = true;
+    }
 
 
 

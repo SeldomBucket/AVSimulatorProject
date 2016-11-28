@@ -33,7 +33,7 @@ package aim4.map.destination;
 import java.util.List;
 
 import aim4.config.Debug;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.TrafficVolume;
@@ -80,7 +80,7 @@ public class RatioDestinationSelector implements DestinationSelector {
    *                       RandomDestinationSelector
    * @param trafficVolume  the traffic volume
    */
-  public RatioDestinationSelector(BasicMap map, TrafficVolume trafficVolume) {
+  public RatioDestinationSelector(BasicIntersectionMap map, TrafficVolume trafficVolume) {
     destinationRoads = map.getDestinationRoads();
     this.trafficVolume = trafficVolume;
     leftTurnProb = new HashMap<Integer, Double>();

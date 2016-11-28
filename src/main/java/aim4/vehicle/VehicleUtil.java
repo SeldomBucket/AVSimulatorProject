@@ -38,11 +38,14 @@ import java.util.Map;
 
 import aim4.config.SimConfig;
 import aim4.driver.CrashTestDummy;
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 import aim4.im.IntersectionManager;
 import aim4.map.lane.Lane;
 import aim4.util.GeomMath;
 import aim4.util.Util;
+import aim4.vehicle.aim.AIMBasicAutoVehicle;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * The utility functions for vehicles.
@@ -184,7 +187,7 @@ public class VehicleUtil {
                      traversalVelocity;
     // Create a test vehicle that is a copy of this vehicle to use in the
     // internal simulation
-    BasicAutoVehicle testVehicle = new BasicAutoVehicle(
+    AIMBasicAutoVehicle testVehicle = new AIMBasicAutoVehicle(
       spec,
       im.getIntersection().getEntryPoint(arrivalLane), // Position
       im.getIntersection().getEntryHeading(arrivalLane), // Heading
@@ -556,7 +559,7 @@ public class VehicleUtil {
    * @param area  the area
    * @return      whether the Vehicle is currently in the area
    */
-  public static boolean intersects(VehicleSimView v, Area area) {
+  public static boolean intersects(AIMVehicleSimModel v, Area area) {
     // As a quick check, see if the front or rear point is in the intersection
     // Most of the time this should work
     if (area.contains(v.getPosition()) || area.contains(v.getPointAtRear())) {
@@ -587,7 +590,7 @@ public class VehicleUtil {
    * @param vehicle  the vehicle
    * @return the distance to the Vehicle in front of this one, in meters
    */
-  public static double distanceToCarInFront(AutoVehicleDriverView vehicle) {
+  public static double distanceToCarInFront(AutoVehicleDriverModel vehicle) {
     switch(vehicle.getLRFMode()) {
     case DISABLED:
       // The laser range finder isn't on, so there's no good value in it

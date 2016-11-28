@@ -49,8 +49,8 @@ import aim4.msg.udp.Real2ProxyMsg;
 import aim4.msg.udp.Real2ProxyPVUpdate;
 import aim4.msg.udp.Real2ProxyRequest;
 import aim4.msg.udp.UdpHeader;
-import aim4.vehicle.ProxyVehicle;
-import aim4.vehicle.ProxyVehicleSimView;
+import aim4.vehicle.aim.ProxyVehicle;
+import aim4.vehicle.aim.ProxyVehicleSimModel;
 import aim4.vehicle.VinRegistry;
 
 /**
@@ -88,7 +88,7 @@ public class UdpListener implements Runnable {
    * socket addresses. the ProxyVehicles also assume this is the reply address
    * when they need to relay information back to the real vehicle.
    */
-  private Map<SocketAddress,ProxyVehicleSimView> sa2ProxyVehicle;
+  private Map<SocketAddress,ProxyVehicleSimModel> sa2ProxyVehicle;
 
   /** The thread of this UDP listener */
   private volatile Thread blinker;
@@ -120,7 +120,7 @@ public class UdpListener implements Runnable {
     this.udpPort = udpPort;
     this.sim = sim;
     ds = null;
-    sa2ProxyVehicle = new HashMap<SocketAddress,ProxyVehicleSimView>();
+    sa2ProxyVehicle = new HashMap<SocketAddress,ProxyVehicleSimModel>();
     blinker = null;
   }
 
@@ -278,7 +278,7 @@ public class UdpListener implements Runnable {
         if (msg.messageType == Real2ProxyMsg.Type.PV_UPDATE) {
           Real2ProxyPVUpdate pvUpdateMsg = (Real2ProxyPVUpdate)msg;
           // create a proxy vehicle for this real vehicle
-          ProxyVehicleSimView vehicle = makeProxyVehicle(pvUpdateMsg);
+          ProxyVehicleSimModel vehicle = makeProxyVehicle(pvUpdateMsg);
           // check the VIN number
           if (VinRegistry.registerVehicleWithExistingVIN(vehicle,
                                                          pvUpdateMsg.vin)) {
@@ -397,8 +397,8 @@ public class UdpListener implements Runnable {
    * @param msg  the PV update message
    * @return the proxy vehicle
    */
-  private ProxyVehicleSimView makeProxyVehicle(Real2ProxyPVUpdate msg) {
-    ProxyVehicleSimView vehicle = new ProxyVehicle(msg.position,
+  private ProxyVehicleSimModel makeProxyVehicle(Real2ProxyPVUpdate msg) {
+    ProxyVehicleSimModel vehicle = new ProxyVehicle(msg.position,
                                                    msg.heading,
                                                    msg.steeringAngle,
                                                    msg.velocity,

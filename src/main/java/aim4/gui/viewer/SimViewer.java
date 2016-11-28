@@ -5,6 +5,7 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.gui.*;
 import aim4.gui.Canvas;
+import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
@@ -75,6 +76,9 @@ public abstract class SimViewer extends JPanel implements
      * Reference to StatusPanelContainer
      */
     private StatusPanelContainer statusPanel;
+    /** The frame for showing a vehicle information */
+    protected VehicleInfoFrame vehicleInfoFrame;
+
 
     // ///////////////////////////////
     // SIM COMPONENTS

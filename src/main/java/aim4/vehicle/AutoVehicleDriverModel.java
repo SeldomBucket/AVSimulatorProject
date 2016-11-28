@@ -30,18 +30,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle;
 
-import java.util.List;
-
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.AutoDriver;
 import aim4.map.lane.Lane;
-import aim4.msg.i2v.I2VMessage;
-import aim4.msg.v2i.V2IMessage;
 import aim4.noise.DoubleGauge;
 
 /**
  * The interface of an autonomous vehicle from the viewpoint of a driver.
  */
-public interface AutoVehicleDriverView extends VehicleDriverView {
+public interface AutoVehicleDriverModel extends VehicleDriverModel {
 
   /////////////////////////////////
   // NESTED CLASSES
@@ -205,79 +201,5 @@ public interface AutoVehicleDriverView extends VehicleDriverView {
    * @return the speed of the vehicle behind on the target lane.
    */
   DoubleGauge getRearVehicleSpeedSensor();
-
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  // communications system
-
-  /**
-   * Get the Vehicle's transmission power.
-   *
-   * @return the Vehicle's transmission power, in meters
-   */
-  double getTransmissionPower();
-
-  // communications systems (statistics)
-
-  /**
-   * Get the number of bits this Vehicle has received.
-   *
-   * @return the number of bits this Vehicle has received
-   */
-  int getBitsReceived();
-
-  /**
-   * Get the number of bits this Vehicle has transmitted.
-   *
-   * @return the number of bits this Vehicle has transmitted
-   */
-  int getBitsTransmitted();
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  // communications systems (V2I)
-
-  /**
-   * Get the list of all messages currently in the queue of I2V messages
-   * waiting to be read by this Vehicle.
-   *
-   * @return the list of all messages currently in the queue of I2V messages.
-   */
-  List<I2VMessage> pollAllMessagesFromI2VInbox();
-
-  /**
-   * Adds a message to the outgoing queue of messages to be delivered to an
-   * IntersectionManager.
-   *
-   * @param msg the message to send to an IntersectionManager
-   */
-  void send(V2IMessage msg);
-
-  /**
-   * Adds a message to the incoming queue of messages received from
-   * IntersectionManagers.
-   *
-   * @param msg the message to send to another Vehicle
-   */
-  void receive(I2VMessage msg);
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  // debug
-
-  /**
-   * Get the last V2I message
-   *
-   * @return the last V2I message
-   */
-  V2IMessage getLastV2IMessage();
-
 
 }

@@ -66,7 +66,7 @@ import javax.swing.SwingUtilities;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.gui.viewer.SimViewer;
 import aim4.im.IntersectionManager;
@@ -74,8 +74,8 @@ import aim4.im.v2i.V2IManager;
 import aim4.im.v2i.RequestHandler.TrafficSignalRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.policy.Policy;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
-import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.track.ArcTrack;
@@ -87,8 +87,10 @@ import aim4.msg.v2i.Request;
 import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
 import aim4.util.Util;
-import aim4.vehicle.AutoVehicleSimView;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.VehicleSimModel;
+import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.vehicle.aim.AIMAutoVehicleSimModel;
+
 import java.io.InputStream;
 
 /**
@@ -256,7 +258,7 @@ public class Canvas extends JPanel implements ComponentListener,
   // PRIVATE FIELDS
   /////////////////////////////////
   /** The map */
-  private BasicMap basicMap;
+  private BasicIntersectionMap basicIntersectionMap;
   /** The position of the x-coordinate of the origin in the sim space */
   private int posOfOriginX;
   /** The position of the y-coordinate of the origin in the sim space */
@@ -325,7 +327,7 @@ public class Canvas extends JPanel implements ComponentListener,
     this.simViewer = simViewer;
     this.viewer = viewer;
 
-    basicMap = null;
+    basicIntersectionMap = null;
 
     posOfOriginX = 0;
     posOfOriginY = 0;
@@ -384,10 +386,10 @@ public class Canvas extends JPanel implements ComponentListener,
   /**
    * Initialize the canvas with a given map.
    *
-   * @param basicMap  the layout the canvas will be visualizing
+   * @param basicIntersectionMap  the layout the canvas will be visualizing
    */
-  public void initWithGivenMap(BasicMap basicMap) {
-    this.basicMap = basicMap;
+  public void initWithGivenMap(BasicIntersectionMap basicIntersectionMap) {
+    this.basicIntersectionMap = basicIntersectionMap;
 
     posOfOriginX = 0;
     posOfOriginY = 0;
@@ -409,7 +411,7 @@ public class Canvas extends JPanel implements ComponentListener,
     }
     // create the map image for the initial scale
     mapImageTable[scaleIndex] =
-        createMapImage(basicMap, scaleTable[scaleIndex]);
+        createMapImage(basicIntersectionMap, scaleTable[scaleIndex]);
 
     canUpdateCanvas = true;
   }
@@ -455,7 +457,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * Move the origin to stay within view.
    */
   private void moveOriginToStayWithinView() {
-    Rectangle2D r = basicMap.getDimensions();
+    Rectangle2D r = basicIntersectionMap.getDimensions();
     if (getWidth() >= VIEW_MARGIN) {
       if (posOfOriginX > getWidth() - VIEW_MARGIN) {
         posOfOriginX = getWidth() - VIEW_MARGIN;
@@ -482,7 +484,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * Setup the scale.
    */
   private void setupScale() {
-    Rectangle2D mapRect = basicMap.getDimensions();
+    Rectangle2D mapRect = basicIntersectionMap.getDimensions();
     // the initial scale
     scaleTable = new double[SCALE_NUM];
     scaleIndex = ZOOM_IN_SCALE_NUM;
@@ -507,7 +509,7 @@ public class Canvas extends JPanel implements ComponentListener,
   private Image getMapImageTable(int scaleIndex) {
     if (mapImageTable[scaleIndex] == null) {
       mapImageTable[scaleIndex] =
-          createMapImage(basicMap, scaleTable[scaleIndex]);
+          createMapImage(basicIntersectionMap, scaleTable[scaleIndex]);
     }
     return mapImageTable[scaleIndex];
   }
@@ -521,8 +523,8 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param map  the Layout for which to create a background image
    *        s    the scale of the map
    */
-  private Image createMapImage(BasicMap map, double scale) {
-    Rectangle2D mapRect = basicMap.getDimensions();
+  private Image createMapImage(BasicIntersectionMap map, double scale) {
+    Rectangle2D mapRect = basicIntersectionMap.getDimensions();
     // First, set up an image buffer
     Image bgImage = createImage((int) (mapRect.getWidth() * scale),
         (int) (mapRect.getHeight() * scale));
@@ -742,7 +744,7 @@ public class Canvas extends JPanel implements ComponentListener,
         }
       }
       // draw the vehicles
-      for (VehicleSimView v : sim.getActiveVehicles()) {
+      for (AIMVehicleSimModel v : sim.getActiveVehicles()) {
         drawVehicle(displayBuffer, v, sim.getSimulationTime());
       }
       // draw the traffic lights
@@ -759,7 +761,7 @@ public class Canvas extends JPanel implements ComponentListener,
       // draw tracks
       // drawTracks(displayBuffer);
       // lastly, draw the vehicles' information string
-      for (VehicleSimView v : sim.getActiveVehicles()) {
+      for (AIMVehicleSimModel v : sim.getActiveVehicles()) {
         drawVehicleInfoString(displayBuffer, v, sim.getSimulationTime());
       }
       // Finally display the new image
@@ -806,7 +808,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param currentTime  the current simulated time
    */
   private void drawVehicle(Graphics2D buffer,
-                           VehicleSimView vehicle,
+                           VehicleSimModel vehicle,
                            double currentTime) {
     // whether the vehicle is selected
     boolean selectedVehicle = (Debug.getTargetVIN() == vehicle.getVIN());
@@ -818,8 +820,8 @@ public class Canvas extends JPanel implements ComponentListener,
     } else if (Debug.getVehicleColor(vehicle.getVIN()) != null) {
       buffer.setPaint(Debug.getVehicleColor(vehicle.getVIN()));
     } else if (Debug.SHOW_VEHICLE_COLOR_BY_MSG_STATE) {
-      if (vehicle.getDriver() instanceof AutoDriver) {
-        AutoDriver autoDriver = (AutoDriver) vehicle.getDriver();
+      if (vehicle.getDriver() instanceof AIMAutoDriver) {
+        AIMAutoDriver autoDriver = (AIMAutoDriver) vehicle.getDriver();
         if (autoDriver.getCurrentCoordinator() instanceof V2ICoordinator) {
           V2ICoordinator coordinator =
               (V2ICoordinator) autoDriver.getCurrentCoordinator();
@@ -862,7 +864,7 @@ public class Canvas extends JPanel implements ComponentListener,
    * @param currentTime  the current simulated time
    */
   private void drawVehicleInfoString(Graphics2D buffer,
-                                     VehicleSimView vehicle,
+                                     AIMVehicleSimModel vehicle,
                                      double currentTime) {
     List<String> infos = new LinkedList<String>();
 
@@ -871,9 +873,9 @@ public class Canvas extends JPanel implements ComponentListener,
       infos.add(Integer.toString(vehicle.getVIN()));
     }
 
-    if (vehicle instanceof AutoVehicleSimView
-        && vehicle.getDriver() instanceof AutoDriver) {
-      AutoDriver da = (AutoDriver) vehicle.getDriver();
+    if (vehicle instanceof AIMAutoVehicleSimModel
+        && vehicle.getDriver() instanceof AIMAutoDriver) {
+      AIMAutoDriver da = (AIMAutoDriver) vehicle.getDriver();
       if (da.getCurrentCoordinator() instanceof V2ICoordinator) {
         V2ICoordinator coordinator =
             (V2ICoordinator) da.getCurrentCoordinator();
@@ -883,7 +885,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {
@@ -902,7 +904,7 @@ public class Canvas extends JPanel implements ComponentListener,
           if (coordinator.isAwaitingResponse()
               || coordinator.getReservationParameter() != null) {
             V2IMessage msg =
-                ((AutoVehicleSimView) vehicle).getLastV2IMessage();
+                ((AIMAutoVehicleSimModel) vehicle).getLastV2IMessage();
             if (msg instanceof Request) {
               Request request = (Request) msg;
               if (request.getProposals().size() > 0) {
@@ -1131,7 +1133,7 @@ public class Canvas extends JPanel implements ComponentListener,
   public synchronized void componentResized(ComponentEvent e) {
     canUpdateCanvas = false;
     makeDisplayBuffer();
-    if (basicMap != null) {
+    if (basicIntersectionMap != null) {
       moveOriginToStayWithinView();
       updateCanvas();
       canUpdateCanvas = true;
@@ -1331,7 +1333,7 @@ public class Canvas extends JPanel implements ComponentListener,
   public void highlightVehicle(int vin) {
     Simulator sim = simViewer.getSimulator();
     if (sim != null) {
-      VehicleSimView vehicle = sim.getActiveVehicle(vin);
+      AIMVehicleSimModel vehicle = sim.getActiveVehicle(vin);
       if (vehicle != null) {
         displayBuffer.setPaint(HIGHLIGHTED_VEHICLE_COLOR);
         displayBuffer.setStroke(HIGHLIGHTED_VEHICLE_STROKE);

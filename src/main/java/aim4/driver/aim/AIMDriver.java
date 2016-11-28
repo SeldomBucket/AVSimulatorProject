@@ -1,6 +1,6 @@
 package aim4.driver.aim;
 
-import aim4.driver.Driver;
+import aim4.driver.BasicDriver;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
@@ -8,7 +8,7 @@ import aim4.map.SpawnPoint;
 /**
  * Created by Callum on 15/11/2016.
  */
-public abstract class AIMDriver extends Driver implements AIMDriverSimModel {
+public abstract class AIMDriver extends BasicDriver implements AIMDriverSimModel {
     /////////////////////////////////
     // PRIVATE FIELDS
     /////////////////////////////////

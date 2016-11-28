@@ -33,7 +33,7 @@ package aim4.config;
 import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler;
 import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.
     CyclicSignalController;
-import aim4.map.GridMap;
+import aim4.map.GridIntersectionMap;
 import aim4.map.Road;
 import aim4.util.Util;
 import java.io.IOException;
@@ -74,7 +74,7 @@ public class TrafficSignalPhase {
    * @param strs  the description of the direction based on the name of the
    *              roads.
    */
-  public TrafficSignalPhase(GridMap map, List<String> strs) {
+  public TrafficSignalPhase(GridIntersectionMap map, List<String> strs) {
 
     this.phaseNum = strs.size() - 1;
     this.activeRoads = new LinkedList<List<Road>>();
@@ -138,7 +138,7 @@ public class TrafficSignalPhase {
    * @param csvFileName  the file name of the CSV file
    * @return the traffic signal phase object
    */
-  public static TrafficSignalPhase makeFromFile(GridMap map,
+  public static TrafficSignalPhase makeFromFile(GridIntersectionMap map,
                                                 String csvFileName) {
     List<String> strs = null;
     try {

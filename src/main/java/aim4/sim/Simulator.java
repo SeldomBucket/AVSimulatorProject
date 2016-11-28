@@ -32,9 +32,9 @@ package aim4.sim;
 
 import java.util.Set;
 
-import aim4.map.BasicMap;
-import aim4.vehicle.ProxyVehicleSimView;
-import aim4.vehicle.VehicleSimView;
+import aim4.map.BasicIntersectionMap;
+import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.vehicle.aim.ProxyVehicleSimModel;
 
 /**
  * An interface for simulators.
@@ -59,7 +59,7 @@ public interface Simulator {
    *
    * @return the layout of the simulation.
    */
-  BasicMap getMap();
+  BasicIntersectionMap getMap();
 
   /**
    * Get the total amount of simulation time has run.
@@ -94,7 +94,7 @@ public interface Simulator {
    *
    * @return the set of all active vehicles in the simulation
    */
-  Set<VehicleSimView> getActiveVehicles();
+  Set<AIMVehicleSimModel> getActiveVehicles();
 
   /**
    * Get a particular active vehicle via a given VIN.
@@ -102,12 +102,12 @@ public interface Simulator {
    * @param vin  the VIN number of the vehicle
    * @return the active vehicle
    */
-  VehicleSimView getActiveVehicle(int vin);
+  AIMVehicleSimModel getActiveVehicle(int vin);
 
   /**
    * Add the proxy vehicle to the simulator for the mixed reality experiments.
    *
    * @param vehicle  the proxy vehicle
    */
-  void addProxyVehicle(ProxyVehicleSimView vehicle);
+  void addProxyVehicle(ProxyVehicleSimModel vehicle);
 }

@@ -11,7 +11,7 @@ import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 import aim4.sim.setup.aim.BasicSimSetup;
-import aim4.vehicle.VehicleSimView;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
@@ -32,9 +32,6 @@ public class AIMSimViewer extends SimViewer {
                 1.0 // stop distance before intersection
         )));
     }
-
-    /** The frame for showing a vehicle information */
-    private VehicleInfoFrame vehicleInfoFrame;
 
     @Override
     protected Simulator.SimStepResult runSimulationStep() {
@@ -63,7 +60,7 @@ public class AIMSimViewer extends SimViewer {
             if (sim != null) {
                 Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
                 // See if we hit any vehicles
-                for (VehicleSimView vehicle : sim.getActiveVehicles()) {
+                for (AIMVehicleSimModel vehicle : sim.getActiveVehicles()) {
                     if (vehicle.getShape().contains(leftClickPoint)) {
                         if (Debug.getTargetVIN() != vehicle.getVIN()) {
                             Debug.setTargetVIN(vehicle.getVIN());

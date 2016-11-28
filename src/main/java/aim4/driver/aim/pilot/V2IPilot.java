@@ -35,14 +35,15 @@ import java.util.Queue;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.driver.aim.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.coordinator.V2ICoordinator.ReservationParameter;
-import aim4.vehicle.AutoVehicleDriverView;
+import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
- * An agent that pilots a {@link AutoVehicleDriverView} autonomously. This agent
+ * An agent that pilots a {@link AutoVehicleDriverModel} autonomously. This agent
  * attempts to emulate the behavior of a real-world autonomous driver agent in
  * terms of physically controlling the Vehicle.
  */
@@ -76,9 +77,9 @@ public class V2IPilot extends BasicPilot {
 
   private double stopDistanceBeforeIntersection;
 
-  private AutoVehicleDriverView vehicle;
+  private AIMAutoVehicleDriverModel vehicle;
 
-  private AutoDriver driver;
+  private AIMAutoDriver driver;
 
 
   // ///////////////////////////////
@@ -91,7 +92,7 @@ public class V2IPilot extends BasicPilot {
    * @param vehicle      the vehicle to control
    * @param driver       the driver
    */
-  public V2IPilot(AutoVehicleDriverView vehicle, AutoDriver driver) {
+  public V2IPilot(AIMAutoVehicleDriverModel vehicle, AIMAutoDriver driver) {
     this.vehicle = vehicle;
     this.driver = driver;
     stopDistanceBeforeIntersection = DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION;
@@ -106,7 +107,7 @@ public class V2IPilot extends BasicPilot {
    * Get the vehicle this pilot controls.
    */
   @Override
-  public AutoVehicleDriverView getVehicle() {
+  public AutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 
@@ -114,7 +115,7 @@ public class V2IPilot extends BasicPilot {
    * Get the driver this pilot controls.
    */
   @Override
-  public AutoDriver getDriver() {
+  public AIMAutoDriver getDriver() {
     return driver;
   }
 
@@ -258,7 +259,6 @@ public class V2IPilot extends BasicPilot {
   /**
    * Stop before hitting the car in front of us.
    *
-   * @param vehicle  the vehicle
    */
   private void dontHitVehicleInFront() {
 //    double stoppingDistance = distIfStopNextTimeStep(vehicle);
@@ -305,7 +305,6 @@ public class V2IPilot extends BasicPilot {
    * Determine how far the vehicle will go if it waits until the next time
    * step to stop.
    *
-   * @param vehicle  the vehicle
    * @return How far the vehicle will go if it waits until the next time
    *         step to stop
    */
@@ -326,7 +325,6 @@ public class V2IPilot extends BasicPilot {
    * Calculate the velocity of the vehicle at the next time step, if we choose
    * to accelerate at this time step.
    *
-   * @param vehicle  the vehicle
    * @return the velocity of the vehicle at the next time step, if we choose
    *         to accelerate at this time step
    */

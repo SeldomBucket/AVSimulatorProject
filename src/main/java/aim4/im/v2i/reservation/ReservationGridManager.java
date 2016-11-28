@@ -54,7 +54,7 @@ import aim4.msg.v2i.Request.VehicleSpecForRequestMsg;
 import aim4.sim.StatCollector;
 import aim4.util.TiledArea;
 import aim4.util.TiledArea.Tile;
-import aim4.vehicle.BasicAutoVehicle;
+import aim4.vehicle.aim.AIMBasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleUtil;
 
@@ -619,7 +619,7 @@ public class ReservationGridManager implements
       Debug.currentMap.getLaneRegistry().get(q.getDepartureLaneId());
 
     // Create a test vehicle to use in the internal simulation
-    BasicAutoVehicle testVehicle =
+    AIMBasicAutoVehicle testVehicle =
       createTestVehicle(q.getSpec(),
                         q.getArrivalVelocity(),
                         q.getMaxTurnVelocity(),
@@ -695,7 +695,7 @@ public class ReservationGridManager implements
    *
    * @return             whether or not a reservation could be made
    */
-  private BasicAutoVehicle createTestVehicle(
+  private AIMBasicAutoVehicle createTestVehicle(
                                           Request.VehicleSpecForRequestMsg spec,
                                           double arrivalVelocity,
                                           double maxVelocity,
@@ -717,7 +717,7 @@ public class ReservationGridManager implements
         spec.getMaxSteeringAngle(),
         spec.getMaxTurnPerSecond());
 
-    BasicAutoVehicle testVehicle = new BasicAutoVehicle(
+    AIMBasicAutoVehicle testVehicle = new AIMBasicAutoVehicle(
       newSpec,
       intersection.getEntryPoint(arrivalLane), // Position
       intersection.getEntryHeading(arrivalLane), // Heading
@@ -776,7 +776,6 @@ public class ReservationGridManager implements
   /**
    * Find a list of unreserved tiletimes by simulation
    *
-   * @param TestVehicle   the test vehicle
    * @param dummy         the dummy driver
    * @param arrivalTime   the arrival time of the vehicle
    * @param accelerating  whether or not to setMaxAccelWithMaxTargetVelocity to maximum velocity
@@ -787,7 +786,7 @@ public class ReservationGridManager implements
    *         fails.
    */
   private FindTileTimesBySimulationResult
-            findTileTimesBySimulation(BasicAutoVehicle testVehicle,
+            findTileTimesBySimulation(AIMBasicAutoVehicle testVehicle,
                                       Driver dummy,
                                       double arrivalTime,
                                       boolean accelerating) {
@@ -852,7 +851,7 @@ public class ReservationGridManager implements
    * @param accelerating  whether or not to setMaxAccelWithMaxTargetVelocity to maximum velocity
    *                      during the traversal
    */
-  private void moveTestVehicle(BasicAutoVehicle testVehicle,
+  private void moveTestVehicle(AIMBasicAutoVehicle testVehicle,
                                Driver dummy,
                                double duration,
                                boolean accelerating) {

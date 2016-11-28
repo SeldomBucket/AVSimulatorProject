@@ -28,65 +28,12 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.aim.coordinator;
-
-import aim4.driver.aim.AIMAutoDriver;
-import aim4.driver.aim.pilot.V2IPilot;
-import aim4.vehicle.AutoVehicleDriverModel;
-import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
+package aim4.vehicle.aim;
 
 /**
- * The coordinator when there is no intersection.
+ * The interface of a manually-driven vehicle from the viewpoint of a simulator.
  */
-public class NoIntersectionCoordinator implements Coordinator {
-
-  /////////////////////////////////
-  // PRIVATE FIELDS
-  /////////////////////////////////
-
-  // vehicle and agents
-
-  /**
-   * The sub-agent that controls physical manipulation of the vehicle
-   */
-  private V2IPilot pilot;
-
-  /////////////////////////////////
-  // CONSTRUCTORS
-  /////////////////////////////////
-
-  /**
-   * Create an coordinator to coordinate a vehicle.
-   *
-   * @param vehicle  the Vehicle to coordinate
-   * @param driver   the driver
-   */
-  public NoIntersectionCoordinator(AIMAutoVehicleDriverModel vehicle,
-                                   AIMAutoDriver driver) {
-    pilot = new V2IPilot(vehicle, driver);
-  }
-
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void act() {
-    pilot.simpleThrottleAction();
-    // TODO:  think how to remove dontEnterIntersection()
-    // in simpleThrottleAction()
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public boolean isTerminated() {
-    return false;
-  }
+public interface HumanDrivenVehicleSimModel extends HumanDrivenVehicleDriverModel,
+        AIMVehicleSimModel {
 
 }

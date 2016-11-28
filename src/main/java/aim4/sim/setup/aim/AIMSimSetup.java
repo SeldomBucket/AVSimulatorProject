@@ -51,11 +51,4 @@ public interface AIMSimSetup extends SimSetup {
    * @param stopDistBeforeIntersection  the stopping distance
    */
   void setStopDistBeforeIntersection(double stopDistBeforeIntersection);
-
-  /**
-   * Get the simulator.
-   *
-   * @return the simulator
-   */
-  Simulator getSimulator();
 }

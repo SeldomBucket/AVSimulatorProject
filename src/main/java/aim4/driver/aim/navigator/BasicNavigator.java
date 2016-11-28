@@ -40,7 +40,7 @@ import java.util.PriorityQueue;
 
 import aim4.config.Debug;
 import aim4.im.IntersectionManager;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
@@ -223,7 +223,7 @@ public class BasicNavigator implements Navigator {
   /**
    * The map object
    */
-  private BasicMap basicMap;
+  private BasicIntersectionMap basicIntersectionMap;
 
   /**
    * The vehicle for which this agent is navigating.
@@ -247,11 +247,11 @@ public class BasicNavigator implements Navigator {
    * This will only be called by derived classes.
    *
    * @param vehicleSpec  the vehicle's specification
-   * @param basicMap     the map object
+   * @param basicIntersectionMap     the map object
    */
-  public BasicNavigator(VehicleSpec vehicleSpec, BasicMap basicMap) {
+  public BasicNavigator(VehicleSpec vehicleSpec, BasicIntersectionMap basicIntersectionMap) {
     this.vehicleSpec = vehicleSpec;
-    this.basicMap = basicMap;
+    this.basicIntersectionMap = basicIntersectionMap;
   }
 
   /////////////////////////////////
@@ -336,7 +336,7 @@ public class BasicNavigator implements Navigator {
     while(!queue.isEmpty() && !queue.peek().isComplete()) {
       Node node = queue.poll();  // the current node
       IntersectionManager nodeIM =
-        basicMap.getImRegistry().get(node.getLastIMid());
+        basicIntersectionMap.getImRegistry().get(node.getLastIMid());
       Road nodeRoad = node.getLastRoad();
 
       // for each departure road of the current node

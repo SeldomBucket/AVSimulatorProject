@@ -33,7 +33,7 @@ package aim4.map.destination;
 import java.util.List;
 
 import aim4.config.Debug;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 
@@ -64,7 +64,7 @@ public class TurnBasedDestinationSelector implements DestinationSelector {
    * @param layout  the layout from which to create the new
    *                identity destination selector
    */
-  public TurnBasedDestinationSelector(BasicMap layout) {
+  public TurnBasedDestinationSelector(BasicIntersectionMap layout) {
     destinationRoads = layout.getDestinationRoads();
   }
 

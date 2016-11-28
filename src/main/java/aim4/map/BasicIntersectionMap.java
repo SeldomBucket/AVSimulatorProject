@@ -42,7 +42,7 @@ import aim4.util.Registry;
  * allows a unified interface so that we can re-use certain layouts and
  * create classes of layouts.
  */
-public interface BasicMap {
+public interface BasicIntersectionMap {
 
   /**
    * Get the Roads that are part of this Layout.
