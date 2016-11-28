@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 
 /**
@@ -52,7 +53,7 @@ public class Road {
   /** The Road that follows this one in the opposite direction. */
   private Road dual;
   /** The Layout of which the Road is a part. */
-  private BasicIntersectionMap map;
+  private BasicMap map;
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -64,7 +65,7 @@ public class Road {
    * @param name   the name of the Road
    * @param map    the map of which the Road is a part
    */
-  public Road(String name, BasicIntersectionMap map) {
+  public Road(String name, BasicMap map) {
     this(name, new ArrayList<Lane>(), map);
   }
 
@@ -75,7 +76,7 @@ public class Road {
    * @param lanes  the Lanes from which to make the Road
    * @param map    the Layout of which the Road is a part
    */
-  public Road(String name, List<Lane> lanes, BasicIntersectionMap map) {
+  public Road(String name, List<Lane> lanes, BasicMap map) {
     this.name = name;
     this.lanes = new ArrayList<Lane>(lanes);
     this.map = map;

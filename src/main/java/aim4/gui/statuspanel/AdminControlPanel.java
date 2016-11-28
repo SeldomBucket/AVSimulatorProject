@@ -47,125 +47,128 @@ import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
 import aim4.im.v2i.RequestHandler.GoStraightRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.sim.Simulator;
+import aim4.sim.setup.aim.AIMSimulator;
 
 /**
  * The Administration Control Panel
  */
 public class AdminControlPanel extends JPanel
-                               implements StatusPanelInterface,
-                                          ActionListener {
+        implements StatusPanelInterface,
+        ActionListener {
 
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  /////////////////////////////////
-  // PRIVATE FIELDS
-  /////////////////////////////////
+    /////////////////////////////////
+    // PRIVATE FIELDS
+    /////////////////////////////////
 
-  private JButton fcfsButton;
-  private JButton stopButton;
-  private JButton straightButton;
-  private JButton mixedLightButton;
+    private JButton fcfsButton;
+    private JButton stopButton;
+    private JButton straightButton;
+    private JButton mixedLightButton;
 
-  /** The viewer object */
-  Viewer viewer;
+    /** The viewer object */
+    Viewer viewer;
 
-  // ///////////////////////////////
-  // CONSTRUCTORS
-  // ///////////////////////////////
+    // ///////////////////////////////
+    // CONSTRUCTORS
+    // ///////////////////////////////
 
-  /**
-   * Create an administration control panel.
-   *
-   * @param viewer the viewer object
-   */
-  public AdminControlPanel(Viewer viewer) {
-    this.viewer = viewer;
+    /**
+     * Create an administration control panel.
+     *
+     * @param viewer the viewer object
+     */
+    public AdminControlPanel(Viewer viewer) {
+        this.viewer = viewer;
 
-    fcfsButton = new JButton("FCFS");
-    stopButton = new JButton("Stop");
-    straightButton = new JButton("Alternate");
-
-
-    // layout
-    GroupLayout layout = new GroupLayout(this);
-    setLayout(layout);
-    layout.setAutoCreateGaps(false);
-    layout.setAutoCreateContainerGaps(false);
-
-    layout.setHorizontalGroup(layout
-      .createSequentialGroup()
-        .addComponent(fcfsButton)
-        .addComponent(stopButton)
-        .addComponent(straightButton)
-    );
-
-    layout.setVerticalGroup(layout
-      .createParallelGroup(GroupLayout.Alignment.CENTER)
-        .addComponent(fcfsButton)
-        .addComponent(stopButton)
-        .addComponent(straightButton)
-    );
-
-    // add event handler
-    fcfsButton.addActionListener(this);
-    stopButton.addActionListener(this);
-    straightButton.addActionListener(this);
-  }
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void update() {
-    // do nothing
-  }
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void clear() {
-    // do nothing
-  }
+        fcfsButton = new JButton("FCFS");
+        stopButton = new JButton("Stop");
+        straightButton = new JButton("Alternate");
 
 
-  /////////////////////////////////
-  // EVENT HANDLERS
-  /////////////////////////////////
+        // layout
+        GroupLayout layout = new GroupLayout(this);
+        setLayout(layout);
+        layout.setAutoCreateGaps(false);
+        layout.setAutoCreateContainerGaps(false);
 
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == fcfsButton ||
-        e.getSource() == stopButton ||
-        e.getSource() == straightButton) {
-      int imId = Debug.getTargetIMid();
-      if (imId >= 0) {
-        Simulator sim = viewer.getSelectedSimulator();
-        IntersectionManager im0 =
-          sim.getMap().getIntersectionManagers().get(imId);
-        assert im0.getId() == imId;
-        if (im0 instanceof V2IManager) {
-          V2IManager im = (V2IManager)im0;
-          if (im.getPolicy() instanceof BasePolicy) {
-            BasePolicy policy = (BasePolicy)im.getPolicy();
-            if (e.getSource() == fcfsButton) {
-              policy.setRequestHandler(new FCFSRequestHandler());
-            } else if (e.getSource() == stopButton) {
-              policy.setRequestHandler(new AllStopRequestHandler());
-            } else if (e.getSource() == straightButton) {
-              policy.setRequestHandler(new GoStraightRequestHandler());
-            }
-          }
-        }
-      }
+        layout.setHorizontalGroup(layout
+                .createSequentialGroup()
+                .addComponent(fcfsButton)
+                .addComponent(stopButton)
+                .addComponent(straightButton)
+        );
+
+        layout.setVerticalGroup(layout
+                .createParallelGroup(GroupLayout.Alignment.CENTER)
+                .addComponent(fcfsButton)
+                .addComponent(stopButton)
+                .addComponent(straightButton)
+        );
+
+        // add event handler
+        fcfsButton.addActionListener(this);
+        stopButton.addActionListener(this);
+        straightButton.addActionListener(this);
     }
-  }
+
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void update() {
+        // do nothing
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void clear() {
+        // do nothing
+    }
+
+
+    /////////////////////////////////
+    // EVENT HANDLERS
+    /////////////////////////////////
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == fcfsButton ||
+                e.getSource() == stopButton ||
+                e.getSource() == straightButton) {
+            Simulator sim = viewer.getSelectedSimulator();
+            if (sim instanceof AIMSimulator) {
+                int imId = Debug.getTargetIMid();
+                if (imId >= 0) {
+                    IntersectionManager im0 =
+                            ((AIMSimulator) sim).getMap().getIntersectionManagers().get(imId);
+                    assert im0.getId() == imId;
+                    if (im0 instanceof V2IManager) {
+                        V2IManager im = (V2IManager) im0;
+                        if (im.getPolicy() instanceof BasePolicy) {
+                            BasePolicy policy = (BasePolicy) im.getPolicy();
+                            if (e.getSource() == fcfsButton) {
+                                policy.setRequestHandler(new FCFSRequestHandler());
+                            } else if (e.getSource() == stopButton) {
+                                policy.setRequestHandler(new AllStopRequestHandler());
+                            } else if (e.getSource() == straightButton) {
+                                policy.setRequestHandler(new GoStraightRequestHandler());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
 
 }

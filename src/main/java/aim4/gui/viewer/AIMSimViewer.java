@@ -1,16 +1,21 @@
 package aim4.gui.viewer;
 
 import aim4.config.Debug;
+import aim4.gui.AIMCanvas;
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.setuppanel.AIMSimSetupPanel;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
+import aim4.sim.UdpListener;
+import aim4.sim.setup.aim.AIMSimulator;
 import aim4.sim.setup.aim.BasicSimSetup;
+import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.awt.event.MouseEvent;
@@ -20,6 +25,11 @@ import java.awt.geom.Point2D;
  * Created by Callum on 09/11/2016.
  */
 public class AIMSimViewer extends SimViewer {
+    /**
+     * UDP listener
+     */
+    private UdpListener udpListener;
+
     public AIMSimViewer(StatusPanelContainer statusPanel, Viewer viewer){
         super(statusPanel, viewer, new AIMSimSetupPanel(new BasicSimSetup(1, // columns
                 1, // rows
@@ -31,6 +41,7 @@ public class AIMSimViewer extends SimViewer {
                 0.28, // traffic level
                 1.0 // stop distance before intersection
         )));
+        this.udpListener = null;
     }
 
     @Override
@@ -46,6 +57,81 @@ public class AIMSimViewer extends SimViewer {
         return simStepResult;
     }
 
+    @Override
+    protected void createCanvas(Viewer viewer) {
+        canvas = new AIMCanvas(this, viewer);
+
+        // Make self key listener
+        setFocusable(true);
+        requestFocusInWindow();
+    }
+
+    /**
+     * Set whether or not the canvas draws the IM shapes.
+     *
+     * @param useIMDebugShapes  whether or not the canvas should draw the shapes
+     */
+    public void setIsShowIMDebugShapes(boolean useIMDebugShapes) {
+        ((AIMCanvas) this.canvas).setIsShowIMDebugShapes(useIMDebugShapes);
+    }
+
+    // /////////////////////////////////////
+    // UDP listening
+    // /////////////////////////////////////
+    /**
+     * Start the UDP listening.
+     */
+    public void startUdpListening() {
+        assert sim instanceof AIMSimulator;
+        if (sim != null) {
+            if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
+                System.err.print("Starting UDP listener...\n");
+            }
+            // create the UDP listener thread
+            udpListener = new UdpListener((AIMSimulator) sim);
+            udpListener.start();
+        } else {
+            System.err.printf("Must start the simulator before starting "
+                    + "UdpListener.\n");
+        }
+    }
+
+    /**
+     * Stop the UDP listening
+     */
+    public void stopUdpListening() {
+        if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
+            System.err.print("Stopping UDP listener...\n");
+        }
+        udpListener.stop();
+    }
+
+    /**
+     * Sets the udpListener to null.
+     */
+    public void removeUdpListener() {
+        udpListener = null;
+    }
+
+    /**
+     * Returns a boolean indicating whether the udpListener has started.
+     * @return A boolean indicating whether the udpListener has started.
+     */
+    public boolean udpListenerHasStarted() {
+        return udpListener.hasStarted();
+    }
+
+    protected void runBeforeCreatingSimulator() {
+        assert udpListener == null;
+        assert sim instanceof AIMSimulator;
+    }
+
+    protected void runBeforeResettingSimulator() {
+        if (udpListener != null) {
+            stopUdpListening();
+        }
+    }
+
     // ///////////////////////////////
     // MouseListener interface
     // ///////////////////////////////
@@ -58,9 +144,10 @@ public class AIMSimViewer extends SimViewer {
         // right click
         if (e.getButton() == MouseEvent.BUTTON1) {
             if (sim != null) {
+                assert sim instanceof AIMSimulator;
                 Point2D leftClickPoint = canvas.getMapPosition(e.getX(), e.getY());
                 // See if we hit any vehicles
-                for (AIMVehicleSimModel vehicle : sim.getActiveVehicles()) {
+                for (AIMVehicleSimModel vehicle : ((AIMSimulator) sim).getActiveVehicles()) {
                     if (vehicle.getShape().contains(leftClickPoint)) {
                         if (Debug.getTargetVIN() != vehicle.getVIN()) {
                             Debug.setTargetVIN(vehicle.getVIN());
@@ -82,7 +169,7 @@ public class AIMSimViewer extends SimViewer {
                     }
                 }
                 // see if we hit any intersection
-                for (IntersectionManager im : sim.getMap().getIntersectionManagers()) {
+                for (IntersectionManager im : ((AIMSimulator)sim).getMap().getIntersectionManagers()) {
                     if (im.getIntersection().getArea().contains(leftClickPoint)) {
                         if (Debug.getTargetIMid() != im.getId()) {
                             Debug.setTargetIMid(im.getId());

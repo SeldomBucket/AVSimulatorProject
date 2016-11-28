@@ -28,12 +28,16 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map;
+package aim4.map.aim;
 
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import aim4.im.IntersectionManager;
+import aim4.map.BasicMap;
+import aim4.map.DataCollectionLine;
+import aim4.map.Road;
+import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.util.Registry;
 
@@ -42,36 +46,13 @@ import aim4.util.Registry;
  * allows a unified interface so that we can re-use certain layouts and
  * create classes of layouts.
  */
-public interface BasicIntersectionMap {
-
-  /**
-   * Get the Roads that are part of this Layout.
-   *
-   * @return the Roads that are part of this Layout
-   */
-  List<Road> getRoads();
-
+public interface BasicIntersectionMap extends BasicMap {
   /**
    * Get the Roads that exit this Layout.
    *
    * @return the Roads exit this Layout
    */
   List<Road> getDestinationRoads();
-
-  /**
-   * Get the dimensions of this Layout, in Rectangle form.
-   *
-   * @return a Rectangle representing the dimensions of this Layout
-   */
-  Rectangle2D getDimensions();
-
-  /**
-   * Get the maximum speed limit of any Road in the Layout.
-   *
-   * @return the maximum speed, in meters per second, of any Lane in any Road
-   *         in the Layout
-   */
-  double getMaximumSpeedLimit();
 
   /**
    * Get the intersection manager registry.
@@ -81,48 +62,11 @@ public interface BasicIntersectionMap {
   Registry<IntersectionManager> getImRegistry();
 
   /**
-   * Get the lane registry.
-   *
-   * @return the lane registry.
-   */
-  Registry<Lane> getLaneRegistry();
-
-  /**
-   * Given a Lane, get the Road of which that Lane is a part.
-   *
-   * @param lane the Lane for which to get the enclosing Road
-   * @return     the Road of which the given Lane is a part.
-   */
-  Road getRoad(Lane lane);
-
-  /**
-   * Given a Lane ID number, get the Road of which that Lane is a part.
-   *
-   * @param laneID the ID of the Lane for which to get the enclosing Road
-   * @return       the Road of which the given Lane is a part.
-   */
-  Road getRoad(int laneID);
-
-  /**
    * Get the IntersectionManagers that are part of this Layout.
    *
    * @return the IntersectionManagers that are part of this Layout
    */
   List<IntersectionManager> getIntersectionManagers();
-
-  /**
-   * Get the list of data collection line.
-   *
-   * @return the data collection lines
-   */
-  List<DataCollectionLine> getDataCollectionLines();
-
-  /**
-   * Get the list of spawn points.
-   *
-   * @return the lkist of spawn points
-   */
-  List<SpawnPoint> getSpawnPoints();
 
   /**
    * Set the intersection manager of a particular intersection.
@@ -132,11 +76,4 @@ public interface BasicIntersectionMap {
    * @param im      the intersection manager
    */
   void setManager(int column, int row, IntersectionManager im);
-
-  /**
-   * Print the data collected in data collection lines to the given file
-   *
-   * @param outFileName  the name of the file to which the data are outputted.
-   */
-  void printDataCollectionLinesData(String outFileName);
 }

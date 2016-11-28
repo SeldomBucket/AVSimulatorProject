@@ -34,7 +34,7 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.v2i.reservation.ReservationGridManager;
-import aim4.map.GridIntersectionMap;
+import aim4.map.aim.GridIntersectionMap;
 import aim4.map.GridMapUtil;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
