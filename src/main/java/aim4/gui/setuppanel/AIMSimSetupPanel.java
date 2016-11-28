@@ -41,8 +41,8 @@ import javax.swing.JComboBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
-import aim4.gui.parampanel.AutoDriverOnlyParamPanel;
-import aim4.gui.parampanel.TrafficSignalParamPanel;
+import aim4.gui.parampanel.aim.AutoDriverOnlyParamPanel;
+import aim4.gui.parampanel.aim.TrafficSignalParamPanel;
 import aim4.sim.setup.aim.*;
 
 /**

@@ -35,7 +35,7 @@ import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.reservation.ReservationGridManager;
-import aim4.map.GridMap;
+import aim4.map.GridIntersectionMap;
 import aim4.map.GridMapUtil;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
@@ -231,7 +231,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   @Override
   public Simulator getSimulator() {
     double currentTime = 0.0;
-    GridMap layout = new GridMap(currentTime,
+    GridIntersectionMap layout = new GridIntersectionMap(currentTime,
                                        numOfColumns,
                                        numOfRows,
                                        laneWidth,

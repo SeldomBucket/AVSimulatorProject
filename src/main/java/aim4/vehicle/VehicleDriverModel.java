@@ -33,6 +33,7 @@ package aim4.vehicle;
 import java.awt.Shape;
 import java.awt.geom.Point2D;
 
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 
 /**

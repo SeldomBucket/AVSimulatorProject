@@ -91,8 +91,6 @@ public class ProxyVehicle extends AIMBasicAutoVehicle
   // PRIVATE FIELDS
   /////////////////////////////////
 
-  /** The proxy driver */
-  ProxyDriver driver;
   /** The socket address */
   SocketAddress sa;
   /** The last time stamp */
@@ -147,7 +145,7 @@ public class ProxyVehicle extends AIMBasicAutoVehicle
    */
   @Override
   public ProxyDriver getDriver() {
-    return driver;
+    return (ProxyDriver) super.getDriver();
   }
 
   /**
@@ -155,7 +153,7 @@ public class ProxyVehicle extends AIMBasicAutoVehicle
    */
   @Override
   public void setDriver(ProxyDriver driver) {
-    this.driver = driver;
+    super.setDriver(driver);
   }
 
   /////////////////////////////////

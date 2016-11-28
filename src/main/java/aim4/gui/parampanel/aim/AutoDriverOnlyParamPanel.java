@@ -28,57 +28,86 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.gui.parampanel;
+package aim4.gui.parampanel.aim;
 
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.sim.setup.aim.BasicSimSetup;
 
 /**
- * The traffic signal parameter panel.
+ * The autonomous driver only simulation parameter panel.
  */
-public class TrafficSignalParamPanel extends JPanel {
+public class AutoDriverOnlyParamPanel extends JPanel {
   private static final long serialVersionUID = 1L;
 
   LabeledSlider trafficRateSlider;
-  LabeledSlider greenLightDurationSlider;
-  LabeledSlider yelloLightDurationSlider;
+  LabeledSlider speedLimitSlider;
+  LabeledSlider stopDistToIntersectionSlider;
+  LabeledSlider numOfColumnSlider;
+  LabeledSlider numOfRowSlider;
   LabeledSlider lanesPerRoadSlider;
 
   /**
-   * Create a traffic signal parameter panel.
+   * Create the autonomous driver only simulation parameter panel.
+   *
+   * @param simSetup  the simulation setup
    */
-  public TrafficSignalParamPanel() {
+  public AutoDriverOnlyParamPanel(BasicSimSetup simSetup) {
     setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
     // create the components
 
     trafficRateSlider =
       new LabeledSlider(0.0, 2500.0,
-                        800.0,
+                        simSetup.getTrafficLevel() * 3600.0,
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
     add(trafficRateSlider);
 
+    speedLimitSlider =
+      new LabeledSlider(0.0, 80.0,
+                        simSetup.getSpeedLimit(),
+                        10.0, 5.0,
+                        "Speed Limit: %.0f meters/second",
+                        "%.0f");
+    add(speedLimitSlider);
+
+    stopDistToIntersectionSlider =
+      new LabeledSlider(0.0, 50.0,
+                        simSetup.getStopDistBeforeIntersection(),
+                        10.0, 1.0,
+                        "Stopping Distance Before Intersection: %.0f meters",
+                        "%.0f");
+    add(stopDistToIntersectionSlider);
+
+    numOfColumnSlider =
+        new LabeledSlider(1.0, 5.0,
+                          simSetup.getColumns(),
+                          1.0, 1.0,
+                          "Number of North-bound/South-bound Roads: %.0f",
+                          "%.0f");
+    add(numOfColumnSlider);
+
+    numOfRowSlider =
+      new LabeledSlider(1.0, 5.0,
+                        simSetup.getColumns(),
+                        1.0, 1.0,
+                        "Number of East-bound/West-bound Roads: %.0f",
+                        "%.0f");
+    add(numOfRowSlider);
+
     lanesPerRoadSlider =
-      new LabeledSlider(1.0, 8.0, 3.0, 1.0, 1.0,
+      new LabeledSlider(1.0, 8.0,
+                        simSetup.getLanesPerRoad(),
+                        1.0, 1.0,
                         "Number of Lanes per Road: %.0f",
                         "%.0f");
     add(lanesPerRoadSlider);
 
-    greenLightDurationSlider =
-      new LabeledSlider(0.0, 60.0, 30.0, 5.0, 1.0,
-                        "Green Signal Duration: %.1f seconds",
-                        "%.0f");
-    add(greenLightDurationSlider);
 
-    yelloLightDurationSlider =
-      new LabeledSlider(0.0, 60.0, 5.0, 5.0, 1.0,
-                        "Yellow Signal Duration: %.1f seconds",
-                        "%.0f");
-    add(yelloLightDurationSlider);
   }
 
   /**
@@ -91,21 +120,40 @@ public class TrafficSignalParamPanel extends JPanel {
   }
 
   /**
-   * Get the green light duration.
+   * Get the speed limit.
    *
-   * @return the green light duration
+   * @return the speed limit
    */
-  public double getGreenLightDuration() {
-    return greenLightDurationSlider.getValue();
+  public double getSpeedLimit() {
+    return speedLimitSlider.getValue();
   }
 
   /**
-   * Get the yellow light duration.
+   * Get the stop distance to intersection.
    *
-   * @return the yellow light duration
+   * @return the stop distance to intersection
    */
-  public double getYellowLightDuration() {
-    return yelloLightDurationSlider.getValue();
+  public double getStopDistToIntersection() {
+    double d = stopDistToIntersectionSlider.getValue();
+    return (d < 1.0)?1.0:d;
+  }
+
+  /**
+   * Get the number of columns.
+   *
+   * @return the number of columns
+   */
+  public int getNumOfColumns() {
+    return (int)numOfColumnSlider.getValue();
+  }
+
+  /**
+   * Get the number of rows.
+   *
+   * @return the number of rows
+   */
+  public int getNumOfRows() {
+    return (int)numOfRowSlider.getValue();
   }
 
   /**

@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
@@ -44,10 +44,10 @@ public class ProxyDriver extends AIMAutoDriver {
    * Construct a proxy driver.
    *
    * @param vehicle the vehicle object
-   * @param basicMap  the map object
+   * @param basicIntersectionMap  the map object
    */
-  public ProxyDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
-    super(vehicle, basicMap);
+  public ProxyDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
+    super(vehicle, basicIntersectionMap);
     // TODO Auto-generated constructor stub
   }
 

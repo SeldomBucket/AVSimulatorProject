@@ -53,7 +53,7 @@ import aim4.vehicle.VinRegistry;
 /**
  * The grid layout map.
  */
-public class GridMap implements BasicMap {
+public class GridIntersectionMap implements BasicIntersectionMap {
 
   /////////////////////////////////
   // CONSTANTS
@@ -123,9 +123,9 @@ public class GridMap implements BasicMap {
    *                         direction
    * @param distanceBetween  the distance between the adjacent intersections
    */
-  public GridMap(double initTime, int columns, int rows,
-                 double laneWidth, double speedLimit, int lanesPerRoad,
-                 double medianSize, double distanceBetween) {
+  public GridIntersectionMap(double initTime, int columns, int rows,
+                             double laneWidth, double speedLimit, int lanesPerRoad,
+                             double medianSize, double distanceBetween) {
     // Can't make these unless there is at least one row and column
     if(rows < 1 || columns < 1) {
       throw new IllegalArgumentException("Must have at least one column "+

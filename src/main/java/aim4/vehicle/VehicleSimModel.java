@@ -1,7 +1,7 @@
 package aim4.vehicle;
 
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
-import aim4.driver.aim.AIMAutoDriver;
 
 import java.awt.*;
 import java.awt.geom.Line2D;

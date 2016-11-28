@@ -33,6 +33,7 @@ package aim4.driver.aim.coordinator;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.vehicle.AutoVehicleDriverModel;
+import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
  * The coordinator when there is no intersection.
@@ -60,7 +61,7 @@ public class NoIntersectionCoordinator implements Coordinator {
    * @param vehicle  the Vehicle to coordinate
    * @param driver   the driver
    */
-  public NoIntersectionCoordinator(AutoVehicleDriverModel vehicle,
+  public NoIntersectionCoordinator(AIMAutoVehicleDriverModel vehicle,
                                    AIMAutoDriver driver) {
     pilot = new V2IPilot(vehicle, driver);
   }

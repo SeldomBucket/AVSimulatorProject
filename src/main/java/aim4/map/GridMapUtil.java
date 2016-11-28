@@ -63,7 +63,7 @@ import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 
 /**
- * The utility class for GridMap.
+ * The utility class for GridIntersectionMap.
  */
 public class GridMapUtil {
 
@@ -315,7 +315,7 @@ public class GridMapUtil {
    * @param currentTime  the current time
    * @param config       the reservation grid manager configuration
    */
-  public static void setFCFSManagers(GridMap layout,
+  public static void setFCFSManagers(GridIntersectionMap layout,
                                      double currentTime,
                                      ReservationGridManager.Config config) {
     layout.removeAllManagers();
@@ -342,7 +342,7 @@ public class GridMapUtil {
    * @param config              the reservation grid manager configuration
    * @param processingInterval  the processing interval
    */
-  public static void setBatchManagers(GridMap layout,
+  public static void setBatchManagers(GridIntersectionMap layout,
                                       double currentTime,
                                       ReservationGridManager.Config config,
                                       double processingInterval) {
@@ -377,7 +377,7 @@ public class GridMapUtil {
    * @param yellowLightDuration  the yellow light duration
    */
   public static void setApproxSimpleTrafficLightManagers(
-                                          GridMap layout,
+                                          GridIntersectionMap layout,
                                           double currentTime,
                                           ReservationGridManager.Config config,
                                           double greenLightDuration,
@@ -413,7 +413,7 @@ public class GridMapUtil {
    * @param yellowLightDuration  the yellow light duration
    */
   public static void setApprox4PhasesTrafficLightManagers(
-                                         GridMap layout,
+                                         GridIntersectionMap layout,
                                          double currentTime,
                                          ReservationGridManager.Config config,
                                          double greenLightDuration,
@@ -448,7 +448,7 @@ public class GridMapUtil {
    *                                    traffic signals duration information
    */
   public static void setApproxNPhasesTrafficLightManagers(
-      GridMap layout,
+      GridIntersectionMap layout,
       double currentTime,
       ReservationGridManager.Config config,
       String trafficSignalPhaseFileName) {
@@ -490,7 +490,7 @@ public class GridMapUtil {
    * @param currentTime  the current time
    * @param config       the reservation grid manager configuration
    */
-  public static void setApproxStopSignManagers(GridMap layout,
+  public static void setApproxStopSignManagers(GridIntersectionMap layout,
                                                double currentTime,
                                          ReservationGridManager.Config config) {
     layout.removeAllManagers();
@@ -517,7 +517,7 @@ public class GridMapUtil {
    * @param map           the map
    * @param trafficLevel  the traffic level
    */
-  public static void setUniformRandomSpawnPoints(GridMap map,
+  public static void setUniformRandomSpawnPoints(GridIntersectionMap map,
                                                  double trafficLevel) {
     for(SpawnPoint sp : map.getSpawnPoints()) {
       sp.setVehicleSpecChooser(
@@ -532,7 +532,7 @@ public class GridMapUtil {
    * @param map           the map
    * @param trafficLevel  the traffic level
    */
-  public static void setUniformTurnBasedSpawnPoints(GridMap map,
+  public static void setUniformTurnBasedSpawnPoints(GridIntersectionMap map,
                                                     double trafficLevel) {
     for(SpawnPoint sp : map.getSpawnPoints()) {
       sp.setVehicleSpecChooser(
@@ -547,7 +547,7 @@ public class GridMapUtil {
    * @param map                    the map
    * @param trafficVolumeFileName  the traffic volume filename
    */
-  public static void setUniformRatioSpawnPoints(GridMap map,
+  public static void setUniformRatioSpawnPoints(GridIntersectionMap map,
                                                 String trafficVolumeFileName) {
 
     TrafficVolume trafficVolume =
@@ -575,7 +575,7 @@ public class GridMapUtil {
    * @param hTrafficLevel  the traffic level in the horizontal direction
    * @param vTrafficLevel  the traffic level in the vertical direction
    */
-  public static void setDirectionalSpawnPoints(GridMap layout,
+  public static void setDirectionalSpawnPoints(GridIntersectionMap layout,
                                                double hTrafficLevel,
                                                double vTrafficLevel) {
     for(SpawnPoint sp : layout.getHorizontalSpawnPoints()) {
@@ -596,7 +596,7 @@ public class GridMapUtil {
    * @param layout          the map
    * @param traversalTime   the traversal time
    */
-  public static void setBaselineSpawnPoints(GridMap layout,
+  public static void setBaselineSpawnPoints(GridIntersectionMap layout,
                                             double traversalTime) {
     int totalNumOfLanes = 0;
     int minNumOfLanes = Integer.MAX_VALUE;

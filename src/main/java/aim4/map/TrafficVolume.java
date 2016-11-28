@@ -68,7 +68,7 @@ public class TrafficVolume {
    * @param map   the map
    * @param strs  the data in a file
    */
-  public TrafficVolume(GridMap map, List<String> strs) {
+  public TrafficVolume(GridIntersectionMap map, List<String> strs) {
     leftTurnVolumes = new HashMap<Integer, Double>();
     throughVolumes = new HashMap<Integer, Double>();
     rightTurnVolumes = new HashMap<Integer, Double>();
@@ -199,7 +199,7 @@ public class TrafficVolume {
    * @param csvFileName  the file name of the CSV file
    * @return the traffic volume object
    */
-  public static TrafficVolume makeFromFile(GridMap map,
+  public static TrafficVolume makeFromFile(GridIntersectionMap map,
                                            String csvFileName) {
     List<String> strs = null;
     try {

@@ -32,7 +32,7 @@ package aim4.sim;
 
 import java.util.Set;
 
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
 
@@ -59,7 +59,7 @@ public interface Simulator {
    *
    * @return the layout of the simulation.
    */
-  BasicMap getMap();
+  BasicIntersectionMap getMap();
 
   /**
    * Get the total amount of simulation time has run.

@@ -33,9 +33,6 @@ public class AIMSimViewer extends SimViewer {
         )));
     }
 
-    /** The frame for showing a vehicle information */
-    private VehicleInfoFrame vehicleInfoFrame;
-
     @Override
     protected Simulator.SimStepResult runSimulationStep() {
         Simulator.SimStepResult simStepResult = super.runSimulationStep();

@@ -38,6 +38,7 @@ import java.util.Map;
 
 import aim4.config.SimConfig;
 import aim4.driver.CrashTestDummy;
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 import aim4.im.IntersectionManager;
 import aim4.map.lane.Lane;

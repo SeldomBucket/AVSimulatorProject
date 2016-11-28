@@ -33,7 +33,7 @@ package aim4.map.destination;
 import java.util.List;
 
 import aim4.config.Debug;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
@@ -64,7 +64,7 @@ public class RandomDestinationSelector implements DestinationSelector {
    * @param layout the Layout from which to create the
    *               RandomDestinationSelector
    */
-  public RandomDestinationSelector(BasicMap layout) {
+  public RandomDestinationSelector(BasicIntersectionMap layout) {
     destinationRoads = layout.getDestinationRoads();
   }
 

@@ -33,13 +33,12 @@ package aim4.driver.aim;
 import java.awt.geom.Area;
 
 import aim4.driver.AutoDriver;
-import aim4.driver.Driver;
-import aim4.driver.DriverSimModel;
+import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
 import aim4.driver.aim.coordinator.V2ICoordinator;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.im.IntersectionManager;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
@@ -50,7 +49,7 @@ import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
  * agents communicate by setting state in this class.
  */
 public class AIMAutoDriver extends AIMDriver
-                        implements AutoDriverCoordinatorView,
+                        implements AutoDriverCoordinatorView, AutoDriver,
         AutoDriverPilotView {
 
   /////////////////////////////////
@@ -64,7 +63,7 @@ public class AIMAutoDriver extends AIMDriver
   private Coordinator coordinator;
 
   /** The map */
-  private BasicMap basicMap;
+  private BasicIntersectionMap basicIntersectionMap;
 
   /**
    * The IntersectionManager with which the driver is currently interacting.
@@ -86,9 +85,9 @@ public class AIMAutoDriver extends AIMDriver
   // CONSTRUCTORS
   /////////////////////////////////
 
-  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicMap basicMap) {
+  public AIMAutoDriver(AIMAutoVehicleDriverModel vehicle, BasicIntersectionMap basicIntersectionMap) {
     this.vehicle = vehicle;
-    this.basicMap = basicMap;
+    this.basicIntersectionMap = basicIntersectionMap;
     coordinator = null;
     currentIM = null;
   }
@@ -113,7 +112,7 @@ public class AIMAutoDriver extends AIMDriver
       // TODO: need to check type of intersection
       if (im != null) {
         currentIM = im;
-        coordinator = new V2ICoordinator(vehicle, this, basicMap);
+        coordinator = new V2ICoordinator(vehicle, this, basicIntersectionMap);
       } else {
         currentIM = null;
         coordinator = new NoIntersectionCoordinator(vehicle, this);
@@ -135,7 +134,7 @@ public class AIMAutoDriver extends AIMDriver
    * @return the Vehicle this DriverAgent is controlling
    */
   @Override
-  public AutoVehicleDriverModel getVehicle() {
+  public AIMAutoVehicleDriverModel getVehicle() {
     return vehicle;
   }
 
@@ -180,7 +179,7 @@ public class AIMAutoDriver extends AIMDriver
   /**
    * Find the next IntersectionManager that the Vehicle will need to
    * interact with, in this Lane. This version
-   * overrides the version in {@link Driver}, but only to memoize it for
+   * overrides the version in {@link BasicDriver}, but only to memoize it for
    * speed.
    *
    * @return the nextIntersectionManager that the Vehicle will need
@@ -198,7 +197,7 @@ public class AIMAutoDriver extends AIMDriver
   /**
    * Find the distance to the next intersection in the Lane in which
    * the Vehicle is, from the position at which the Vehicle is.  This version
-   * overrides the version in {@link Driver}, but only to memoize it for
+   * overrides the version in {@link BasicDriver}, but only to memoize it for
    * speed.
    *
    * @return the distance to the next intersection given the current Lane

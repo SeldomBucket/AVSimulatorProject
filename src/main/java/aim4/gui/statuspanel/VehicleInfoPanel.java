@@ -39,6 +39,7 @@ import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.component.FormattedLabel;
+import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.aim.AIMAutoVehicleSimModel;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.VinRegistry;
@@ -130,7 +131,7 @@ public class VehicleInfoPanel extends JPanel
    */
   @Override
   public void update() {
-    AIMVehicleSimModel v = VinRegistry.getVehicleFromVIN(Debug.getTargetVIN());
+    VehicleSimModel v = VinRegistry.getVehicleFromVIN(Debug.getTargetVIN());
     if (v != null) {
       // Vehicle ID Number
       vehicleVINLabel.update(v.getVIN());

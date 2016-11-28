@@ -776,7 +776,6 @@ public class ReservationGridManager implements
   /**
    * Find a list of unreserved tiletimes by simulation
    *
-   * @param TestVehicle   the test vehicle
    * @param dummy         the dummy driver
    * @param arrivalTime   the arrival time of the vehicle
    * @param accelerating  whether or not to setMaxAccelWithMaxTargetVelocity to maximum velocity

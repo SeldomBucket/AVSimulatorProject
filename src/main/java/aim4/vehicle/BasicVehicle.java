@@ -38,13 +38,13 @@ import java.util.List;
 
 import aim4.config.Constants;
 import aim4.config.Debug;
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
 import aim4.map.track.TrackPosition;
 import aim4.noise.DoubleGauge;
 import aim4.util.GeomMath;
 import aim4.util.GeomUtil;
 import aim4.util.Util;
-import aim4.vehicle.aim.AIMVehicleSimModel;
 
 /**
  * The most basic form of a vehicle.

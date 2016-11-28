@@ -1,5 +1,7 @@
 package aim4.vehicle.aim;
 
+import aim4.driver.AutoDriver;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
 import aim4.vehicle.AutoVehicleDriverModel;
@@ -39,6 +41,9 @@ public interface AIMAutoVehicleDriverModel extends AutoVehicleDriverModel {
      * @param msg the message to send to another Vehicle
      */
     void receive(I2VMessage msg);
+
+    @Override
+    AIMAutoDriver getDriver();
 
     /////////////////////////////////
     // PUBLIC METHODS

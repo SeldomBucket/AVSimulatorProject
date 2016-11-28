@@ -46,7 +46,7 @@ import aim4.driver.aim.navigator.Navigator;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
-import aim4.map.BasicMap;
+import aim4.map.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.Confirm;
@@ -908,15 +908,15 @@ public class V2ICoordinator implements Coordinator {
    *
    * @param vehicle  the Vehicle to coordinate
    * @param driver   the driver
-   * @param basicMap the map
+   * @param basicIntersectionMap the map
    */
   public V2ICoordinator(AIMAutoVehicleDriverModel vehicle,
                         AIMAutoDriver driver,
-                        BasicMap basicMap) {
+                        BasicIntersectionMap basicIntersectionMap) {
     this.vehicle = vehicle;
     this.driver = driver;
     this.pilot = new V2IPilot(vehicle, driver);
-    this.navigator = new BasicNavigator(vehicle.getSpec(), basicMap);
+    this.navigator = new BasicNavigator(vehicle.getSpec(), basicIntersectionMap);
 
     isDebugging = Debug.isTargetVIN(vehicle.getVIN());
 

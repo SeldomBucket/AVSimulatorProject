@@ -1,8 +1,8 @@
 package aim4.vehicle;
 
 import aim4.driver.AutoDriver;
+import aim4.driver.BasicDriver;
 import aim4.driver.Driver;
-import aim4.driver.aim.AIMAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.noise.DoubleGauge;
 
@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
 /**
  * Created by Callum on 17/11/2016.
  */
-public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimModel {
+public abstract class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimModel {
     /////////////////////////////////
     // CONSTANTS
     /////////////////////////////////
@@ -31,15 +31,6 @@ public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimMode
      * {@value}.
      */
     private static final double SENSOR_RANGE_MULT_S = 0.25;
-
-    /////////////////////////////////
-    // PRIVATE FIELDS
-    /////////////////////////////////
-
-    /**
-     * The Driver controlling this vehicle.
-     */
-    private AutoDriver driver;
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -155,18 +146,7 @@ public class BasicAutoVehicle extends BasicVehicle implements AutoVehicleSimMode
      * {@inheritDoc}
      */
     @Override
-    public AutoDriver getDriver() {
-        return driver;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setDriver(Driver driver) {
-        assert driver instanceof AutoDriver;
-        this.driver = (AutoDriver) driver;
-    }
+    public abstract AutoDriver getDriver();
 
     /////////////////////////////////
     // PUBLIC METHODS

@@ -32,6 +32,7 @@ package aim4.gui.frame;
 
 import aim4.config.Constants;
 import aim4.gui.viewer.SimViewer;
+import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.awt.Rectangle;
@@ -46,7 +47,7 @@ public final class VehicleInfoFrame extends javax.swing.JFrame {
   /** The current viewer object */
   SimViewer viewer;
   /** The vehicle */
-  AIMVehicleSimModel vehicle;
+  VehicleSimModel vehicle;
 
   /** Creates new form VehicleInfoFrame */
   public VehicleInfoFrame(SimViewer viewer) {

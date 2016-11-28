@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim;
 
-import aim4.driver.Driver;
+import aim4.driver.BasicDriver;
 import aim4.im.IntersectionManager;
 import aim4.map.lane.Lane;
 import aim4.vehicle.AutoVehicleDriverModel;
@@ -77,7 +77,7 @@ public interface AutoDriverPilotView {
   /**
    * Find the distance to the next intersection in the Lane in which
    * the Vehicle is, from the position at which the Vehicle is.  This version
-   * overrides the version in {@link Driver}, but only to memoize it for
+   * overrides the version in {@link BasicDriver}, but only to memoize it for
    * speed.
    *
    * @return the distance to the next intersection given the current Lane
