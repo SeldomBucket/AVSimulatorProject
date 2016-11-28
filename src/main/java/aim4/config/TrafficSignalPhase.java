@@ -33,7 +33,7 @@ package aim4.config;
 import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler;
 import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.
     CyclicSignalController;
-import aim4.map.GridIntersectionMap;
+import aim4.map.aim.GridIntersectionMap;
 import aim4.map.Road;
 import aim4.util.Util;
 import java.io.IOException;

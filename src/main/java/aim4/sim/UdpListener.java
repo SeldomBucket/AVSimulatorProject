@@ -43,12 +43,14 @@ import java.util.Map;
 
 import aim4.config.Debug;
 import aim4.driver.aim.ProxyDriver;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.msg.udp.Real2ProxyCancel;
 import aim4.msg.udp.Real2ProxyDone;
 import aim4.msg.udp.Real2ProxyMsg;
 import aim4.msg.udp.Real2ProxyPVUpdate;
 import aim4.msg.udp.Real2ProxyRequest;
 import aim4.msg.udp.UdpHeader;
+import aim4.sim.setup.aim.AIMSimulator;
 import aim4.vehicle.aim.ProxyVehicle;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
 import aim4.vehicle.VinRegistry;
@@ -78,7 +80,7 @@ public class UdpListener implements Runnable {
   private final int udpPort;
 
   /** the simulator */
-  private final Simulator sim;
+  private final AIMSimulator sim;
 
   /** Datagram socket for listening on a port over UDP. */
   private DatagramSocket ds;
@@ -106,7 +108,7 @@ public class UdpListener implements Runnable {
    *
    * @param sim  the simulator
    */
-  public UdpListener(Simulator sim) {
+  public UdpListener(AIMSimulator sim) {
     this(DEFAULT_LISTENER_UDP_PORT, sim);
   }
 
@@ -116,7 +118,7 @@ public class UdpListener implements Runnable {
    * @param udpPort  the port to listen on
    * @param sim      the simulator
    */
-  public UdpListener(int udpPort, Simulator sim) {
+  public UdpListener(int udpPort, AIMSimulator sim) {
     this.udpPort = udpPort;
     this.sim = sim;
     ds = null;
@@ -405,7 +407,7 @@ public class UdpListener implements Runnable {
                                                    msg.targetVelocity,
                                                    msg.acceleration,
                                                    msg.receivedTime);
-    vehicle.setDriver(new ProxyDriver(vehicle, sim.getMap()));
+    vehicle.setDriver(new ProxyDriver(vehicle, (BasicIntersectionMap) sim.getMap()));
 
     assert vehicle.getDriver() != null;
     return vehicle;

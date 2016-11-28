@@ -50,11 +50,10 @@ import java.util.TreeMap;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.aim.AIMAutoDriver;
-import aim4.driver.DriverSimModel;
 import aim4.driver.aim.ProxyDriver;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
@@ -62,13 +61,14 @@ import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
+import aim4.sim.setup.aim.AIMSimulator;
 import aim4.vehicle.*;
 import aim4.vehicle.aim.*;
 
 /**
  * The autonomous drivers only simulator.
  */
-public class AutoDriverOnlySimulator implements Simulator {
+public class AutoDriverOnlySimulator implements AIMSimulator {
 
   /////////////////////////////////
   // NESTED CLASSES

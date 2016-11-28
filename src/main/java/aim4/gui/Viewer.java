@@ -556,10 +556,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     public void startUdpListening() {
         assert startUdpListenerMenuItem.isEnabled();
 
-        if (selectedViewer.udpListenerHasStarted()) {
+        if (((AIMSimViewer) selectedViewer).udpListenerHasStarted()) {
             startUdpListenerMenuItem.setEnabled(false);
             stopUdpListenerMenuItem.setEnabled(true);
-            selectedViewer.startUdpListening();
+            ((AIMSimViewer) selectedViewer).startUdpListening();
         } else {
             System.err.printf("Failed to start UDP listener...\n");
         }
@@ -571,11 +571,11 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private void stopUdpListening() {
         assert stopUdpListenerMenuItem.isEnabled();
 
-        if (!selectedViewer.udpListenerHasStarted()) {
+        if (!((AIMSimViewer) selectedViewer).udpListenerHasStarted()) {
             startUdpListenerMenuItem.setEnabled(true);
             stopUdpListenerMenuItem.setEnabled(false);
-            selectedViewer.stopUdpListening();
-            selectedViewer.removeUdpListener();
+            ((AIMSimViewer) selectedViewer).stopUdpListening();
+            ((AIMSimViewer) selectedViewer).removeUdpListener();
         } else {
             System.err.printf("Failed to stop UDP listener...\n");
         }
@@ -688,21 +688,21 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
             } else {
                 selectedViewer.setIsShowSimulationTime(false);
             }
-            selectedViewer.updateCavas();
+            selectedViewer.updateCanvas();
         } else if (source == showVinMenuItem) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
                 selectedViewer.setIsShowVin(true);
             } else {
                 selectedViewer.setIsShowVin(false);
             }
-            selectedViewer.updateCavas();
-        } else if (source == showIMShapesMenuItem) {
+            selectedViewer.updateCanvas();
+        } else if (source == showIMShapesMenuItem && selectedViewer.equals(aimViewer)) {
             if (e.getStateChange() == ItemEvent.SELECTED) {
-                selectedViewer.setIsShowIMDebugShapes(true);
+                ((AIMSimViewer) selectedViewer).setIsShowIMDebugShapes(true);
             } else {
-                selectedViewer.setIsShowIMDebugShapes(false);
+                ((AIMSimViewer) selectedViewer).setIsShowIMDebugShapes(false);
             }
-            selectedViewer.updateCavas();
+            selectedViewer.updateCanvas();
         }
     }
 

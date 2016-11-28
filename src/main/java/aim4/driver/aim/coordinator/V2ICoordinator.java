@@ -46,7 +46,7 @@ import aim4.driver.aim.navigator.Navigator;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.V2IManager;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.Confirm;

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import aim4.gui.ViewerDebugView;
-import aim4.map.BasicIntersectionMap;
+import aim4.map.aim.BasicIntersectionMap;
 
 /**
  * The configuration for debugging purposes.

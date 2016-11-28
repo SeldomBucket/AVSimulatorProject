@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map;
+package aim4.map.aim;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -42,6 +42,9 @@ import java.util.Map;
 
 import aim4.config.Debug;
 import aim4.im.IntersectionManager;
+import aim4.map.DataCollectionLine;
+import aim4.map.Road;
+import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;

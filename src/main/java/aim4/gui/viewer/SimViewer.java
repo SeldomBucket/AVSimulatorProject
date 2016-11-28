@@ -40,14 +40,6 @@ public abstract class SimViewer extends JPanel implements
      */
     public static final double DEFAULT_TARGET_FRAME_RATE = 20.0;
     /**
-     * Preferred maximum width for the canvas, in pixels. {@value} pixels.
-     */
-    private static final int PREF_MAX_CANVAS_WIDTH = 650;
-    /**
-     * Preferred maximum height for the canvas, in pixels. {@value} pixels.
-     */
-    private static final int PREF_MAX_CANVAS_HEIGHT = 650;
-    /**
      * The inset size of the setup panels
      */
     private static final int SIM_SETUP_PANE_GAP = 50;
@@ -92,10 +84,6 @@ public abstract class SimViewer extends JPanel implements
      */
     private SimThread simThread;
     /**
-     * UDP listener
-     */
-    private UdpListener udpListener;
-    /**
      * The target simulation speed
      */
     private double targetSimSpeed;
@@ -107,7 +95,6 @@ public abstract class SimViewer extends JPanel implements
      * The time of the next screen update in millisecond
      */
     private long nextFrameTime;
-
     // ///////////////////////////////
     // RECORDING COMPONENTS
     // ///////////////////////////////
@@ -137,7 +124,6 @@ public abstract class SimViewer extends JPanel implements
         this.statusPanel = statusPanel;
         this.simSetupPanel = simSetupPanel;
         this.sim = null;
-        this.udpListener = null;
         this.simThread = null;
         targetSimSpeed = DEFAULT_SIM_SPEED;
         // the frame rate cannot be not larger than the simulation cycle
@@ -149,7 +135,7 @@ public abstract class SimViewer extends JPanel implements
         this.imageDir = null;
         this.imageCounter = 0;
 
-        createComponents(viewer);
+        createCanvas(viewer);
         setComponentsLayout();
         setVisible(true);
     }
@@ -468,13 +454,7 @@ public abstract class SimViewer extends JPanel implements
     /**
      * Create all components in the viewer
      */
-    private void createComponents(Viewer viewer) {
-        canvas = new Canvas(this, viewer);
-
-        // Make self key listener
-        setFocusable(true);
-        requestFocusInWindow();
-    }
+    protected abstract void createCanvas(Viewer viewer);
 
     /**
      * Set the layout of the viewer
@@ -617,18 +597,9 @@ public abstract class SimViewer extends JPanel implements
     }
 
     /**
-     * Set whether or not the canvas draws the IM shapes.
-     *
-     * @param useIMDebugShapes  whether or not the canvas should draw the shapes
-     */
-    public void setIsShowIMDebugShapes(boolean useIMDebugShapes) {
-        this.canvas.setIsShowIMDebugShapes(useIMDebugShapes);
-    }
-
-    /**
      * Calls update() on the canvas
      */
-    public void updateCavas() {
+    public void updateCanvas() {
         this.canvas.update();
     }
 
@@ -656,8 +627,9 @@ public abstract class SimViewer extends JPanel implements
      * Creates the simulation instance
      */
     public void createSimulator() {
+        runBeforeCreatingSimulator();
         SimSetup simSetup = simSetupPanel.getSimSetup();
-        assert sim == null && udpListener == null && simSetup != null;
+        assert sim == null && simSetup != null;
         // create the simulator
         sim = SimFactory.makeSimulator(simSetup);
         // create the simulation thread
@@ -697,6 +669,7 @@ public abstract class SimViewer extends JPanel implements
      * Reset the simulation process.
      */
     public void resetSimProcess() {
+        runBeforeResettingSimulator();
         assert simThread != null;
 
         simThread.terminate();
@@ -706,11 +679,11 @@ public abstract class SimViewer extends JPanel implements
         }
         simThread = null;
         sim = null;
-
-        if (udpListener != null) {
-            stopUdpListening();
-        }
     }
+
+    protected abstract void runBeforeCreatingSimulator();
+
+    protected abstract void runBeforeResettingSimulator();
 
     /**
      * Initialize the default Simulator to use.
@@ -791,51 +764,6 @@ public abstract class SimViewer extends JPanel implements
                 simThread.setTimeDelay(timerDelay);
             }
         }
-    }
-
-    // /////////////////////////////////////
-    // UDP listening menu item handlers
-    // /////////////////////////////////////
-    /**
-     * Start the UDP listening.
-     */
-    public void startUdpListening() {
-        if (sim != null) {
-            if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
-                System.err.print("Starting UDP listener...\n");
-            }
-            // create the UDP listener thread
-            udpListener = new UdpListener(sim);
-            udpListener.start();
-        } else {
-            System.err.printf("Must start the simulator before starting "
-                    + "UdpListener.\n");
-        }
-    }
-
-    /**
-     * Stop the UDP listening
-     */
-    public void stopUdpListening() {
-        if (Debug.SHOW_PROXY_VEHICLE_DEBUG_MSG) {
-            System.err.print("Stopping UDP listener...\n");
-        }
-        udpListener.stop();
-    }
-
-    /**
-     * Sets the udpListener to null.
-     */
-    public void removeUdpListener() {
-        udpListener = null;
-    }
-
-    /**
-     * Returns a boolean indicating whether the udpListener has started.
-     * @return A boolean indicating whether the udpListener has started.
-     */
-    public boolean udpListenerHasStarted() {
-        return udpListener.hasStarted();
     }
 
     /////////////////////////////////

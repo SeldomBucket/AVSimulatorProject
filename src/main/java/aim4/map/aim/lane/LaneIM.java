@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map.lane;
+package aim4.map.aim.lane;
 
 import java.awt.geom.Point2D;
 import java.util.HashMap;
@@ -37,6 +37,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import aim4.im.IntersectionManager;
+import aim4.map.lane.Lane;
 
 /**
  * The lane and intersection manager relationship.
