@@ -9,25 +9,6 @@ import java.awt.*;
 /**
  * Created by Callum on 08/02/2017.
  */
-public class MergeStatScreen extends Canvas {
+public class MergeStatScreen extends StatScreen {
 
-    /**
-     * Create a new canvas.
-     *
-     * @param simViewer the simViewer object
-     * @param viewer
-     */
-    public MergeStatScreen(SimViewer simViewer, Viewer viewer) {
-        super(simViewer, viewer);
-    }
-
-    @Override
-    protected Image createMapImage(BasicMap map, double scale) {
-        return null;
-    }
-
-    @Override
-    protected void drawTracks(Graphics2D buffer) {
-
-    }
 }

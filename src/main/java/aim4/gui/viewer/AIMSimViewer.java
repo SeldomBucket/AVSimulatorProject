@@ -1,21 +1,19 @@
 package aim4.gui.viewer;
 
 import aim4.config.Debug;
-import aim4.gui.AIMCanvas;
+import aim4.gui.screen.AIMCanvas;
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.setuppanel.AIMSimSetupPanel;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
-import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
 import aim4.sim.setup.aim.AIMSimulator;
 import aim4.sim.setup.aim.BasicSimSetup;
-import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.awt.event.MouseEvent;
@@ -40,7 +38,7 @@ public class AIMSimViewer extends SimViewer {
                 150, // distance between
                 0.28, // traffic level
                 1.0 // stop distance before intersection
-        )));
+        )), true);
         this.udpListener = null;
     }
 
@@ -64,6 +62,11 @@ public class AIMSimViewer extends SimViewer {
         // Make self key listener
         setFocusable(true);
         requestFocusInWindow();
+    }
+
+    @Override
+    protected void createStatScreen() {
+
     }
 
     /**
