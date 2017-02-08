@@ -1,10 +1,10 @@
-package aim4.gui;
+package aim4.gui.screen;
 
 import aim4.config.Debug;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator;
+import aim4.gui.*;
 import aim4.gui.viewer.AIMSimViewer;
-import aim4.gui.viewer.SimViewer;
 import aim4.im.IntersectionManager;
 import aim4.im.v2i.RequestHandler.TrafficSignalRequestHandler;
 import aim4.im.v2i.V2IManager;
