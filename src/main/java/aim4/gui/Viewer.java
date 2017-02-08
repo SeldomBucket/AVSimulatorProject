@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 
 import aim4.config.Debug;
 import aim4.gui.viewer.AIMSimViewer;
+import aim4.gui.viewer.MergeSimViewer;
 import aim4.gui.viewer.SimViewer;
 import aim4.sim.Simulator;
 
@@ -102,6 +103,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private SimViewer selectedViewer;
     /** Panel containing the AIMSimViewer*/
     private AIMSimViewer aimViewer;
+    /** Panel containing the MergeSimViewer*/
+    private MergeSimViewer mergeViewer;
     /** The status pane on which to display statistics. */
     private StatusPanelContainer statusPanel;
     /** The Start/Pause/Resume Button */
@@ -203,7 +206,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
 
         if (isRunNow) {
             startSimProcess();
-            selectedViewer.requestCanvasFocusInWindow();
+            selectedViewer.requestScreenFocusInWindow();
         }
     }
 
@@ -339,8 +342,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         });
 
         aimViewer = new AIMSimViewer(statusPanel, this);
+        mergeViewer = new MergeSimViewer(statusPanel, this);
 
         tabbedPane.add("AIM", aimViewer);
+        tabbedPane.add("MERGE", mergeViewer);
 
         selectedViewer = (SimViewer) tabbedPane.getSelectedComponent();
     }
@@ -412,8 +417,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
      * Use the simulation start GUI setting.
      */
     private void setSimStartGUIsetting() {
-        selectedViewer.showCard(ViewerCardType.CANVAS);
-        selectedViewer.initWithMap();
+        selectedViewer.showCard(ViewerCardType.SCREEN);
+        selectedViewer.startViewer();
         statusPanel.init();
 
         // update the buttons
@@ -488,6 +493,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private void startButtonHandler() {
         if (selectedViewer.isSimThreadNull()) {
             startSimProcess();
+            tabbedPane.setEnabled(false);
         } else if (!selectedViewer.isSimThreadPaused()) {
             pauseSimProcess();
         } else {
@@ -515,6 +521,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         setSimStartGUIsetting();
         // start the thread
         selectedViewer.startSimProcess();
+        resetMenuItem.setEnabled(false);
     }
 
     /**
@@ -529,6 +536,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the menu items
         startMenuItem.setText("Resume");
         stepMenuItem.setEnabled(true);
+        resetMenuItem.setEnabled(true);
     }
 
     /**
@@ -543,6 +551,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the menu items
         startMenuItem.setText("Pause");
         stepMenuItem.setEnabled(false);
+        resetMenuItem.setEnabled(false);
     }
 
     /**
@@ -551,6 +560,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     public void resetSimProcess() {
         selectedViewer.resetSimProcess();
         setSimResetGUIsetting();
+        tabbedPane.setEnabled(true);
     }
 
     public void startUdpListening() {
@@ -613,10 +623,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     */
         if (e.getSource() == startMenuItem || e.getSource() == startButton) {
             startButtonHandler();
-            selectedViewer.requestCanvasFocusInWindow();
+            selectedViewer.requestScreenFocusInWindow();
         } else if (e.getSource() == stepMenuItem || e.getSource() == stepButton) {
             stepButtonHandler();
-            selectedViewer.requestCanvasFocusInWindow();
+            selectedViewer.requestScreenFocusInWindow();
         } else if (e.getSource() == resetMenuItem) {
             resetSimProcess();
         } else if (e.getSource() == dumpDataMenuItem) {

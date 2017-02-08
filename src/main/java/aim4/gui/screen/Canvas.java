@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.gui;
+package aim4.gui.screen;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -48,7 +48,6 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
 import java.awt.geom.Ellipse2D;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -56,7 +55,6 @@ import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
-import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,31 +64,15 @@ import javax.swing.SwingUtilities;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.aim.AIMAutoDriver;
-import aim4.driver.aim.coordinator.V2ICoordinator;
+import aim4.gui.Viewer;
 import aim4.gui.viewer.SimViewer;
-import aim4.im.IntersectionManager;
-import aim4.im.v2i.V2IManager;
-import aim4.im.v2i.RequestHandler.TrafficSignalRequestHandler;
-import aim4.im.v2i.policy.BasePolicy;
-import aim4.im.v2i.policy.Policy;
 import aim4.map.BasicMap;
-import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
-import aim4.map.track.ArcTrack;
-import aim4.map.track.LineTrack;
-import aim4.map.track.PathTrack;
-import aim4.map.track.TrackPosition;
-import aim4.map.track.WayPoint;
-import aim4.msg.v2i.Request;
-import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSimModel;
-import aim4.vehicle.aim.AIMVehicleSimModel;
-import aim4.vehicle.aim.AIMAutoVehicleSimModel;
 
 import java.io.InputStream;
 
@@ -101,7 +83,8 @@ import java.io.InputStream;
 public abstract class Canvas extends JPanel implements ComponentListener,
         MouseListener,
         MouseWheelListener,
-        MouseMotionListener {
+        MouseMotionListener,
+        SimScreen {
 
     // ///////////////////////////////
     // CONSTANTS
