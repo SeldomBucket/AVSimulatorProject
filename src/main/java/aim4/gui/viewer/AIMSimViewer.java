@@ -64,11 +64,6 @@ public class AIMSimViewer extends SimViewer {
         requestFocusInWindow();
     }
 
-    @Override
-    protected void createStatScreen() {
-
-    }
-
     /**
      * Set whether or not the canvas draws the IM shapes.
      *

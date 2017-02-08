@@ -6,6 +6,7 @@ import aim4.config.SimConfig;
 import aim4.gui.*;
 import aim4.gui.screen.Canvas;
 import aim4.gui.frame.VehicleInfoFrame;
+import aim4.gui.screen.SimScreen;
 import aim4.gui.screen.StatScreen;
 import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.sim.Simulator;
@@ -59,6 +60,10 @@ public abstract class SimViewer extends JPanel implements
      * The card layout for the canvas
      */
     private CardLayout screenCardLayout;
+    /**
+     * Stores the screen which will be shown
+     */
+    protected SimScreen simScreen;
     /**
      * The canvas on which to draw the state of the simulator.
      */
@@ -143,10 +148,13 @@ public abstract class SimViewer extends JPanel implements
         this.imageCounter = 0;
 
         this.liveViewSupported = liveViewSupported;
-        if(liveViewSupported)
+        if(liveViewSupported) {
             createCanvas(viewer);
-        else
+            simScreen = this.canvas;
+        } else {
             createStatScreen();
+            simScreen = this.statScreen;
+        }
         setComponentsLayout();
         setVisible(true);
     }
@@ -443,7 +451,7 @@ public abstract class SimViewer extends JPanel implements
      * Update the screen
      */
     private void updateScreen() {
-        canvas.update();
+        simScreen.update();
         statusPanel.update();
     }
 
@@ -465,9 +473,13 @@ public abstract class SimViewer extends JPanel implements
     /**
      * Create all components in the viewer
      */
-    protected abstract void createCanvas(Viewer viewer);
+    protected void createCanvas(Viewer viewer) {
+        throw new NoCanvasException();
+    }
 
-    protected abstract void createStatScreen();
+    protected void createStatScreen() {
+        throw new NoStatScreenException();
+    }
 
     /**
      * Set the layout of the viewer
@@ -577,15 +589,18 @@ public abstract class SimViewer extends JPanel implements
     /**
      * Calls initWithGivenMap() on the canvas using the map provided by sim.getMap().
      */
-    public void initWithMap() {
-        canvas.initWithGivenMap(sim.getMap());
+    public void startViewer() {
+        if(liveViewSupported)
+            canvas.initWithGivenMap(sim.getMap());
+        else
+            statScreen.start();
     }
 
     /**
      * Calls cleanUp() on the canvas
      */
     public void cleanUp() {
-        canvas.cleanUp();
+        simScreen.cleanUp();
     }
 
     /**
@@ -795,6 +810,20 @@ public abstract class SimViewer extends JPanel implements
     public void highlightVehicle(int vin) {
         canvas.highlightVehicle(vin);
 
+    }
+
+    protected class NoCanvasException extends RuntimeException {
+        public NoCanvasException() {
+            super("Expected SimViewer to use a Canvas, but no Canvas was created." +
+                    " Does this SimViewer implement LiveView or use StatPanel?");
+        }
+    }
+
+    protected class NoStatScreenException extends RuntimeException {
+        public NoStatScreenException() {
+            super("Expected SimViewer to use a StatScreen, but no StatScreen was created." +
+                    " Does this SimViewer implement LiveView or use StatPanel?");
+        }
     }
 
 }

@@ -23,11 +23,6 @@ public class MergeSimViewer extends SimViewer {
     }
 
     @Override
-    protected void createCanvas(Viewer viewer) {
-
-    }
-
-    @Override
     protected void createStatScreen() {
         this.statScreen = new MergeStatScreen();
     }

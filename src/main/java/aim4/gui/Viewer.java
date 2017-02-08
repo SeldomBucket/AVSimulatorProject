@@ -418,7 +418,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
      */
     private void setSimStartGUIsetting() {
         selectedViewer.showCard(ViewerCardType.SCREEN);
-        selectedViewer.initWithMap();
+        selectedViewer.startViewer();
         statusPanel.init();
 
         // update the buttons
@@ -493,6 +493,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private void startButtonHandler() {
         if (selectedViewer.isSimThreadNull()) {
             startSimProcess();
+            tabbedPane.setEnabled(false);
         } else if (!selectedViewer.isSimThreadPaused()) {
             pauseSimProcess();
         } else {
@@ -520,6 +521,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         setSimStartGUIsetting();
         // start the thread
         selectedViewer.startSimProcess();
+        resetMenuItem.setEnabled(false);
     }
 
     /**
@@ -534,6 +536,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the menu items
         startMenuItem.setText("Resume");
         stepMenuItem.setEnabled(true);
+        resetMenuItem.setEnabled(true);
     }
 
     /**
@@ -548,6 +551,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the menu items
         startMenuItem.setText("Pause");
         stepMenuItem.setEnabled(false);
+        resetMenuItem.setEnabled(false);
     }
 
     /**
@@ -556,6 +560,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     public void resetSimProcess() {
         selectedViewer.resetSimProcess();
         setSimResetGUIsetting();
+        tabbedPane.setEnabled(true);
     }
 
     public void startUdpListening() {

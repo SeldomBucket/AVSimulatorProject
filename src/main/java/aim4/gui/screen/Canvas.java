@@ -83,7 +83,8 @@ import java.io.InputStream;
 public abstract class Canvas extends JPanel implements ComponentListener,
         MouseListener,
         MouseWheelListener,
-        MouseMotionListener {
+        MouseMotionListener,
+        SimScreen {
 
     // ///////////////////////////////
     // CONSTANTS
