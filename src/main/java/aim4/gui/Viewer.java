@@ -45,6 +45,7 @@ import javax.swing.event.ChangeListener;
 
 import aim4.config.Debug;
 import aim4.gui.viewer.AIMSimViewer;
+import aim4.gui.viewer.CPMSimViewer;
 import aim4.gui.viewer.MergeSimViewer;
 import aim4.gui.viewer.SimViewer;
 import aim4.sim.Simulator;
@@ -105,6 +106,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private AIMSimViewer aimViewer;
     /** Panel containing the MergeSimViewer*/
     private MergeSimViewer mergeViewer;
+    /** Panel containing the CPMSimViewer*/
+    private CPMSimViewer cpmViewer;
     /** The status pane on which to display statistics. */
     private StatusPanelContainer statusPanel;
     /** The Start/Pause/Resume Button */
@@ -343,9 +346,11 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
 
         aimViewer = new AIMSimViewer(statusPanel, this);
         mergeViewer = new MergeSimViewer(statusPanel, this);
+        cpmViewer = new CPMSimViewer(statusPanel, this);
 
         tabbedPane.add("AIM", aimViewer);
         tabbedPane.add("MERGE", mergeViewer);
+        tabbedPane.add("CPM", cpmViewer);
 
         selectedViewer = (SimViewer) tabbedPane.getSelectedComponent();
     }
