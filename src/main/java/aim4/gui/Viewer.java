@@ -229,7 +229,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
             menu = new JMenu("File");
             menuBar.add(menu);
             // File->Quit
-            menuItem = new JMenuItem("Quit AIM");
+            menuItem = new JMenuItem("Quit AV Simulator");
             menuItem.addActionListener(this);
             menu.add(menuItem);
         }
