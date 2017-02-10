@@ -12,7 +12,7 @@ import aim4.map.lane.Lane;
 import aim4.sim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 import aim4.sim.UdpListener;
-import aim4.sim.setup.aim.AIMSimulator;
+import aim4.sim.AIMSimulator;
 import aim4.sim.setup.aim.BasicSimSetup;
 import aim4.vehicle.aim.AIMVehicleSimModel;
 

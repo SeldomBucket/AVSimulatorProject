@@ -61,7 +61,6 @@ import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
-import aim4.sim.setup.aim.AIMSimulator;
 import aim4.vehicle.*;
 import aim4.vehicle.aim.*;
 
