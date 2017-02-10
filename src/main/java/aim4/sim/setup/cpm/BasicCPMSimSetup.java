@@ -5,9 +5,31 @@ import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
 
 /**
- * The basic simulation setup for CPM.
+ * The basic simulation setup for CPM. Common for all CPM simulation types.
  */
 public class BasicCPMSimSetup implements CPMSimSetup {
+
+    /** The speed limit of the roads */
+    protected double speedLimit;
+
+    /**
+     * Create a copy of a given basic simulator setup.
+     *
+     * @param basicSimSetup  a basic simulator setup
+     */
+    public BasicCPMSimSetup(BasicCPMSimSetup basicSimSetup) {
+        this.speedLimit = basicSimSetup.speedLimit;
+    }
+
+    /**
+     * Create a basic simulator setup.
+     *
+     * @param speedLimit                  the speed limit in the car park
+     */
+    public BasicCPMSimSetup(double speedLimit) {
+        this.speedLimit = speedLimit;
+    }
+
     @Override
     public Simulator getSimulator() {
         return new Simulator() {
