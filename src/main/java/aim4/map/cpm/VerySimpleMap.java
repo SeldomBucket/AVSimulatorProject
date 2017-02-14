@@ -10,10 +10,13 @@ import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.GeomMath;
 import aim4.util.Registry;
+import aim4.vehicle.VinRegistry;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.*;
 
 /**
@@ -196,12 +199,12 @@ public class VerySimpleMap implements BasicMap {
 
     @Override
     public List<Road> getRoads() {
-        return null;
+        return roads;
     }
 
     @Override
     public Rectangle2D getDimensions() {
-        return null;
+        return dimensions;
     }
 
     @Override
@@ -211,31 +214,52 @@ public class VerySimpleMap implements BasicMap {
 
     @Override
     public Registry<Lane> getLaneRegistry() {
-        return null;
+        return laneRegistry;
     }
 
     @Override
     public Road getRoad(Lane lane) {
-        return null;
+        return laneToRoad.get(lane);
     }
 
     @Override
     public Road getRoad(int laneID) {
-        return null;
+        return laneToRoad.get(laneRegistry.get(laneID));
     }
 
     @Override
     public List<DataCollectionLine> getDataCollectionLines() {
-        return null;
+        return dataCollectionLines;
     }
 
     @Override
     public List<SpawnPoint> getSpawnPoints() {
-        return null;
+        return spawnPoints;
     }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {
+        PrintStream outfile = null;
+        try {
+            outfile = new PrintStream(outFileName);
+        } catch (FileNotFoundException e) {
+            System.err.printf("Cannot open file %s\n", outFileName);
+            return;
+        }
+        // TODO: sort by time and LineId and VIN
+        outfile.printf("VIN,Time,DCLname,vType,startLaneId,destRoad\n");
+        for (DataCollectionLine line : dataCollectionLines) {
+            for (int vin : line.getAllVIN()) {
+                for(double time : line.getTimes(vin)) {
+                    outfile.printf("%d,%.4f,%s,%s,%d,%s\n",
+                            vin, time, line.getName(),
+                            VinRegistry.getVehicleSpecFromVIN(vin).getName(),
+                            VinRegistry.getSpawnPointFromVIN(vin).getLane().getId(),
+                            VinRegistry.getDestRoadFromVIN(vin).getName());
+                }
+            }
+        }
 
+        outfile.close();
     }
 }
