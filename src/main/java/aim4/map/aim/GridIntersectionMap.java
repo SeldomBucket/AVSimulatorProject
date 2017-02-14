@@ -117,8 +117,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    * Create a grid map.
    *
    * @param initTime         the initial time
-   * @param columns          the number of columns
-   * @param rows             the number of rows
+   * @param columns          the number of columns (number of vertical sets of roads)
+   * @param rows             the number of rows (number of horizontal sets of roads)
    * @param laneWidth        the lane width
    * @param speedLimit       the speed limit
    * @param lanesPerRoad     the number of lanes per road
@@ -136,6 +136,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     }
     this.columns = columns;
     this.rows = rows;
+
+    // Generate the size of the map.
     // Can't forget to account for the fact that we have "distanceBetween"
     // on the outsides too, so we have to add an extra one in.
     double height = rows * (medianSize +
@@ -146,6 +148,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
         distanceBetween) + distanceBetween;
     dimensions = new Rectangle2D.Double(0, 0, width, height);
 
+    // Set size of array for the data collection lines.
+    // 2 per sets of roads, one at either end.
     dataCollectionLines = new ArrayList<DataCollectionLine>(2*(columns+rows));
 
     // Create the vertical Roads
@@ -157,6 +161,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
       // First create the right road (northbound)
       Road right =
         new Road(GeomMath.ordinalize(column + 1) + " Avenue N", this);
+      // Add the lanes to the road
       for (int i = 0; i < lanesPerRoad; i++) {
         double x = roadMiddleX + // Start in the middle
           (i * laneWidth) + // Move down for each lane we've done

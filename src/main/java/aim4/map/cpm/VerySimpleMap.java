@@ -1,5 +1,6 @@
 package aim4.map.cpm;
 
+import aim4.config.Debug;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
@@ -7,55 +8,190 @@ import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
+import aim4.util.GeomMath;
 import aim4.util.Registry;
 
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Map for a car park grid.
  */
 public class VerySimpleMap implements BasicMap {
 
-    /** The number of rows */
-    private int rows;
-    /** The number of columns */
-    private int columns;
-    /** The number of rows in the grid*/
-    private int gridRows;
-    /** The number of columns in the grid */
-    private int gridColumns;
+    /////////////////////////////////
+    // CONSTANTS
+    /////////////////////////////////
+
+    /** The length of the no vehicle zone */
+    private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
+    // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
+
+    /** The position of the data collection line on a lane */
+    private static final double DATA_COLLECTION_LINE_POSITION =
+            NO_VEHICLE_ZONE_LENGTH;
+
+    /**The initial time*/
+    double initTime;
+    /**Width of each lane*/
+    private double laneWidth;
+    /**Speed limit*/
+    private double speedLimit;
     /** The dimensions of the map */
     private Rectangle2D dimensions;
     /** The data collection lines */
     private List<DataCollectionLine> dataCollectionLines;
     /** The spawn points */
-    // private List<SpawnPoint> spawnPoints;
+    private List<SpawnPoint> spawnPoints;
     /** The horizontal spawn points */
-    // private List<SpawnPoint> horizontalSpawnPoints;
+    private List<SpawnPoint> horizontalSpawnPoints;
+    /** The vertical spawn points */
+    private List<SpawnPoint> verticalSpawnPoints;
     /** The lane registry */
     private Registry<Lane> laneRegistry =
             new ArrayListRegistry<Lane>();
+    /** A mapping form lanes to roads they belong */
+    private Map<Lane,Road> laneToRoad = new HashMap<Lane,Road>();
+    /** The set of vertical roads */
+    private List<Road> verticalRoads = new ArrayList<Road>();
+    /** The set of horizontal roads */
+    private List<Road> horizontalRoads = new ArrayList<Road>();
+    /** The set of roads */
+    private List<Road> roads;
+    /** The entrance Road*/
+    private Road entranceRoad;
+    /** The exit Road*/
+    private Road exitRoad;
+
 
     /**
-     * Create a grid map.
-     * For now, create one lane with data collection point on each side.
+     * Create a very simple map.
+     * For now, have 3 roads in C shape.
      */
     public VerySimpleMap() {
+        laneWidth = 4;
+        speedLimit = 25.0;
+        initTime = 0.0;
 
-        columns = 5;
-        rows = 5;
-        dimensions = new Rectangle2D.Double(0, 0, columns, rows);
+        // Generate the size of the map
+        double width = 350;
+        double height = 350;
+        dimensions = new Rectangle2D.Double(0, 0, width, height);
+
+        // Set size of array for the data collection lines.
+        dataCollectionLines = new ArrayList<DataCollectionLine>(2);
 
         // Create the vertical Road
-        // Road southBoundRoad =
+        Road southBoundRoad = new Road("Southbound Avenue", this);
+
+        //Add a lane to the road
+        Lane southLane = new LineSegmentLane(0, // x1
+                0, // y1
+                0, // x2
+                height, // y2
+                laneWidth, // width
+                speedLimit);
+        int southLaneId = laneRegistry.register(southLane);
+        southLane.setId(southLaneId);
+        southBoundRoad.addTheRightMostLane(southLane);
+        laneToRoad.put(southLane, southBoundRoad);
+
+        verticalRoads.add(southBoundRoad);
+
+        // Create the horizontal Roads
+        Road westBoundRoad = new Road("Westbound Avenue", this);
+
+        //Add a lane to the road
+        Lane westLane = new LineSegmentLane(width, // x1
+                height, // y1
+                0, // x2
+                height, // y2
+                laneWidth, // width
+                speedLimit);
+        int westLaneId = laneRegistry.register(westLane);
+        westLane.setId(westLaneId);
+        westBoundRoad.addTheRightMostLane(westLane);
+        laneToRoad.put(westLane, westBoundRoad);
+
+        horizontalRoads.add(westBoundRoad);
 
 
+        Road eastBoundRoad = new Road("Eastbound Avenue", this);
 
+        //Add a lane to the road
+        Lane eastLane = new LineSegmentLane(0, // x1
+                0, // y1
+                width, // x2
+                0, // y2
+                laneWidth, // width
+                speedLimit);
+        int eastLaneId = laneRegistry.register(eastLane);
+        eastLane.setId(eastLaneId);
+        eastBoundRoad.addTheRightMostLane(eastLane);
+        laneToRoad.put(eastLane, eastBoundRoad);
 
+        horizontalRoads.add(eastBoundRoad);
 
+        // generate the data collection lines
+        dataCollectionLines.add(
+                new DataCollectionLine(
+                        "Entrance on Westbound",
+                        dataCollectionLines.size(),
+                        new Point2D.Double((width-20), height),
+                        new Point2D.Double((width-20), (height-laneWidth)),
+                        true));
+        dataCollectionLines.add(
+                new DataCollectionLine(
+                        "Exit on Eastbound",
+                        dataCollectionLines.size(),
+                        new Point2D.Double((width-20), 0),
+                        new Point2D.Double((width-20), (laneWidth)),
+                        true));
+
+        roads = new ArrayList<Road>(horizontalRoads);
+        roads.addAll(verticalRoads);
+        roads = Collections.unmodifiableList(roads);
+
+        // initializeSpawnPoints(initTime);
+    }
+
+    /**
+     * Initialize spawn points.
+     *
+     * @param initTime  the initial time
+     */
+    private void initializeSpawnPoints(double initTime) {
+        spawnPoints = new ArrayList<SpawnPoint>(1);
+        horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
+
+        Lane lane = entranceRoad.getIndexLane();
+        horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
+
+        spawnPoints.addAll(horizontalSpawnPoints);
+    }
+
+    /**
+     * Make spawn points.
+     *
+     * @param initTime  the initial time
+     * @param lane      the lane
+     * @return the spawn point
+     */
+    private SpawnPoint makeSpawnPoint(double initTime, Lane lane) {
+        double startDistance = 0.0;
+        double normalizedStartDistance = lane.normalizedDistance(startDistance);
+        Point2D pos = lane.getPointAtNormalizedDistance(normalizedStartDistance);
+        double heading = lane.getInitialHeading();
+        double steeringAngle = 0.0;
+        double acceleration = 0.0;
+        double d = lane.normalizedDistance(startDistance + NO_VEHICLE_ZONE_LENGTH);
+        Rectangle2D noVehicleZone =
+                lane.getShape(normalizedStartDistance, d).getBounds2D();
+
+        return new SpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
+                lane, noVehicleZone);
     }
 
     @Override

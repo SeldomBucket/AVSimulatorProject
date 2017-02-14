@@ -1,5 +1,7 @@
 package aim4.sim.setup.cpm;
 
+import aim4.map.GridMapUtil;
+import aim4.map.cpm.VerySimpleMap;
 import aim4.sim.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
 
@@ -22,6 +24,8 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
      */
     @Override
     public Simulator getSimulator() {
-        return new CPMAutoDriverSimulator();
+        double currentTime = 0.0;
+        VerySimpleMap layout = new VerySimpleMap();
+        return new CPMAutoDriverSimulator(layout);
     }
 }
