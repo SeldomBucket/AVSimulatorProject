@@ -19,7 +19,7 @@ public class CPMSimViewer extends SimViewer {
      * @param viewer
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
-        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(5.0)), false);
+        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(5.0, 0.28)), false);
     }
 
     @Override

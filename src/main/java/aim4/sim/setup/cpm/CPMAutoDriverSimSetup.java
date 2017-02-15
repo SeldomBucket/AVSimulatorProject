@@ -1,6 +1,6 @@
 package aim4.sim.setup.cpm;
 
-import aim4.map.GridMapUtil;
+import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.sim.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
@@ -26,6 +26,8 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     public Simulator getSimulator() {
         double currentTime = 0.0;
         VerySimpleMap layout = new VerySimpleMap();
+        // set up the spawn points: create a new method for this.
+        CPMMapUtil.setUpSimpleSpawnPoints(layout);
         return new CPMAutoDriverSimulator(layout);
     }
 }

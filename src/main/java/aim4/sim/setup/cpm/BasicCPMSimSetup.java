@@ -11,6 +11,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
 
     /** The speed limit of the roads */
     protected double speedLimit;
+    /** The traffic level */
+    protected double trafficLevel;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -19,6 +21,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      */
     public BasicCPMSimSetup(BasicCPMSimSetup basicSimSetup) {
         this.speedLimit = basicSimSetup.speedLimit;
+        this.trafficLevel = basicSimSetup.trafficLevel;
     }
 
     /**
@@ -26,47 +29,15 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      *
      * @param speedLimit                  the speed limit in the car park
      */
-    public BasicCPMSimSetup(double speedLimit) {
+    public BasicCPMSimSetup(double speedLimit, double trafficLevel) {
         this.speedLimit = speedLimit;
+        this.trafficLevel = trafficLevel;
     }
 
     @Override
     public Simulator getSimulator() {
-        return new Simulator() {
-            @Override
-            public SimStepResult step(double timeStep) {
-                return null;
-            }
-
-            @Override
-            public BasicMap getMap() {
-                return null;
-            }
-
-            @Override
-            public double getSimulationTime() {
-                return 0;
-            }
-
-            @Override
-            public int getNumCompletedVehicles() {
-                return 0;
-            }
-
-            @Override
-            public double getAvgBitsTransmittedByCompletedVehicles() {
-                return 0;
-            }
-
-            @Override
-            public double getAvgBitsReceivedByCompletedVehicles() {
-                return 0;
-            }
-
-            @Override
-            public VehicleSimModel getActiveVehicle(int vin) {
-                return null;
-            }
-        };
+        // TODO: think how to avoid using the following assertation.
+        assert false : ("Cannot instantiate BasicCPMSimSetup");
+        return null;
     }
 }

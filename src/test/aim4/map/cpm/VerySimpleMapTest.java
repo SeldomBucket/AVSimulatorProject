@@ -7,7 +7,8 @@ import java.util.List;
 
 public class VerySimpleMapTest extends TestCase {
 
-    public void testGetRoads() throws Exception {
+    public void testNumberOfRoadsOnInitialisation() throws Exception {
+        System.out.println("Testing there are 3 roads when VeryBasicMap is initialised.");
         VerySimpleMap map = new VerySimpleMap();
         List<Road> roads = map.getRoads();
 

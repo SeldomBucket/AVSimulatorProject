@@ -1,10 +1,17 @@
 package aim4.sim;
 
 import aim4.map.BasicMap;
+import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
+import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSimModel;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VinRegistry;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The simulator of AVs in an AV specific car park which are self-organising.
@@ -48,6 +55,8 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     /** The map */
     private VerySimpleMap simpleMap;
+    /** All active vehicles, in form of a map from VINs to vehicle objects. */
+    private Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
     private double currentTime;
     /** The number of completed vehicles */
@@ -59,18 +68,19 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     public CPMAutoDriverSimulator(VerySimpleMap simpleMap){
         this.simpleMap = simpleMap;
+        this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
+
+        System.out.println("CPM Simulator created!");
     }
 
     @Override
     public SimStepResult step(double timeStep) {
-        System.out.println("CPM Simulator speaking!");
-
-        // spawnVehicles(timeStep);
+        spawnVehicles(timeStep);
         // provideSensorInput();
         // letDriversAct();
         // communication();
@@ -79,6 +89,73 @@ public class CPMAutoDriverSimulator implements Simulator {
         currentTime += timeStep;
         // return new CPMAutoDriverSimStepResult(completedVINs);
         return null;
+    }
+
+    /**
+     * Step 1: Spawn vehicles.
+     *
+     * @param timeStep  the time step
+     */
+    private void spawnVehicles(double timeStep) {
+        for(SpawnPoint spawnPoint : simpleMap.getSpawnPoints()) {
+            List<SpawnPoint.SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+            if (!spawnSpecs.isEmpty()) {
+                if (canSpawnVehicle(spawnPoint)) {
+                    for(SpawnPoint.SpawnSpec spawnSpec : spawnSpecs) {
+                        CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                        vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        break; // only handle the first spawn vehicle
+                        // TODO: need to fix this
+                    }
+                } // else ignore the spawnSpecs and do nothing
+            }
+        }
+    }
+
+    /**
+     * Whether a spawn point can spawn any vehicle
+     *
+     * @param spawnPoint  the spawn point
+     * @return Whether the spawn point can spawn any vehicle
+     */
+    private boolean canSpawnVehicle(SpawnPoint spawnPoint) {
+        // return true for the moment.
+        return true;
+    }
+
+    /**
+     * Create a vehicle at a spawn point.
+     *
+     * @param spawnPoint  the spawn point
+     * @param spawnSpec   the spawn specification
+     * @return the vehicle
+     */
+    private CPMBasicAutoVehicle makeVehicle(SpawnPoint spawnPoint,
+                                           SpawnPoint.SpawnSpec spawnSpec) {
+        VehicleSpec spec = spawnSpec.getVehicleSpec();
+        Lane lane = spawnPoint.getLane();
+        // Now just take the minimum of the max velocity of the vehicle, and
+        // the speed limit in the lane
+        double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
+        // Obtain a Vehicle
+        CPMBasicAutoVehicle vehicle =
+                new CPMBasicAutoVehicle(spec,
+                        spawnPoint.getPosition(),
+                        spawnPoint.getHeading(),
+                        spawnPoint.getSteeringAngle(),
+                        initVelocity, // velocity
+                        initVelocity,  // target velocity
+                        spawnPoint.getAcceleration(),
+                        spawnSpec.getSpawnTime());
+        // Set the driver
+        // AIMAutoDriver driver = new AIMAutoDriver(vehicle, basicIntersectionMap);
+        // driver.setCurrentLane(lane);
+        // driver.setSpawnPoint(spawnPoint);
+        // driver.setDestination(spawnSpec.getDestinationRoad());
+        // vehicle.setDriver(driver);
+
+        return vehicle;
     }
 
     @Override

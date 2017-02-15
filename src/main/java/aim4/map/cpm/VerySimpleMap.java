@@ -63,8 +63,8 @@ public class VerySimpleMap implements BasicMap {
     private List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     private List<Road> roads;
-    /** The entrance Road*/
-    private Road entranceRoad;
+    /** The entrance lane*/
+    private Lane entranceLane;
     /** The exit Road*/
     private Road exitRoad;
 
@@ -117,6 +117,7 @@ public class VerySimpleMap implements BasicMap {
         westLane.setId(westLaneId);
         westBoundRoad.addTheRightMostLane(westLane);
         laneToRoad.put(westLane, westBoundRoad);
+        entranceLane = westLane;
 
         horizontalRoads.add(westBoundRoad);
 
@@ -157,7 +158,7 @@ public class VerySimpleMap implements BasicMap {
         roads.addAll(verticalRoads);
         roads = Collections.unmodifiableList(roads);
 
-        // initializeSpawnPoints(initTime);
+        initializeSpawnPoints(initTime);
     }
 
     /**
@@ -168,9 +169,7 @@ public class VerySimpleMap implements BasicMap {
     private void initializeSpawnPoints(double initTime) {
         spawnPoints = new ArrayList<SpawnPoint>(1);
         horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
-
-        Lane lane = entranceRoad.getIndexLane();
-        horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
+        horizontalSpawnPoints.add(makeSpawnPoint(initTime, entranceLane));
 
         spawnPoints.addAll(horizontalSpawnPoints);
     }
