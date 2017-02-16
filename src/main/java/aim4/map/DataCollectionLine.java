@@ -133,6 +133,7 @@ public class DataCollectionLine {
         } else {
           vinToTime.get(vin).add(time);
         }
+        System.out.println("INTERSECT");
         return true;
       } else {
         return false;

@@ -246,15 +246,15 @@ public class VerySimpleMap implements BasicMap {
             return;
         }
         // TODO: sort by time and LineId and VIN
-        outfile.printf("VIN,Time,DCLname,vType,startLaneId,destRoad\n");
+        outfile.printf("Printing file for CPM simulation\n");
+        outfile.printf("VIN,Time,DCLname,vType,startLaneId\n");
         for (DataCollectionLine line : dataCollectionLines) {
             for (int vin : line.getAllVIN()) {
                 for(double time : line.getTimes(vin)) {
-                    outfile.printf("%d,%.4f,%s,%s,%d,%s\n",
+                    outfile.printf("%d,%.4f,%s,%s,%d\n",
                             vin, time, line.getName(),
                             VinRegistry.getVehicleSpecFromVIN(vin).getName(),
-                            VinRegistry.getSpawnPointFromVIN(vin).getLane().getId(),
-                            VinRegistry.getDestRoadFromVIN(vin).getName());
+                            VinRegistry.getSpawnPointFromVIN(vin).getLane().getId());
                 }
             }
         }

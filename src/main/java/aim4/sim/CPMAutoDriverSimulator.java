@@ -160,7 +160,7 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     @Override
     public BasicMap getMap() {
-        return null;
+        return simpleMap;
     }
 
     @Override
