@@ -2,6 +2,7 @@ package aim4.vehicle.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
+import aim4.driver.cpm.CPMBasicV2VDriver;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -10,7 +11,16 @@ import java.awt.geom.Point2D;
 /**
  * The basic autonomous vehicle for CPM simulations.
  */
-public class CPMBasicAutoVehicle extends BasicAutoVehicle{
+public class CPMBasicAutoVehicle extends BasicAutoVehicle {
+
+    /////////////////////////////////
+    // PRIVATE FIELDS
+    /////////////////////////////////
+
+    /**
+     * The Driver controlling this vehicle.
+     */
+    protected CPMBasicV2VDriver driver;
 
     /**
      * Construct a vehicle
@@ -38,11 +48,12 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle{
 
     @Override
     public AutoDriver getDriver() {
-        return null;
+        return driver;
     }
 
     @Override
     public void setDriver(Driver driver) {
-
+        assert driver instanceof CPMBasicV2VDriver;
+        this.driver = (CPMBasicV2VDriver) driver;
     }
 }

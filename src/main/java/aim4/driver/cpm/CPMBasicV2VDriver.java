@@ -2,6 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
+import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
@@ -25,6 +26,9 @@ public class CPMBasicV2VDriver extends BasicDriver
     /** The map */
     private VerySimpleMap simpleMap;
 
+    /** Where this DriverAgent is coming from. */
+    private SpawnPoint spawnPoint;
+
     /////////////////////////////////
     // CONSTRUCTORS
     /////////////////////////////////
@@ -37,6 +41,14 @@ public class CPMBasicV2VDriver extends BasicDriver
     /////////////////////////////////
     // PUBLIC METHODS
     /////////////////////////////////
+
+    /**
+     * {@inheritDoc} -- find out where this came from
+     */
+    //@Override
+    public void setSpawnPoint(SpawnPoint spawnPoint) {
+        this.spawnPoint = spawnPoint;
+    }
 
     /**
      * Take control actions for driving the agent's Vehicle.  This allows
