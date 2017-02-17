@@ -51,6 +51,18 @@ public class CPMBasicV2VDriver extends BasicDriver
     }
 
     /**
+     * Get where this DriverAgent is coming from.
+     *
+     * @return the SpawnPoint where this DriverAgent came from
+     */
+    public SpawnPoint getSpawnPoint() {
+        if(spawnPoint == null) {
+            throw new RuntimeException("Driver is without origin!");
+        }
+        return spawnPoint;
+    }
+
+    /**
      * Take control actions for driving the agent's Vehicle.  This allows
      * both the Coordinator and the Pilot to act (in that order).
      */

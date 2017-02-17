@@ -5,6 +5,7 @@ import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
 import aim4.driver.cpm.CPMBasicV2VDriver;
 import aim4.map.BasicMap;
+import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
@@ -89,9 +90,9 @@ public class CPMAutoDriverSimulator implements Simulator {
     public SimStepResult step(double timeStep) {
         spawnVehicles(timeStep);
         provideSensorInput();
-        // letDriversAct();
+        letDriversAct();
         // communication();
-        // moveVehicles(timeStep);
+        moveVehicles(timeStep);
         // List<Integer> completedVINs = cleanUpCompletedVehicles();
         currentTime += timeStep;
         // return new CPMAutoDriverSimStepResult(completedVINs);
@@ -426,6 +427,42 @@ public class CPMAutoDriverSimulator implements Simulator {
             }
         }
 
+    }
+
+    /////////////////////////////////
+    // STEP 3
+    /////////////////////////////////
+
+    /**
+     * Allow each driver to act.
+     */
+    private void letDriversAct() {
+        for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
+            vehicle.getDriver().act();
+        }
+    }
+
+    /////////////////////////////////
+    // STEP #
+    /////////////////////////////////
+
+    /**
+     * Move all the vehicles.
+     *
+     * @param timeStep  the time step
+     */
+    private void moveVehicles(double timeStep) {
+        for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
+            Point2D p1 = vehicle.getPosition();
+            vehicle.move(timeStep);
+            Point2D p2 = vehicle.getPosition();
+            for(DataCollectionLine line : simpleMap.getDataCollectionLines()) {
+                line.intersect(vehicle, currentTime, p1, p2);
+            }
+            if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
+                vehicle.printState();
+            }
+        }
     }
 
 
