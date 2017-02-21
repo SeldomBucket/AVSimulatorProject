@@ -5,6 +5,7 @@ import aim4.driver.BasicDriver;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.vehicle.VehicleDriverModel;
+import aim4.vehicle.VinRegistry;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 /**

@@ -71,7 +71,7 @@ public class VerySimpleMap implements BasicMap {
 
     /**
      * Create a very simple map.
-     * For now, have 3 roads in C shape.
+     * For now, have 3 roads in backwards C shape.
      */
     public VerySimpleMap() {
         laneWidth = 4;
@@ -90,10 +90,10 @@ public class VerySimpleMap implements BasicMap {
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
         //Add a lane to the road
-        Lane southLane = new LineSegmentLane(0, // x1
-                0, // y1
-                0, // x2
-                height, // y2
+        Lane southLane = new LineSegmentLane(width, // x1
+                height, // y1
+                width, // x2
+                0, // y2
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
@@ -108,16 +108,15 @@ public class VerySimpleMap implements BasicMap {
 
         //Add a lane to the road
         Lane westLane = new LineSegmentLane(width, // x1
-                height, // y1
+                0, // y1
                 0, // x2
-                height, // y2
+                0, // y2
                 laneWidth, // width
                 speedLimit);
         int westLaneId = laneRegistry.register(westLane);
         westLane.setId(westLaneId);
         westBoundRoad.addTheRightMostLane(westLane);
         laneToRoad.put(westLane, westBoundRoad);
-        entranceLane = westLane;
 
         horizontalRoads.add(westBoundRoad);
 
@@ -126,32 +125,34 @@ public class VerySimpleMap implements BasicMap {
 
         //Add a lane to the road
         Lane eastLane = new LineSegmentLane(0, // x1
-                0, // y1
+                height, // y1
                 width, // x2
-                0, // y2
+                height, // y2
                 laneWidth, // width
                 speedLimit);
         int eastLaneId = laneRegistry.register(eastLane);
         eastLane.setId(eastLaneId);
         eastBoundRoad.addTheRightMostLane(eastLane);
         laneToRoad.put(eastLane, eastBoundRoad);
+        entranceLane = eastLane;
+
 
         horizontalRoads.add(eastBoundRoad);
 
         // generate the data collection lines
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Entrance on Westbound",
+                        "Entrance on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-20), height),
-                        new Point2D.Double((width-20), (height-laneWidth)),
+                        new Point2D.Double(20, (height)),
+                        new Point2D.Double(20, (height-laneWidth)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Exit on Eastbound",
+                        "Exit on Westbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-20), 0),
-                        new Point2D.Double((width-20), (laneWidth)),
+                        new Point2D.Double(20, 0),
+                        new Point2D.Double(20, laneWidth),
                         true));
 
         roads = new ArrayList<Road>(horizontalRoads);
