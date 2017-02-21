@@ -53,6 +53,7 @@ import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.SpawnPoint.SpawnSpec;
 import aim4.map.SpawnPoint.SpawnSpecGenerator;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.TrafficVolume;
 import aim4.map.aim.destination.DestinationSelector;
@@ -206,8 +207,12 @@ public class GridMapUtil {
     private VehicleSpec vehicleSpec;
     /** The destination road */
     private Road destinationRoad;
+    /**The destination selector to generate a destination.*/
+    private DestinationSelector destinationSelector;
     /** Whether the spec has been generated */
     private boolean isDone;
+    /**The map that spawn point will belong to. */
+    private BasicMap map;
 
     /**
      * Create a spec generator that generates just one vehicle in the entire
@@ -223,11 +228,24 @@ public class GridMapUtil {
     }
 
     /**
+     * Create a spec generator that generates just one vehicle in the entire
+     * simulation.
+     */
+    public OnlyOneSpawnSpecGenerator(BasicIntersectionMap map) {
+      vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+      isDone = false;
+      destinationSelector = new RandomDestinationSelector(map);
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
     public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
       List<SpawnSpec> result = new ArrayList<SpawnSpec>(1);
+      if (destinationRoad == null){
+        destinationRoad = destinationSelector.selectDestination(spawnPoint.getLane());
+      }
       if (!isDone) {
         isDone = true;
         result.add(new SpawnSpec(spawnPoint.getCurrentTime(),
@@ -622,4 +640,11 @@ public class GridMapUtil {
     }
   }
 
+  public static void setUpSimpleSpawnPoints(GridIntersectionMap map){
+    // The spawn point will only spawn one vehicle in the whole simulation
+    for(SpawnPoint sp : map.getSpawnPoints()) {
+      sp.setVehicleSpecChooser(
+              new OnlyOneSpawnSpecGenerator(map));
+    }
+  }
 }

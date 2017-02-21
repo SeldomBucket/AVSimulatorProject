@@ -282,8 +282,9 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
       } else {
         GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
       }
+        GridMapUtil.setUpSimpleSpawnPoints(layout);
 
-      switch(trafficType) {
+      /*switch(trafficType) {
       case UNIFORM_RANDOM:
         GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
         break;
@@ -298,7 +299,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
       case FILE:
         GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
         break;
-      }
+      }*/
     } else {
       GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
       GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
