@@ -2,6 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
+import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.vehicle.VehicleDriverModel;
@@ -23,6 +24,9 @@ public class CPMBasicV2VDriver extends BasicDriver
 
     /** The vehicle this driver will control */
     private CPMBasicAutoVehicle vehicle;
+
+    /** The sub-agent that controls coordination */
+    private Coordinator coordinator;
 
     /** The map */
     private VerySimpleMap simpleMap;
@@ -70,6 +74,15 @@ public class CPMBasicV2VDriver extends BasicDriver
     @Override
     public void act() {
         super.act();
+        if (coordinator == null){
+            // Create a new coordinator if the vehicle doesn't already have one.
+            coordinator = new CPMBasicCoordinator(vehicle, vehicle.getDriver());
+        }
+
+        // the newly created coordinator can be called immediately.
+        if (!coordinator.isTerminated()) {
+            coordinator.act();
+        }
     }
 
     @Override

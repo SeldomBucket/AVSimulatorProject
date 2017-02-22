@@ -1,5 +1,6 @@
 package aim4.driver.cpm;
 
+import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.pilot.BasicPilot;
 import aim4.vehicle.VehicleDriverModel;
@@ -29,7 +30,7 @@ public class CPMV2VPilot extends BasicPilot{
 
     private CPMBasicAutoVehicle vehicle;
 
-    private CPMBasicV2VDriver driver;
+    private AutoDriver driver;
 
     // ///////////////////////////////
     // CONSTRUCTORS
@@ -41,7 +42,7 @@ public class CPMV2VPilot extends BasicPilot{
      * @param vehicle      the vehicle to control
      * @param driver       the driver
      */
-    public CPMV2VPilot(CPMBasicAutoVehicle vehicle, CPMBasicV2VDriver driver) {
+    public CPMV2VPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver) {
         this.vehicle = vehicle;
         this.driver = driver;
     }
