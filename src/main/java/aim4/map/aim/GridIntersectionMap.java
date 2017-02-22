@@ -338,7 +338,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     intersectionManagers = new ArrayList<IntersectionManager>(columns * rows);
     intersectionManagerGrid = new IntersectionManager[columns][rows];
 
-    initializeSpawnPoints(initTime);
+    // initializeSpawnPoints(initTime);
+    initializeOneSpawnPoint(initTime);
   }
 
   /**
@@ -365,6 +366,28 @@ public class GridIntersectionMap implements BasicIntersectionMap {
 
     spawnPoints.addAll(horizontalSpawnPoints);
     spawnPoints.addAll(verticalSpawnPoints);
+
+    Debug.currentMap = this;
+  }
+
+  /**
+   * Initialize one spawn point on the eastbound road.
+   * Added this method so we can follow one driver agent when debugging.
+   * Useful to understand more how their driver agent works.
+   *
+   * @param initTime  the initial time
+   */
+  private void initializeOneSpawnPoint(double initTime) {
+    if(rows > 1 || columns > 1) {
+      throw new IllegalArgumentException("Undefined behaviour with one spawn point");
+    }
+    spawnPoints = new ArrayList<SpawnPoint>(1);
+    horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
+
+    Lane lane = horizontalRoads.get(0).getLanes().get(0);
+    horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
+
+    spawnPoints.addAll(horizontalSpawnPoints);
 
     Debug.currentMap = this;
   }
