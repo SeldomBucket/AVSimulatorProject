@@ -1,6 +1,7 @@
 package aim4.map.cpm;
 
 import aim4.config.Debug;
+import aim4.im.RoadBasedIntersection;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
@@ -63,11 +64,8 @@ public class VerySimpleMap implements BasicMap {
     private List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     private List<Road> roads;
-    /** The entrance lane*/
+    /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
-    /** The exit Road*/
-    private Road exitRoad;
-
 
     /**
      * Create a very simple map.
@@ -79,20 +77,23 @@ public class VerySimpleMap implements BasicMap {
         initTime = 0.0;
 
         // Generate the size of the map
-        double width = 350;
-        double height = 350;
+        double width = 325;
+        double height = 325;
         dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
+        // One on entry and one on exit
         dataCollectionLines = new ArrayList<DataCollectionLine>(2);
 
         // Create the vertical Road
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
-        //Add a lane to the road
-        Lane southLane = new LineSegmentLane(width, // x1
+        // Add a lane to the road
+        // Need to find the centre of the lane before creating it
+        double x = width - (laneWidth/2);
+        Lane southLane = new LineSegmentLane(x, // x1
                 height, // y1
-                width, // x2
+                x, // x2
                 0, // y2
                 laneWidth, // width
                 speedLimit);
@@ -107,10 +108,12 @@ public class VerySimpleMap implements BasicMap {
         Road westBoundRoad = new Road("Westbound Avenue", this);
 
         //Add a lane to the road
+        // Need to find the centre of the lane before creating it
+        double y = (laneWidth/2);
         Lane westLane = new LineSegmentLane(width, // x1
-                0, // y1
+                y, // y1
                 0, // x2
-                0, // y2
+                y, // y2
                 laneWidth, // width
                 speedLimit);
         int westLaneId = laneRegistry.register(westLane);
@@ -124,10 +127,12 @@ public class VerySimpleMap implements BasicMap {
         Road eastBoundRoad = new Road("Eastbound Avenue", this);
 
         //Add a lane to the road
+        // Need to find the centre of the lane before creating it
+        y = height - (laneWidth/2);
         Lane eastLane = new LineSegmentLane(0, // x1
-                height, // y1
+                y, // y1
                 width, // x2
-                height, // y2
+                y, // y2
                 laneWidth, // width
                 speedLimit);
         int eastLaneId = laneRegistry.register(eastLane);
@@ -136,8 +141,14 @@ public class VerySimpleMap implements BasicMap {
         laneToRoad.put(eastLane, eastBoundRoad);
         entranceLane = eastLane;
 
-
         horizontalRoads.add(eastBoundRoad);
+
+        // Now we have created the roads, we need to create the intersections
+        // Where East and South meet
+        List<Road> roads1 = new ArrayList<Road>(2);
+        roads1.add(eastBoundRoad);
+        roads1.add(southBoundRoad);
+        RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads1);
 
         // generate the data collection lines
         dataCollectionLines.add(
