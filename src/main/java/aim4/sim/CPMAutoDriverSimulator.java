@@ -8,7 +8,8 @@ import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
-import aim4.map.cpm.VerySimpleMap;
+import aim4.map.cpm.CPMMap;
+import aim4.map.cpm.CPMMapUtil;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
@@ -62,7 +63,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /////////////////////////////////
 
     /** The map */
-    private BasicMap simpleMap;
+    private CPMMap simpleMap;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
     private Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
@@ -74,7 +75,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
 
-    public CPMAutoDriverSimulator(BasicMap simpleMap){
+    public CPMAutoDriverSimulator(CPMMap simpleMap){
         this.simpleMap = simpleMap;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
 

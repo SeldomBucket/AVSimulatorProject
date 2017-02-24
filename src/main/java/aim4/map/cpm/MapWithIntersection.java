@@ -1,19 +1,15 @@
 package aim4.map.cpm;
 
-import aim4.config.Debug;
 import aim4.im.RoadBasedIntersection;
-import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
-import aim4.util.GeomMath;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -25,7 +21,7 @@ import java.util.*;
  * (as in AIM simulation). Class created to test if we can
  * instantiate RoadBasedIntersection.
  */
-public class MapWithIntersection implements BasicMap {
+public class MapWithIntersection implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -66,12 +62,16 @@ public class MapWithIntersection implements BasicMap {
     private List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     private List<Road> roads;
-    /** The entrance lane, used to create a SpawnPoint*/
+    /** The entrance lane, used to create a SpawnPoint */
     private Lane entranceLane;
+    /** The exit lane */
+    private Lane exitLane;
+
 
     /**
-     * Create a very simple map.
-     * For now, have 3 roads in backwards C shape.
+     * Create a map with a conventional intersection: 4 roads
+     * (North, South, East, West) intersecting in the centre
+     * of the map.
      */
     public MapWithIntersection() {
         laneWidth = 4;
@@ -287,5 +287,10 @@ public class MapWithIntersection implements BasicMap {
         }
 
         outfile.close();
+    }
+
+    @Override
+    public Lane getExitLane() {
+        return null;
     }
 }

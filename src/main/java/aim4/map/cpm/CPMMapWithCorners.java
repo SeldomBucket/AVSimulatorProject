@@ -1,19 +1,14 @@
 package aim4.map.cpm;
 
-import aim4.config.Debug;
-import aim4.im.RoadBasedIntersection;
-import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
-import aim4.util.GeomMath;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -23,7 +18,7 @@ import java.util.*;
 /**
  * Map for a car park grid.
  */
-public class CPMMapWithCorners implements BasicMap {
+public class CPMMapWithCorners implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -66,6 +61,8 @@ public class CPMMapWithCorners implements BasicMap {
     private List<Road> roads;
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
+    /** The exit lane*/
+    private Lane exitLane;
 
     /**
      * Create a very simple map.
@@ -86,6 +83,7 @@ public class CPMMapWithCorners implements BasicMap {
         dataCollectionLines = new ArrayList<DataCollectionLine>(2);
 
         // Create the vertical Road
+        // SOUTH
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
         // Add a lane to the road
@@ -105,9 +103,10 @@ public class CPMMapWithCorners implements BasicMap {
         verticalRoads.add(southBoundRoad);
 
         // Create the horizontal Roads
+        // WEST
         Road westBoundRoad = new Road("Westbound Avenue", this);
 
-        //Add a lane to the road
+        // Add a lane to the road
         // Need to find the centre of the lane before creating it
         double y = (laneWidth/2);
         Lane westLane = new LineSegmentLane(width, // x1
@@ -120,13 +119,14 @@ public class CPMMapWithCorners implements BasicMap {
         westLane.setId(westLaneId);
         westBoundRoad.addTheRightMostLane(westLane);
         laneToRoad.put(westLane, westBoundRoad);
+        exitLane = westLane;
 
         horizontalRoads.add(westBoundRoad);
 
-
+        // EAST
         Road eastBoundRoad = new Road("Eastbound Avenue", this);
 
-        //Add a lane to the road
+        // Add a lane to the road
         // Need to find the centre of the lane before creating it
         y = height - (laneWidth/2);
         Lane eastLane = new LineSegmentLane(0, // x1
@@ -242,6 +242,9 @@ public class CPMMapWithCorners implements BasicMap {
     public List<SpawnPoint> getSpawnPoints() {
         return spawnPoints;
     }
+
+    @Override
+    public Lane getExitLane() { return exitLane; }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {

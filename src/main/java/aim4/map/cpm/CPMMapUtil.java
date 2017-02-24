@@ -1,6 +1,5 @@
 package aim4.map.cpm;
 
-import aim4.map.BasicMap;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.vehicle.VehicleSpec;
@@ -54,7 +53,7 @@ public class CPMMapUtil {
     }
 
 
-    public static void setUpSimpleSpawnPoints(BasicMap simpleMap){
+    public static void setUpSimpleSpawnPoints(CPMMap simpleMap){
         // The spawn point will only spawn one vehicle in the whole simulation
         for(SpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
