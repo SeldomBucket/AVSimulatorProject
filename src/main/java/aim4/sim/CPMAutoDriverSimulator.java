@@ -62,7 +62,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /////////////////////////////////
 
     /** The map */
-    private VerySimpleMap simpleMap;
+    private BasicMap simpleMap;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
     private Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
@@ -74,7 +74,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
 
-    public CPMAutoDriverSimulator(VerySimpleMap simpleMap){
+    public CPMAutoDriverSimulator(BasicMap simpleMap){
         this.simpleMap = simpleMap;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
 
@@ -461,7 +461,6 @@ public class CPMAutoDriverSimulator implements Simulator {
                 throw new RuntimeException("Vehicle has driven off the map!");
             }
 
-            // System.out.println(p2);
             for(DataCollectionLine line : simpleMap.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }

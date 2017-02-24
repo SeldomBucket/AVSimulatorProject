@@ -3,6 +3,7 @@ package aim4.driver.cpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.Coordinator;
+import aim4.map.BasicMap;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.vehicle.VehicleDriverModel;
@@ -29,7 +30,7 @@ public class CPMBasicV2VDriver extends BasicDriver
     private Coordinator coordinator;
 
     /** The map */
-    private VerySimpleMap simpleMap;
+    private BasicMap simpleMap;
 
     /** Where this DriverAgent is coming from. */
     private SpawnPoint spawnPoint;
@@ -38,7 +39,7 @@ public class CPMBasicV2VDriver extends BasicDriver
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public CPMBasicV2VDriver(CPMBasicAutoVehicle vehicle, VerySimpleMap simpleMap) {
+    public CPMBasicV2VDriver(CPMBasicAutoVehicle vehicle, BasicMap simpleMap) {
         this.vehicle = vehicle;
         this.simpleMap = simpleMap;
     }

@@ -1,6 +1,9 @@
 package aim4.sim.setup.cpm;
 
+import aim4.map.BasicMap;
 import aim4.map.cpm.CPMMapUtil;
+import aim4.map.cpm.MapWithIntersection;
+import aim4.map.cpm.MapWithTJunction;
 import aim4.map.cpm.VerySimpleMap;
 import aim4.sim.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
@@ -25,7 +28,10 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        VerySimpleMap layout = new VerySimpleMap();
+        BasicMap layout = new VerySimpleMap();
+        // BasicMap layout = new MapWithIntersection();
+        // BasicMap layout = new MapWithTJunction();
+
         // set up the spawn points: create a new method for this.
         CPMMapUtil.setUpSimpleSpawnPoints(layout);
         return new CPMAutoDriverSimulator(layout);
