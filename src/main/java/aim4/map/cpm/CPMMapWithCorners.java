@@ -23,7 +23,7 @@ import java.util.*;
 /**
  * Map for a car park grid.
  */
-public class VerySimpleMap implements BasicMap {
+public class CPMMapWithCorners implements BasicMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -71,7 +71,7 @@ public class VerySimpleMap implements BasicMap {
      * Create a very simple map.
      * For now, have 3 roads in backwards C shape.
      */
-    public VerySimpleMap() {
+    public CPMMapWithCorners() {
         laneWidth = 4;
         speedLimit = 25.0;
         initTime = 0.0;
@@ -143,12 +143,7 @@ public class VerySimpleMap implements BasicMap {
 
         horizontalRoads.add(eastBoundRoad);
 
-        // Now we have created the roads, we need to create the intersections
-        // Where East and South meet
-        List<Road> roads1 = new ArrayList<Road>(2);
-        roads1.add(eastBoundRoad);
-        roads1.add(southBoundRoad);
-        RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads1);
+        // Now we have created the roads, we need to create the Corners.
 
         // generate the data collection lines
         dataCollectionLines.add(

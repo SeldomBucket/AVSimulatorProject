@@ -5,11 +5,11 @@ import junit.framework.TestCase;
 
 import java.util.List;
 
-public class VerySimpleMapTest extends TestCase {
+public class CPMMapWithCornersTest extends TestCase {
 
     public void testNumberOfRoadsOnInitialisation() throws Exception {
         System.out.println("Testing there are 3 roads when VeryBasicMap is initialised.");
-        VerySimpleMap map = new VerySimpleMap();
+        CPMMapWithCorners map = new CPMMapWithCorners();
         List<Road> roads = map.getRoads();
 
         int expectedSize = 3;
