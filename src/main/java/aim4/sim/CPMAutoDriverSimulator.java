@@ -458,9 +458,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
 
-            if (p2.getX() > simpleMap.getDimensions().getMaxX()){
-                throw new RuntimeException("Vehicle has driven off the map!");
-            }
+            CPMMapUtil.checkVehicleStillOnMap(simpleMap, p2, vehicle.getDriver().getCurrentLane());
 
             for(DataCollectionLine line : simpleMap.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);

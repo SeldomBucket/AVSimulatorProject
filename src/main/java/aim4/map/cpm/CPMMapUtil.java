@@ -2,9 +2,11 @@ package aim4.map.cpm;
 
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
+import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -59,6 +61,32 @@ public class CPMMapUtil {
             sp.setVehicleSpecChooser(
                     new OnlyOneSpawnSpecGenerator());
         }
+    }
+
+    /**
+     * Check that the vehicle is still on the map when it should be.
+     * @param map   the map we are check the vehicle is still on
+     * @param vehiclePosition the current x coordinate of the vehicle
+     * @param currentLane the lane the vehicle is currently driving on
+     * */
+    public static void checkVehicleStillOnMap(CPMMap map,
+                                          Point2D vehiclePosition,
+                                          Lane currentLane){
+        // For this map, should only drive off the map when it has
+        // finished following the exit lane
+        double x = vehiclePosition.getX();
+        double y = vehiclePosition.getY();
+
+        // check if it is within the dimensions of the map
+        if (0 < x & x < map.getDimensions().getMaxX() &
+                0 < y & y < map.getDimensions().getMaxY()){
+            return;
+        }
+        // Allow it to drive off the map once it's followed the exit lane
+        if (currentLane == map.getExitLane()){
+            return;
+        }
+        throw new RuntimeException("Vehicle has driven off the map!");
     }
 
 }
