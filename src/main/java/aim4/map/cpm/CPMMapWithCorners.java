@@ -68,15 +68,15 @@ public class CPMMapWithCorners implements CPMMap {
      * Create a very simple map.
      * For now, have 3 roads in backwards C shape.
      */
-    public CPMMapWithCorners() {
-        laneWidth = 4;
-        speedLimit = 25.0;
-        initTime = 0.0;
-
-        // Generate the size of the map
-        double width = 325;
-        double height = 325;
-        dimensions = new Rectangle2D.Double(0, 0, width, height);
+    public CPMMapWithCorners(int laneWidth, double speedLimit,
+                             double initTime, double width,
+                             double height) {
+        this.laneWidth = laneWidth;
+        this.speedLimit = speedLimit;
+        this.initTime = initTime;
+        // Make this a constant or a parameter?
+        double mapBorder = 100; // used to add spacing around the map
+        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
         // One on entry and one on exit
@@ -88,11 +88,14 @@ public class CPMMapWithCorners implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x = width - (laneWidth/2);
-        Lane southLane = new LineSegmentLane(x, // x1
-                height, // y1
-                x, // x2
-                0, // y2
+        double x1 = width - mapBorder;
+        double y1 = height - mapBorder;
+        double x2 = x1;
+        double y2 = mapBorder;
+        Lane southLane = new LineSegmentLane(x1, // x1
+                y1, // y1
+                x2, // x2
+                y2, // y2
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
@@ -108,11 +111,14 @@ public class CPMMapWithCorners implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double y = (laneWidth/2);
-        Lane westLane = new LineSegmentLane(width, // x1
-                y, // y1
-                0, // x2
-                y, // y2
+        x1 = width - mapBorder;
+        y1 = mapBorder + (laneWidth/2);
+        x2 = 0;
+        y2 = y1;
+        Lane westLane = new LineSegmentLane(x1, // x1
+                y1, // y1
+                x2, // x2
+                y2, // y2
                 laneWidth, // width
                 speedLimit);
         int westLaneId = laneRegistry.register(westLane);
@@ -128,11 +134,14 @@ public class CPMMapWithCorners implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        y = height - (laneWidth/2);
-        Lane eastLane = new LineSegmentLane(0, // x1
-                y, // y1
-                width, // x2
-                y, // y2
+        x1 = 0;
+        y1 = height - mapBorder - (laneWidth/2);
+        x2 = width - mapBorder;
+        y2 = y1;
+        Lane eastLane = new LineSegmentLane(x1, // x1
+                y1, // y1
+                x2, // x2
+                y2, // y2
                 laneWidth, // width
                 speedLimit);
         int eastLaneId = laneRegistry.register(eastLane);
@@ -143,27 +152,25 @@ public class CPMMapWithCorners implements CPMMap {
 
         horizontalRoads.add(eastBoundRoad);
 
-        // Now we have created the roads, we need to create the Corners.
+        roads = new ArrayList<Road>(horizontalRoads);
+        roads.addAll(verticalRoads);
+        roads = Collections.unmodifiableList(roads);
 
         // generate the data collection lines
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Entrance on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(20, (height)),
-                        new Point2D.Double(20, (height-laneWidth)),
+                        new Point2D.Double(mapBorder, (height-mapBorder)),
+                        new Point2D.Double(mapBorder, (height-mapBorder-laneWidth)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Exit on Westbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(20, 0),
-                        new Point2D.Double(20, laneWidth),
+                        new Point2D.Double(mapBorder, mapBorder),
+                        new Point2D.Double(mapBorder, (mapBorder+laneWidth)),
                         true));
-
-        roads = new ArrayList<Road>(horizontalRoads);
-        roads.addAll(verticalRoads);
-        roads = Collections.unmodifiableList(roads);
 
         initializeSpawnPoints(initTime);
     }

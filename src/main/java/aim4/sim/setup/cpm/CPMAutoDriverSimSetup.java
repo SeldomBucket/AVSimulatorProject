@@ -27,7 +27,12 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        CPMMap layout = new CPMMapWithCorners();
+        CPMMap layout = new CPMMapWithCorners(4, // laneWidth
+                10.0, // speedLimit
+                currentTime, // initTime
+                500, //width
+                500); //height
+
         // CPMMap layout = new MapWithIntersection();
         // CPMMap layout = new MapWithTJunction();
 
