@@ -2,6 +2,7 @@ package aim4.map.cpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.RoadCorner;
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -27,6 +28,12 @@ public class CPMMapWithCorners implements CPMMap {
     /** The length of the no vehicle zone */
     private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
+
+    /** The length of the map border, used for
+     * space between map edge and elements, distance
+     * of DCL from edge etc.
+     * */
+    public static final double BORDER = 28.0;
 
     /** The position of the data collection line on a lane */
     private static final double DATA_COLLECTION_LINE_POSITION =
@@ -59,6 +66,8 @@ public class CPMMapWithCorners implements CPMMap {
     private List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     private List<Road> roads;
+    /** The set of corners */
+    private List<RoadCorner> corners;
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
     /** The exit lane*/
@@ -74,8 +83,6 @@ public class CPMMapWithCorners implements CPMMap {
         this.laneWidth = laneWidth;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
-        // Make this a constant or a parameter?
-        double mapBorder = 100; // used to add spacing around the map
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
@@ -88,10 +95,10 @@ public class CPMMapWithCorners implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x1 = width - mapBorder;
-        double y1 = height - mapBorder;
+        double x1 = width - BORDER;
+        double y1 = height - BORDER;
         double x2 = x1;
-        double y2 = mapBorder;
+        double y2 = BORDER;
         Lane southLane = new LineSegmentLane(x1, // x1
                 y1, // y1
                 x2, // x2
@@ -111,8 +118,8 @@ public class CPMMapWithCorners implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        x1 = width - mapBorder;
-        y1 = mapBorder + (laneWidth/2);
+        x1 = width - BORDER;
+        y1 = BORDER + (laneWidth/2);
         x2 = 0;
         y2 = y1;
         Lane westLane = new LineSegmentLane(x1, // x1
@@ -135,8 +142,8 @@ public class CPMMapWithCorners implements CPMMap {
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
         x1 = 0;
-        y1 = height - mapBorder - (laneWidth/2);
-        x2 = width - mapBorder;
+        y1 = height - BORDER - (laneWidth/2);
+        x2 = width - BORDER;
         y2 = y1;
         Lane eastLane = new LineSegmentLane(x1, // x1
                 y1, // y1
@@ -161,16 +168,24 @@ public class CPMMapWithCorners implements CPMMap {
                 new DataCollectionLine(
                         "Entrance on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(mapBorder, (height-mapBorder)),
-                        new Point2D.Double(mapBorder, (height-mapBorder-laneWidth)),
+                        new Point2D.Double(BORDER, (height-BORDER)),
+                        new Point2D.Double(BORDER, (height-BORDER-laneWidth)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Exit on Westbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(mapBorder, mapBorder),
-                        new Point2D.Double(mapBorder, (mapBorder+laneWidth)),
+                        new Point2D.Double(BORDER, BORDER),
+                        new Point2D.Double(BORDER, (BORDER+laneWidth)),
                         true));
+
+        // Now we can create corners where roads meet.
+        RoadCorner topRightCorner = new RoadCorner(eastBoundRoad,southBoundRoad);
+        RoadCorner bottomRightCorner = new RoadCorner(southBoundRoad,westBoundRoad);
+        // MAKE THIS BETTER
+        corners = new ArrayList<RoadCorner>(2);
+        corners.add(topRightCorner);
+        corners.add(bottomRightCorner);
 
         initializeSpawnPoints(initTime);
     }
@@ -252,6 +267,23 @@ public class CPMMapWithCorners implements CPMMap {
 
     @Override
     public Lane getExitLane() { return exitLane; }
+
+    public List<RoadCorner> getCorners() { return corners; }
+
+    /**
+     * Get the road by name.
+     *
+     * @return road, or null if the road doesn't exist.
+     * */
+    public Road getRoadByName(String roadName) {
+        for (Road road: roads){
+            if (road.getName() == roadName){
+                return road;
+            }
+        }
+
+        return null;
+    }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {

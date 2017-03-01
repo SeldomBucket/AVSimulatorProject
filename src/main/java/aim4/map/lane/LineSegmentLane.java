@@ -436,7 +436,12 @@ public class LineSegmentLane extends AbstractLane {
     return null;
   }
 
-
+  /**
+   * Get the line that represents this Lane.
+   */
+  public Line2D getLine() {
+    return line;
+  }
 
   /////////////////////////////////
   // PRIVATE METHODS
