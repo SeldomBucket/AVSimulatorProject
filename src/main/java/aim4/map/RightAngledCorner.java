@@ -13,20 +13,9 @@ import java.awt.geom.*;
 import java.util.*;
 
 /**
- * Create a corner which leads from one Road onto another Road.
+ * Create a right-angled corner which leads from one Road onto another Road.
  */
-public class RoadCorner {
-
-    /////////////////////////////////
-    // CONSTANTS
-    /////////////////////////////////
-
-    /**
-     * A small increase in size of the area such that the simulator can
-     * determine whether a vehicle is close enough to the corner.
-     * Close enough to change tot he other road?
-     */
-    // private static final double AREA_PLUS_OFFSET = 0.000001;
+public class RightAngledCorner {
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -38,21 +27,9 @@ public class RoadCorner {
     private Area areaOfCorner;
 
     /**
-     * The smallest rectangle that contains this corner.
-     */
-    private Rectangle2D boundingBox;
-
-    /**
      * The centroid of this corner.
      */
     private Point2D centroid;
-
-    // edge
-
-    /**
-     * A list of edges of the area.
-     */
-    private List<Path2D> edges = new ArrayList<Path2D>();
 
     // road
 
@@ -77,15 +54,6 @@ public class RoadCorner {
      * ordered by angle from the centroid.
      */
     private List<Point2D> points = new ArrayList<Point2D>();
-
-    // heading
-
-    /**
-     * A mapping from Lane to it's heading.
-     * */
-    private Map<Lane,Double> headings = new HashMap<Lane,Double>();
-
-    // cache
 
     /**
      * A map from lanes to the coordinates at which those lanes enter the
@@ -116,12 +84,13 @@ public class RoadCorner {
     /////////////////////////////////
 
     /**
-     * Basic class constructor.  Takes the Roads which meet to make this corner.
+     * Basic class constructor.
+     * Takes the Roads which meet at a right angle to make this corner.
      *
      * @param road1 a Road which will be part of the corner.
      * @param road2 a Road which will be part of the corner.
      */
-    public RoadCorner(Road road1, Road road2) {
+    public RightAngledCorner(Road road1, Road road2) {
         List<Road> roads = new ArrayList<Road>(2);
         roads.add(road1);
         roads.add(road2);
@@ -137,12 +106,8 @@ public class RoadCorner {
         centroid = GeomMath.polygonalShapeCentroid(areaOfCorner);
         // Calculate the waypoints.
         calcWayPoints();
-        // calculate the edges
-        // calcEdges();
         // Now build a GeneralPath using the waypoints.
         addWayPointsPath();
-        // Calculate the bounding box
-        // boundingBox = areaOfCorner.getBounds2D();
     }
 
     /////////////////////////////////

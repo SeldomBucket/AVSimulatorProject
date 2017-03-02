@@ -1,16 +1,13 @@
 package aim4.driver.cpm;
 
-import aim4.config.Debug;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.pilot.BasicPilot;
-import aim4.map.RoadCorner;
+import aim4.map.RightAngledCorner;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
-
-import java.util.List;
 
 /**
  * An agent that pilots an AutoVehicleDriverModel autonomously. This agent
@@ -102,7 +99,7 @@ public class CPMV2VPilot extends BasicPilot{
     /**
      * Set the steering action when the vehicle is traversing an intersection.
      */
-    public void takeSteeringActionForTraversingCorner(RoadCorner corner) {
+    public void takeSteeringActionForTraversingCorner(RightAngledCorner corner) {
         // TODO: CPM What if there are more than one lane in the roads of the corner?
         System.out.println("Steering around Corner!");
         Lane departureLane = corner.getExitLanes().get(0);

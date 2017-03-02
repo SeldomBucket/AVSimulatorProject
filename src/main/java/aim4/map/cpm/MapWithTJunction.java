@@ -1,16 +1,12 @@
 package aim4.map.cpm;
 
-import aim4.config.Debug;
-import aim4.im.RoadBasedIntersection;
 import aim4.map.*;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
-import aim4.util.GeomMath;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
 
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -267,7 +263,7 @@ public class MapWithTJunction implements CPMMap {
     }
 
     @Override
-    public List<RoadCorner> getCorners() {
+    public List<RightAngledCorner> getCorners() {
         return null;
     }
 }

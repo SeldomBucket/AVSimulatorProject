@@ -1,9 +1,8 @@
 package aim4.map.cpm;
 
-import aim4.im.RoadBasedIntersection;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.RoadCorner;
+import aim4.map.RightAngledCorner;
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -297,7 +296,7 @@ public class MapWithIntersection implements CPMMap {
     }
 
     @Override
-    public List<RoadCorner> getCorners() {
+    public List<RightAngledCorner> getCorners() {
         return null;
     }
 }

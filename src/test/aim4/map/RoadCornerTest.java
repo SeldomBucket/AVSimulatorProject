@@ -16,7 +16,7 @@ public class RoadCornerTest {
             0.0, // initTime
             500, // width
             500); // height
-    RoadCorner testCorner = map.getCorners().get(0);
+    RightAngledCorner testCorner = map.getCorners().get(0);
 
     @Test
     public void testGetEntryLanes() throws Exception {
