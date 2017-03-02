@@ -3,7 +3,7 @@ package aim4.driver.cpm;
 import aim4.config.Debug;
 import aim4.driver.AutoDriver;
 import aim4.driver.aim.coordinator.Coordinator;
-import aim4.map.RightAngledCorner;
+import aim4.map.connections.CornerRightAngleOneWay;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.EnumMap;
@@ -193,7 +193,7 @@ public class CPMBasicCoordinator implements Coordinator{
         public boolean perform() {
             // Check to see if we are still in the corner
             assert driver instanceof CPMBasicV2VDriver;
-            RightAngledCorner corner = ((CPMBasicV2VDriver) driver).inCorner();
+            CornerRightAngleOneWay corner = ((CPMBasicV2VDriver) driver).inCorner();
             if (corner == null) {
                 System.out.println("Driver is now out of the corner.");
                 // The vehicle is out of the corner.

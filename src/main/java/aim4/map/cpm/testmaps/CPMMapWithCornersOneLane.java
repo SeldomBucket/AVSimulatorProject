@@ -2,7 +2,7 @@ package aim4.map.cpm.testmaps;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.RightAngledCorner;
+import aim4.map.connections.CornerRightAngleOneWay;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
@@ -69,7 +69,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     /** The set of roads */
     private List<Road> roads;
     /** The set of corners */
-    private List<RightAngledCorner> corners;
+    private List<CornerRightAngleOneWay> corners;
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
     /** The exit lane*/
@@ -182,10 +182,10 @@ public class CPMMapWithCornersOneLane implements CPMMap {
                         true));
 
         // Now we can create corners where roads meet.
-        RightAngledCorner topRightCorner = new RightAngledCorner(eastBoundRoad,southBoundRoad);
-        RightAngledCorner bottomRightCorner = new RightAngledCorner(southBoundRoad,westBoundRoad);
+        CornerRightAngleOneWay topRightCorner = new CornerRightAngleOneWay(eastBoundRoad,southBoundRoad);
+        CornerRightAngleOneWay bottomRightCorner = new CornerRightAngleOneWay(southBoundRoad,westBoundRoad);
         // TODO CPM MAKE THIS BETTER
-        corners = new ArrayList<RightAngledCorner>(2);
+        corners = new ArrayList<CornerRightAngleOneWay>(2);
         corners.add(topRightCorner);
         corners.add(bottomRightCorner);
 
@@ -270,7 +270,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     @Override
     public Lane getExitLane() { return exitLane; }
 
-    public List<RightAngledCorner> getCorners() { return corners; }
+    public List<CornerRightAngleOneWay> getCorners() { return corners; }
 
     /**
      * Get the road by name.

@@ -4,7 +4,7 @@ import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.BasicMap;
-import aim4.map.RightAngledCorner;
+import aim4.map.connections.CornerRightAngleOneWay;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.CPMMap;
 import aim4.vehicle.AutoVehicleDriverModel;
@@ -123,9 +123,9 @@ public class CPMBasicV2VDriver extends BasicDriver
      *
      * @return the Corner that the driver is in, or null if not in a corner.
      */
-    public RightAngledCorner inCorner() {
+    public CornerRightAngleOneWay inCorner() {
         assert map instanceof CPMMap;
-        for (RightAngledCorner corner : ((CPMMap) map).getCorners()){
+        for (CornerRightAngleOneWay corner : ((CPMMap) map).getCorners()){
             if (intersectsArea(vehicle, corner.getArea())){
                 return corner;
             }

@@ -1,7 +1,8 @@
-package aim4.map;
+package aim4.map.connections;
 
 import aim4.config.Constants;
 import aim4.config.Debug;
+import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.track.WayPoint;
@@ -13,9 +14,10 @@ import java.awt.geom.*;
 import java.util.*;
 
 /**
- * Create a right-angled corner which leads from one Road onto another Road.
+ * Create a right-angled corner which leads from
+ * a Road with 1 lane onto another Road with one lane.
  */
-public class RightAngledCorner {
+public class CornerRightAngleOneWay extends BasicConnection {
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -90,7 +92,7 @@ public class RightAngledCorner {
      * @param road1 a Road which will be part of the corner.
      * @param road2 a Road which will be part of the corner.
      */
-    public RightAngledCorner(Road road1, Road road2) {
+    public CornerRightAngleOneWay(Road road1, Road road2) {
         List<Road> roads = new ArrayList<Road>(2);
         roads.add(road1);
         roads.add(road2);
@@ -125,8 +127,8 @@ public class RightAngledCorner {
                                                "involved in a Corner. Number of " +
                                                "roads given: " + roads.size());
         }
-        // There must be the same number of lanes in each road
-        if (!haveSameNumberOfLanes(roads)){
+        // There must be one lane in each road
+        if (!hasOneLane(roads)){
             throw new IllegalArgumentException("All roads in the Corner must " +
                                                "have the same number of lanes.");
         }
@@ -151,13 +153,12 @@ public class RightAngledCorner {
      *
      * @return boolean - true if all roads have the same number of lanes.
      */
-    private boolean haveSameNumberOfLanes(List<Road> roads){
-        // Get the number of lanes in the first road
-        int numberOfLanesForAllRoads = roads.get(0).getLanes().size();
+    private boolean hasOneLane(List<Road> roads){
+
         // Now compare this with the numebr of lanes in all the roads
         for (Road road : roads){
             int numberOfLanesInThisRoad = road.getLanes().size();
-            if (numberOfLanesInThisRoad != numberOfLanesForAllRoads){
+            if (numberOfLanesInThisRoad != 1){
                 return false;
             }
         }

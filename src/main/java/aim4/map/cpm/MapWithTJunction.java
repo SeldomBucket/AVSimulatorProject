@@ -1,6 +1,7 @@
 package aim4.map.cpm;
 
 import aim4.map.*;
+import aim4.map.connections.CornerRightAngleOneWay;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -263,7 +264,7 @@ public class MapWithTJunction implements CPMMap {
     }
 
     @Override
-    public List<RightAngledCorner> getCorners() {
+    public List<CornerRightAngleOneWay> getCorners() {
         return null;
     }
 }
