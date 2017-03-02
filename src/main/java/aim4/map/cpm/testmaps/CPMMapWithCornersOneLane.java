@@ -1,9 +1,10 @@
-package aim4.map.cpm;
+package aim4.map.cpm.testmaps;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.RoadCorner;
 import aim4.map.SpawnPoint;
+import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -20,7 +21,7 @@ import java.util.*;
  * Map with 2 corners. Roads make backwards C shape.
  * Roads only have 1 lane.
  */
-public class CPMMapWithCorners implements CPMMap {
+public class CPMMapWithCornersOneLane implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -78,9 +79,9 @@ public class CPMMapWithCorners implements CPMMap {
      * Create a very simple map.
      * For now, have 3 roads in backwards C shape.
      */
-    public CPMMapWithCorners(int laneWidth, double speedLimit,
-                             double initTime, double width,
-                             double height) {
+    public CPMMapWithCornersOneLane(int laneWidth, double speedLimit,
+                                    double initTime, double width,
+                                    double height) {
         this.laneWidth = laneWidth;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
