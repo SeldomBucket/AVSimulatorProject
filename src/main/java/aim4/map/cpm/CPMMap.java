@@ -10,7 +10,7 @@ import java.util.List;
  * Interface for all CPM maps.
  */
 public interface CPMMap extends BasicMap {
-    public Lane getExitLane();
+    public List<Lane> getExitLanes();
     public List<Corner> getCorners();
 
 

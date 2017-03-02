@@ -28,6 +28,12 @@ public class MapWithTJunction implements CPMMap {
     private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
+    /** The length of the map border, used for
+     * space between map edge and elements, distance
+     * of DCL from edge etc.
+     * */
+    public static final double BORDER = 28.0;
+
     /** The position of the data collection line on a lane */
     private static final double DATA_COLLECTION_LINE_POSITION =
             NO_VEHICLE_ZONE_LENGTH;
@@ -36,6 +42,8 @@ public class MapWithTJunction implements CPMMap {
     double initTime;
     /**Width of each lane*/
     private double laneWidth;
+    /** Half of the lane width*/
+    private double halfLaneWidth;
     /**Speed limit*/
     private double speedLimit;
     /** The dimensions of the map */
@@ -61,93 +69,128 @@ public class MapWithTJunction implements CPMMap {
     private List<Road> roads;
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
+    /** The exit lane*/
+    private List<Lane> exitLanes;
+
 
     /**
      * Create a map with a T-Junction.
      */
-    public MapWithTJunction() {
-        laneWidth = 4;
-        speedLimit = 25.0;
-        initTime = 0.0;
-
-        // Generate the size of the map
-        double width = 325;
-        double height = 325;
-        dimensions = new Rectangle2D.Double(0, 0, width, height);
+    public MapWithTJunction(int laneWidth, double speedLimit,
+                            double initTime, double width,
+                            double height) {
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth/2;
+        this.speedLimit = speedLimit;
+        this.initTime = initTime;
+        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
-        // One on entry and one on exit
+        // One on entry and one on each exit
         dataCollectionLines = new ArrayList<DataCollectionLine>(3);
 
-        // Create the vertical Road
+        // Create the vertical Roads
+
+        //NORTH
+        Road northBoundRoad = new Road("Northbound Avenue", this);
+
+        // Add a lane to the road
+        // Need to find the centre of the lane before creating it
+        double x1 = width - BORDER - halfLaneWidth;
+        double y1 = height/2;
+        double x2 = x1;
+        double y2 = height;
+        Lane northLane = new LineSegmentLane(x1,
+                y1,
+                x2,
+                y2,
+                laneWidth, // width
+                speedLimit);
+        int northLaneId = laneRegistry.register(northLane);
+        northLane.setId(northLaneId);
+        northBoundRoad.addTheRightMostLane(northLane);
+        laneToRoad.put(northLane, northBoundRoad);
+        exitLanes.add(northLane);
+
+        entranceLane = northLane;
+
+        verticalRoads.add(northBoundRoad);
 
         //SOUTH
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x = (width/2);
-        Lane southLane = new LineSegmentLane(x, // x1
-                height, // y1
-                x, // x2
-                0, // y2
+        x1 = width - BORDER - halfLaneWidth;
+        y1 = height/2;
+        x2 = x1;
+        y2 = 0;
+        Lane southLane = new LineSegmentLane(x1,
+                y1,
+                x2,
+                y2,
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
         southLane.setId(southLaneId);
         southBoundRoad.addTheRightMostLane(southLane);
         laneToRoad.put(southLane, southBoundRoad);
+        exitLanes.add(southLane);
 
         entranceLane = southLane;
 
         verticalRoads.add(southBoundRoad);
 
         // Create the horizontal Roads
-        // WEST
-        Road westBoundRoad = new Road("Westbound Avenue", this);
+        // EAST
+        Road eastBoundRoad = new Road("Eastbound Avenue", this);
 
-        //Add a lane to the road
+        // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double y = (height/2);
-        Lane westLane = new LineSegmentLane(width, // x1
-                y, // y1
-                (width/2), // x2
-                y, // y2
+        x1 = 0;
+        y1 = height/2;
+        x2 = width - BORDER;
+        y2 = height/2;
+        Lane eastLane = new LineSegmentLane(x1, // x1
+                y1, // y1
+                x2, // x2
+                y2, // y2
                 laneWidth, // width
                 speedLimit);
-        int westLaneId = laneRegistry.register(westLane);
-        westLane.setId(westLaneId);
-        westBoundRoad.addTheRightMostLane(westLane);
-        laneToRoad.put(westLane, westBoundRoad);
+        int eastLaneId = laneRegistry.register(eastLane);
+        eastLane.setId(eastLaneId);
+        eastBoundRoad.addTheRightMostLane(eastLane);
+        laneToRoad.put(eastLane, eastBoundRoad);
+        entranceLane = eastLane;
 
-        horizontalRoads.add(westBoundRoad);
+        horizontalRoads.add(eastBoundRoad);
+
+        roads = new ArrayList<Road>(horizontalRoads);
+        roads.addAll(verticalRoads);
+        roads = Collections.unmodifiableList(roads);
 
         // generate the data collection lines
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Entrance on Southbound",
+                        "Entrance on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(((width/2)-(laneWidth/2)), (height-20)),
-                        new Point2D.Double(((width/2)+(laneWidth/2)), (height-20)),
+                        new Point2D.Double(BORDER, (height/2)+halfLaneWidth),
+                        new Point2D.Double(BORDER, (height/2)-halfLaneWidth),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Exit on Westbound",
+                        "Exit on Northbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-20), ((height/2)+(laneWidth/2))),
-                        new Point2D.Double((width-20), ((height/2)-(laneWidth/2))),
+                        new Point2D.Double((width-BORDER-laneWidth), (height-BORDER)),
+                        new Point2D.Double((width-BORDER), (height-BORDER)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Exit on Southbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(((width/2)-(laneWidth/2)), 20),
-                        new Point2D.Double(((width/2)+(laneWidth/2)), 20),
+                        new Point2D.Double((width-BORDER-laneWidth), BORDER),
+                        new Point2D.Double((width-BORDER), BORDER),
                         true));
-
-        roads = new ArrayList<Road>(horizontalRoads);
-        roads.addAll(verticalRoads);
-        roads = Collections.unmodifiableList(roads);
 
         // Now we have created the roads, we need to create the TJunction
         // !!! This can't be done, RoadBasedIntersection is only for a
@@ -204,7 +247,7 @@ public class MapWithTJunction implements CPMMap {
 
     @Override
     public double getMaximumSpeedLimit() {
-        return 0;
+        return speedLimit;
     }
 
     @Override
@@ -259,8 +302,8 @@ public class MapWithTJunction implements CPMMap {
     }
 
     @Override
-    public Lane getExitLane() {
-        return null;
+    public List<Lane> getExitLanes() {
+        return exitLanes;
     }
 
     @Override

@@ -45,6 +45,8 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     double initTime;
     /**Width of each lane*/
     private double laneWidth;
+    /**Half of the width of each lane*/
+    private double halfLaneWidth;
     /**Speed limit*/
     private double speedLimit;
     /** The dimensions of the map */
@@ -73,7 +75,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
     /** The exit lane*/
-    private Lane exitLane;
+    private List<Lane> exitLanes = new ArrayList<Lane>();
 
     /**
      * Create a very simple map.
@@ -83,6 +85,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
                                     double initTime, double width,
                                     double height) {
         this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth/2;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
@@ -101,10 +104,10 @@ public class CPMMapWithCornersOneLane implements CPMMap {
         double y1 = height - BORDER;
         double x2 = x1;
         double y2 = BORDER;
-        Lane southLane = new LineSegmentLane(x1, // x1
-                y1, // y1
-                x2, // x2
-                y2, // y2
+        Lane southLane = new LineSegmentLane(x1,
+                y1,
+                x2,
+                y2,
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
@@ -121,7 +124,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
         x1 = width - BORDER;
-        y1 = BORDER + (laneWidth/2);
+        y1 = BORDER + halfLaneWidth;
         x2 = 0;
         y2 = y1;
         Lane westLane = new LineSegmentLane(x1, // x1
@@ -134,7 +137,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
         westLane.setId(westLaneId);
         westBoundRoad.addTheRightMostLane(westLane);
         laneToRoad.put(westLane, westBoundRoad);
-        exitLane = westLane;
+        exitLanes.add(westLane);
 
         horizontalRoads.add(westBoundRoad);
 
@@ -144,7 +147,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
         x1 = 0;
-        y1 = height - BORDER - (laneWidth/2);
+        y1 = height - BORDER - halfLaneWidth;
         x2 = width - BORDER;
         y2 = y1;
         Lane eastLane = new LineSegmentLane(x1, // x1
@@ -244,7 +247,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
 
     @Override
     public double getMaximumSpeedLimit() {
-        return 0;
+        return speedLimit;
     }
 
     @Override
@@ -273,7 +276,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     }
 
     @Override
-    public Lane getExitLane() { return exitLane; }
+    public List<Lane> getExitLanes() { return exitLanes; }
 
     public List<Corner> getCorners() { return corners; }
 

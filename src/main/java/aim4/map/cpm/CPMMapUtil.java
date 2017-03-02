@@ -83,7 +83,7 @@ public class CPMMapUtil {
             return;
         }
         // Allow it to drive off the map once it's followed the exit lane
-        if (currentLane == map.getExitLane()){
+        if (map.getExitLanes().contains(currentLane)){
             return;
         }
         throw new RuntimeException("Vehicle has driven off the map!");
