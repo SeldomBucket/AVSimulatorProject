@@ -2,3 +2,5 @@
 *.class
 target/
 AIM4.iml
+src/main/java/META-INF/
+out/
