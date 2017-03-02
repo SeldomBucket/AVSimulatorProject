@@ -1,15 +1,16 @@
 package aim4.map.cpm;
 
-import aim4.map.DataCollectionLine;
-import aim4.map.Road;
-import aim4.map.RoadCorner;
-import aim4.map.SpawnPoint;
+import aim4.config.Debug;
+import aim4.im.RoadBasedIntersection;
+import aim4.map.*;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
+import aim4.util.GeomMath;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
 
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
@@ -17,10 +18,10 @@ import java.io.PrintStream;
 import java.util.*;
 
 /**
- * Map with 2 corners. Roads make backwards C shape.
- * Roads only have 1 lane.
+ * Map with a T-Junction.
+ * Class created to test if we can instantiate RoadBasedIntersection.
  */
-public class CPMMapWithCorners implements CPMMap {
+public class MapWithTJunction implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -29,12 +30,6 @@ public class CPMMapWithCorners implements CPMMap {
     /** The length of the no vehicle zone */
     private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
-
-    /** The length of the map border, used for
-     * space between map edge and elements, distance
-     * of DCL from edge etc.
-     * */
-    public static final double BORDER = 28.0;
 
     /** The position of the data collection line on a lane */
     private static final double DATA_COLLECTION_LINE_POSITION =
@@ -67,43 +62,38 @@ public class CPMMapWithCorners implements CPMMap {
     private List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     private List<Road> roads;
-    /** The set of corners */
-    private List<RoadCorner> corners;
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
-    /** The exit lane*/
-    private Lane exitLane;
 
     /**
-     * Create a very simple map.
-     * For now, have 3 roads in backwards C shape.
+     * Create a map with a T-Junction.
      */
-    public CPMMapWithCorners(int laneWidth, double speedLimit,
-                             double initTime, double width,
-                             double height) {
-        this.laneWidth = laneWidth;
-        this.speedLimit = speedLimit;
-        this.initTime = initTime;
-        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
+    public MapWithTJunction() {
+        laneWidth = 4;
+        speedLimit = 25.0;
+        initTime = 0.0;
+
+        // Generate the size of the map
+        double width = 325;
+        double height = 325;
+        dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
         // One on entry and one on exit
-        dataCollectionLines = new ArrayList<DataCollectionLine>(2);
+        dataCollectionLines = new ArrayList<DataCollectionLine>(3);
 
         // Create the vertical Road
-        // SOUTH
+
+        //SOUTH
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x1 = width - BORDER;
-        double y1 = height - BORDER;
-        double x2 = x1;
-        double y2 = BORDER;
-        Lane southLane = new LineSegmentLane(x1, // x1
-                y1, // y1
-                x2, // x2
-                y2, // y2
+        double x = (width/2);
+        Lane southLane = new LineSegmentLane(x, // x1
+                height, // y1
+                x, // x2
+                0, // y2
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
@@ -111,82 +101,61 @@ public class CPMMapWithCorners implements CPMMap {
         southBoundRoad.addTheRightMostLane(southLane);
         laneToRoad.put(southLane, southBoundRoad);
 
+        entranceLane = southLane;
+
         verticalRoads.add(southBoundRoad);
 
         // Create the horizontal Roads
         // WEST
         Road westBoundRoad = new Road("Westbound Avenue", this);
 
-        // Add a lane to the road
+        //Add a lane to the road
         // Need to find the centre of the lane before creating it
-        x1 = width - BORDER;
-        y1 = BORDER + (laneWidth/2);
-        x2 = 0;
-        y2 = y1;
-        Lane westLane = new LineSegmentLane(x1, // x1
-                y1, // y1
-                x2, // x2
-                y2, // y2
+        double y = (height/2);
+        Lane westLane = new LineSegmentLane(width, // x1
+                y, // y1
+                (width/2), // x2
+                y, // y2
                 laneWidth, // width
                 speedLimit);
         int westLaneId = laneRegistry.register(westLane);
         westLane.setId(westLaneId);
         westBoundRoad.addTheRightMostLane(westLane);
         laneToRoad.put(westLane, westBoundRoad);
-        exitLane = westLane;
 
         horizontalRoads.add(westBoundRoad);
-
-        // EAST
-        Road eastBoundRoad = new Road("Eastbound Avenue", this);
-
-        // Add a lane to the road
-        // Need to find the centre of the lane before creating it
-        x1 = 0;
-        y1 = height - BORDER - (laneWidth/2);
-        x2 = width - BORDER;
-        y2 = y1;
-        Lane eastLane = new LineSegmentLane(x1, // x1
-                y1, // y1
-                x2, // x2
-                y2, // y2
-                laneWidth, // width
-                speedLimit);
-        int eastLaneId = laneRegistry.register(eastLane);
-        eastLane.setId(eastLaneId);
-        eastBoundRoad.addTheRightMostLane(eastLane);
-        laneToRoad.put(eastLane, eastBoundRoad);
-        entranceLane = eastLane;
-
-        horizontalRoads.add(eastBoundRoad);
-
-        roads = new ArrayList<Road>(horizontalRoads);
-        roads.addAll(verticalRoads);
-        roads = Collections.unmodifiableList(roads);
 
         // generate the data collection lines
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Entrance on Eastbound",
+                        "Entrance on Southbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(BORDER, (height-BORDER)),
-                        new Point2D.Double(BORDER, (height-BORDER-laneWidth)),
+                        new Point2D.Double(((width/2)-(laneWidth/2)), (height-20)),
+                        new Point2D.Double(((width/2)+(laneWidth/2)), (height-20)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Exit on Westbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double(BORDER, BORDER),
-                        new Point2D.Double(BORDER, (BORDER+laneWidth)),
+                        new Point2D.Double((width-20), ((height/2)+(laneWidth/2))),
+                        new Point2D.Double((width-20), ((height/2)-(laneWidth/2))),
+                        true));
+        dataCollectionLines.add(
+                new DataCollectionLine(
+                        "Exit on Southbound",
+                        dataCollectionLines.size(),
+                        new Point2D.Double(((width/2)-(laneWidth/2)), 20),
+                        new Point2D.Double(((width/2)+(laneWidth/2)), 20),
                         true));
 
-        // Now we can create corners where roads meet.
-        RoadCorner topRightCorner = new RoadCorner(eastBoundRoad,southBoundRoad);
-        RoadCorner bottomRightCorner = new RoadCorner(southBoundRoad,westBoundRoad);
-        // TODO CPM MAKE THIS BETTER
-        corners = new ArrayList<RoadCorner>(2);
-        corners.add(topRightCorner);
-        corners.add(bottomRightCorner);
+        roads = new ArrayList<Road>(horizontalRoads);
+        roads.addAll(verticalRoads);
+        roads = Collections.unmodifiableList(roads);
+
+        // Now we have created the roads, we need to create the TJunction
+        // !!! This can't be done, RoadBasedIntersection is only for a
+        //     conventional intersection with 8 intersecting roads. !!!
+        //RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads, this);
 
         initializeSpawnPoints(initTime);
     }
@@ -267,26 +236,6 @@ public class CPMMapWithCorners implements CPMMap {
     }
 
     @Override
-    public Lane getExitLane() { return exitLane; }
-
-    public List<RoadCorner> getCorners() { return corners; }
-
-    /**
-     * Get the road by name.
-     *
-     * @return road, or null if the road doesn't exist.
-     * */
-    public Road getRoadByName(String roadName) {
-        for (Road road: roads){
-            if (road.getName() == roadName){
-                return road;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public void printDataCollectionLinesData(String outFileName) {
         PrintStream outfile = null;
         try {
@@ -310,5 +259,15 @@ public class CPMMapWithCorners implements CPMMap {
         }
 
         outfile.close();
+    }
+
+    @Override
+    public Lane getExitLane() {
+        return null;
+    }
+
+    @Override
+    public List<RoadCorner> getCorners() {
+        return null;
     }
 }

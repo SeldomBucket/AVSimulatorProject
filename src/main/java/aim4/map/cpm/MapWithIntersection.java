@@ -3,6 +3,7 @@ package aim4.map.cpm;
 import aim4.im.RoadBasedIntersection;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.RoadCorner;
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -183,7 +184,8 @@ public class MapWithIntersection implements CPMMap {
                         true));
 
         // Now we have created the roads, we need to create the intersection
-        RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads, this);
+        // TODO: CPM We might need to add method back in to take map
+        // RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads);
 
         initializeSpawnPoints(initTime);
     }
@@ -291,6 +293,11 @@ public class MapWithIntersection implements CPMMap {
 
     @Override
     public Lane getExitLane() {
+        return null;
+    }
+
+    @Override
+    public List<RoadCorner> getCorners() {
         return null;
     }
 }

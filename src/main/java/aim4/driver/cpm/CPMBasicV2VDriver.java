@@ -4,8 +4,13 @@ import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.BasicMap;
+import aim4.map.RoadCorner;
 import aim4.map.SpawnPoint;
+import aim4.map.cpm.CPMMap;
+import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+
+import java.awt.geom.Area;
 
 /**
  * An agent that drives a {@link aim4.vehicle.cpm.CPMBasicAutoVehicle} while
@@ -27,7 +32,7 @@ public class CPMBasicV2VDriver extends BasicDriver
     private Coordinator coordinator;
 
     /** The map */
-    private BasicMap simpleMap;
+    private BasicMap map;
 
     /** Where this DriverAgent is coming from. */
     private SpawnPoint spawnPoint;
@@ -36,9 +41,38 @@ public class CPMBasicV2VDriver extends BasicDriver
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public CPMBasicV2VDriver(CPMBasicAutoVehicle vehicle, BasicMap simpleMap) {
+    public CPMBasicV2VDriver(CPMBasicAutoVehicle vehicle, BasicMap map) {
         this.vehicle = vehicle;
-        this.simpleMap = simpleMap;
+        this.map = map;
+        coordinator = null;
+    }
+
+    /////////////////////////////////
+    // PRIVATE METHODS
+    /////////////////////////////////
+
+    /**
+     * Determine whether the given Vehicle is currently inside an area
+     *
+     * @param vehicle     the vehicle
+     * @param area        the area
+     * @return            whether the Vehicle is currently in the area
+     */
+    private static boolean intersectsArea(AutoVehicleDriverModel vehicle, Area area) {
+        // TODO: move this function to somewhere else.
+
+        // As a quick check, see if the front or rear point is in the area
+        // Most of the time this should work
+        if(area.contains(vehicle.gaugePosition()) || area.contains(vehicle.gaugePointAtRear())){
+            return true;
+        } else {
+            // We actually have to check to see if the Area of the
+            // Vehicle and the given Area have a nonempty intersection
+            Area vehicleArea = new Area(vehicle.gaugeShape());
+            // Important that it is in this order, as it is destructive to the caller
+            vehicleArea.intersect(area);
+            return !vehicleArea.isEmpty();
+        }
     }
 
     /////////////////////////////////
@@ -81,6 +115,22 @@ public class CPMBasicV2VDriver extends BasicDriver
         if (!coordinator.isTerminated()) {
             coordinator.act();
         }
+    }
+
+    /**
+     * Whether or not the Vehicle controlled by this driver agent
+     * is inside a Corner.
+     *
+     * @return the Corner that the driver is in, or null if not in a corner.
+     */
+    public RoadCorner inCorner() {
+        assert map instanceof CPMMap;
+        for (RoadCorner corner : ((CPMMap) map).getCorners()){
+            if (intersectsArea(vehicle, corner.getArea())){
+                return corner;
+            }
+        }
+        return null;
     }
 
     @Override

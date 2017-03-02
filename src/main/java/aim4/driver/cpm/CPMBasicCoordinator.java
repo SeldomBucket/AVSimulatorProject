@@ -3,6 +3,7 @@ package aim4.driver.cpm;
 import aim4.config.Debug;
 import aim4.driver.AutoDriver;
 import aim4.driver.aim.coordinator.Coordinator;
+import aim4.map.RoadCorner;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.EnumMap;
@@ -43,6 +44,7 @@ public class CPMBasicCoordinator implements Coordinator{
          * the intersection
          */
         DEFAULT_DRIVING_BEHAVIOUR,
+        TRAVERSING_CORNER,
         // Find out what this is
         TERMINAL_STATE
     }
@@ -93,7 +95,7 @@ public class CPMBasicCoordinator implements Coordinator{
 
         initStateHandlers();
 
-        // Set the intial state
+        // Set the intial state of the coordinator
         setState(State.DEFAULT_DRIVING_BEHAVIOUR);
     }
 
@@ -141,6 +143,9 @@ public class CPMBasicCoordinator implements Coordinator{
         stateHandlers.put(State.DEFAULT_DRIVING_BEHAVIOUR,
                 new DefaultDrivingBehaviourStateHandler());
 
+        stateHandlers.put(State.TRAVERSING_CORNER,
+                new TraversingCornerStateHandler());
+
         stateHandlers.put(State.TERMINAL_STATE,
                 terminalStateHandler);
     }
@@ -165,8 +170,41 @@ public class CPMBasicCoordinator implements Coordinator{
          */
         @Override
         public boolean perform() {
+            // First check if we are in a RoadCorner.
+            // If so, then switch to traversing corner mode.
+            assert driver instanceof CPMBasicV2VDriver;
+            if (((CPMBasicV2VDriver) driver).inCorner() != null){
+                setState(State.TRAVERSING_CORNER);
+            }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
+            return false;
+        }
+    }
+
+    /**
+     * The state handler for the default driving behavior state.
+     */
+    private class TraversingCornerStateHandler implements StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // Check to see if we are still in the corner
+            assert driver instanceof CPMBasicV2VDriver;
+            RoadCorner corner = ((CPMBasicV2VDriver) driver).inCorner();
+            if (corner == null) {
+                System.out.println("Driver is now out of the corner.");
+                // The vehicle is out of the corner.
+                // Go back to default driving behaviour
+                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+            } else {
+                // do nothing keep going
+                pilot.takeSteeringActionForTraversingCorner(corner);
+                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
+                // pilot.followAccelerationProfile(rparameter);
+            }
             return false;
         }
     }
