@@ -2,7 +2,7 @@ package aim4.map.cpm.testmaps;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.connections.CornerRightAngleOneWay;
+import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
@@ -69,7 +69,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     /** The set of roads */
     private List<Road> roads;
     /** The set of corners */
-    private List<CornerRightAngleOneWay> corners;
+    private List<Corner> corners = new ArrayList<Corner>();
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
     /** The exit lane*/
@@ -182,14 +182,19 @@ public class CPMMapWithCornersOneLane implements CPMMap {
                         true));
 
         // Now we can create corners where roads meet.
-        CornerRightAngleOneWay topRightCorner = new CornerRightAngleOneWay(eastBoundRoad,southBoundRoad);
-        CornerRightAngleOneWay bottomRightCorner = new CornerRightAngleOneWay(southBoundRoad,westBoundRoad);
-        // TODO CPM MAKE THIS BETTER
-        corners = new ArrayList<CornerRightAngleOneWay>(2);
-        corners.add(topRightCorner);
-        corners.add(bottomRightCorner);
+        makeCorner(eastBoundRoad, southBoundRoad);
+        makeCorner(southBoundRoad, westBoundRoad);
 
         initializeSpawnPoints(initTime);
+    }
+
+    private void makeCorner(Road road1, Road road2){
+        // Put the roads into a list
+        List<Road> roadsForCorner = new ArrayList<Road>(2);
+        roadsForCorner.add(road1);
+        roadsForCorner.add(road2);
+        Corner corner = new Corner(roadsForCorner);
+        corners.add(corner);
     }
 
     /**
@@ -270,7 +275,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     @Override
     public Lane getExitLane() { return exitLane; }
 
-    public List<CornerRightAngleOneWay> getCorners() { return corners; }
+    public List<Corner> getCorners() { return corners; }
 
     /**
      * Get the road by name.
@@ -297,12 +302,12 @@ public class CPMMapWithCornersOneLane implements CPMMap {
             return;
         }
         // TODO: sort by time and LineId and VIN
-        outfile.printf("Printing file for CPM simulation\n");
-        outfile.printf("VIN,Time,DCLname,vType,startLaneId\n");
+        outfile.printf("Printing file for CPM simulation%n");
+        outfile.printf("VIN,Time,DCLname,vType,startLaneId%n");
         for (DataCollectionLine line : dataCollectionLines) {
             for (int vin : line.getAllVIN()) {
                 for(double time : line.getTimes(vin)) {
-                    outfile.printf("%d,%.4f,%s,%s,%d\n",
+                    outfile.printf("%d,%.4f,%s,%s,%d%n",
                             vin, time, line.getName(),
                             VinRegistry.getVehicleSpecFromVIN(vin).getName(),
                             VinRegistry.getSpawnPointFromVIN(vin).getLane().getId());

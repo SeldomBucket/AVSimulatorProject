@@ -1,6 +1,6 @@
 package aim4.map;
 
-import aim4.map.connections.CornerRightAngleOneWay;
+import aim4.map.connections.Corner;
 import aim4.map.cpm.testmaps.CPMMapWithCornersOneLane;
 import aim4.map.lane.Lane;
 import org.junit.Test;
@@ -11,13 +11,13 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class RoadCornerTest {
+public class CornerTest {
     CPMMapWithCornersOneLane map = new CPMMapWithCornersOneLane(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
             500, // width
             500); // height
-    CornerRightAngleOneWay testCorner = map.getCorners().get(0);
+    Corner testCorner = map.getCorners().get(0);
 
     @Test
     public void testGetEntryLanes() throws Exception {

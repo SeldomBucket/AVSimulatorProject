@@ -3,7 +3,7 @@ package aim4.driver.cpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.pilot.BasicPilot;
-import aim4.map.connections.CornerRightAngleOneWay;
+import aim4.map.connections.Corner;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
@@ -99,7 +99,7 @@ public class CPMV2VPilot extends BasicPilot{
     /**
      * Set the steering action when the vehicle is traversing an intersection.
      */
-    public void takeSteeringActionForTraversingCorner(CornerRightAngleOneWay corner) {
+    public void takeSteeringActionForTraversingCorner(Corner corner) {
         // TODO: CPM What if there are more than one lane in the roads of the corner?
         System.out.println("Steering around Corner!");
         Lane departureLane = corner.getExitLanes().get(0);

@@ -1,15 +1,11 @@
 package aim4.map.connections;
 
-import aim4.config.Constants;
-import aim4.config.Debug;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.track.WayPoint;
 import aim4.util.GeomMath;
-import aim4.util.Util;
 
-import javax.sound.sampled.Line;
 import java.awt.geom.*;
 import java.util.*;
 
@@ -17,69 +13,14 @@ import java.util.*;
  * Create a right-angled corner which leads from
  * a Road with 1 lane onto another Road with one lane.
  */
-public class CornerRightAngleOneWay extends BasicConnection {
+// TODO CPM Rename to make it more specific, CornerRightAngleOneLane
+public class Corner extends BasicConnection {
 
     /////////////////////////////////
     // PRIVATE FIELDS
     /////////////////////////////////
 
-    /**
-     * The space governed by this corner.
-     */
-    private Area areaOfCorner;
 
-    /**
-     * The centroid of this corner.
-     */
-    private Point2D centroid;
-
-    // road
-
-    /** The roads which meet to make this corner. */
-    private List<Road> roads = new ArrayList<Road>();
-
-    /** The entry roads incidents to this corner. */
-    private List<Road> entryRoads = new ArrayList<Road>();
-
-    /** The exit roads incidents to this corner. */
-    private List<Road> exitRoads = new ArrayList<Road>();
-
-    // lanes
-
-    /** The lanes which meet to make this corner. */
-    private List<Lane> lanes = new ArrayList<Lane>();
-
-    // points
-
-    /**
-     * A list of the coordinates where lanes enter or exit the corner,
-     * ordered by angle from the centroid.
-     */
-    private List<Point2D> points = new ArrayList<Point2D>();
-
-    /**
-     * A map from lanes to the coordinates at which those lanes enter the
-     * corner.
-     */
-    private Map<Lane,WayPoint> entryPoints = new LinkedHashMap<Lane,WayPoint>();
-
-    /**
-     * A map from lanes to the coordinates at which those lanes exit the
-     * corner.
-     */
-    private Map<Lane,WayPoint> exitPoints = new LinkedHashMap<Lane,WayPoint>();
-
-    /**
-     * A map from Lanes to the headings, in radians, of those Lanes at the
-     * point at which they enter the space governed by this Corner.
-     */
-    private Map<Lane,Double> entryHeadings = new HashMap<Lane,Double>();
-
-    /**
-     * A map from Lanes to the headings, in radians, of those Lanes at the
-     * point at which they exit the space governed by this Corner.
-     */
-    private Map<Lane,Double> exitHeadings = new HashMap<Lane,Double>();
 
     /////////////////////////////////
     // CLASS CONSTRUCTORS
@@ -89,23 +30,17 @@ public class CornerRightAngleOneWay extends BasicConnection {
      * Basic class constructor.
      * Takes the Roads which meet at a right angle to make this corner.
      *
-     * @param road1 a Road which will be part of the corner.
-     * @param road2 a Road which will be part of the corner.
+     * @param roads The roads involved in this corner.
      */
-    public CornerRightAngleOneWay(Road road1, Road road2) {
-        List<Road> roads = new ArrayList<Road>(2);
-        roads.add(road1);
-        roads.add(road2);
+    public Corner(List<Road> roads) {
+        super(roads);
         // Ensure that the roads given can be used to create a Corner
         validate(roads);
-        this.roads = roads;
-        // Get the list of Lanes we are using.
-        extractLanes(roads);
         // Now get the entry and exit points for each of the lanes.
-        this.areaOfCorner = findAreaOfCorner(roads);
-        establishEntryAndExitPoints(areaOfCorner);
-        // Find the centroid of the corner
-        centroid = GeomMath.polygonalShapeCentroid(areaOfCorner);
+        establishEntryAndExitPoints(areaOfConnection);
+        // TODO These 2 following methods should be in the superclass, but
+        // TODO require use of entry points and exit points.
+        // TODO Is there a way around this? Or enforce to be called by subclasses?
         // Calculate the waypoints.
         calcWayPoints();
         // Now build a GeneralPath using the waypoints.
@@ -120,7 +55,7 @@ public class CornerRightAngleOneWay extends BasicConnection {
      * Ensure that the roads given can be used to create a corner.
      * @param roads The roads given to create this corner.
      */
-    private void validate(List<Road> roads){
+    protected void validate(List<Road> roads){
         // There can only be 2 Roads involved in a Corner
         if (roads.size() != 2){
             throw new IllegalArgumentException("There can only be 2 Roads " +
@@ -188,65 +123,9 @@ public class CornerRightAngleOneWay extends BasicConnection {
     }
 
     /**
-     * Given a List of Roads, pull out all the individual lanes.
-     *
-     * @param roads a list of Roads
+     * {@inheritDoc}
      */
-    private void extractLanes(List<Road> roads) {
-        for(Road road : roads) {
-            for(Lane lane : road.getLanes()) {
-                lanes.add(lane);
-            }
-        }
-    }
-
-    /**
-     * Find the Area that represents the corner made between the Roads.
-     *
-     * @param roads a list of Roads that make the corner
-     * @return the area in which the two of these Roads intersect
-     */
-    private Area findAreaOfCorner(List<Road> roads) {
-        // Lanes in the same road should never intersect. So use the union of
-        // their shapes. Then find the pairwise overlaps of all the roads,
-        // and union all of that.
-        // Create a place to store the Areas for each road
-        List<Area> roadAreas = new ArrayList<Area>(roads.size());
-        for(Road road : roads) {
-            Area roadArea = new Area();
-            // Find the union of the shapes of the lanes for each road
-            for(Lane lane : road.getLanes()) {
-                // Add the area from each constituent lane
-                roadArea.add(new Area(lane.getShape()));
-            }
-            roadAreas.add(roadArea);
-        }
-        // Now we have the Areas for each road, we need to find the union of the
-        // pairwise overlaps
-        Area strictAreaOfCorner = new Area();
-        for(int i = 0; i < roadAreas.size(); i++) {
-            // Want to make sure we only do the cases where j < i, i.e. don't do
-            // both (i,j) and (j,i).
-            for(int j = 0; j < i; j++) {
-                // If the ith road and jth road are the duals of each other, there
-                // won't be an overlap
-                if(roads.get(i).getDual() != roads.get(j)) {
-                    // Now add the overlap of roads i and j
-                    // Make a copy because intersect is destructive
-                    Area overlap = new Area(roadAreas.get(i));
-                    overlap.intersect(roadAreas.get(j));
-                    strictAreaOfCorner.add(overlap);
-                }
-            }
-        }
-        return strictAreaOfCorner;
-    }
-
-    /**
-     * Determine the points at which each Lane enters or exits the corner
-     * and record them. Also record the entry/exit headings and entry/exit Roads.
-     */
-    private void establishEntryAndExitPoints(Area areaOfCorner) {
+    protected void establishEntryAndExitPoints(Area areaOfCorner) {
         // CHECK ALL THESE ARE MET
         // All lanes from same road should intersect with same segment
         // Each entry point should map to an exit point?
@@ -304,7 +183,7 @@ public class CornerRightAngleOneWay extends BasicConnection {
             }
         }
         // Fill in any of the holes
-        this.areaOfCorner = GeomMath.filledArea(areaOfCorner);
+        this.areaOfConnection = GeomMath.filledArea(areaOfCorner);
     }
 
     /**
@@ -322,7 +201,7 @@ public class CornerRightAngleOneWay extends BasicConnection {
             }
         }
         // if the start point is inside the corner
-        if(areaOfCorner.contains(lane.getStartPoint())) {
+        if(areaOfConnection.contains(lane.getStartPoint())) {
             return true;
         }
         return false;
@@ -343,7 +222,7 @@ public class CornerRightAngleOneWay extends BasicConnection {
             }
         }
         // if the end point is inside the corner
-        if(areaOfCorner.contains(lane.getEndPoint())) {
+        if(areaOfConnection.contains(lane.getEndPoint())) {
             return true;
         }
         return false;
@@ -360,80 +239,6 @@ public class CornerRightAngleOneWay extends BasicConnection {
             return true;
         }
         return false;
-    }
-
-    /**
-     * Calculate the list of points, ordered by angle to the centroid, where
-     * Lanes either enter or exit the corner.
-     */
-    private void calcWayPoints() {
-        SortedMap<Double, Point2D> circumferentialPointsByAngle =
-                new TreeMap<Double, Point2D>();
-        for(Point2D p : exitPoints.values()) {
-            circumferentialPointsByAngle.put(GeomMath.angleToPoint(p,centroid),p);
-        }
-        for(Point2D p : entryPoints.values()) {
-            circumferentialPointsByAngle.put(GeomMath.angleToPoint(p,centroid),p);
-        }
-        for(Point2D p : circumferentialPointsByAngle.values()) {
-            points.add(p);
-        }
-    }
-
-    /**
-     * Calculate the list of edges.
-     * EDGES OF WHAT
-     */
-   /* private void calcEdges() {
-        // TODO: need to fix this problem.
-        PathIterator iter = areaOfCorner.getBounds2D().getPathIterator(null);
-        double[] coords = new double[6];
-
-        double px = 0, py = 0;
-        Path2D edge = null;
-
-        while(!iter.isDone()) {
-            int type = iter.currentSegment(coords);
-            switch(type) {
-                case PathIterator.SEG_MOVETO:
-                    assert edge == null;
-                    px = coords[0];
-                    py = coords[1];
-                    break;
-                case PathIterator.SEG_LINETO:
-                    edge = new Path2D.Double();
-                    edge.moveTo(px, py);
-                    edge.lineTo(coords[0], coords[1]);
-                    px = coords[0];
-                    py = coords[1];
-                    edges.add(edge);
-                    break;
-                case PathIterator.SEG_CLOSE:
-                    break;
-                default:
-                    throw new RuntimeException("RoadCorner::calcEdges(): " +
-                            "unknown path iterator type.");
-            }
-            iter.next();
-        }
-    }*/
-
-    /**
-     * Take the Area formed by joining the circumferential points and add it
-     * to the area of the corner.
-     */
-    private void addWayPointsPath() {
-        GeneralPath gp = null;
-        for(Point2D p : points) {
-            if(gp == null) {
-                gp = new GeneralPath();
-                gp.moveTo((float)p.getX(),(float)p.getY());
-            } else {
-                gp.lineTo((float)p.getX(),(float)p.getY());
-            }
-        }
-        gp.closePath();
-        areaOfCorner.add(new Area(gp));
     }
 
     /**
@@ -474,7 +279,7 @@ public class CornerRightAngleOneWay extends BasicConnection {
      * @return the Area of the corner
      */
     public Area getArea() {
-        return areaOfCorner;
+        return areaOfConnection;
     }
 
     /**
