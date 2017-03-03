@@ -305,7 +305,7 @@ public class CPMMapWithSimpleIntersection implements CPMMap {
 
     @Override
     public List<Lane> getExitLanes() {
-        return null;
+        return exitLanes;
     }
 
     @Override

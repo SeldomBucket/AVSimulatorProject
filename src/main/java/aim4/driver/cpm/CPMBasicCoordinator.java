@@ -4,6 +4,8 @@ import aim4.config.Debug;
 import aim4.driver.AutoDriver;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.EnumMap;
@@ -45,6 +47,8 @@ public class CPMBasicCoordinator implements Coordinator{
          */
         DEFAULT_DRIVING_BEHAVIOUR,
         TRAVERSING_CORNER,
+        TRAVERSING_JUNCTION,
+        TRAVERSING_INTERSECTION,
         // Find out what this is
         TERMINAL_STATE
     }
@@ -146,6 +150,12 @@ public class CPMBasicCoordinator implements Coordinator{
         stateHandlers.put(State.TRAVERSING_CORNER,
                 new TraversingCornerStateHandler());
 
+        stateHandlers.put(State.TRAVERSING_JUNCTION,
+                new TraversingJunctionStateHandler());
+
+        stateHandlers.put(State.TRAVERSING_INTERSECTION,
+                new TraversingIntersectionStateHandler());
+
         stateHandlers.put(State.TERMINAL_STATE,
                 terminalStateHandler);
     }
@@ -176,6 +186,12 @@ public class CPMBasicCoordinator implements Coordinator{
             if (((CPMBasicV2VDriver) driver).inCorner() != null){
                 setState(State.TRAVERSING_CORNER);
             }
+            if (((CPMBasicV2VDriver) driver).inJunction() != null){
+                setState(State.TRAVERSING_JUNCTION);
+            }
+            if (((CPMBasicV2VDriver) driver).inIntersection() != null){
+                setState(State.TRAVERSING_INTERSECTION);
+            }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
             return false;
@@ -183,7 +199,7 @@ public class CPMBasicCoordinator implements Coordinator{
     }
 
     /**
-     * The state handler for the default driving behavior state.
+     * The state handler for the traversing corner state.
      */
     private class TraversingCornerStateHandler implements StateHandler {
         /**
@@ -198,10 +214,67 @@ public class CPMBasicCoordinator implements Coordinator{
                 System.out.println("Driver is now out of the corner.");
                 // The vehicle is out of the corner.
                 // Go back to default driving behaviour
+                pilot.clearDepartureLane();
                 setState(State.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
-                pilot.takeSteeringActionForTraversingCorner(corner);
+                pilot.takeSteeringActionForTraversing(corner);
+                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
+                // pilot.followAccelerationProfile(rparameter);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * The state handler for the traversing junction state.
+     */
+    private class TraversingJunctionStateHandler implements StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // Check to see if we are still in the junction
+            assert driver instanceof CPMBasicV2VDriver;
+            Junction junction = ((CPMBasicV2VDriver) driver).inJunction();
+            if (junction == null) {
+                System.out.println("Driver is now out of the junction.");
+                // The vehicle is out of the junction.
+                // Go back to default driving behaviour
+                pilot.clearDepartureLane();
+                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+            } else {
+                // do nothing keep going
+                pilot.takeSteeringActionForTraversing(junction);
+                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
+                // pilot.followAccelerationProfile(rparameter);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * The state handler for the traversing intersection state.
+     */
+    private class TraversingIntersectionStateHandler implements StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // Check to see if we are still in the intersection
+            assert driver instanceof CPMBasicV2VDriver;
+            SimpleIntersection intersection = ((CPMBasicV2VDriver) driver).inIntersection();
+            if (intersection == null) {
+                System.out.println("Driver is now out of the intersection.");
+                // The vehicle is out of the corner.
+                // Go back to default driving behaviour
+                pilot.clearDepartureLane();
+                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+            } else {
+                // do nothing keep going
+                pilot.takeSteeringActionForTraversing(intersection);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
             }

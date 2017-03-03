@@ -3,11 +3,16 @@ package aim4.driver.cpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.pilot.BasicPilot;
+import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+
+import java.util.Random;
 
 /**
  * An agent that pilots an AutoVehicleDriverModel autonomously. This agent
@@ -40,6 +45,8 @@ public class CPMV2VPilot extends BasicPilot{
 
     private AutoDriver driver;
 
+    private Lane departureLane;
+
     // ///////////////////////////////
     // CONSTRUCTORS
     // ///////////////////////////////
@@ -53,6 +60,7 @@ public class CPMV2VPilot extends BasicPilot{
     public CPMV2VPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver) {
         this.vehicle = vehicle;
         this.driver = driver;
+        this.departureLane = null;
     }
 
     // ///////////////////////////////
@@ -97,12 +105,38 @@ public class CPMV2VPilot extends BasicPilot{
     }
 
     /**
-     * Set the steering action when the vehicle is traversing an intersection.
+     * Set the steering action when the vehicle is traversing a corner.
      */
-    public void takeSteeringActionForTraversingCorner(Corner corner) {
-        // TODO: CPM What if there are more than one lane in the roads of the corner?
-        System.out.println("Steering around Corner!");
-        Lane departureLane = corner.getExitLanes().get(0);
+    public void takeSteeringActionForTraversing(BasicConnection connection) {
+        System.out.println("Steering around a connection! Connection type: " + connection.getClass());
+
+        // Check if we already have a departure lane.
+        if (departureLane == null) {
+            // Determine the departure lane - depends if in a corner, junction or intersection
+            Random random = new Random();
+            if (connection instanceof Corner) {
+                // There is only one exit to a Corner
+                departureLane = connection.getExitLanes().get(0);
+            } else if (connection instanceof Junction) {
+                // Could have 1 or 2 exits
+                // TODO CPM Lets randomise for now
+                if (connection.getExitLanes().size() == 1) {
+                    departureLane = connection.getExitLanes().get(0);
+                } else {
+                    int index = random.nextInt(2);
+                    departureLane = connection.getExitLanes().get(index);
+                }
+            } else if (connection instanceof SimpleIntersection) {
+                // There will be 2 exits
+                // TODO CPM Lets randomise for now
+                int index = random.nextInt(2);
+                departureLane = connection.getExitLanes().get(index);
+            }
+            if (departureLane == null) {
+                throw new RuntimeException("Departure lane for the connection has not established!");
+            }
+        }
+
         // If we're not already in the departure lane
         if (driver.getCurrentLane() != departureLane) {
             // Find out how far from the road of the departure lane we are
@@ -119,5 +153,13 @@ public class CPMV2VPilot extends BasicPilot{
         // Otherwise we are still in the entry lane and should continue
         // Use the basic lane-following behavior
         followCurrentLane();
+    }
+
+    public Lane getDepartureLane(){
+        return departureLane;
+    }
+
+    public void clearDepartureLane(){
+        this.departureLane = null;
     }
 }

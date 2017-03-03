@@ -6,6 +6,8 @@ import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.BasicMap;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
@@ -121,13 +123,57 @@ public class CPMBasicV2VDriver extends BasicDriver
      * Whether or not the Vehicle controlled by this driver agent
      * is inside a Corner.
      *
-     * @return the Corner that the driver is in, or null if not in a corner.
+     * @return the Corner that the driver is in,
+     * or null if not in a corner.
      */
     public Corner inCorner() {
         assert map instanceof CPMMap;
+        if (((CPMMap) map).getCorners() == null){
+            return null;
+        }
         for (Corner corner : ((CPMMap) map).getCorners()){
             if (intersectsArea(vehicle, corner.getArea())){
                 return corner;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Whether or not the Vehicle controlled by this driver agent
+     * is inside a Junction.
+     *
+     * @return the Junction that the driver is in,
+     * or null if not in a junction.
+     */
+    public Junction inJunction() {
+        assert map instanceof CPMMap;
+        if (((CPMMap) map).getJunctions() == null){
+            return null;
+        }
+        for (Junction junction : ((CPMMap) map).getJunctions()){
+            if (intersectsArea(vehicle, junction.getArea())){
+                return junction;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Whether or not the Vehicle controlled by this driver agent
+     * is inside a SimpleIntersection.
+     *
+     * @return the SimpleIntersection that the driver is in,
+     * or null if not in an intersection.
+     */
+    public SimpleIntersection inIntersection() {
+        assert map instanceof CPMMap;
+        if (((CPMMap) map).getIntersections() == null){
+            return null;
+        }
+        for (SimpleIntersection intersection : ((CPMMap) map).getIntersections()){
+            if (intersectsArea(vehicle, intersection.getArea())){
+                return intersection;
             }
         }
         return null;

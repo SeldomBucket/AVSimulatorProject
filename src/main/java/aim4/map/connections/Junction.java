@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Create a right-angled junction which connects
- * 3 roads, each with one lane.
+ * 2 roads, each with one lane.
  */
 // TODO Rename to make it more specific, TJunctionRightAngleOneLane
 public class Junction extends BasicConnection{
