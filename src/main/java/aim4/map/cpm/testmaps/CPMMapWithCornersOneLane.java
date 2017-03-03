@@ -1,5 +1,6 @@
 package aim4.map.cpm.testmaps;
 
+import aim4.im.RoadBasedIntersection;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Corner;
@@ -75,7 +76,7 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     private List<Corner> corners = new ArrayList<Corner>();
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
-    /** The exit lane*/
+    /** The exit lanes*/
     private List<Lane> exitLanes = new ArrayList<Lane>();
 
     /**
@@ -283,6 +284,11 @@ public class CPMMapWithCornersOneLane implements CPMMap {
 
     @Override
     public List<Junction> getJunctions() {
+        return null;
+    }
+
+    @Override
+    public List<RoadBasedIntersection> getIntersections() {
         return null;
     }
 

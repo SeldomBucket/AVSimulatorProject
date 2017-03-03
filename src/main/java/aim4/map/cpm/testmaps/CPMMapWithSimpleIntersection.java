@@ -1,10 +1,12 @@
-package aim4.map.cpm;
+package aim4.map.cpm.testmaps;
 
+import aim4.im.RoadBasedIntersection;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
+import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -22,7 +24,7 @@ import java.util.*;
  * (as in AIM simulation). Class created to test if we can
  * instantiate RoadBasedIntersection.
  */
-public class MapWithIntersection implements CPMMap {
+public class CPMMapWithSimpleIntersection implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -32,6 +34,12 @@ public class MapWithIntersection implements CPMMap {
     private static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
     // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
+    /** The length of the map border, used for
+     * space between map edge and elements, distance
+     * of DCL from edge etc.
+     * */
+    public static final double BORDER = 28.0;
+
     /** The position of the data collection line on a lane */
     private static final double DATA_COLLECTION_LINE_POSITION =
             NO_VEHICLE_ZONE_LENGTH;
@@ -40,6 +48,8 @@ public class MapWithIntersection implements CPMMap {
     double initTime;
     /**Width of each lane*/
     private double laneWidth;
+    /**Half the width of each lane*/
+    private double halfLaneWidth;
     /**Speed limit*/
     private double speedLimit;
     /** The dimensions of the map */
@@ -65,100 +75,67 @@ public class MapWithIntersection implements CPMMap {
     private List<Road> roads;
     /** The entrance lane, used to create a SpawnPoint */
     private Lane entranceLane;
-    /** The exit lane */
-    private Lane exitLane;
+    /** The exit lanes*/
+    private List<Lane> exitLanes = new ArrayList<Lane>();
+    /**The set of intersections */
+    private List<RoadBasedIntersection> intersections;
 
 
     /**
-     * Create a map with a conventional intersection: 4 roads
-     * (North, South, East, West) intersecting in the centre
-     * of the map.
+     * Create a map with an intersection where only 2 roads cross over
+     * in the centre of the map, and each road has only one lane.
      */
-    public MapWithIntersection() {
-        laneWidth = 4;
-        speedLimit = 25.0;
-        initTime = 0.0;
-
-        // Generate the size of the map
-        double width = 325;
-        double height = 325;
-        dimensions = new Rectangle2D.Double(0, 0, width, height);
+    public CPMMapWithSimpleIntersection(int laneWidth, double speedLimit,
+                                        double initTime, double width,
+                                        double height) {
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth/2;
+        this.speedLimit = speedLimit;
+        this.initTime = initTime;
+        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
         // One on entry and one on exit
         dataCollectionLines = new ArrayList<DataCollectionLine>(2);
 
-        // Create the vertical Roads
-
+        // Create the vertical Road
         //SOUTH
         Road southBoundRoad = new Road("Southbound Avenue", this);
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x = (width/2) + (laneWidth/2);
-        Lane southLane = new LineSegmentLane(x, // x1
-                height, // y1
-                x, // x2
-                0, // y2
+        double x1 = width/2;
+        double y1 = height;
+        double x2 = x1;
+        double y2 = 0;
+        Lane southLane = new LineSegmentLane(x1,
+                y1,
+                x2,
+                y2,
                 laneWidth, // width
                 speedLimit);
         int southLaneId = laneRegistry.register(southLane);
         southLane.setId(southLaneId);
         southBoundRoad.addTheRightMostLane(southLane);
         laneToRoad.put(southLane, southBoundRoad);
+        exitLanes.add(southLane);
 
         verticalRoads.add(southBoundRoad);
 
-        //NORTH
-        Road northBoundRoad = new Road("Northbound Avenue", this);
-
-        // Add a lane to the road
-        // Need to find the centre of the lane before creating it
-        x = (width/2) - (laneWidth/2);
-        Lane northLane = new LineSegmentLane(x, // x1
-                0, // y1
-                x, // x2
-                height, // y2
-                laneWidth, // width
-                speedLimit);
-        int northLaneId = laneRegistry.register(northLane);
-        northLane.setId(northLaneId);
-        northBoundRoad.addTheRightMostLane(northLane);
-        laneToRoad.put(northLane, northBoundRoad);
-
-        verticalRoads.add(northBoundRoad);
-
         // Create the horizontal Roads
-        // WEST
-        Road westBoundRoad = new Road("Westbound Avenue", this);
-
-        //Add a lane to the road
-        // Need to find the centre of the lane before creating it
-        double y = (height/2) + (laneWidth/2);
-        Lane westLane = new LineSegmentLane(0, // x1
-                y, // y1
-                width, // x2
-                y, // y2
-                laneWidth, // width
-                speedLimit);
-        int westLaneId = laneRegistry.register(westLane);
-        westLane.setId(westLaneId);
-        westBoundRoad.addTheRightMostLane(westLane);
-        laneToRoad.put(westLane, westBoundRoad);
-
-        horizontalRoads.add(westBoundRoad);
-
         // EAST
         Road eastBoundRoad = new Road("Eastbound Avenue", this);
 
-        //Add a lane to the road
+        // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        y = (height/2) - (laneWidth/2);
-
-        Lane eastLane = new LineSegmentLane(width, // x1
-                y, // y1
-                0, // x2
-                y, // y2
+        x1 = 0;
+        y1 = height/2;
+        x2 = width;
+        y2 = y1;
+        Lane eastLane = new LineSegmentLane(x1, // x1
+                y1, // y1
+                x2, // x2
+                y2, // y2
                 laneWidth, // width
                 speedLimit);
         int eastLaneId = laneRegistry.register(eastLane);
@@ -166,6 +143,7 @@ public class MapWithIntersection implements CPMMap {
         eastBoundRoad.addTheRightMostLane(eastLane);
         laneToRoad.put(eastLane, eastBoundRoad);
         entranceLane = eastLane;
+        exitLanes.add(eastLane);
 
         horizontalRoads.add(eastBoundRoad);
 
@@ -174,18 +152,33 @@ public class MapWithIntersection implements CPMMap {
         roads.addAll(verticalRoads);
         roads = Collections.unmodifiableList(roads);
 
-        // generate the data collection line
+        // generate the data collection lines
         dataCollectionLines.add(
                 new DataCollectionLine(
                         "Entrance on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-20), ((height/2)-(laneWidth/2))),
-                        new Point2D.Double(20, (height-laneWidth)),
+                        new Point2D.Double(BORDER, ((height/2)+halfLaneWidth)),
+                        new Point2D.Double(BORDER, ((height/2)-halfLaneWidth)),
+                        true));
+        dataCollectionLines.add(
+                new DataCollectionLine(
+                        "Exit on Eastbound",
+                        dataCollectionLines.size(),
+                        new Point2D.Double((width-BORDER), ((height/2)+halfLaneWidth)),
+                        new Point2D.Double((width-BORDER), ((height/2)-halfLaneWidth)),
+                        true));
+        dataCollectionLines.add(
+                new DataCollectionLine(
+                        "Exit on Southbound",
+                        dataCollectionLines.size(),
+                        new Point2D.Double(((width/2)-halfLaneWidth), BORDER),
+                        new Point2D.Double(((width/2)+halfLaneWidth), BORDER),
                         true));
 
         // Now we have created the roads, we need to create the intersection
         // TODO: CPM We might need to add method back in to take map
-        // RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads);
+        RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads);
+        intersections.add(intersection1);
 
         initializeSpawnPoints(initTime);
     }
@@ -304,5 +297,10 @@ public class MapWithIntersection implements CPMMap {
     @Override
     public List<Junction> getJunctions() {
         return null;
+    }
+
+    @Override
+    public List<RoadBasedIntersection> getIntersections() {
+        return intersections;
     }
 }

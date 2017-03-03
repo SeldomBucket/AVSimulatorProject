@@ -1,5 +1,6 @@
 package aim4.map.cpm.testmaps;
 
+import aim4.im.RoadBasedIntersection;
 import aim4.map.*;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
@@ -311,5 +312,10 @@ public class CPMMapWithTJunction implements CPMMap {
     @Override
     public List<Junction> getJunctions() {
         return junctions;
+    }
+
+    @Override
+    public List<RoadBasedIntersection> getIntersections() {
+        return null;
     }
 }
