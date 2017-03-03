@@ -6,6 +6,7 @@ import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -78,7 +79,7 @@ public class CPMMapWithSimpleIntersection implements CPMMap {
     /** The exit lanes*/
     private List<Lane> exitLanes = new ArrayList<Lane>();
     /**The set of intersections */
-    private List<RoadBasedIntersection> intersections;
+    private List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
 
     /**
@@ -177,7 +178,10 @@ public class CPMMapWithSimpleIntersection implements CPMMap {
 
         // Now we have created the roads, we need to create the intersection
         // TODO: CPM We might need to add method back in to take map
-        RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads);
+        List<Road> roadsForIntersection = new ArrayList<Road>(3);
+        roadsForIntersection.add(eastBoundRoad);
+        roadsForIntersection.add(southBoundRoad);
+        SimpleIntersection intersection1 = new SimpleIntersection(roadsForIntersection);
         intersections.add(intersection1);
 
         initializeSpawnPoints(initTime);
@@ -248,6 +252,21 @@ public class CPMMapWithSimpleIntersection implements CPMMap {
         return laneToRoad.get(laneRegistry.get(laneID));
     }
 
+    /**
+     * Get the road by name.
+     *
+     * @return road, or null if the road doesn't exist.
+     * */
+    public Road getRoadByName(String roadName) {
+        for (Road road: roads){
+            if (road.getName() == roadName){
+                return road;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public List<DataCollectionLine> getDataCollectionLines() {
         return dataCollectionLines;
@@ -300,7 +319,7 @@ public class CPMMapWithSimpleIntersection implements CPMMap {
     }
 
     @Override
-    public List<RoadBasedIntersection> getIntersections() {
+    public List<SimpleIntersection> getIntersections() {
         return intersections;
     }
 }

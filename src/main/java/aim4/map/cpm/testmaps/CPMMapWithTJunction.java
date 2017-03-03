@@ -4,6 +4,7 @@ import aim4.im.RoadBasedIntersection;
 import aim4.map.*;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -315,7 +316,7 @@ public class CPMMapWithTJunction implements CPMMap {
     }
 
     @Override
-    public List<RoadBasedIntersection> getIntersections() {
+    public List<SimpleIntersection> getIntersections() {
         return null;
     }
 }

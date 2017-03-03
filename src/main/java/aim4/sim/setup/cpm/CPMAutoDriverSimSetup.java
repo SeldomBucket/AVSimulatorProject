@@ -3,6 +3,7 @@ package aim4.sim.setup.cpm;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.testmaps.CPMMapWithCornersOneLane;
+import aim4.map.cpm.testmaps.CPMMapWithSimpleIntersection;
 import aim4.sim.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
 
@@ -26,13 +27,17 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        CPMMap layout = new CPMMapWithCornersOneLane(4, // laneWidth
+        /*CPMMap layout = new CPMMapWithCornersOneLane(4, // laneWidth
+                10.0, // speedLimit
+                currentTime, // initTime
+                500, //width
+                500); //height*/
+
+        CPMMap layout = new CPMMapWithSimpleIntersection(4, // laneWidth
                 10.0, // speedLimit
                 currentTime, // initTime
                 500, //width
                 500); //height
-
-        // CPMMap layout = new MapWithIntersection();
         // CPMMap layout = new MapWithTJunction();
 
         // set up the spawn points: create a new method for this.
