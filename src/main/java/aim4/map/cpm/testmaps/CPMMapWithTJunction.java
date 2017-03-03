@@ -1,7 +1,9 @@
-package aim4.map.cpm;
+package aim4.map.cpm.testmaps;
 
 import aim4.map.*;
 import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
+import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -18,7 +20,7 @@ import java.util.*;
  * Map with a T-Junction.
  * Class created to test if we can instantiate RoadBasedIntersection.
  */
-public class MapWithTJunction implements CPMMap {
+public class CPMMapWithTJunction implements CPMMap {
 
     /////////////////////////////////
     // CONSTANTS
@@ -70,15 +72,16 @@ public class MapWithTJunction implements CPMMap {
     /** The entrance lane, used to create a SpawnPoint*/
     private Lane entranceLane;
     /** The exit lane*/
-    private List<Lane> exitLanes;
-
+    private List<Lane> exitLanes = new ArrayList<Lane>();
+    /** The set of junctions. */
+    private List<Junction> junctions = new ArrayList<Junction>();
 
     /**
      * Create a map with a T-Junction.
      */
-    public MapWithTJunction(int laneWidth, double speedLimit,
-                            double initTime, double width,
-                            double height) {
+    public CPMMapWithTJunction(int laneWidth, double speedLimit,
+                               double initTime, double width,
+                               double height) {
         this.laneWidth = laneWidth;
         this.halfLaneWidth = laneWidth/2;
         this.speedLimit = speedLimit;
@@ -96,8 +99,8 @@ public class MapWithTJunction implements CPMMap {
 
         // Add a lane to the road
         // Need to find the centre of the lane before creating it
-        double x1 = width - BORDER - halfLaneWidth;
-        double y1 = height/2;
+        double x1 = width/2;
+        double y1 = (height/2) - halfLaneWidth;
         double x2 = x1;
         double y2 = height;
         Lane northLane = new LineSegmentLane(x1,
@@ -116,31 +119,6 @@ public class MapWithTJunction implements CPMMap {
 
         verticalRoads.add(northBoundRoad);
 
-        //SOUTH
-        Road southBoundRoad = new Road("Southbound Avenue", this);
-
-        // Add a lane to the road
-        // Need to find the centre of the lane before creating it
-        x1 = width - BORDER - halfLaneWidth;
-        y1 = height/2;
-        x2 = x1;
-        y2 = 0;
-        Lane southLane = new LineSegmentLane(x1,
-                y1,
-                x2,
-                y2,
-                laneWidth, // width
-                speedLimit);
-        int southLaneId = laneRegistry.register(southLane);
-        southLane.setId(southLaneId);
-        southBoundRoad.addTheRightMostLane(southLane);
-        laneToRoad.put(southLane, southBoundRoad);
-        exitLanes.add(southLane);
-
-        entranceLane = southLane;
-
-        verticalRoads.add(southBoundRoad);
-
         // Create the horizontal Roads
         // EAST
         Road eastBoundRoad = new Road("Eastbound Avenue", this);
@@ -149,8 +127,8 @@ public class MapWithTJunction implements CPMMap {
         // Need to find the centre of the lane before creating it
         x1 = 0;
         y1 = height/2;
-        x2 = width - BORDER;
-        y2 = height/2;
+        x2 = width;
+        y2 = y1;
         Lane eastLane = new LineSegmentLane(x1, // x1
                 y1, // y1
                 x2, // x2
@@ -162,6 +140,7 @@ public class MapWithTJunction implements CPMMap {
         eastBoundRoad.addTheRightMostLane(eastLane);
         laneToRoad.put(eastLane, eastBoundRoad);
         entranceLane = eastLane;
+        exitLanes.add(eastLane);
 
         horizontalRoads.add(eastBoundRoad);
 
@@ -181,21 +160,24 @@ public class MapWithTJunction implements CPMMap {
                 new DataCollectionLine(
                         "Exit on Northbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-BORDER-laneWidth), (height-BORDER)),
-                        new Point2D.Double((width-BORDER), (height-BORDER)),
+                        new Point2D.Double(((width/2)-halfLaneWidth), (height-BORDER)),
+                        new Point2D.Double(((width/2)+halfLaneWidth), (height-BORDER)),
                         true));
         dataCollectionLines.add(
                 new DataCollectionLine(
-                        "Exit on Southbound",
+                        "Exit on Eastbound",
                         dataCollectionLines.size(),
-                        new Point2D.Double((width-BORDER-laneWidth), BORDER),
-                        new Point2D.Double((width-BORDER), BORDER),
+                        new Point2D.Double((width-BORDER), (height/2)+halfLaneWidth),
+                        new Point2D.Double((width-BORDER), (height/2)-halfLaneWidth),
                         true));
 
-        // Now we have created the roads, we need to create the TJunction
-        // !!! This can't be done, RoadBasedIntersection is only for a
-        //     conventional intersection with 8 intersecting roads. !!!
-        //RoadBasedIntersection intersection1 = new RoadBasedIntersection(roads, this);
+        // Now we have created the roads, we need to create the Junction
+        List<Road> roadsForJunction = new ArrayList<Road>(3);
+        roadsForJunction.add(eastBoundRoad);
+        roadsForJunction.add(northBoundRoad);
+        Junction junction = new Junction(roadsForJunction);
+        junctions.add(junction);
+
 
         initializeSpawnPoints(initTime);
     }
@@ -265,6 +247,21 @@ public class MapWithTJunction implements CPMMap {
         return laneToRoad.get(laneRegistry.get(laneID));
     }
 
+    /**
+     * Get the road by name.
+     *
+     * @return road, or null if the road doesn't exist.
+     * */
+    public Road getRoadByName(String roadName) {
+        for (Road road: roads){
+            if (road.getName() == roadName){
+                return road;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public List<DataCollectionLine> getDataCollectionLines() {
         return dataCollectionLines;
@@ -309,5 +306,10 @@ public class MapWithTJunction implements CPMMap {
     @Override
     public List<Corner> getCorners() {
         return null;
+    }
+
+    @Override
+    public List<Junction> getJunctions() {
+        return junctions;
     }
 }

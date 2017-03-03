@@ -4,6 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
+import aim4.map.connections.Junction;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -291,12 +292,17 @@ public class MapWithIntersection implements CPMMap {
     }
 
     @Override
-    public Lane getExitLane() {
+    public List<Lane> getExitLanes() {
         return null;
     }
 
     @Override
     public List<Corner> getCorners() {
+        return null;
+    }
+
+    @Override
+    public List<Junction> getJunctions() {
         return null;
     }
 }

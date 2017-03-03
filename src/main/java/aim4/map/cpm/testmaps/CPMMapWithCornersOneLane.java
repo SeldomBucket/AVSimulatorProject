@@ -4,6 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
+import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -279,6 +280,11 @@ public class CPMMapWithCornersOneLane implements CPMMap {
     public List<Lane> getExitLanes() { return exitLanes; }
 
     public List<Corner> getCorners() { return corners; }
+
+    @Override
+    public List<Junction> getJunctions() {
+        return null;
+    }
 
     /**
      * Get the road by name.

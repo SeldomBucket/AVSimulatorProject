@@ -2,11 +2,13 @@ package aim4.map.connections;
 
 import aim4.map.Road;
 import aim4.map.lane.Lane;
+import aim4.map.lane.LineSegmentLane;
 import aim4.map.track.WayPoint;
 import aim4.util.GeomMath;
 
 import java.awt.geom.Area;
 import java.awt.geom.GeneralPath;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.*;
 
@@ -120,6 +122,46 @@ public abstract class BasicConnection implements RoadConnection {
     }
 
     /**
+     * Check if all roads have the same number of lanes.
+     * @param roads the roads to check.
+     *
+     * @return boolean - true if all roads have the same number of lanes.
+     */
+    protected boolean hasOneLane(List<Road> roads){
+
+        // Now compare this with the numebr of lanes in all the roads
+        for (Road road : roads){
+            int numberOfLanesInThisRoad = road.getLanes().size();
+            if (numberOfLanesInThisRoad != 1){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    /**
+     * Check if the roads given meet at 90 degrees.
+     * @param roads
+     * @return true if roads meet at ninety degrees.
+     */
+    protected boolean atNinetyDegrees(List<Road> roads){
+        // The 2 roads must meet at 90 degrees.
+        if (roads.size() == 2){
+            LineSegmentLane laneFromRoad1 = (LineSegmentLane) roads.get(0).getLanes().get(0);
+            LineSegmentLane laneFromRoad2 = (LineSegmentLane) roads.get(1).getLanes().get(0);
+            Point2D intersectionPoint = laneFromRoad1.intersectionPoint(laneFromRoad2.getLine());
+            double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(laneFromRoad1.getStartPoint(),
+                    laneFromRoad2.getStartPoint(),
+                    intersectionPoint);
+            double angleInDegrees = Math.toDegrees(angleInRadians);
+            if (angleInDegrees == 90.0 || angleInDegrees == 270.0) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Find the Area that represents the connection of Roads.
      *
      * @param roads a list of Roads that make the connection
@@ -197,6 +239,92 @@ public abstract class BasicConnection implements RoadConnection {
         areaOfConnection.add(new Area(gp));
     }
 
+    /**
+     * Does a lane start on or inside the perimeter.
+     *
+     * @param lane The lane we want to check if it's start point is on or inside the perimeter.
+     * @param perimeterSegments The perimeter segments of the area of the connection.
+     * @return true if the lanes start point is on or inside the perimeter of the connection.
+     */
+    protected boolean doesLaneStartInPerimeter(Lane lane, List<Line2D> perimeterSegments){
+        for (Line2D segment : perimeterSegments){
+            // if the start point is on the perimeter
+            if (isPointOnPerimeterSegment(lane.getStartPoint(), segment)){
+                return true;
+            }
+        }
+        // if the start point is inside the connection
+        if(areaOfConnection.contains(lane.getStartPoint())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Does a lane end on or inside the perimeter.
+     *
+     * @param lane The lane we want to check if it's end point is on or inside the perimeter.
+     * @param perimeterSegments The perimeter segments of the area of the connection.
+     * @return true if the lanes end point is on or inside the perimeter of the connection.
+     */
+    protected boolean doesLaneEndInPerimeter(Lane lane, List<Line2D> perimeterSegments){
+        for (Line2D segment : perimeterSegments){
+            // if the end point is on the perimeter
+            if (isPointOnPerimeterSegment(lane.getEndPoint(), segment)){
+                return true;
+            }
+        }
+        // if the end point is inside the connection
+        if(areaOfConnection.contains(lane.getEndPoint())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Check if a point is on the perimeter segment line.
+     * @param point The point to to check if it is on the perimeter segment line.
+     * @param segment The segment of the perimeter we want to check if the point is on.
+     * @return true if the point is on the perimeter segment line.
+     */
+    protected boolean isPointOnPerimeterSegment(Point2D point, Line2D segment){
+        if (segment.ptSegDist(point) == 0.0){
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Establish a new entry point to the connection.
+     * @param road The road which enters the connection.
+     * @param lane The lane we are adding an entry point for, which is part of the given road.
+     * @param entryPoint The entry point we want to record for this lane.
+     */
+    protected void establishAsEntryPoint(Road road, Lane lane, Point2D entryPoint){
+        entryPoints.put(lane, new WayPoint(entryPoint));
+        // Here we are assuming that the heading of the lane is the same throughout.
+        entryHeadings.put(lane, lane.getInitialHeading());
+        if (!entryRoads.contains(road)){
+            entryRoads.add(road);
+        }
+    }
+
+    /**
+     * Establish a new exit point to the connection.
+     * @param road The road which exits the connection.
+     * @param lane The lane we are adding an exit point for, which is part of the given road.
+     * @param exitPoint The exit point we want to record for this lane.
+     */
+    protected void establishAsExitPoint(Road road, Lane lane, Point2D exitPoint){
+        exitPoints.put(lane, new WayPoint(exitPoint));
+        // Here we are assuming that the heading of the lane is the same throughout.
+        exitHeadings.put(lane, lane.getInitialHeading());
+        if (!exitRoads.contains(road)){
+            exitRoads.add(road);
+        }
+
+    }
+
     /////////////////////////////////
     // ABSTRACT METHODS
     /////////////////////////////////
@@ -214,4 +342,139 @@ public abstract class BasicConnection implements RoadConnection {
      * headings and entry/exit Roads.
      */
     protected abstract void establishEntryAndExitPoints(Area areaOfCorner);
+
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
+
+    /**
+     * Find the entry lanes.
+     */
+    public List<Lane> getEntryLanes() {
+        return new ArrayList<Lane>(entryPoints.keySet());
+    }
+
+    /**
+     * Find the exit lanes.
+     */
+    public List<Lane> getExitLanes() {
+        return new ArrayList<Lane>(exitPoints.keySet());
+    }
+
+    /**
+     * Get the Roads incident to the corner.
+     *
+     * @return the roads involved in this corner.
+     */
+    public List<Road> getRoads() {
+        return roads;
+    }
+
+    /**
+     * Get the Lanes incident to the corner.
+     *
+     * @return the lanes involved in this corner.
+     */
+    public List<Lane> getLanes() {
+        return lanes;
+    }
+
+    /**
+     * Get the Area of this Corner.
+     *
+     * @return the Area of the corner
+     */
+    public Area getArea() {
+        return areaOfConnection;
+    }
+
+    /**
+     * Get the centroid of the corner.
+     *
+     * @return the centroid of the corner
+     */
+    public Point2D getCentroid() {
+        return centroid;
+    }
+
+    /**
+     * Get the Roads that enter the corner.
+     *
+     * @return the Roads that enter the corner.
+     */
+    public List<Road> getEntryRoads() {
+        return entryRoads;
+    }
+
+    /**
+     * Whether the given Lane enters this Corner.
+     *
+     * @param l the Lane to consider
+     * @return  whether the Lane enters this Corner
+     */
+    public boolean isEnteredBy(Lane l) {
+        return entryPoints.containsKey(l);
+    }
+
+    /**
+     * Get the Point at which the given Lane enters the corner.
+     *
+     * @param l the Lane
+     * @return  the Point at which the given Lane enters the corner, or
+     *          <code>null</code> if it does not
+     */
+    public WayPoint getEntryPoint(Lane l) {
+        return entryPoints.get(l);
+    }
+
+    /**
+     * Get the heading at which the given lane enters the corner.
+     *
+     * @param l the Lane
+     * @return  the heading at which the Lane enters the corner
+     */
+    public double getEntryHeading(Lane l) {
+        // TODO: what if l is not a lane entering this corner?
+        return entryHeadings.get(l);
+    }
+
+    /**
+     * Get the Roads that exit the corner.
+     *
+     * @return the Roads that exit the corner
+     */
+    public List<Road> getExitRoads() {
+        return exitRoads;
+    }
+
+    /**
+     * Whether the given Lane exits this corner.
+     *
+     * @param l the Lane to consider
+     * @return  whether the Lane exits this corner
+     */
+    public boolean isExitedBy(Lane l) {
+        return exitPoints.containsKey(l);
+    }
+
+    /**
+     * Get the Point at which the given Lane exits the corner.
+     *
+     * @param l the Lane
+     * @return  the Point at which the given Lane exits the corner, or
+     *          <code>null</code> if it does not
+     */
+    public WayPoint getExitPoint(Lane l) {
+        return exitPoints.get(l);
+    }
+
+    /**
+     * Get the heading at which the given Lane exits the corner.
+     *
+     * @param l the Lane
+     * @return  the heading at which the Lane exits the corner
+     */
+    public double getExitHeading(Lane l) {
+        return exitHeadings.get(l);
+    }
 }
