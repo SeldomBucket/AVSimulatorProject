@@ -3,6 +3,7 @@ package aim4.sim.setup.cpm;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.testmaps.CPMMapWithCornersOneLane;
+import aim4.map.cpm.testmaps.CPMMapWithParkingArea;
 import aim4.map.cpm.testmaps.CPMMapWithSimpleIntersection;
 import aim4.map.cpm.testmaps.CPMMapWithTJunction;
 import aim4.sim.CPMAutoDriverSimulator;
@@ -41,6 +42,12 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                 500); //height
 
         /*CPMMap layout = new CPMMapWithTJunction(4, // laneWidth
+                10.0, // speedLimit
+                currentTime, // initTime
+                500, //width
+                500); //height*/
+
+        /*CPMMap layout = new CPMMapWithParkingArea(4, // laneWidth
                 10.0, // speedLimit
                 currentTime, // initTime
                 500, //width
