@@ -1,22 +1,12 @@
 package aim4.map.cpm.testmaps;
 
-import aim4.im.RoadBasedIntersection;
 import aim4.map.*;
-import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
-import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.CPMMap;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
-import aim4.util.ArrayListRegistry;
-import aim4.util.Registry;
-import aim4.vehicle.VinRegistry;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
 import java.util.*;
 
 /**
