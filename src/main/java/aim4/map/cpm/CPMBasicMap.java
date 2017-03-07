@@ -161,6 +161,10 @@ public abstract class CPMBasicMap implements CPMMap{
         return laneRegistry;
     }
 
+    public double getLaneWidth(){
+        return laneWidth;
+    }
+
     public Road getRoad(Lane lane) {
         return laneToRoad.get(lane);
     }

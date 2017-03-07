@@ -14,6 +14,7 @@ import java.util.List;
  */
 public interface CPMMap extends BasicMap {
     public List<Lane> getExitLanes();
+    public double getLaneWidth();
     public List<Corner> getCorners();
     public List<Junction> getJunctions();
     public List<SimpleIntersection> getIntersections();
