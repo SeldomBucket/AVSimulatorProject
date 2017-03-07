@@ -50,6 +50,8 @@ public class ParkingArea {
     private List<Road> roads;
     /**The road which has been extended to be the car park entrance. */
     private Road entryRoad;
+    /**The last road in the parking area. */
+    private Road lastRoad;
     /**The width of each parking lane. */
     private double parkingLaneWidth;
 
@@ -140,6 +142,11 @@ public class ParkingArea {
             road.addTheRightMostLane(parkingLane);
             parkingLanes.add(parkingLane);
             roads.add(road);
+            if (i+1 == numberOfParkingLanes){
+                // Then this is the last road
+                lastRoad = road;
+                break;
+            }
             // Set up points for next lane
             lanePointY = lanePointY - parkingLaneWidth;
         }
@@ -171,4 +178,6 @@ public class ParkingArea {
     public double getParkingLaneWidth() { return parkingLaneWidth; }
 
     public Road getEntryRoad() { return entryRoad; }
+
+    public Road getLastRoad() { return lastRoad; }
 }

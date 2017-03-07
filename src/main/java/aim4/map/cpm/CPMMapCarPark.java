@@ -6,6 +6,7 @@ import aim4.map.cpm.parking.ParkingArea;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,21 +80,38 @@ public class CPMMapCarPark extends CPMBasicMap {
         entranceLane = parkingArea.getRoads().get(0).getLanes().get(0);
         exitLanes.add(westBoundRoad.getLanes().get(0));
 
-        // Create all corners
+        // Connect roads surrounding the parking area
         makeCorner(northBoundRoad, westBoundRoad);
-
-        // Create Junctions and Intersections
-        List<Road> roadsInParkingArea = parkingArea.getRoads();
-        for (Road road : roadsInParkingArea){
-            if (parkingArea.getEntryRoad() == road){
-                makeSimpleIntersection(road, southBoundRoad);
-            } else {
-                makeJunction(road, southBoundRoad);
-            }
-            makeJunction(road, northBoundRoad);
-        }
         makeJunction(westBoundRoad, southBoundRoad);
 
+        // Connect roads in the parking area with the roads surrounding it
+        List<Road> roadsInParkingArea = parkingArea.getRoads();
+        Road entryRoad = parkingArea.getEntryRoad();
+        if (roadsInParkingArea.size() == 1) {
+            makeJunction(entryRoad, southBoundRoad);
+            makeCorner(entryRoad, northBoundRoad);
+        } else {
+            // Deal with entry road
+            makeSimpleIntersection(entryRoad, southBoundRoad);
+            makeJunction(entryRoad, northBoundRoad);
+
+            // Deal with exit road
+            Road lastRoad = parkingArea.getLastRoad();
+            makeCorner(lastRoad, southBoundRoad);
+            makeCorner(lastRoad, northBoundRoad);
+
+            // Deal with the roads inbetween
+            roadsInParkingArea.remove(parkingArea.getEntryRoad());
+            roadsInParkingArea.remove(parkingArea.getLastRoad());
+            for (Road road : roadsInParkingArea){
+                makeJunction(road, southBoundRoad);
+                makeJunction(road, northBoundRoad);
+            }
+        }
+
+        // Set size of array for the data collection lines.
+        // One on entry and one on exit
+        dataCollectionLines = new ArrayList<DataCollectionLine>(2);
         // Create data collection lines
         x1 = entranceLane.getStartPoint().getX() + BORDER;
         y1 = entranceLane.getStartPoint().getY() + halfLaneWidth;

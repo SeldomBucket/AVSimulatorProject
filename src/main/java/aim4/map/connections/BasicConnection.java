@@ -154,7 +154,7 @@ public abstract class BasicConnection implements RoadConnection {
                     laneFromRoad2.getStartPoint(),
                     intersectionPoint);
             double angleInDegrees = Math.toDegrees(angleInRadians);
-            if (angleInDegrees == 90.0 || angleInDegrees == 270.0) {
+            if (Math.abs(angleInDegrees) == 90.0 || Math.abs(angleInDegrees) == 270.0) {
                 return true;
             }
         }
