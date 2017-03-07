@@ -39,7 +39,7 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         double x2 = x1;
         double y2 = 0;
         Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
-        exitLanes.add(southBoundRoad.getLanes().get(0));
+        exitLanes.add(southBoundRoad.getOnlyLane());
 
         verticalRoads.add(southBoundRoad);
 
@@ -50,8 +50,8 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         x2 = width;
         y2 = y1;
         Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
-        entranceLane = eastBoundRoad.getLanes().get(0);
-        exitLanes.add(eastBoundRoad.getLanes().get(0));
+        entranceLane = eastBoundRoad.getOnlyLane();
+        exitLanes.add(eastBoundRoad.getOnlyLane());
 
         horizontalRoads.add(eastBoundRoad);
 

@@ -89,18 +89,18 @@ public class CornerTest {
     @Test
     public void testIsEnteredBy() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         assert(testCorner.isEnteredBy(entryLane));
 
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         assertFalse(testCorner.isEnteredBy(exitLane));
     }
 
     @Test
     public void testGetEntryPoint() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         Point2D entryPoint = testCorner.getEntryPoint(entryLane);
 
         assertEquals(470.0, entryPoint.getX(), 0.01);
@@ -111,7 +111,7 @@ public class CornerTest {
     public void testGetEntryHeading() throws Exception {
         // Enter on east
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         double expectedEntryHeading = 0.0;
         double actualEntryHeading = testCorner.getEntryHeading(entryLane);
 
@@ -134,18 +134,18 @@ public class CornerTest {
     @Test
     public void testIsExitedBy() throws Exception {
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         assert(testCorner.isExitedBy(exitLane));
 
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         assertFalse(testCorner.isExitedBy(entryLane));
     }
 
     @Test
     public void testGetExitPoint() throws Exception {
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         Point2D exitPoint = testCorner.getExitPoint(exitLane);
 
         assertEquals(472.0, exitPoint.getX(), 0.01);
@@ -156,7 +156,7 @@ public class CornerTest {
     public void testGetExitHeading() throws Exception {
         // Exit on south
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         double expectedExitHeading = Math.toRadians(270.0);
         double actualExitHeading = testCorner.getExitHeading(exitLane);
 

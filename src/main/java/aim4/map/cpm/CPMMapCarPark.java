@@ -47,10 +47,10 @@ public class CPMMapCarPark extends CPMBasicMap {
         this.parkingArea = new ParkingArea(startPoint, this, numberOfParkingLanes,
                 parkingLength, laneWidth, accessLength);
 
-        // TODO Add all roads/lanes from parking area to the map's records?
+        // Add all roads/lanes from parking area to the map's records
         for (Road road : parkingArea.getRoads()){
             horizontalRoads.add(road);
-            registerLane(road.getLanes().get(0));
+            registerLane(road.getOnlyLane());
         }
 
         // Create the vertical Roads
@@ -87,8 +87,8 @@ public class CPMMapCarPark extends CPMBasicMap {
 
         // Establish lanes that enter and exit the map
         // TODO CPM This is awful, come back and change
-        entranceLane = parkingArea.getRoads().get(0).getLanes().get(0);
-        exitLanes.add(westBoundRoad.getLanes().get(0));
+        entranceLane = parkingArea.getRoads().get(0).getOnlyLane();
+        exitLanes.add(westBoundRoad.getOnlyLane());
 
         // Connect roads surrounding the parking area
         makeCorner(northBoundRoad, westBoundRoad);

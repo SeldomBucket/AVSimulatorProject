@@ -46,7 +46,7 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         x2 = 0;
         y2 = y1;
         Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
-        exitLanes.add(westBoundRoad.getLanes().get(0));
+        exitLanes.add(westBoundRoad.getOnlyLane());
 
         horizontalRoads.add(westBoundRoad);
 
@@ -56,7 +56,7 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         x2 = width - BORDER;
         y2 = y1;
         Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
-        entranceLane = eastBoundRoad.getLanes().get(0);
+        entranceLane = eastBoundRoad.getOnlyLane();
 
         horizontalRoads.add(eastBoundRoad);
 

@@ -36,8 +36,8 @@ public class CPMMapWithTJunction extends CPMBasicMap {
         double x2 = x1;
         double y2 = height;
         Road northBoundRoad = createRoadWithOneLane("Northbound Avenue", x1, y1, x2, y2);
-        exitLanes.add(northBoundRoad.getLanes().get(0));
-        entranceLane = northBoundRoad.getLanes().get(0);
+        exitLanes.add(northBoundRoad.getOnlyLane());
+        entranceLane = northBoundRoad.getOnlyLane();
 
         verticalRoads.add(northBoundRoad);
 
@@ -48,8 +48,8 @@ public class CPMMapWithTJunction extends CPMBasicMap {
         x2 = width;
         y2 = y1;
         Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
-        entranceLane = eastBoundRoad.getLanes().get(0);
-        exitLanes.add(eastBoundRoad.getLanes().get(0));
+        entranceLane = eastBoundRoad.getOnlyLane();
+        exitLanes.add(eastBoundRoad.getOnlyLane());
 
         horizontalRoads.add(eastBoundRoad);
 

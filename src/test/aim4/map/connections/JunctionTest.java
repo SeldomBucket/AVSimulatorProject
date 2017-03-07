@@ -85,18 +85,18 @@ public class JunctionTest {
     @Test
     public void testIsEnteredBy() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         assert(testJunction.isEnteredBy(entryLane));
 
         Road exitRoad = map.getRoadByName("Northbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         assertFalse(testJunction.isEnteredBy(exitLane));
     }
 
     @Test
     public void testGetEntryPoint() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         Point2D entryPoint = testJunction.getEntryPoint(entryLane);
 
         assertEquals(248.0, entryPoint.getX(), 0.01);
@@ -107,7 +107,7 @@ public class JunctionTest {
     public void testGetEntryHeading() throws Exception {
         // Enter on east
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         double expectedEntryHeading = 0.0;
         double actualEntryHeading = testJunction.getEntryHeading(entryLane);
 
@@ -134,25 +134,25 @@ public class JunctionTest {
     @Test
     public void testIsExitedBy() throws Exception {
         Road exitRoad = map.getRoadByName("Northbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         assert(testJunction.isExitedBy(exitLane));
 
         exitRoad = map.getRoadByName("Eastbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         assert(testJunction.isExitedBy(exitLane));
     }
 
     @Test
     public void testGetExitPoint() throws Exception {
         Road exitRoad = map.getRoadByName("Northbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         Point2D exitPoint = testJunction.getExitPoint(exitLane);
 
         assertEquals(250.0, exitPoint.getX(), 0.01);
         assertEquals(252.0, exitPoint.getY(), 0.01);
 
         exitRoad = map.getRoadByName("Eastbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         exitPoint = testJunction.getExitPoint(exitLane);
 
         assertEquals(252.0, exitPoint.getX(), 0.01);
@@ -162,14 +162,14 @@ public class JunctionTest {
     @Test
     public void testGetExitHeading() throws Exception {
         Road exitRoad = map.getRoadByName("Eastbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         double expectedExitHeading = Math.toRadians(0);
         double actualExitHeading = testJunction.getExitHeading(exitLane);
 
         assertEquals(expectedExitHeading, actualExitHeading, 0.01);
 
         exitRoad = map.getRoadByName("Northbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         expectedExitHeading = Math.toRadians(90);
         actualExitHeading = testJunction.getExitHeading(exitLane);
 

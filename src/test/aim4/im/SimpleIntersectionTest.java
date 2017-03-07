@@ -76,8 +76,8 @@ public class SimpleIntersectionTest {
         assert(entryLanes.size() == 2);
 
         // They should include both east and south
-        Lane entryLane1 = map.getRoadByName("Eastbound Avenue").getLanes().get(0);
-        Lane entryLane2 = map.getRoadByName("Southbound Avenue").getLanes().get(0);
+        Lane entryLane1 = map.getRoadByName("Eastbound Avenue").getOnlyLane();
+        Lane entryLane2 = map.getRoadByName("Southbound Avenue").getOnlyLane();
 
         assert(entryLanes.contains(entryLane1));
         assert(entryLanes.contains(entryLane2));
@@ -86,25 +86,25 @@ public class SimpleIntersectionTest {
     @Test
     public void testIsEnteredBy() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         assert(testIntersection.isEnteredBy(entryLane));
 
         entryRoad = map.getRoadByName("Southbound Avenue");
-        entryLane = entryRoad.getLanes().get(0);
+        entryLane = entryRoad.getOnlyLane();
         assert(testIntersection.isEnteredBy(entryLane));
     }
 
     @Test
     public void testGetEntryPoint() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         Point2D entryPoint = testIntersection.getEntryPoint(entryLane);
 
         assertEquals(248.0, entryPoint.getX(), 0.01);
         assertEquals(250.0, entryPoint.getY(), 0.01);
 
         entryRoad = map.getRoadByName("Southbound Avenue");
-        entryLane = entryRoad.getLanes().get(0);
+        entryLane = entryRoad.getOnlyLane();
         entryPoint = testIntersection.getEntryPoint(entryLane);
 
         assertEquals(250.0, entryPoint.getX(), 0.01);
@@ -114,13 +114,13 @@ public class SimpleIntersectionTest {
     @Test
     public void testGetEntryHeading() throws Exception {
         Road entryRoad = map.getRoadByName("Eastbound Avenue");
-        Lane entryLane = entryRoad.getLanes().get(0);
+        Lane entryLane = entryRoad.getOnlyLane();
         double expectedEntryHeading = 0.0;
         double actualEntryHeading = testIntersection.getEntryHeading(entryLane);
         assertEquals(expectedEntryHeading, actualEntryHeading, 0.01);
 
         entryRoad = map.getRoadByName("Southbound Avenue");
-        entryLane = entryRoad.getLanes().get(0);
+        entryLane = entryRoad.getOnlyLane();
         expectedEntryHeading = Math.toRadians(270);
         actualEntryHeading = testIntersection.getEntryHeading(entryLane);
         assertEquals(expectedEntryHeading, actualEntryHeading, 0.01);
@@ -151,8 +151,8 @@ public class SimpleIntersectionTest {
         assert(exitLanes.size() == 2);
 
         // They should include both east and south
-        Lane exitLane1 = map.getRoadByName("Eastbound Avenue").getLanes().get(0);
-        Lane exitLane2 = map.getRoadByName("Southbound Avenue").getLanes().get(0);
+        Lane exitLane1 = map.getRoadByName("Eastbound Avenue").getOnlyLane();
+        Lane exitLane2 = map.getRoadByName("Southbound Avenue").getOnlyLane();
 
         assert(exitLanes.contains(exitLane1));
         assert(exitLanes.contains(exitLane2));
@@ -161,25 +161,25 @@ public class SimpleIntersectionTest {
     @Test
     public void testIsExitedBy() throws Exception {
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         assert(testIntersection.isExitedBy(exitLane));
 
         exitRoad = map.getRoadByName("Eastbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         assert(testIntersection.isExitedBy(exitLane));
     }
 
     @Test
     public void testGetExitPoint() throws Exception {
         Road exitRoad = map.getRoadByName("Southbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         Point2D exitPoint = testIntersection.getExitPoint(exitLane);
 
         assertEquals(250.0, exitPoint.getX(), 0.01);
         assertEquals(248.0, exitPoint.getY(), 0.01);
 
         exitRoad = map.getRoadByName("Eastbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         exitPoint = testIntersection.getExitPoint(exitLane);
 
         assertEquals(252.0, exitPoint.getX(), 0.01);
@@ -189,14 +189,14 @@ public class SimpleIntersectionTest {
     @Test
     public void testGetExitHeading() throws Exception {
         Road exitRoad = map.getRoadByName("Eastbound Avenue");
-        Lane exitLane = exitRoad.getLanes().get(0);
+        Lane exitLane = exitRoad.getOnlyLane();
         double expectedExitHeading = Math.toRadians(0);
         double actualExitHeading = testIntersection.getExitHeading(exitLane);
 
         assertEquals(expectedExitHeading, actualExitHeading, 0.01);
 
         exitRoad = map.getRoadByName("Southbound Avenue");
-        exitLane = exitRoad.getLanes().get(0);
+        exitLane = exitRoad.getOnlyLane();
         expectedExitHeading = Math.toRadians(270);
         actualExitHeading = testIntersection.getExitHeading(exitLane);
 

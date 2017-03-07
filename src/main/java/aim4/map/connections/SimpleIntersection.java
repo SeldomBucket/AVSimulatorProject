@@ -80,7 +80,7 @@ public class SimpleIntersection extends BasicConnection {
         for (Road road : roads) {
             // We have already checked that there is only one lane in each road
             // So get the only lane in this road
-            Lane lane = road.getLanes().get(0);
+            Lane lane = road.getOnlyLane();
             boolean startsInIntersection = doesLaneStartInPerimeter(lane, perimeterSegments);
             boolean endsInIntersection = doesLaneEndInPerimeter(lane, perimeterSegments);
 

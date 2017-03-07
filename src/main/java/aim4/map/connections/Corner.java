@@ -87,7 +87,7 @@ public class Corner extends BasicConnection {
                 GeomMath.polygonalShapePerimeterSegments(areaOfCorner);
         for (Road road : roads) {
             // We have already checked that there is only one lane in each road
-            Lane lane = road.getLanes().get(0);
+            Lane lane = road.getOnlyLane();
             boolean startsInCorner = doesLaneStartInPerimeter(lane, perimeterSegments);
             boolean endsInCorner = doesLaneEndInPerimeter(lane, perimeterSegments);
 

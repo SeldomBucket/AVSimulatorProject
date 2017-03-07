@@ -147,8 +147,8 @@ public abstract class BasicConnection implements RoadConnection {
     protected boolean atNinetyDegrees(List<Road> roads){
         // The 2 roads must meet at 90 degrees.
         if (roads.size() == 2){
-            LineSegmentLane laneFromRoad1 = (LineSegmentLane) roads.get(0).getLanes().get(0);
-            LineSegmentLane laneFromRoad2 = (LineSegmentLane) roads.get(1).getLanes().get(0);
+            LineSegmentLane laneFromRoad1 = (LineSegmentLane) roads.get(0).getOnlyLane();
+            LineSegmentLane laneFromRoad2 = (LineSegmentLane) roads.get(1).getOnlyLane();
             Point2D intersectionPoint = laneFromRoad1.intersectionPoint(laneFromRoad2.getLine());
             double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(laneFromRoad1.getStartPoint(),
                     laneFromRoad2.getStartPoint(),
