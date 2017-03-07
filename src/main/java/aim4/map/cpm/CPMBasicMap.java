@@ -110,14 +110,17 @@ public abstract class CPMBasicMap implements CPMMap{
                 y2,
                 laneWidth,
                 speedLimit);
-        // Register lane
-        int laneId = laneRegistry.register(lane);
-        lane.setId(laneId);
+        registerLane(lane);
         // Add lane to road
         road.addTheRightMostLane(lane);
         laneToRoad.put(lane, road);
 
         return road;
+    }
+
+    protected void registerLane(Lane lane){
+        int laneId = laneRegistry.register(lane);
+        lane.setId(laneId);
     }
 
     /**
@@ -162,6 +165,24 @@ public abstract class CPMBasicMap implements CPMMap{
         roadsForCorner.add(road2);
         Corner corner = new Corner(roadsForCorner);
         corners.add(corner);
+    }
+
+    protected void makeJunction(Road road1, Road road2){
+        // Put the roads into a list
+        List<Road> roadsForJunction = new ArrayList<Road>(2);
+        roadsForJunction.add(road1);
+        roadsForJunction.add(road2);
+        Junction junction = new Junction(roadsForJunction);
+        junctions.add(junction);
+    }
+
+    protected void makeSimpleIntersection(Road road1, Road road2){
+        // Put the roads into a list
+        List<Road> roadsForIntersection = new ArrayList<Road>(2);
+        roadsForIntersection.add(road1);
+        roadsForIntersection.add(road2);
+        SimpleIntersection intersection = new SimpleIntersection(roadsForIntersection);
+        intersections.add(intersection);
     }
 
     public List<Road> getRoads() {

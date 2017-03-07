@@ -48,6 +48,8 @@ public class ParkingArea {
     private Registry<ParkingLane> parkingLaneRegistry = new ArrayListRegistry<ParkingLane>();
     /**The set of roads. */
     private List<Road> roads;
+    /**The road which has been extended to be the car park entrance. */
+    private Road entryRoad;
     /**The width of each parking lane. */
     private double parkingLaneWidth;
 
@@ -65,7 +67,8 @@ public class ParkingArea {
         this.overlappingRoadWidth = map.getLaneWidth();
         this.totalLength = (2*accessLength) + (2*overlappingRoadWidth) + parkingLength;
 
-        validateParameters();
+        // TODO CPM decide if we need, maybe not if dynamically building the map
+        // validateParameters();
         addParkingLanes();
     }
 
@@ -106,15 +109,31 @@ public class ParkingArea {
         for (int i = 0 ; i < numberOfParkingLanes ; i++){
             // Create a road for the parking lane to belong to
             Road road = new Road("Parking road " + i, map);
-            // Create a new parking lane
-            ParkingLane parkingLane = new ParkingLane(laneStartPointX,
-                    lanePointY,
-                    laneEndPointX,
-                    lanePointY,
-                    parkingLaneWidth,
-                    accessLength,
-                    overlappingRoadWidth,
-                    map.getMaximumSpeedLimit());
+            // TODO CPM Is this the best place to do this?
+            ParkingLane parkingLane;
+            if (i == 0) {
+                // We need this lane to start on the edge of the map
+                // This will be the entrance lane
+                parkingLane = new ParkingLane(0,
+                        lanePointY,
+                        laneEndPointX,
+                        lanePointY,
+                        parkingLaneWidth,
+                        accessLength,
+                        overlappingRoadWidth,
+                        map.getMaximumSpeedLimit());
+                entryRoad = road;
+            } else {
+                // Create a new parking lane
+                parkingLane = new ParkingLane(laneStartPointX,
+                        lanePointY,
+                        laneEndPointX,
+                        lanePointY,
+                        parkingLaneWidth,
+                        accessLength,
+                        overlappingRoadWidth,
+                        map.getMaximumSpeedLimit());
+            }
             // Register the lane and add it to the road
             int laneId = parkingLaneRegistry.register(parkingLane);
             parkingLane.setId(laneId);
@@ -150,4 +169,6 @@ public class ParkingArea {
     public List<Road> getRoads() { return roads; }
 
     public double getParkingLaneWidth() { return parkingLaneWidth; }
+
+    public Road getEntryRoad() { return entryRoad; }
 }
