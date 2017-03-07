@@ -63,7 +63,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /////////////////////////////////
 
     /** The map */
-    private CPMMap simpleMap;
+    private CPMMap map;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
     private Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
@@ -75,8 +75,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
 
-    public CPMAutoDriverSimulator(CPMMap simpleMap){
-        this.simpleMap = simpleMap;
+    public CPMAutoDriverSimulator(CPMMap map){
+        this.map = map;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
 
         currentTime = 0.0;
@@ -110,7 +110,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param timeStep  the time step
      */
     private void spawnVehicles(double timeStep) {
-        for(SpawnPoint spawnPoint : simpleMap.getSpawnPoints()) {
+        for(SpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<SpawnPoint.SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
@@ -162,7 +162,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime());
         // Set the driver
-        CPMBasicV2VDriver driver = new CPMBasicV2VDriver(vehicle, simpleMap);
+        CPMBasicV2VDriver driver = new CPMBasicV2VDriver(vehicle, map);
         driver.setCurrentLane(lane);
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);
@@ -204,7 +204,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         // currently ordered in the Lanes
         Map<Lane,SortedMap<Double,CPMBasicAutoVehicle>> vehicleLists =
                 new HashMap<Lane,SortedMap<Double,CPMBasicAutoVehicle>>();
-        for(Road road : simpleMap.getRoads()) {
+        for(Road road : map.getRoads()) {
             for(Lane lane : road.getLanes()) {
                 vehicleLists.put(lane, new TreeMap<Double,CPMBasicAutoVehicle>());
             }
@@ -222,7 +222,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             }
         }
         // Now consolidate the lists based on lanes
-        for(Road road : simpleMap.getRoads()) {
+        for(Road road : map.getRoads()) {
             for(Lane lane : road.getLanes()) {
                 // We may have already removed this Lane from the map
                 if(vehicleLists.containsKey(lane)) {
@@ -458,9 +458,9 @@ public class CPMAutoDriverSimulator implements Simulator {
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
 
-            CPMMapUtil.checkVehicleStillOnMap(simpleMap, p2, vehicle.getDriver().getCurrentLane());
+            CPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
 
-            for(DataCollectionLine line : simpleMap.getDataCollectionLines()) {
+            for(DataCollectionLine line : map.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }
             if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
@@ -473,7 +473,7 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     @Override
     public BasicMap getMap() {
-        return simpleMap;
+        return map;
     }
 
     @Override

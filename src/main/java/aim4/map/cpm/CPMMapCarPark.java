@@ -7,6 +7,7 @@ import aim4.map.cpm.parking.ParkingArea;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -47,6 +48,10 @@ public class CPMMapCarPark extends CPMBasicMap {
                 parkingLength, laneWidth, accessLength);
 
         // TODO Add all roads/lanes from parking area to the map's records?
+        for (Road road : parkingArea.getRoads()){
+            horizontalRoads.add(road);
+            registerLane(road.getLanes().get(0));
+        }
 
         // Create the vertical Roads
 
@@ -74,6 +79,11 @@ public class CPMMapCarPark extends CPMBasicMap {
         y2 = y1;
         Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
         horizontalRoads.add(westBoundRoad);
+
+        // Record all roads
+        roads = new ArrayList<Road>(horizontalRoads);
+        roads.addAll(verticalRoads);
+        roads = Collections.unmodifiableList(roads);
 
         // Establish lanes that enter and exit the map
         // TODO CPM This is awful, come back and change
