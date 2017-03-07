@@ -112,7 +112,8 @@ public class ParkingArea {
                     laneEndPointX,
                     lanePointY,
                     parkingLaneWidth,
-                    accessLength+overlappingRoadWidth,
+                    accessLength,
+                    overlappingRoadWidth,
                     map.getMaximumSpeedLimit());
             // Register the lane and add it to the road
             int laneId = parkingLaneRegistry.register(parkingLane);
