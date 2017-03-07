@@ -9,7 +9,6 @@ import java.util.List;
 public class CPMMapWithCornersOneLaneTest extends TestCase {
 
     public void testNumberOfRoadsOnInitialisation() throws Exception {
-        System.out.println("Testing there are 3 roads when VeryBasicMap is initialised.");
         CPMMapWithCornersOneLane map = new CPMMapWithCornersOneLane(5, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime

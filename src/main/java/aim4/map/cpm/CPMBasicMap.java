@@ -7,6 +7,7 @@ import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
+import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
@@ -90,15 +91,33 @@ public abstract class CPMBasicMap implements CPMMap{
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
     public CPMBasicMap(int laneWidth, double speedLimit,
-                       double initTime, double width,
-                       double height) {
+                       double initTime) {
 
         this.laneWidth = laneWidth;
         this.halfLaneWidth = laneWidth/2;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
-        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
+    }
 
+    protected Road createRoadWithOneLane(String roadName, double x1,
+                                         double y1, double x2, double y2){
+        // Create the road
+        Road road = new Road(roadName, this);
+        // Add a lane to the road
+        Lane lane = new LineSegmentLane(x1,
+                y1,
+                x2,
+                y2,
+                laneWidth,
+                speedLimit);
+        // Register lane
+        int laneId = laneRegistry.register(lane);
+        lane.setId(laneId);
+        // Add lane to road
+        road.addTheRightMostLane(lane);
+        laneToRoad.put(lane, road);
+
+        return road;
     }
 
     /**

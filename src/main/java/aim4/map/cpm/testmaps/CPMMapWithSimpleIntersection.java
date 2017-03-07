@@ -4,10 +4,9 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.lane.Lane;
-import aim4.map.lane.LineSegmentLane;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 /**
@@ -25,7 +24,9 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
     public CPMMapWithSimpleIntersection(int laneWidth, double speedLimit,
                                         double initTime, double width,
                                         double height) {
-        super(laneWidth, speedLimit, initTime, width, height);
+        super(laneWidth, speedLimit, initTime);
+
+        this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
         // One on entry and one on exit
@@ -33,50 +34,24 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
 
         // Create the vertical Road
         //SOUTH
-        Road southBoundRoad = new Road("Southbound Avenue", this);
-
-        // Add a lane to the road
-        // Need to find the centre of the lane before creating it
         double x1 = width/2;
         double y1 = height;
         double x2 = x1;
         double y2 = 0;
-        Lane southLane = new LineSegmentLane(x1,
-                y1,
-                x2,
-                y2,
-                laneWidth, // width
-                speedLimit);
-        int southLaneId = laneRegistry.register(southLane);
-        southLane.setId(southLaneId);
-        southBoundRoad.addTheRightMostLane(southLane);
-        laneToRoad.put(southLane, southBoundRoad);
-        exitLanes.add(southLane);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
+        exitLanes.add(southBoundRoad.getLanes().get(0));
 
         verticalRoads.add(southBoundRoad);
 
         // Create the horizontal Roads
         // EAST
-        Road eastBoundRoad = new Road("Eastbound Avenue", this);
-
-        // Add a lane to the road
-        // Need to find the centre of the lane before creating it
         x1 = 0;
         y1 = height/2;
         x2 = width;
         y2 = y1;
-        Lane eastLane = new LineSegmentLane(x1, // x1
-                y1, // y1
-                x2, // x2
-                y2, // y2
-                laneWidth, // width
-                speedLimit);
-        int eastLaneId = laneRegistry.register(eastLane);
-        eastLane.setId(eastLaneId);
-        eastBoundRoad.addTheRightMostLane(eastLane);
-        laneToRoad.put(eastLane, eastBoundRoad);
-        entranceLane = eastLane;
-        exitLanes.add(eastLane);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        entranceLane = eastBoundRoad.getLanes().get(0);
+        exitLanes.add(eastBoundRoad.getLanes().get(0));
 
         horizontalRoads.add(eastBoundRoad);
 
