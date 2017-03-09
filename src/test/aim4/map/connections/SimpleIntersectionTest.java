@@ -1,4 +1,4 @@
-package aim4.im;
+package aim4.map.connections;
 
 import aim4.map.Road;
 import aim4.map.connections.SimpleIntersection;

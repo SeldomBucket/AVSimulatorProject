@@ -1,5 +1,6 @@
-package aim4.map;
+package aim4.map.connections;
 
+import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.cpm.testmaps.CPMMapWithCornersOneLane;
 import aim4.map.lane.Lane;
