@@ -215,7 +215,7 @@ public abstract class CPMBasicMap implements CPMMap{
 
     public Road getRoadByName(String roadName) {
         for (Road road: roads){
-            if (road.getName() == roadName){
+            if (road.getName().equals(roadName)){
                 return road;
             }
         }
