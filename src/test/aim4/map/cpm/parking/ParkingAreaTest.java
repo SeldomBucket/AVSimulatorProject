@@ -77,7 +77,6 @@ public class ParkingAreaTest {
 
     @Test
     public void testGetEntryRoad() {
-        List<Road> roads = map1Lane.getRoads();
         Road expectedEntryRoad = map1Lane.getRoadByName("Parking road 0");
         assertEquals(expectedEntryRoad, testParkingArea1Lane.getEntryRoad());
 

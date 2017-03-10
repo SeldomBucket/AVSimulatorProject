@@ -71,7 +71,7 @@ public class CornerTest {
         assertEquals(expectedCentroidX, centroid.getX(), 0.01);
         assertEquals(expectedCentroidY, centroid.getY(), 0.01);*/
 
-        // WHAT IS THIS DOING
+        // TODO CPM WHAT IS THIS DOING
     }
 
     @Test
