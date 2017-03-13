@@ -147,16 +147,62 @@ public abstract class BasicConnection implements RoadConnection {
     protected boolean atNinetyDegrees(List<Road> roads){
         // The 2 roads must meet at 90 degrees.
         if (roads.size() == 2){
-            LineSegmentLane laneFromRoad1 = (LineSegmentLane) roads.get(0).getOnlyLane();
-            LineSegmentLane laneFromRoad2 = (LineSegmentLane) roads.get(1).getOnlyLane();
-            Point2D intersectionPoint = laneFromRoad1.intersectionPoint(laneFromRoad2.getLine());
-            double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(laneFromRoad1.getStartPoint(),
-                    laneFromRoad2.getStartPoint(),
-                    intersectionPoint);
-            double angleInDegrees = Math.toDegrees(angleInRadians);
-            if (Math.abs(angleInDegrees) == 90.0 || Math.abs(angleInDegrees) == 270.0) {
+            return meetAtNinetyDegrees(roads.get(0), roads.get(1));
+        }
+        if (roads.size() == 3) {
+            /* We want to compare the 2 roads with the same heading with the other road
+               This is for the case where a road ends in an intersection and follows
+               on to a road which starts in the intersection, in the same direction.*/
+
+            // Find roads with same heading
+            List<Road> roadsWithSameHeading = new ArrayList<Road>(2);
+            for (int i = 0; i < roads.size(); i++) {
+                for (int j = i+1; j < roads.size(); j++) {
+                    // compare list.get(i) and list.get(j)
+                    if (roads.get(i).getOnlyLane().getInitialHeading() ==
+                            roads.get(j).getOnlyLane().getInitialHeading()) {
+                        roadsWithSameHeading.add(roads.get(i));
+                        roadsWithSameHeading.add(roads.get(j));
+                        break;
+                    }
+                }
+            }
+
+            int atNinety = 0;
+            for (Road road1 : roadsWithSameHeading) {
+                for (Road road2 : roads) {
+                    if (road1 == road2 || roadsWithSameHeading.contains(road2)){
+                        continue;
+                    } else {
+                        if (meetAtNinetyDegrees(road1, road2)) {
+                            ++atNinety;
+                        }
+                    }
+                }
+            }
+            if (atNinety == 2) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Check if the 2 roads given meet at 90 degrees.
+     * @param road1
+     * @param road2
+     * @return true if roads meet at ninety degrees.
+     */
+    protected boolean meetAtNinetyDegrees(Road road1, Road road2) {
+        LineSegmentLane laneFromRoad1 = (LineSegmentLane) road1.getOnlyLane();
+        LineSegmentLane laneFromRoad2 = (LineSegmentLane) road2.getOnlyLane();
+        Point2D intersectionPoint = laneFromRoad1.intersectionPoint(laneFromRoad2.getLine());
+        double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(laneFromRoad1.getStartPoint(),
+                laneFromRoad2.getStartPoint(),
+                intersectionPoint);
+        double angleInDegrees = Math.toDegrees(angleInRadians);
+        if (Math.abs(angleInDegrees) == 90.0 || Math.abs(angleInDegrees) == 270.0) {
+            return true;
         }
         return false;
     }

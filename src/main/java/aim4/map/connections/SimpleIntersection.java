@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Create a right-angled intersection which is the
- * intersection of 2 roads, each with one lane.
+ * intersection of 2 or 3 roads, each with one lane.
  */
 public class SimpleIntersection extends BasicConnection {
 
@@ -45,9 +45,9 @@ public class SimpleIntersection extends BasicConnection {
 
     @Override
     protected void validate(List<Road> roads) {
-        // There can only be 2 Roads involved in this SimpleIntersection
-        if (roads.size() != 2){
-            throw new IllegalArgumentException("There can only be 2 Roads " +
+        // There can only be 2 or 3 Roads involved in this SimpleIntersection
+        if (roads.size() != 2 && roads.size() != 3){
+            throw new IllegalArgumentException("There can only be 2 or 3 Roads " +
                     "involved in a SimpleIntersection. Number of " +
                     "roads given: " + roads.size());
         }
@@ -78,44 +78,68 @@ public class SimpleIntersection extends BasicConnection {
                 GeomMath.polygonalShapePerimeterSegments(areaOfIntersection);
 
         for (Road road : roads) {
-            // We have already checked that there is only one lane in each road
-            // So get the only lane in this road
             Lane lane = road.getOnlyLane();
             boolean startsInIntersection = doesLaneStartInPerimeter(lane, perimeterSegments);
             boolean endsInIntersection = doesLaneEndInPerimeter(lane, perimeterSegments);
 
-            // A lane cannot start or end in the Intersection
+            /*// A lane cannot start or end in the Intersection
             if (startsInIntersection || endsInIntersection) {
                 throw new RuntimeException("A lane in an intersection cannot start or end in the intersection.");
-            }
+            }*/
 
-            Point2D entryPoint;
-            Point2D exitPoint;
-            // Lanes run straight through the intersection so must have an entry and an exit point
-            List<Point2D> intersectionPoints = new ArrayList<Point2D>();
-            for (Line2D segment : perimeterSegments) {
-                if (lane.intersectionPoint(segment) != null) {
-                    intersectionPoints.add(lane.intersectionPoint(segment));
+            if (!startsInIntersection && !endsInIntersection) {
+                Point2D entryPoint;
+                Point2D exitPoint;
+                // Lanes run straight through the intersection so must have an entry and an exit point
+                List<Point2D> intersectionPoints = new ArrayList<Point2D>();
+                for (Line2D segment : perimeterSegments) {
+                    if (lane.intersectionPoint(segment) != null) {
+                        intersectionPoints.add(lane.intersectionPoint(segment));
+                    }
                 }
-            }
-            assert(intersectionPoints.size() == 2);
+                assert (intersectionPoints.size() == 2);
 
-            // Now decide which point is the entry and which is the exit
-            // The point closest to the lane start point will be the entry point
-            double distance1 = intersectionPoints.get(0).distance(lane.getStartPoint());
-            double distance2 = intersectionPoints.get(1).distance(lane.getStartPoint());
-            if (distance1 < distance2) {
-                // Point used in distance 1 is the entry point
-                entryPoint = intersectionPoints.get(0);
-                exitPoint = intersectionPoints.get(1);
-            } else {
-                // Point used in distance 2 is the entry point
-                entryPoint = intersectionPoints.get(1);
-                exitPoint = intersectionPoints.get(0);
+                // Now decide which point is the entry and which is the exit
+                // The point closest to the lane start point will be the entry point
+                double distance1 = intersectionPoints.get(0).distance(lane.getStartPoint());
+                double distance2 = intersectionPoints.get(1).distance(lane.getStartPoint());
+                if (distance1 < distance2) {
+                    // Point used in distance 1 is the entry point
+                    entryPoint = intersectionPoints.get(0);
+                    exitPoint = intersectionPoints.get(1);
+                } else {
+                    // Point used in distance 2 is the entry point
+                    entryPoint = intersectionPoints.get(1);
+                    exitPoint = intersectionPoints.get(0);
+                }
+                establishAsEntryPoint(road, lane, entryPoint);
+                establishAsExitPoint(road, lane, exitPoint);
+            } else if (startsInIntersection){
+                // This road will only have an exit point
+                Point2D exitPoint = null;
+                for (Line2D segment : perimeterSegments) {
+                    if (lane.intersectionPoint(segment) != null) {
+                        exitPoint = lane.intersectionPoint(segment);
+                        break;
+                    }
+                }
+                assert(exitPoint != null);
+                establishAsExitPoint(road, lane, exitPoint);
+            } else if (endsInIntersection) {
+                // This road will only have an entry point
+                Point2D entryPoint = null;
+                for (Line2D segment : perimeterSegments) {
+                    if (lane.intersectionPoint(segment) != null) {
+                        entryPoint = lane.intersectionPoint(segment);
+                        break;
+                    }
+                }
+                assert(entryPoint != null);
+                establishAsEntryPoint(road, lane, entryPoint);
             }
-            establishAsEntryPoint(road, lane, entryPoint);
-            establishAsExitPoint(road, lane, exitPoint);
         }
+        assert(entryPoints.size() == 2);
+        assert(exitPoints.size() == 2);
 
         // Fill in any of the holes
         this.areaOfConnection = GeomMath.filledArea(areaOfIntersection);
