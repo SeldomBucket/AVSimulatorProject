@@ -82,10 +82,10 @@ public class SimpleIntersection extends BasicConnection {
             boolean startsInIntersection = doesLaneStartInPerimeter(lane, perimeterSegments);
             boolean endsInIntersection = doesLaneEndInPerimeter(lane, perimeterSegments);
 
-            /*// A lane cannot start or end in the Intersection
-            if (startsInIntersection || endsInIntersection) {
-                throw new RuntimeException("A lane in an intersection cannot start or end in the intersection.");
-            }*/
+            // A lane can only start or end in the junction, not both
+            if (startsInIntersection && endsInIntersection) {
+                throw new RuntimeException("A lane in an intersection cannot start and end in the intersection.");
+            }
 
             if (!startsInIntersection && !endsInIntersection) {
                 Point2D entryPoint;
@@ -118,18 +118,20 @@ public class SimpleIntersection extends BasicConnection {
                 // This road will only have an exit point
                 Point2D exitPoint = null;
                 for (Line2D segment : perimeterSegments) {
-                    if (lane.intersectionPoint(segment) != null) {
+                    if (lane.intersectionPoint(segment) != null &&
+                            !isPointOnPerimeterSegment(lane.getStartPoint(), segment)) {
                         exitPoint = lane.intersectionPoint(segment);
                         break;
                     }
                 }
                 assert(exitPoint != null);
                 establishAsExitPoint(road, lane, exitPoint);
-            } else if (endsInIntersection) {
+            } else { // if (endsInIntersection)
                 // This road will only have an entry point
                 Point2D entryPoint = null;
                 for (Line2D segment : perimeterSegments) {
-                    if (lane.intersectionPoint(segment) != null) {
+                    if (lane.intersectionPoint(segment) != null &&
+                            !isPointOnPerimeterSegment(lane.getEndPoint(), segment)) {
                         entryPoint = lane.intersectionPoint(segment);
                         break;
                     }

@@ -150,9 +150,10 @@ public abstract class BasicConnection implements RoadConnection {
             return meetAtNinetyDegrees(roads.get(0), roads.get(1));
         }
         if (roads.size() == 3) {
-            /* We want to compare the 2 roads with the same heading with the other road
-               This is for the case where a road ends in an intersection and follows
-               on to a road which starts in the intersection, in the same direction.*/
+            /* We want to compare the 2 roads with the same heading with the
+               other road. This is for the case where a road ends in an
+               intersection/junction and follows on to a road which starts
+               in the intersection/junction, in the same direction.*/
 
             // Find roads with same heading
             List<Road> roadsWithSameHeading = new ArrayList<Road>(2);

@@ -10,9 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.*;
 
 /**
- * Map with a conventional intersection, four roads intersecting
- * (as in AIM simulation). Class created to test if we can
- * instantiate RoadBasedIntersection.
+ * A map with an intersection where only 2 roads cross over
+ * in the centre of the map, and each road has only one lane.
  */
 public class CPMMapWithSimpleIntersection extends CPMBasicMap {
 
@@ -29,8 +28,8 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
         // Set size of array for the data collection lines.
-        // One on entry and one on exit
-        dataCollectionLines = new ArrayList<DataCollectionLine>(2);
+        // One on entry and one on each exit
+        dataCollectionLines = new ArrayList<DataCollectionLine>(3);
 
         // Create the vertical Road
         //SOUTH
@@ -84,7 +83,7 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
                         true));
 
         // Now we have created the roads, we need to create the intersection
-        List<Road> roadsForIntersection = new ArrayList<Road>(3);
+        List<Road> roadsForIntersection = new ArrayList<Road>(2);
         roadsForIntersection.add(eastBoundRoad);
         roadsForIntersection.add(southBoundRoad);
         SimpleIntersection intersection1 = new SimpleIntersection(roadsForIntersection);

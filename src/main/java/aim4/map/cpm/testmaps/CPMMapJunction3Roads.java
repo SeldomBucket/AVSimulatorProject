@@ -1,24 +1,27 @@
 package aim4.map.cpm.testmaps;
 
-import aim4.map.*;
+import aim4.map.DataCollectionLine;
+import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMBasicMap;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
- * Map with a T-Junction with 2 roads.
+ * Map with a T-Junction with 3 roads.
  */
-public class CPMMapWithTJunction extends CPMBasicMap {
+public class CPMMapJunction3Roads extends CPMBasicMap {
 
     /**
-     * Create a map with a T-Junction with 2 roads.
+     * Create a map with a T-Junction with 3 roads.
      */
-    public CPMMapWithTJunction(int laneWidth, double speedLimit,
-                               double initTime, double width,
-                               double height) {
+    public CPMMapJunction3Roads(int laneWidth, double speedLimit,
+                                double initTime, double width,
+                                double height) {
         super(laneWidth, speedLimit, initTime);
 
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
@@ -41,16 +44,27 @@ public class CPMMapWithTJunction extends CPMBasicMap {
         verticalRoads.add(northBoundRoad);
 
         // Create the horizontal Roads
-        // EAST
+        // EAST Entry
         x1 = 0;
+        y1 = height/2;
+        x2 = width/2;
+        y2 = y1;
+        Road eastBoundEntryRoad = createRoadWithOneLane("Eastbound Entry Avenue", x1, y1, x2, y2);
+        entranceLane = eastBoundEntryRoad.getOnlyLane();
+        exitLanes.add(eastBoundEntryRoad.getOnlyLane());
+
+        horizontalRoads.add(eastBoundEntryRoad);
+
+        // EAST Exit
+        x1 = width/2;
         y1 = height/2;
         x2 = width;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
-        entranceLane = eastBoundRoad.getOnlyLane();
-        exitLanes.add(eastBoundRoad.getOnlyLane());
+        Road eastBoundExitRoad = createRoadWithOneLane("Eastbound Exit Avenue", x1, y1, x2, y2);
+        entranceLane = eastBoundExitRoad.getOnlyLane();
+        exitLanes.add(eastBoundExitRoad.getOnlyLane());
 
-        horizontalRoads.add(eastBoundRoad);
+        horizontalRoads.add(eastBoundExitRoad);
 
         roads = new ArrayList<Road>(horizontalRoads);
         roads.addAll(verticalRoads);
@@ -81,7 +95,8 @@ public class CPMMapWithTJunction extends CPMBasicMap {
 
         // Now we have created the roads, we need to create the Junction
         List<Road> roadsForJunction = new ArrayList<Road>(3);
-        roadsForJunction.add(eastBoundRoad);
+        roadsForJunction.add(eastBoundEntryRoad);
+        roadsForJunction.add(eastBoundExitRoad);
         roadsForJunction.add(northBoundRoad);
         Junction junction = new Junction(roadsForJunction);
         junctions.add(junction);

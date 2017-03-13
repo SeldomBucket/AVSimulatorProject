@@ -13,7 +13,7 @@ import java.util.List;
 
 /**
  * Create a right-angled junction which connects
- * 2 roads, each with one lane.
+ * 2 or 3 roads, each with one lane.
  */
 // TODO Rename to make it more specific, TJunctionRightAngleOneLane
 public class Junction extends BasicConnection{
@@ -47,9 +47,9 @@ public class Junction extends BasicConnection{
 
     @Override
     protected void validate(List<Road> roads) {
-        // There can only be 2 Roads involved in this Junction
-        if (roads.size() != 2){
-            throw new IllegalArgumentException("There can only be 2 Roads " +
+        // There can only be 2 or 3 Roads involved in this Junction
+        if (roads.size() != 2 && roads.size() != 3){
+            throw new IllegalArgumentException("There can only be 2 or 3 Roads " +
                     "involved in a Junction. Number of " +
                     "roads given: " + roads.size());
         }
@@ -77,12 +77,8 @@ public class Junction extends BasicConnection{
     protected void establishEntryAndExitPoints(Area areaOfJunction) {
         List<Line2D> perimeterSegments =
                 GeomMath.polygonalShapePerimeterSegments(areaOfJunction);
-        // The number of lanes that either start or end in the junction.
-        int lanesStartOrEnd = 0;
 
         for (Road road : roads) {
-            // We have already checked that there is only one lane in each road
-            // So get the only lane in this road
             Lane lane = road.getOnlyLane();
             boolean startsInJunction = doesLaneStartInPerimeter(lane, perimeterSegments);
             boolean endsInJunction = doesLaneEndInPerimeter(lane, perimeterSegments);
@@ -91,15 +87,10 @@ public class Junction extends BasicConnection{
             if (startsInJunction && endsInJunction) {
                 throw new RuntimeException("A lane in a junction cannot start and end in the junction.");
             }
-            // We need to keep track of how many lanes start or end in this junction
-            // Only one lane can either start or end in the junction.
-            if (startsInJunction ^ endsInJunction){
-                ++lanesStartOrEnd;
-            }
 
             Point2D entryPoint;
             Point2D exitPoint;
-            if (startsInJunction && !endsInJunction) {
+            if (startsInJunction) {
                 // If this lane starts in the junction, then it must have an exit point
                 for (Line2D segment : perimeterSegments) {
                     // If the lane intersects (but not with it's start point)
@@ -110,7 +101,7 @@ public class Junction extends BasicConnection{
                         break;
                     }
                 }
-            } else if (endsInJunction && !startsInJunction) {
+            } else if (endsInJunction) {
                 // If this lane ends in the junction, then it must have an entry point
                 for (Line2D segment : perimeterSegments) {
                     // If the lane intersects (but not with it's end point)
@@ -121,7 +112,7 @@ public class Junction extends BasicConnection{
                         break;
                     }
                 }
-            } else { //if (!endsInJunction && !startsInJunction)
+            } else { // if (!endsInJunction && !startsInJunction)
                 // If this lane runs straight through the junction, then it must have an entry and an exit point
                 List<Point2D> intersectionPoints = new ArrayList<Point2D>();
                 for (Line2D segment : perimeterSegments) {
@@ -149,11 +140,6 @@ public class Junction extends BasicConnection{
             }
         }
 
-        // Ensure only one lane starts or ends in the junction
-        if (lanesStartOrEnd != 1){
-            throw new RuntimeException("One lane in a junction must start or end in the junction. " +
-                                        lanesStartOrEnd + " start/end in this junction.");
-        }
         // Fill in any of the holes
         this.areaOfConnection = GeomMath.filledArea(areaOfJunction);
     }
