@@ -80,14 +80,21 @@ public class CPMMapCarPark extends CPMBasicMap {
         Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
         horizontalRoads.add(westBoundRoad);
 
+        // EAST - ENTERS CAR PARK
+        x1 = 0;
+        y1 = mapHeight - BORDER - laneWidth - halfLaneWidth;
+        x2 = BORDER + laneWidth;
+        y2 = y1;
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        horizontalRoads.add(eastBoundRoad);
+
         // Record all roads
         roads = new ArrayList<Road>(horizontalRoads);
         roads.addAll(verticalRoads);
         roads = Collections.unmodifiableList(roads);
 
         // Establish lanes that enter and exit the map
-        // TODO CPM This is awful, come back and change
-        entranceLane = parkingArea.getRoads().get(0).getOnlyLane();
+        entranceLane = eastBoundRoad.getOnlyLane();
         exitLanes.add(westBoundRoad.getOnlyLane());
 
         // Connect roads surrounding the parking area
@@ -96,23 +103,24 @@ public class CPMMapCarPark extends CPMBasicMap {
 
         // Connect roads in the parking area with the roads surrounding it
         List<Road> roadsInParkingArea = parkingArea.getRoads();
-        Road entryRoad = parkingArea.getEntryRoad();
+        // Road entryRoad = eastBoundRoad;
+        Road firstParkingRoad = parkingArea.getEntryRoad();
         if (roadsInParkingArea.size() == 1) {
-            makeJunction(entryRoad, southBoundRoad);
-            makeCorner(entryRoad, northBoundRoad);
+            makeJunction(eastBoundRoad, southBoundRoad, firstParkingRoad);
+            makeCorner(firstParkingRoad, northBoundRoad);
         } else {
-            // Deal with entry road
-            makeSimpleIntersection(entryRoad, southBoundRoad);
-            makeJunction(entryRoad, northBoundRoad);
+            // Deal with entry road and first parking road
+            makeSimpleIntersection(eastBoundRoad, southBoundRoad, firstParkingRoad);
+            makeJunction(firstParkingRoad, northBoundRoad);
 
             // Deal with exit road
-            Road lastRoad = parkingArea.getLastRoad();
-            makeCorner(lastRoad, southBoundRoad);
-            makeCorner(lastRoad, northBoundRoad);
+            Road lastParkingRoad = parkingArea.getLastRoad();
+            makeCorner(lastParkingRoad, southBoundRoad);
+            makeCorner(lastParkingRoad, northBoundRoad);
 
             // Deal with the roads inbetween
-            roadsInParkingArea.remove(parkingArea.getEntryRoad());
-            roadsInParkingArea.remove(parkingArea.getLastRoad());
+            roadsInParkingArea.remove(firstParkingRoad);
+            roadsInParkingArea.remove(lastParkingRoad);
             for (Road road : roadsInParkingArea){
                 makeJunction(road, southBoundRoad);
                 makeJunction(road, northBoundRoad);
@@ -149,5 +157,9 @@ public class CPMMapCarPark extends CPMBasicMap {
 
         // Initialise the spawn point
         initializeSpawnPoints(initTime);
+    }
+
+    public ParkingArea getParkingArea(){
+        return parkingArea;
     }
 }

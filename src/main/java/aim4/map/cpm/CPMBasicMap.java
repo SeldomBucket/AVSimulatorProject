@@ -176,11 +176,31 @@ public abstract class CPMBasicMap implements CPMMap{
         junctions.add(junction);
     }
 
+    protected void makeJunction(Road road1, Road road2, Road road3){
+        // Put the roads into a list
+        List<Road> roadsForJunction = new ArrayList<Road>(3);
+        roadsForJunction.add(road1);
+        roadsForJunction.add(road2);
+        roadsForJunction.add(road3);
+        Junction junction = new Junction(roadsForJunction);
+        junctions.add(junction);
+    }
+
     protected void makeSimpleIntersection(Road road1, Road road2){
         // Put the roads into a list
         List<Road> roadsForIntersection = new ArrayList<Road>(2);
         roadsForIntersection.add(road1);
         roadsForIntersection.add(road2);
+        SimpleIntersection intersection = new SimpleIntersection(roadsForIntersection);
+        intersections.add(intersection);
+    }
+
+    protected void makeSimpleIntersection(Road road1, Road road2, Road road3){
+        // Put the roads into a list
+        List<Road> roadsForIntersection = new ArrayList<Road>(3);
+        roadsForIntersection.add(road1);
+        roadsForIntersection.add(road2);
+        roadsForIntersection.add(road3);
         SimpleIntersection intersection = new SimpleIntersection(roadsForIntersection);
         intersections.add(intersection);
     }

@@ -134,7 +134,8 @@ public final class GeomMath {
   }
 
   /**
-   * I need to calculate the angle in degrees between two points, with a fixed point that is connected with the given two points by a line.
+   * Calculate the angle in degrees between two points, with a fixed point
+   * that is connected with the given two points by a line.
    * @param point1
    * @param point2
    * @param fixed

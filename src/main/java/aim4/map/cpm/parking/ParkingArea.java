@@ -16,8 +16,7 @@ import java.util.List;
  * Parking lanes are added vertically, from top to bottom.
  * The lanes are created from left to right, heading EAST (0 rads).
  * Essentially, the start point given must be the top left
- * corner of the parking area to be created. For my design,
- * this should be t
+ * corner of the parking area to be created.
  */
 public class ParkingArea {
 
@@ -48,7 +47,7 @@ public class ParkingArea {
     private Registry<ParkingLane> parkingLaneRegistry = new ArrayListRegistry<ParkingLane>();
     /**The set of roads. */
     private List<Road> roads;
-    /**The road which has been extended to be the car park entrance. */
+    /**The first road in the parking area. */
     private Road entryRoad;
     /**The last road in the parking area. */
     private Road lastRoad;
@@ -109,39 +108,27 @@ public class ParkingArea {
         double lanePointY = startPoint.getY() - (parkingLaneWidth/2);
 
         for (int i = 0 ; i < numberOfParkingLanes ; i++){
+
             // Create a road for the parking lane to belong to
             Road road = new Road("Parking road " + i, map);
-            // TODO CPM Is this the best place to do this?
-            ParkingLane parkingLane;
-            if (i == 0) {
-                // We need this lane to start on the edge of the map
-                // This will be the entrance lane
-                parkingLane = new ParkingLane(0,
-                        lanePointY,
-                        laneEndPointX,
-                        lanePointY,
-                        parkingLaneWidth,
-                        accessLength,
-                        overlappingRoadWidth,
-                        map.getMaximumSpeedLimit());
-                entryRoad = road;
-            } else {
-                // Create a new parking lane
-                parkingLane = new ParkingLane(laneStartPointX,
-                        lanePointY,
-                        laneEndPointX,
-                        lanePointY,
-                        parkingLaneWidth,
-                        accessLength,
-                        overlappingRoadWidth,
-                        map.getMaximumSpeedLimit());
-            }
+            ParkingLane parkingLane = new ParkingLane(laneStartPointX,
+                    lanePointY,
+                    laneEndPointX,
+                    lanePointY,
+                    parkingLaneWidth,
+                    accessLength,
+                    overlappingRoadWidth,
+                    map.getMaximumSpeedLimit());
+
             // Register the lane and add it to the road
             int laneId = parkingLaneRegistry.register(parkingLane);
             parkingLane.setId(laneId);
             road.addTheRightMostLane(parkingLane);
             parkingLanes.add(parkingLane);
             roads.add(road);
+            if (i == 0) {
+                entryRoad = road;
+            }
             if (i+1 == numberOfParkingLanes){
                 // Then this is the last road
                 lastRoad = road;
@@ -153,7 +140,6 @@ public class ParkingArea {
         assert(parkingLanes.size() == numberOfParkingLanes);
         assert(roads.size() == numberOfParkingLanes);
     }
-
 
     public CPMMap getMap() { return map; }
 

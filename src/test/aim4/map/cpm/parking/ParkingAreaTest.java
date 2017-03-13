@@ -4,8 +4,6 @@ import aim4.map.Road;
 import aim4.map.cpm.CPMMapCarPark;
 import org.junit.Test;
 
-import java.util.List;
-
 import static org.junit.Assert.*;
 
 public class ParkingAreaTest {
