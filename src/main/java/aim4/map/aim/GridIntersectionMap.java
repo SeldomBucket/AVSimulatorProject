@@ -44,7 +44,6 @@ import aim4.config.Debug;
 import aim4.im.IntersectionManager;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -95,11 +94,11 @@ public class GridIntersectionMap implements BasicIntersectionMap {
   /** The data collection lines */
   private List<DataCollectionLine> dataCollectionLines;
   /** The spawn points */
-  private List<SpawnPoint> spawnPoints;
+  private List<AIMSpawnPoint> spawnPoints;
   /** The horizontal spawn points */
-  private List<SpawnPoint> horizontalSpawnPoints;
+  private List<AIMSpawnPoint> horizontalSpawnPoints;
   /** The vertical spawn points */
-  private List<SpawnPoint> verticalSpawnPoints;
+  private List<AIMSpawnPoint> verticalSpawnPoints;
   /** The lane registry */
   private Registry<Lane> laneRegistry =
     new ArrayListRegistry<Lane>();
@@ -342,9 +341,9 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    * @param initTime  the initial time
    */
   private void initializeSpawnPoints(double initTime) {
-    spawnPoints = new ArrayList<SpawnPoint>(columns+rows);
-    horizontalSpawnPoints = new ArrayList<SpawnPoint>(rows);
-    verticalSpawnPoints = new ArrayList<SpawnPoint>(columns);
+    spawnPoints = new ArrayList<AIMSpawnPoint>(columns+rows);
+    horizontalSpawnPoints = new ArrayList<AIMSpawnPoint>(rows);
+    verticalSpawnPoints = new ArrayList<AIMSpawnPoint>(columns);
 
     for(Road road : horizontalRoads) {
       for(Lane lane : road.getLanes()) {
@@ -371,7 +370,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    * @param lane      the lane
    * @return the spawn point
    */
-  private SpawnPoint makeSpawnPoint(double initTime, Lane lane) {
+  private AIMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
     double startDistance = 0.0;
     double normalizedStartDistance = lane.normalizedDistance(startDistance);
     Point2D pos = lane.getPointAtNormalizedDistance(normalizedStartDistance);
@@ -382,7 +381,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     Rectangle2D noVehicleZone =
       lane.getShape(normalizedStartDistance, d).getBounds2D();
 
-    return new SpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
+    return new AIMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
                           lane, noVehicleZone);
   }
 
@@ -452,7 +451,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    * {@inheritDoc}
    */
   @Override
-  public List<SpawnPoint> getSpawnPoints() {
+  public List<AIMSpawnPoint> getSpawnPoints() {
     return spawnPoints;
   }
 
@@ -461,7 +460,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    *
    * @return the list of horizontal spawn points
    */
-  public List<SpawnPoint> getHorizontalSpawnPoints() {
+  public List<AIMSpawnPoint> getHorizontalSpawnPoints() {
     return horizontalSpawnPoints;
   }
 
@@ -471,7 +470,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
    *
    * @return the list of vertical spawn points
    */
-  public List<SpawnPoint> getVerticalSpawnPoints() {
+  public List<AIMSpawnPoint> getVerticalSpawnPoints() {
     return verticalSpawnPoints;
   }
 

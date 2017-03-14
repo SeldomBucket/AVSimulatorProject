@@ -30,15 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map.aim;
 
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 import aim4.im.IntersectionManager;
 import aim4.map.BasicMap;
-import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
-import aim4.map.lane.Lane;
 import aim4.util.Registry;
 
 /**
@@ -76,4 +73,13 @@ public interface BasicIntersectionMap extends BasicMap {
    * @param im      the intersection manager
    */
   void setManager(int column, int row, IntersectionManager im);
+
+  /**
+   * Get the list of spawn points.
+   *
+   * @return the lkist of spawn points
+   */
+  List<AIMSpawnPoint> getSpawnPoints();
+
+
 }

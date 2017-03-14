@@ -33,9 +33,10 @@ package aim4.map.aim.destination;
 import java.util.List;
 
 import aim4.config.Debug;
+import aim4.map.SpawnPoint;
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.TrafficVolume;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
@@ -86,7 +87,7 @@ public class RatioDestinationSelector implements DestinationSelector {
     leftTurnProb = new HashMap<Integer, Double>();
     rightTurnProb = new HashMap<Integer, Double>();
 
-    for(SpawnPoint sp: map.getSpawnPoints()) {
+    for(AIMSpawnPoint sp: map.getSpawnPoints()) {
       int laneId = sp.getLane().getId();
       leftTurnProb.put(laneId, trafficVolume.getLeftTurnVolume(laneId) /
                                trafficVolume.getThroughVolume(laneId));

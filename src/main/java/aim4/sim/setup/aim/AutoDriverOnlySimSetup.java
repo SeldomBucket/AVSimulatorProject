@@ -37,7 +37,7 @@ import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.GridMapUtil;
-import aim4.sim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 
 /**

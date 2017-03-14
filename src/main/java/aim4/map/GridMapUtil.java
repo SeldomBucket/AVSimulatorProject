@@ -51,8 +51,8 @@ import aim4.im.v2i.RequestHandler.RequestHandler;
 import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.reservation.ReservationGridManager;
-import aim4.map.SpawnPoint.SpawnSpec;
-import aim4.map.SpawnPoint.SpawnSpecGenerator;
+import aim4.map.aim.AIMSpawnPoint;
+import aim4.map.aim.AIMSpawnPoint.*;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.TrafficVolume;
 import aim4.map.aim.destination.DestinationSelector;
@@ -76,18 +76,18 @@ public class GridMapUtil {
   /**
    * The null spawn spec generator that generates nothing.
    */
-  public static SpawnSpecGenerator nullSpawnSpecGenerator =
-    new SpawnSpecGenerator() {
+  public static AIMSpawnSpecGenerator nullSpawnSpecGenerator =
+    new AIMSpawnSpecGenerator() {
     @Override
-      public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-        return new ArrayList<SpawnSpec>();
+      public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+        return new ArrayList<AIMSpawnSpec>();
       }
     };
 
   /**
    * The uniform distributed spawn spec generator.
    */
-  public static class UniformSpawnSpecGenerator implements SpawnSpecGenerator {
+  public static class UniformSpawnSpecGenerator implements AIMSpawnSpecGenerator {
     /** The proportion of each spec */
     private List<Double> proportion;
     /** The destination selector */
@@ -120,8 +120,8 @@ public class GridMapUtil {
      * {@inheritDoc}
      */
     @Override
-    public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-      List<SpawnSpec> result = new LinkedList<SpawnSpec>();
+    public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+      List<AIMSpawnSpec> result = new LinkedList<AIMSpawnSpec>();
 
       double initTime = spawnPoint.getCurrentTime();
       for(double time = initTime; time < initTime + timeStep;
@@ -134,7 +134,7 @@ public class GridMapUtil {
 
           // maybe spawnPoint.getCurrentTime() is incorrect
 
-          result.add(new SpawnSpec(spawnPoint.getCurrentTime(),
+          result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(),
                                    vehicleSpec,
                                    destinationRoad));
         }
@@ -147,7 +147,7 @@ public class GridMapUtil {
   /**
    * The spawn spec generator that generates only one spec.
    */
-  public static class OneSpawnSpecGenerator implements SpawnSpecGenerator {
+  public static class OneSpawnSpecGenerator implements AIMSpawnSpecGenerator {
     /** The vehicle specification */
     private VehicleSpec vehicleSpec;
     /** The destination selector */
@@ -177,8 +177,8 @@ public class GridMapUtil {
      * {@inheritDoc}
      */
     @Override
-    public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-      List<SpawnSpec> result = new LinkedList<SpawnSpec>();
+    public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+      List<AIMSpawnSpec> result = new LinkedList<AIMSpawnSpec>();
 
       double initTime = spawnPoint.getCurrentTime();
       for(double time = initTime; time < initTime + timeStep;
@@ -187,7 +187,7 @@ public class GridMapUtil {
           Road destinationRoad =
             destinationSelector.selectDestination(spawnPoint.getLane());
 
-          result.add(new SpawnSpec(spawnPoint.getCurrentTime(),
+          result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(),
                                    vehicleSpec,
                                    destinationRoad));
         }
@@ -201,7 +201,7 @@ public class GridMapUtil {
    * The spec generator that generates just one vehicle in the entire
    * simulation.
    */
-  public static class OnlyOneSpawnSpecGenerator implements SpawnSpecGenerator {
+  public static class OnlyOneSpawnSpecGenerator implements AIMSpawnSpecGenerator {
     /** The vehicle specification */
     private VehicleSpec vehicleSpec;
     /** The destination road */
@@ -226,11 +226,11 @@ public class GridMapUtil {
      * {@inheritDoc}
      */
     @Override
-    public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-      List<SpawnSpec> result = new ArrayList<SpawnSpec>(1);
+    public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+      List<AIMSpawnSpec> result = new ArrayList<AIMSpawnSpec>(1);
       if (!isDone) {
         isDone = true;
-        result.add(new SpawnSpec(spawnPoint.getCurrentTime(),
+        result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(),
                                  vehicleSpec,
                                  destinationRoad));
       }
@@ -241,7 +241,7 @@ public class GridMapUtil {
   /**
    * The spawn spec generator that enumerates spawn spec.
    */
-  public static class EnumerateSpawnSpecGenerator implements SpawnSpecGenerator{
+  public static class EnumerateSpawnSpecGenerator implements AIMSpawnSpecGenerator{
     /** The list of destination roads */
     private List<Road> destinationRoads;
     /** The vehicle spec ID */
@@ -261,7 +261,7 @@ public class GridMapUtil {
      * @param initSpawnTime     the initial spawn time
      * @param spawnPeriod       the spawn period
      */
-    public EnumerateSpawnSpecGenerator(SpawnPoint spawnPoint,
+    public EnumerateSpawnSpecGenerator(AIMSpawnPoint spawnPoint,
                                        List<Road> destinationRoads,
                                        double initSpawnTime,
                                        double spawnPeriod) {
@@ -281,15 +281,15 @@ public class GridMapUtil {
      * {@inheritDoc}
      */
     @Override
-    public List<SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-      List<SpawnSpec> result = new ArrayList<SpawnSpec>(1);
+    public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+      List<AIMSpawnSpec> result = new ArrayList<AIMSpawnSpec>(1);
       if (spawnPoint.getCurrentTime() >= nextSpawnTime) {
         if (vehicleSpecId < VehicleSpecDatabase.getNumOfSpec()) {
           VehicleSpec vehicleSpec =
             VehicleSpecDatabase.getVehicleSpecById(vehicleSpecId);
           Road destinationRoad =
             destinationRoads.get(destinationRoadId);
-          result.add(new SpawnSpec(spawnPoint.getCurrentTime(),
+          result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(),
                                    vehicleSpec,
                                    destinationRoad));
           nextSpawnTime += spawnPeriod;
@@ -521,7 +521,7 @@ public class GridMapUtil {
    */
   public static void setUniformRandomSpawnPoints(GridIntersectionMap map,
                                                  double trafficLevel) {
-    for(SpawnPoint sp : map.getSpawnPoints()) {
+    for(AIMSpawnPoint sp : map.getSpawnPoints()) {
       sp.setVehicleSpecChooser(
         new UniformSpawnSpecGenerator(trafficLevel,
                                       new RandomDestinationSelector(map)));
@@ -536,7 +536,7 @@ public class GridMapUtil {
    */
   public static void setUniformTurnBasedSpawnPoints(GridIntersectionMap map,
                                                     double trafficLevel) {
-    for(SpawnPoint sp : map.getSpawnPoints()) {
+    for(AIMSpawnPoint sp : map.getSpawnPoints()) {
       sp.setVehicleSpecChooser(
         new UniformSpawnSpecGenerator(trafficLevel,
                                       new TurnBasedDestinationSelector(map)));
@@ -558,7 +558,7 @@ public class GridMapUtil {
     DestinationSelector selector = new RatioDestinationSelector(map,
                                                                 trafficVolume);
 
-    for (SpawnPoint sp : map.getSpawnPoints()) {
+    for (AIMSpawnPoint sp : map.getSpawnPoints()) {
       int laneId = sp.getLane().getId();
       double trafficLevel =
           trafficVolume.getLeftTurnVolume(laneId) +
@@ -580,12 +580,12 @@ public class GridMapUtil {
   public static void setDirectionalSpawnPoints(GridIntersectionMap layout,
                                                double hTrafficLevel,
                                                double vTrafficLevel) {
-    for(SpawnPoint sp : layout.getHorizontalSpawnPoints()) {
+    for(AIMSpawnPoint sp : layout.getHorizontalSpawnPoints()) {
       sp.setVehicleSpecChooser(
         new UniformSpawnSpecGenerator(hTrafficLevel,
                                       new RandomDestinationSelector(layout)));
     }
-    for(SpawnPoint sp : layout.getVerticalSpawnPoints()) {
+    for(AIMSpawnPoint sp : layout.getVerticalSpawnPoints()) {
       sp.setVehicleSpecChooser(
         new UniformSpawnSpecGenerator(vTrafficLevel,
                                       new RandomDestinationSelector(layout)));
@@ -612,7 +612,7 @@ public class GridMapUtil {
     double numOfTraversals =
       VehicleSpecDatabase.getNumOfSpec() * (totalNumOfLanes - minNumOfLanes);
 
-    for(SpawnPoint sp : layout.getSpawnPoints()) {
+    for(AIMSpawnPoint sp : layout.getSpawnPoints()) {
       sp.setVehicleSpecChooser(
         new EnumerateSpawnSpecGenerator(
           sp,

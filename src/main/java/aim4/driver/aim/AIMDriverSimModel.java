@@ -6,7 +6,7 @@ package aim4.driver.aim;
 
 import aim4.driver.DriverSimModel;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.aim.AIMSpawnPoint;
 
 /**
  * An AIM driver from simulators' viewpoint.
@@ -23,14 +23,14 @@ public interface AIMDriverSimModel extends DriverSimModel {
      *
      * @return the Road where this driver is coming from
      */
-    SpawnPoint getSpawnPoint();
+    AIMSpawnPoint getSpawnPoint();
 
     /**
      * Set where this driver agent is coming from.
      *
      * @param spawnPoint the spawn point that generated the driver
      */
-    void setSpawnPoint(SpawnPoint spawnPoint);
+    void setSpawnPoint(AIMSpawnPoint spawnPoint);
 
     /**
      * Get where this driver is going.

@@ -3,7 +3,7 @@ package aim4.driver.aim;
 import aim4.driver.BasicDriver;
 import aim4.im.IntersectionManager;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.aim.AIMSpawnPoint;
 
 /**
  * Created by Callum on 15/11/2016.
@@ -16,7 +16,7 @@ public abstract class AIMDriver extends BasicDriver implements AIMDriverSimModel
     // origin and destination
 
     /** Where this DriverAgent is coming from. */
-    private SpawnPoint spawnPoint;
+    private AIMSpawnPoint spawnPoint;
 
     /** Where this DriverAgent is headed. */
     private Road destination;
@@ -33,7 +33,7 @@ public abstract class AIMDriver extends BasicDriver implements AIMDriverSimModel
      * @return the Road where this DriverAgent is coming from
      */
     @Override
-    public SpawnPoint getSpawnPoint() {
+    public AIMSpawnPoint getSpawnPoint() {
         if(spawnPoint == null) {
             throw new RuntimeException("Driver is without origin!");
         }
@@ -44,7 +44,7 @@ public abstract class AIMDriver extends BasicDriver implements AIMDriverSimModel
      * {@inheritDoc}
      */
     @Override
-    public void setSpawnPoint(SpawnPoint spawnPoint) {
+    public void setSpawnPoint(AIMSpawnPoint spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 

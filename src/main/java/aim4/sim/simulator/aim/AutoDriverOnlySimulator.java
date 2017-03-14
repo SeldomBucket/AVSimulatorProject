@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.sim;
+package aim4.sim.simulator.aim;
 
 import java.awt.Color;
 import java.awt.geom.Line2D;
@@ -56,12 +56,11 @@ import aim4.im.v2i.V2IManager;
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
-import aim4.map.SpawnPoint.SpawnSpec;
+import aim4.map.aim.AIMSpawnPoint;
+import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
 import aim4.map.lane.Lane;
 import aim4.msg.i2v.I2VMessage;
 import aim4.msg.v2i.V2IMessage;
-import aim4.sim.setup.aim.AIMSimulator;
 import aim4.vehicle.*;
 import aim4.vehicle.aim.*;
 
@@ -307,11 +306,11 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
    * @param timeStep  the time step
    */
   private void spawnVehicles(double timeStep) {
-    for(SpawnPoint spawnPoint : basicIntersectionMap.getSpawnPoints()) {
-      List<SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+    for(AIMSpawnPoint spawnPoint : basicIntersectionMap.getSpawnPoints()) {
+      List<AIMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
       if (!spawnSpecs.isEmpty()) {
         if (canSpawnVehicle(spawnPoint)) {
-          for(SpawnSpec spawnSpec : spawnSpecs) {
+          for(AIMSpawnSpec spawnSpec : spawnSpecs) {
             AIMVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
             vinToVehicles.put(vehicle.getVIN(), vehicle);
@@ -330,7 +329,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
    * @param spawnPoint  the spawn point
    * @return Whether the spawn point can spawn any vehicle
    */
-  private boolean canSpawnVehicle(SpawnPoint spawnPoint) {
+  private boolean canSpawnVehicle(AIMSpawnPoint spawnPoint) {
     // TODO: can be made much faster.
     Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
     for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
@@ -348,8 +347,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
    * @param spawnSpec   the spawn specification
    * @return the vehicle
    */
-  private AIMVehicleSimModel makeVehicle(SpawnPoint spawnPoint,
-                                         SpawnSpec spawnSpec) {
+  private AIMVehicleSimModel makeVehicle(AIMSpawnPoint spawnPoint,
+                                         AIMSpawnSpec spawnSpec) {
     VehicleSpec spec = spawnSpec.getVehicleSpec();
     Lane lane = spawnPoint.getLane();
     // Now just take the minimum of the max velocity of the vehicle, and

@@ -1,5 +1,6 @@
 package aim4.map;
 
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.util.Registry;
 
@@ -67,7 +68,7 @@ public interface BasicMap {
      *
      * @return the lkist of spawn points
      */
-    List<SpawnPoint> getSpawnPoints();
+    List<? extends SpawnPoint> getSpawnPoints();
 
     /**
      * Print the data collected in data collection lines to the given file
