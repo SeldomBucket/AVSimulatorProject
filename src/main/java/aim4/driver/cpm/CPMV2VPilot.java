@@ -105,6 +105,22 @@ public class CPMV2VPilot extends BasicPilot{
     }
 
     /**
+     * If the end of the parking section is close, we need to slow to a stop.
+     * Here, we treat the parking end point like a vehicle so use following distance.
+     */
+    public void dontPassParkingEndPoint(){
+        double stoppingDistance =
+                VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
+                    vehicle.getSpec().getMaxDeceleration());
+
+        double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
+
+        if (vehicle.distanceToParkingEndPoint() < followingDistance) {
+            vehicle.slowToStop();
+        }
+    }
+
+    /**
      * Set the steering action when the vehicle is traversing a corner.
      */
     public void takeSteeringActionForTraversing(BasicConnection connection) {

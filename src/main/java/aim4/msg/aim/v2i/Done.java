@@ -28,24 +28,25 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.v2i;
+package aim4.msg.aim.v2i;
 
 import aim4.config.Constants;
 
 /**
- * Message sent from a Vehicle to an Intersection Manager to
- * cancel a reservation.
+ * Message sent from a Vehicle to an Intersection Manager to inform it that it
+ * has completed its reservation.
  */
-public class Cancel extends V2IMessage {
+public class Done extends V2IMessage {
 
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////
 
   /**
-   * The ID number of the reservation to cancel.
+   * The ID number of the reservation.
    */
   private int reservationID;
+
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -57,14 +58,13 @@ public class Cancel extends V2IMessage {
    * @param sourceID              the ID number of the Vehicle sending this
    *                              message
    * @param destinationID         the ID number of the IntersectionManager to
-   *                              which this message is being sent
-   * @param reservationID         the ID number of the reservation to cancel
+   * @param reservationID         the ID number of the reservation
    */
-  public Cancel(int sourceID, int destinationID, int reservationID) {
+  public Done(int sourceID, int destinationID, int reservationID) {
     // Set source and destination
     super(sourceID, destinationID);
     this.reservationID = reservationID;
-    messageType = Type.CANCEL;
+    messageType = Type.DONE;
     size += Constants.INTEGER_SIZE;
   }
 
@@ -73,7 +73,7 @@ public class Cancel extends V2IMessage {
   /////////////////////////////////
 
   /**
-   * Get the ID number of the reservation this message is intended to cancel.
+   * Get the ID number of the reservation.
    */
   public int getReservationID() {
     return reservationID;
@@ -88,9 +88,8 @@ public class Cancel extends V2IMessage {
    */
   @Override
   public String toString() {
-    return "Cancel(vin" + getVin() + " -> im" + getImId() +
+    return "Done(vin" + getVin() + " -> im" + getImId() +
            ", id" + reservationID + ")";
   }
-
 
 }

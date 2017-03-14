@@ -4,11 +4,13 @@ import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.BasicMap;
+import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
+import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
@@ -177,6 +179,13 @@ public class CPMBasicV2VDriver extends BasicDriver
             }
         }
         return null;
+    }
+
+    public boolean inParkingLane() {
+        if (currentLane instanceof ParkingLane) {
+            return true;
+        }
+        return false;
     }
 
     @Override

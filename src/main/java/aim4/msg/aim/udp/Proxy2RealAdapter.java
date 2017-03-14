@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.udp;
+package aim4.msg.aim.udp;
 
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
@@ -36,9 +36,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.SocketAddress;
 
-import aim4.msg.i2v.Confirm;
-import aim4.msg.i2v.Reject;
-import aim4.msg.udp.UdpHeader.UdpMessageType;
+import aim4.msg.aim.i2v.Confirm;
+import aim4.msg.aim.i2v.Reject;
+import aim4.msg.aim.udp.UdpHeader.UdpMessageType;
 
 /**
  * The proxy vehicle to real vehicle message adapter.

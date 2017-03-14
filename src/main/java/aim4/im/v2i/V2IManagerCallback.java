@@ -36,7 +36,7 @@ import aim4.im.v2i.reservation.AczManager;
 import aim4.im.v2i.reservation.AdmissionControlZone;
 import aim4.im.v2i.reservation.ReservationGrid;
 import aim4.im.v2i.reservation.ReservationGridManager;
-import aim4.msg.i2v.I2VMessage;
+import aim4.msg.aim.i2v.I2VMessage;
 
 /**
  * An interface of the methods of V2IManager that are available for

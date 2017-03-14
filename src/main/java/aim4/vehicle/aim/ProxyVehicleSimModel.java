@@ -33,7 +33,7 @@ package aim4.vehicle.aim;
 import java.net.SocketAddress;
 
 import aim4.driver.aim.ProxyDriver;
-import aim4.msg.udp.Real2ProxyMsg;
+import aim4.msg.aim.udp.Real2ProxyMsg;
 
 /**
  * The interface of a proxy vehicle from the viewpoint of a simulator.

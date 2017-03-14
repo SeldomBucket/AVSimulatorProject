@@ -28,30 +28,55 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.udp;
+package aim4.msg.aim.v2i;
 
-import java.io.DataInputStream;
-import java.io.IOException;
+import aim4.config.Constants;
 
 /**
- * A real vehicle to proxy vehicle message for done message.
+ * Message sent from a Vehicle to an Intersection Manager to
+ * cancel a reservation.
  */
-public class Real2ProxyDone extends Real2ProxyMsg {
+public class Cancel extends V2IMessage {
 
   /////////////////////////////////
-  // CONSTRUCTORS
+  // PRIVATE FIELDS
   /////////////////////////////////
 
   /**
-   * Create a real vehicle to proxy vehicle message for done message.
-   *
-   * @param dis           the I/O stream
-   * @param receivedTime  the time stamp
-   * @throws IOException
+   * The ID number of the reservation to cancel.
    */
-  public Real2ProxyDone(DataInputStream dis, double receivedTime)
-      throws IOException {
-    super(Type.DONE, receivedTime);
+  private int reservationID;
+
+  /////////////////////////////////
+  // CLASS CONSTRUCTORS
+  /////////////////////////////////
+
+  /**
+   * Basic class constructor with all required fields.
+   *
+   * @param sourceID              the ID number of the Vehicle sending this
+   *                              message
+   * @param destinationID         the ID number of the IntersectionManager to
+   *                              which this message is being sent
+   * @param reservationID         the ID number of the reservation to cancel
+   */
+  public Cancel(int sourceID, int destinationID, int reservationID) {
+    // Set source and destination
+    super(sourceID, destinationID);
+    this.reservationID = reservationID;
+    messageType = Type.CANCEL;
+    size += Constants.INTEGER_SIZE;
+  }
+
+  /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+  /**
+   * Get the ID number of the reservation this message is intended to cancel.
+   */
+  public int getReservationID() {
+    return reservationID;
   }
 
   /////////////////////////////////
@@ -63,6 +88,9 @@ public class Real2ProxyDone extends Real2ProxyMsg {
    */
   @Override
   public String toString() {
-    return "Real2ProxyDone()";
+    return "Cancel(vin" + getVin() + " -> im" + getImId() +
+           ", id" + reservationID + ")";
   }
+
+
 }

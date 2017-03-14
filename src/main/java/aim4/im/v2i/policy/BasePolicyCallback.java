@@ -34,8 +34,8 @@ import java.util.List;
 
 import aim4.im.TrackModel;
 import aim4.im.v2i.policy.BasePolicy.ReserveParam;
-import aim4.msg.i2v.Reject;
-import aim4.msg.v2i.Request;
+import aim4.msg.aim.i2v.Reject;
+import aim4.msg.aim.v2i.Request;
 
 /**
  * The base policy's callback interface.
