@@ -206,8 +206,12 @@ public class GridMapUtil {
     private VehicleSpec vehicleSpec;
     /** The destination road */
     private Road destinationRoad;
+    /**The destination selector to generate a destination.*/
+    private DestinationSelector destinationSelector;
     /** Whether the spec has been generated */
     private boolean isDone;
+    /**The map that spawn point will belong to. */
+    private BasicMap map;
 
     /**
      * Create a spec generator that generates just one vehicle in the entire
@@ -220,6 +224,16 @@ public class GridMapUtil {
       vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(vehicleSpecId);
       this.destinationRoad = destinationRoad;
       isDone = false;
+    }
+
+    /**
+     * Create a spec generator that generates just one vehicle in the entire
+     * simulation.
+     */
+    public OnlyOneSpawnSpecGenerator(BasicIntersectionMap map) {
+      vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+      isDone = false;
+      destinationSelector = new RandomDestinationSelector(map);
     }
 
     /**
@@ -622,4 +636,11 @@ public class GridMapUtil {
     }
   }
 
+  public static void setUpSimpleSpawnPoints(GridIntersectionMap map){
+    // The spawn point will only spawn one vehicle in the whole simulation
+    for(SpawnPoint sp : map.getSpawnPoints()) {
+      sp.setVehicleSpecChooser(
+              new OnlyOneSpawnSpecGenerator(map));
+    }
+  }
 }

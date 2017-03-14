@@ -113,6 +113,19 @@ public class Road {
   }
 
   /**
+   * Get the only Lane that makes up this Road.
+   *
+   * @return the Lane that makes up this Road.
+   */
+  public Lane getOnlyLane() {
+    if (lanes.size() != 1){
+      throw new RuntimeException("This road has more than one lane.");
+    }
+    return lanes.get(0);
+  }
+
+
+  /**
    * Get the leftmost Lane in this Road.
    *
    * @return the leftmost Lane in this Road

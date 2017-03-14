@@ -115,19 +115,19 @@ public class GridIntersectionMap implements BasicIntersectionMap {
   /**
    * Create a grid map.
    *
-   * @param initTime         the initial time
-   * @param columns          the number of columns
-   * @param rows             the number of rows
-   * @param laneWidth        the lane width
-   * @param speedLimit       the speed limit
-   * @param lanesPerRoad     the number of lanes per road
-   * @param medianSize       the width of the area between the roads in opposite
-   *                         direction
-   * @param distanceBetween  the distance between the adjacent intersections
+   * @param initTime                  the initial time
+   * @param columns                   the number of columns (number of vertical sets of roads)
+   * @param rows                      the number of rows (number of horizontal sets of roads)
+   * @param laneWidth                 the lane width
+   * @param speedLimit                the speed limit
+   * @param lanesPerRoad              the number of lanes per road
+   * @param widthBetweenOppositeRoads the width of the area between the roads in opposite
+   *                                  direction
+   * @param distanceBetween           the distance between the adjacent intersections
    */
   public GridIntersectionMap(double initTime, int columns, int rows,
                              double laneWidth, double speedLimit, int lanesPerRoad,
-                             double medianSize, double distanceBetween) {
+                             double widthBetweenOppositeRoads, double distanceBetween) {
     // Can't make these unless there is at least one row and column
     if(rows < 1 || columns < 1) {
       throw new IllegalArgumentException("Must have at least one column "+
@@ -135,31 +135,36 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     }
     this.columns = columns;
     this.rows = rows;
+
+    // Generate the size of the map.
     // Can't forget to account for the fact that we have "distanceBetween"
     // on the outsides too, so we have to add an extra one in.
-    double height = rows * (medianSize +
+    double height = rows * (widthBetweenOppositeRoads +
         2 * lanesPerRoad * laneWidth +
         distanceBetween) + distanceBetween;
-    double width = columns * (medianSize +
+    double width = columns * (widthBetweenOppositeRoads +
         2 * lanesPerRoad * laneWidth +
         distanceBetween) + distanceBetween;
     dimensions = new Rectangle2D.Double(0, 0, width, height);
 
+    // Set size of array for the data collection lines.
+    // 2 per sets of roads, one at either end.
     dataCollectionLines = new ArrayList<DataCollectionLine>(2*(columns+rows));
 
     // Create the vertical Roads
     for (int column = 0; column < columns; column++) {
       double roadMiddleX =
-        column * (medianSize + 2 * lanesPerRoad * laneWidth + distanceBetween)
-          + distanceBetween + lanesPerRoad * laneWidth + medianSize / 2;
+        column * (widthBetweenOppositeRoads + 2 * lanesPerRoad * laneWidth + distanceBetween)
+          + distanceBetween + lanesPerRoad * laneWidth + widthBetweenOppositeRoads / 2;
 
       // First create the right road (northbound)
       Road right =
         new Road(GeomMath.ordinalize(column + 1) + " Avenue N", this);
+      // Add the lanes to the road
       for (int i = 0; i < lanesPerRoad; i++) {
         double x = roadMiddleX + // Start in the middle
           (i * laneWidth) + // Move down for each lane we've done
-          (laneWidth + medianSize) / 2; // Get to the lane center
+          (laneWidth + widthBetweenOppositeRoads) / 2; // Get to the lane center
         Lane l = new LineSegmentLane(x, // x1
                                      height, // y1
                                      x, // x2
@@ -180,7 +185,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           dataCollectionLines.size(),
           new Point2D.Double(roadMiddleX,
                              height - DATA_COLLECTION_LINE_POSITION),
-          new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + medianSize,
+          new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + widthBetweenOppositeRoads,
                              height - DATA_COLLECTION_LINE_POSITION),
           true));
       dataCollectionLines.add(
@@ -189,7 +194,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           dataCollectionLines.size(),
           new Point2D.Double(roadMiddleX,
                              DATA_COLLECTION_LINE_POSITION),
-          new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + medianSize,
+          new Point2D.Double(roadMiddleX + lanesPerRoad*laneWidth + widthBetweenOppositeRoads,
                              DATA_COLLECTION_LINE_POSITION),
           true));
 
@@ -198,7 +203,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
       for (int i = 0; i < lanesPerRoad; i++) {
         double x = roadMiddleX - // Start in the middle
           (i * laneWidth) - // Move up for each lane we've done
-          (laneWidth + medianSize) / 2; // Get to the lane center
+          (laneWidth + widthBetweenOppositeRoads) / 2; // Get to the lane center
         Lane l = new LineSegmentLane(x, // x1
                                      0, // y1
                                      x, // x2
@@ -219,7 +224,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           dataCollectionLines.size(),
           new Point2D.Double(roadMiddleX,
                              DATA_COLLECTION_LINE_POSITION),
-          new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - medianSize,
+          new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - widthBetweenOppositeRoads,
                              DATA_COLLECTION_LINE_POSITION),
           true));
       dataCollectionLines.add(
@@ -228,7 +233,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           dataCollectionLines.size(),
           new Point2D.Double(roadMiddleX,
                              height - DATA_COLLECTION_LINE_POSITION),
-          new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - medianSize,
+          new Point2D.Double(roadMiddleX - lanesPerRoad*laneWidth - widthBetweenOppositeRoads,
                              height - DATA_COLLECTION_LINE_POSITION),
           true));
 
@@ -239,14 +244,14 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     // Create the horizontal Roads
     for (int row = 0; row < rows; row++) {
       double roadMiddleY =
-        row * (medianSize + 2 * lanesPerRoad * laneWidth + distanceBetween)
-          + distanceBetween + lanesPerRoad * laneWidth + medianSize / 2;
+        row * (widthBetweenOppositeRoads + 2 * lanesPerRoad * laneWidth + distanceBetween)
+          + distanceBetween + lanesPerRoad * laneWidth + widthBetweenOppositeRoads / 2;
       // First create the lower (eastbound)
       Road lower = new Road(GeomMath.ordinalize(row + 1) + " Street E", this);
       for (int i = 0; i < lanesPerRoad; i++) {
         double y = roadMiddleY + // Start in the middle
           (i * laneWidth) + // Move up for each lane we've done
-          (laneWidth + medianSize) / 2; // Get to the lane center
+          (laneWidth + widthBetweenOppositeRoads) / 2; // Get to the lane center
         Lane l = new LineSegmentLane(0, // x1
                                      y, // y1
                                      width, // x2
@@ -268,7 +273,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
                              roadMiddleY),
           new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
-                             roadMiddleY + lanesPerRoad*laneWidth + medianSize),
+                             roadMiddleY + lanesPerRoad*laneWidth + widthBetweenOppositeRoads),
           true));
       dataCollectionLines.add(
         new DataCollectionLine(
@@ -277,7 +282,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
                              roadMiddleY),
           new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
-                             roadMiddleY + lanesPerRoad*laneWidth + medianSize),
+                             roadMiddleY + lanesPerRoad*laneWidth + widthBetweenOppositeRoads),
           true));
 
 
@@ -286,7 +291,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
       for (int i = 0; i < lanesPerRoad; i++) {
         double y = roadMiddleY - // Start in the middle
           (i * laneWidth) - // Move down for each lane we've done
-          (laneWidth + medianSize) / 2; // Get to the lane center
+          (laneWidth + widthBetweenOppositeRoads) / 2; // Get to the lane center
         Lane l = new LineSegmentLane(width, // x1
                                      y, // y1
                                      0, // x2
@@ -308,7 +313,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
                              roadMiddleY),
           new Point2D.Double(width - DATA_COLLECTION_LINE_POSITION,
-                             roadMiddleY - lanesPerRoad*laneWidth - medianSize),
+                             roadMiddleY - lanesPerRoad*laneWidth - widthBetweenOppositeRoads),
           true));
       dataCollectionLines.add(
         new DataCollectionLine(
@@ -317,7 +322,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
           new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
                              roadMiddleY),
           new Point2D.Double(DATA_COLLECTION_LINE_POSITION,
-                             roadMiddleY - lanesPerRoad*laneWidth - medianSize),
+                             roadMiddleY - lanesPerRoad*laneWidth - widthBetweenOppositeRoads),
           true));
 
       // Set up the "dual" relationship
@@ -332,7 +337,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     intersectionManagers = new ArrayList<IntersectionManager>(columns * rows);
     intersectionManagerGrid = new IntersectionManager[columns][rows];
 
-    initializeSpawnPoints(initTime);
+    // initializeSpawnPoints(initTime);
+    initializeOneSpawnPoint(initTime);
   }
 
   /**
@@ -359,6 +365,28 @@ public class GridIntersectionMap implements BasicIntersectionMap {
 
     spawnPoints.addAll(horizontalSpawnPoints);
     spawnPoints.addAll(verticalSpawnPoints);
+
+    Debug.currentMap = this;
+  }
+
+  /**
+   * Initialize one spawn point on the eastbound road.
+   * Added this method so we can follow one driver agent when debugging.
+   * Useful to understand more how their driver agent works.
+   *
+   * @param initTime  the initial time
+   */
+  private void initializeOneSpawnPoint(double initTime) {
+    if(rows > 1 || columns > 1) {
+      throw new IllegalArgumentException("Undefined behaviour with one spawn point");
+    }
+    spawnPoints = new ArrayList<SpawnPoint>(1);
+    horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
+
+    Lane lane = horizontalRoads.get(0).getLanes().get(0);
+    horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
+
+    spawnPoints.addAll(horizontalSpawnPoints);
 
     Debug.currentMap = this;
   }
