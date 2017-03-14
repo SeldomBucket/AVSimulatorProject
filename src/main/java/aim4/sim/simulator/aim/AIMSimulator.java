@@ -20,9 +20,6 @@ public interface AIMSimulator extends Simulator {
     Set<AIMVehicleSimModel> getActiveVehicles();
 
     @Override
-    AIMVehicleSimModel getActiveVehicle(int vin);
-
-    @Override
     BasicIntersectionMap getMap();
 
     /**
