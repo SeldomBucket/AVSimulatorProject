@@ -36,8 +36,7 @@ import java.util.Map;
 
 import aim4.driver.aim.AIMDriver;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
-import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.map.aim.AIMSpawnPoint;
 
 /**
  * The Vehicle Registry, the class that issues VIN to vehicles.
@@ -70,8 +69,8 @@ public class VinRegistry {
   /**
    * A map from VINs to spawn points.
    */
-  private static Map<Integer,SpawnPoint> vinToSpawnPoint =
-    new HashMap<Integer,SpawnPoint>();
+  private static Map<Integer,AIMSpawnPoint> vinToSpawnPoint =
+    new HashMap<Integer,AIMSpawnPoint>();
 
   /**
    * A map from VINs to destination roads.
@@ -91,7 +90,7 @@ public class VinRegistry {
     vinGenerator = 1000;
     vinToVehicle = new HashMap<Integer,WeakReference<VehicleSimModel>>();
     vinToVehicleSpec = new HashMap<Integer,VehicleSpec>();
-    vinToSpawnPoint = new HashMap<Integer,SpawnPoint>();
+    vinToSpawnPoint = new HashMap<Integer,AIMSpawnPoint>();
     vinToDestRoad = new HashMap<Integer,Road>();
   }
 
@@ -220,7 +219,7 @@ public class VinRegistry {
    * @param vin  the VIN of the vehicle
    * @return the spawn point
    */
-  public static SpawnPoint getSpawnPointFromVIN(int vin) {
+  public static AIMSpawnPoint getSpawnPointFromVIN(int vin) {
     return vinToSpawnPoint.get(vin);
   }
 

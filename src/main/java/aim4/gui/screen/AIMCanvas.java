@@ -18,7 +18,7 @@ import aim4.map.track.*;
 import aim4.msg.v2i.Request;
 import aim4.msg.v2i.V2IMessage;
 import aim4.sim.Simulator;
-import aim4.sim.setup.aim.AIMSimulator;
+import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.aim.AIMAutoVehicleSimModel;

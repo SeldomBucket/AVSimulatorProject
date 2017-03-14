@@ -1,10 +1,12 @@
 package aim4.sim.simulator.merge;
 
 import aim4.map.BasicMap;
+import aim4.map.merge.MergeSpawnPoint;
+import aim4.map.merge.MergeSpawnPoint.*;
 import aim4.map.merge.MergeMap;
-import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.merge.MergeVehicleSimModel;
+import com.sun.scenario.effect.Merge;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,7 +31,6 @@ public class S2SIMMergeSimulator implements MergeSimulator {
         }
     }
 
-
     /*The map for the simulation*/
     private MergeMap map;
     /* All active vehicles, in form of a map from VINs to vehicle objects. */
@@ -39,6 +40,7 @@ public class S2SIMMergeSimulator implements MergeSimulator {
     /* The number of vehicles that passed through the merge zone */
     private int numberOfCompletedVehicles;
 
+    //PUBLIC METHODS//
     public S2SIMMergeSimulator(MergeMap map){
         this.map = map;
         this.vinToVehicles = new HashMap<Integer, MergeVehicleSimModel>();
@@ -49,6 +51,8 @@ public class S2SIMMergeSimulator implements MergeSimulator {
 
     @Override
     public synchronized S2SIMMergeSimStepResult step(double timeStep) {
+        spawnVehicles(timeStep);
+
         List<Integer> completedVINs = new ArrayList<Integer>();//cleanUpCompletedVehicles();
 
         return new S2SIMMergeSimStepResult(completedVINs);
@@ -82,5 +86,15 @@ public class S2SIMMergeSimulator implements MergeSimulator {
     @Override
     public VehicleSimModel getActiveVehicle(int vin) {
         return null;
+    }
+
+    //PRIVATE METHODS//
+    //STEP 1//
+
+    private void spawnVehicles(double timeStep) {
+        for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
+            List<MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+
+        }
     }
 }
