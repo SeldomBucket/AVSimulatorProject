@@ -38,7 +38,7 @@ import aim4.driver.aim.AIMDriver;
 import aim4.driver.cpm.CPMBasicV2VDriver;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
-import aim4.vehicle.aim.AIMVehicleSimModel;
+import aim4.map.aim.AIMSpawnPoint;
 
 /**
  * The Vehicle Registry, the class that issues VIN to vehicles.

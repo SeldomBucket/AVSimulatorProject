@@ -59,11 +59,11 @@ public abstract class CPMBasicMap implements CPMMap{
 
     // spawn points
     /** The spawn points */
-    protected List<SpawnPoint> spawnPoints;
+    protected List<CPMSpawnPoint> spawnPoints;
     /** The horizontal spawn points */
-    protected List<SpawnPoint> horizontalSpawnPoints;
+    protected List<CPMSpawnPoint> horizontalSpawnPoints;
     /** The vertical spawn points */
-    protected List<SpawnPoint> verticalSpawnPoints;
+    protected List<CPMSpawnPoint> verticalSpawnPoints;
 
     // lanes and roads
     /** The lane registry */
@@ -129,8 +129,8 @@ public abstract class CPMBasicMap implements CPMMap{
      * @param initTime  the initial time
      */
     protected void initializeSpawnPoints(double initTime) {
-        spawnPoints = new ArrayList<SpawnPoint>(1);
-        horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
+        spawnPoints = new ArrayList<CPMSpawnPoint>(1);
+        horizontalSpawnPoints = new ArrayList<CPMSpawnPoint>(1);
         horizontalSpawnPoints.add(makeSpawnPoint(initTime, entranceLane));
 
         spawnPoints.addAll(horizontalSpawnPoints);
@@ -143,7 +143,7 @@ public abstract class CPMBasicMap implements CPMMap{
      * @param lane      the lane
      * @return the spawn point
      */
-    protected SpawnPoint makeSpawnPoint(double initTime, Lane lane) {
+    protected CPMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
         double startDistance = 0.0;
         double normalizedStartDistance = lane.normalizedDistance(startDistance);
         Point2D pos = lane.getPointAtNormalizedDistance(normalizedStartDistance);
@@ -154,7 +154,7 @@ public abstract class CPMBasicMap implements CPMMap{
         Rectangle2D noVehicleZone =
                 lane.getShape(normalizedStartDistance, d).getBounds2D();
 
-        return new SpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
+        return new CPMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
                 lane, noVehicleZone);
     }
 
@@ -246,7 +246,7 @@ public abstract class CPMBasicMap implements CPMMap{
         return dataCollectionLines;
     }
 
-    public List<SpawnPoint> getSpawnPoints() {
+    public List<CPMSpawnPoint> getSpawnPoints() {
         return spawnPoints;
     }
 

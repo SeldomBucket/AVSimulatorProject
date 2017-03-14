@@ -18,6 +18,8 @@ public interface CPMMap extends BasicMap {
     public List<Corner> getCorners();
     public List<Junction> getJunctions();
     public List<SimpleIntersection> getIntersections();
+    public List<CPMSpawnPoint> getSpawnPoints();
+
 
 
 }

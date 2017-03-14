@@ -32,7 +32,7 @@ package aim4.driver.aim;
 
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**
@@ -65,7 +65,7 @@ public class ProxyDriver extends AIMAutoDriver {
    * @return the Road where this DriverAgent is coming from
    */
   @Override
-  public SpawnPoint getSpawnPoint() {
+  public AIMSpawnPoint getSpawnPoint() {
     return null;
   }
 

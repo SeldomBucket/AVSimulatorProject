@@ -37,7 +37,7 @@ import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.GridMapUtil;
-import aim4.sim.AutoDriverOnlySimulator;
+import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.sim.Simulator;
 
 /**
@@ -124,8 +124,8 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
                                 double trafficLevel,
                                 double stopDistBeforeIntersection) {
     super(columns, rows, laneWidth, speedLimit, lanesPerRoad,
-          medianSize, distanceBetween, trafficLevel,
-          stopDistBeforeIntersection);
+            medianSize, distanceBetween, trafficLevel,
+            stopDistBeforeIntersection);
   }
 
 
@@ -232,22 +232,22 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
   public Simulator getSimulator() {
     double currentTime = 0.0;
     GridIntersectionMap layout = new GridIntersectionMap(currentTime,
-                                       numOfColumns,
-                                       numOfRows,
-                                       laneWidth,
-                                       speedLimit,
-                                       lanesPerRoad,
-                                       medianSize,
-                                       distanceBetween);
+            numOfColumns,
+            numOfRows,
+            laneWidth,
+            speedLimit,
+            lanesPerRoad,
+            medianSize,
+            distanceBetween);
 /* standard */
     ReservationGridManager.Config gridConfig =
-      new ReservationGridManager.Config(SimConfig.TIME_STEP,
-                                        SimConfig.GRID_TIME_STEP,
-                                        staticBufferSize,
-                                        internalTileTimeBufferSize,
-                                        edgeTileTimeBufferSize,
-                                        isEdgeTileTimeBufferEnabled,
-                                        granularity);  // granularity
+            new ReservationGridManager.Config(SimConfig.TIME_STEP,
+                    SimConfig.GRID_TIME_STEP,
+                    staticBufferSize,
+                    internalTileTimeBufferSize,
+                    edgeTileTimeBufferSize,
+                    isEdgeTileTimeBufferEnabled,
+                    granularity);  // granularity
 
 /* for demo */
 /*
@@ -278,28 +278,27 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
     if (!isBaseLineMode) {
       if (isBatchMode) {
         GridMapUtil.setBatchManagers(layout, currentTime, gridConfig,
-                                        processingInterval);
+                processingInterval);
       } else {
         GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
       }
-        GridMapUtil.setUpSimpleSpawnPoints(layout);
 
-      /*switch(trafficType) {
-      case UNIFORM_RANDOM:
-        GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
-        break;
-      case UNIFORM_TURNBASED:
-        GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
-        break;
-      case HVDIRECTIONAL_RANDOM:
-        GridMapUtil.setDirectionalSpawnPoints(layout,
-                                                 hTrafficLevel,
-                                                 vTrafficLevel);
-        break;
-      case FILE:
-        GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
-        break;
-      }*/
+      switch(trafficType) {
+        case UNIFORM_RANDOM:
+          GridMapUtil.setUniformRandomSpawnPoints(layout, trafficLevel);
+          break;
+        case UNIFORM_TURNBASED:
+          GridMapUtil.setUniformTurnBasedSpawnPoints(layout, trafficLevel);
+          break;
+        case HVDIRECTIONAL_RANDOM:
+          GridMapUtil.setDirectionalSpawnPoints(layout,
+                  hTrafficLevel,
+                  vTrafficLevel);
+          break;
+        case FILE:
+          GridMapUtil.setUniformRatioSpawnPoints(layout, trafficVolumeFileName);
+          break;
+      }
     } else {
       GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
       GridMapUtil.setBaselineSpawnPoints(layout, 12.0);
@@ -307,7 +306,7 @@ public class AutoDriverOnlySimSetup extends BasicSimSetup implements AIMSimSetup
 
 
     V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION =
-      stopDistBeforeIntersection;
+            stopDistBeforeIntersection;
     return new AutoDriverOnlySimulator(layout);
   }
 }

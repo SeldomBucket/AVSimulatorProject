@@ -47,7 +47,7 @@ import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
 import aim4.im.v2i.RequestHandler.GoStraightRequestHandler;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.sim.Simulator;
-import aim4.sim.AIMSimulator;
+import aim4.sim.simulator.aim.AIMSimulator;
 
 /**
  * The Administration Control Panel
