@@ -90,7 +90,6 @@ public class S2SIMMergeSimulator implements MergeSimulator {
 
     //PRIVATE METHODS//
     //STEP 1//
-
     private void spawnVehicles(double timeStep) {
         for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);

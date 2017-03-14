@@ -25,16 +25,4 @@ public class StatusMonitorTest {
 
         StatusMonitor statusMonitor3Lane = map3Lane.getStatusMonitor();
 
-        @Test
-        public void testGetRemainingCapacity() throws Exception {
-                double expectedRemainingCapacity = 20;
-                double actualRemainingCapacity = statusMonitor1Lane.getRemainingCapacity();
-                assert(expectedRemainingCapacity == actualRemainingCapacity);
-
-                expectedRemainingCapacity = 60;
-                actualRemainingCapacity = statusMonitor3Lane.getRemainingCapacity();
-                assert(expectedRemainingCapacity == actualRemainingCapacity);
-        }
-
-
 }

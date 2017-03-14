@@ -43,61 +43,59 @@ import aim4.vehicle.aim.ProxyVehicleSimModel;
  */
 public interface Simulator {
 
-  /**
-   * An interface denoting the result of a simulation step.
-   */
-  public static interface SimStepResult {}
+    /**
+     * An interface denoting the result of a simulation step.
+     */
+    public static interface SimStepResult {}
 
-  /**
-   * Move the simulator a time step forward.
-   *
-   * @param timeStep  the amount of time the simulation should run in
-   *                  this time step
-   */
-  SimStepResult step(double timeStep);
+    /**
+     * Move the simulator a time step forward.
+     *
+     * @param timeStep  the amount of time the simulation should run in
+     *                  this time step
+     */
+    SimStepResult step(double timeStep);
 
-  /**
-   * Get the layout of the simulation.
-   *
-   * @return the layout of the simulation.
-   */
-  BasicMap getMap();
+    /**
+     * Get the layout of the simulation.
+     *
+     * @return the layout of the simulation.
+     */
+    BasicMap getMap();
 
-  /**
-   * Get the total amount of simulation time has run.
-   *
-   * @return the simulation time.
-   */
-  double getSimulationTime();
+    /**
+     * Get the total amount of simulation time has run.
+     *
+     * @return the simulation time.
+     */
+    double getSimulationTime();
 
-  /**
-   * Get the number of vehicles that has reached their destinations.
-   *
-   * @return the number of vehicles that has reached their destinations
-   */
-  int getNumCompletedVehicles();
+    /**
+     * Get the number of vehicles that has reached their destinations.
+     *
+     * @return the number of vehicles that has reached their destinations
+     */
+    int getNumCompletedVehicles();
 
-  /**
-   * Get average number of bits transmitted by completed vehicles.
-   *
-   * @return the average number of bits transmitted by completed vehicles
-   */
-  double getAvgBitsTransmittedByCompletedVehicles();
+    /**
+     * Get average number of bits transmitted by completed vehicles.
+     *
+     * @return the average number of bits transmitted by completed vehicles
+     */
+    double getAvgBitsTransmittedByCompletedVehicles();
 
-  /**
-   * Get average number of bits received by completed vehicles.
-   *
-   * @return the average number of bits received by completed vehicles
-   */
-  double getAvgBitsReceivedByCompletedVehicles();
+    /**
+     * Get average number of bits received by completed vehicles.
+     *
+     * @return the average number of bits received by completed vehicles
+     */
+    double getAvgBitsReceivedByCompletedVehicles();
 
-  /**
-   * Get a particular active vehicle via a given VIN.
-   *
-   * @param vin  the VIN number of the vehicle
-   * @return the active vehicle
-   */
-  VehicleSimModel getActiveVehicle(int vin);
-
-
+    /**
+     * Get a particular active vehicle via a given VIN.
+     *
+     * @param vin  the VIN number of the vehicle
+     * @return the active vehicle
+     */
+    VehicleSimModel getActiveVehicle(int vin);
 }
