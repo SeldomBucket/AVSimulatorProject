@@ -28,50 +28,66 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.udp;
+package aim4.msg.aim.udp;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+import aim4.config.Constants;
 
 /**
- * A real vehicle to proxy vehicle message.
+ * A real vehicle to proxy vehicle message for request message.
  */
-public abstract class Real2ProxyMsg {
-
-  // ///////////////////////////////
-  // NESTED CLASSES
-  // ///////////////////////////////
-
-  /**
-   * The type of the message.
-   */
-  public enum Type {
-    PV_UPDATE,
-    REQUEST,
-    CANCEL,
-    DONE,
-  };
+public class Real2ProxyRequest extends Real2ProxyMsg {
 
   /////////////////////////////////
   // PUBLIC FINAL FIELDS
   /////////////////////////////////
 
-  /** The type of this message. */
-  public final Type messageType;
-
-  /** the received time of this message */
-  public final double receivedTime;
+  /** The VIN of the vehicle */
+  public final int vin;
+  /** The arrival time span */
+  public final float arrivalTimeSpan;
+  /** The arrival velocity */
+  public final float arrivalVelocity;
+  /** The departure lane ID */
+  public final int departureLaneId;
 
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Create a real vehicle to proxy vehicle message.
+   * Create a real vehicle to proxy vehicle message for request message.
    *
-   * @param messageType   the message type
+   * @param dis           the I/O stream
    * @param receivedTime  the time stamp
+   * @throws IOException
    */
-  public Real2ProxyMsg(Type messageType, double receivedTime) {
-    this.messageType = messageType;
-    this.receivedTime = receivedTime;
+  public Real2ProxyRequest(DataInputStream dis, double receivedTime)
+      throws IOException {
+    super(Type.REQUEST, receivedTime);
+    vin = dis.readInt();
+    arrivalTimeSpan = dis.readFloat();
+    departureLaneId = dis.readInt();
+    arrivalVelocity = dis.readFloat();
   }
 
+  /////////////////////////////////
+  // DEBUG
+  /////////////////////////////////
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public String toString() {
+    String s = "Real2ProxyRequest(";
+    s += "vin=" + vin + ",";
+    s += "arrivalTimeSpan=" + Constants.TWO_DEC.format(arrivalTimeSpan) + ",";
+    s += "arrivalVelocity=" + Constants.TWO_DEC.format(arrivalVelocity) + ",";
+    s += "departureLaneId=" + departureLaneId;
+    s += ")";
+    return s;
+  }
 }

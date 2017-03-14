@@ -28,52 +28,58 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.udp;
-
-import java.io.DataInputStream;
-import java.io.IOException;
+package aim4.msg.aim.v2i;
 
 import aim4.config.Constants;
 
 /**
- * A real vehicle to proxy vehicle message for request message.
+ * Message sent from a Vehicle to an Intersection Manager to inform it that it
+ * has exited the Admission Control Zone.
  */
-public class Real2ProxyRequest extends Real2ProxyMsg {
+public class Away extends V2IMessage {
 
   /////////////////////////////////
-  // PUBLIC FINAL FIELDS
-  /////////////////////////////////
-
-  /** The VIN of the vehicle */
-  public final int vin;
-  /** The arrival time span */
-  public final float arrivalTimeSpan;
-  /** The arrival velocity */
-  public final float arrivalVelocity;
-  /** The departure lane ID */
-  public final int departureLaneId;
-
-  /////////////////////////////////
-  // CONSTRUCTORS
+  // PRIVATE FIELDS
   /////////////////////////////////
 
   /**
-   * Create a real vehicle to proxy vehicle message for request message.
-   *
-   * @param dis           the I/O stream
-   * @param receivedTime  the time stamp
-   * @throws IOException
+   * The ID number of the reservation.
    */
-  public Real2ProxyRequest(DataInputStream dis, double receivedTime)
-      throws IOException {
-    super(Type.REQUEST, receivedTime);
-    vin = dis.readInt();
-    arrivalTimeSpan = dis.readFloat();
-    departureLaneId = dis.readInt();
-    arrivalVelocity = dis.readFloat();
+  private int reservationID;
+
+  /////////////////////////////////
+  // CLASS CONSTRUCTORS
+  /////////////////////////////////
+
+  /**
+   * Basic class constructor with all required fields.
+   *
+   * @param sourceID              the ID number of the Vehicle sending this
+   *                              message
+   * @param destinationID         the ID number of the IntersectionManager to
+   *                              which this message is being sent
+   * @param reservationID         the ID number of the reservation
+   */
+  public Away(int sourceID, int destinationID, int reservationID) {
+    // Set source and destination
+    super(sourceID, destinationID);
+    this.reservationID = reservationID;
+    messageType = Type.AWAY;
+    size += Constants.INTEGER_SIZE;
   }
 
   /////////////////////////////////
+  // PUBLIC METHODS
+  /////////////////////////////////
+
+  /**
+   * Get the ID number of the reservation.
+   */
+  public int getReservationID() {
+    return reservationID;
+  }
+
+  ////////////////////////////////
   // DEBUG
   /////////////////////////////////
 
@@ -82,12 +88,9 @@ public class Real2ProxyRequest extends Real2ProxyMsg {
    */
   @Override
   public String toString() {
-    String s = "Real2ProxyRequest(";
-    s += "vin=" + vin + ",";
-    s += "arrivalTimeSpan=" + Constants.TWO_DEC.format(arrivalTimeSpan) + ",";
-    s += "arrivalVelocity=" + Constants.TWO_DEC.format(arrivalVelocity) + ",";
-    s += "departureLaneId=" + departureLaneId;
-    s += ")";
-    return s;
+    return "Away(vin" + getVin() + " -> im" + getImId() +
+           ", id" + reservationID + ")";
   }
+
+
 }

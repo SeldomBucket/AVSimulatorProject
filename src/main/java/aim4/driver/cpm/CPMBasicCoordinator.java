@@ -6,6 +6,7 @@ import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.EnumMap;
@@ -49,7 +50,8 @@ public class CPMBasicCoordinator implements Coordinator{
         TRAVERSING_CORNER,
         TRAVERSING_JUNCTION,
         TRAVERSING_INTERSECTION,
-        // Find out what this is
+        TRAVERSING_PARKING_LANE,
+        // TODO CPM Find out what this is
         TERMINAL_STATE
     }
 
@@ -59,7 +61,7 @@ public class CPMBasicCoordinator implements Coordinator{
     /** The driver of which this coordinator is a part. */
     private AutoDriver driver;
 
-    // Does it make sense to have this here? Should it be in Driver or Vehicle?
+    // TODO CPM Does it make sense to have this here? Should it be in Driver or Vehicle?
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMV2VPilot pilot;
 
@@ -156,6 +158,9 @@ public class CPMBasicCoordinator implements Coordinator{
         stateHandlers.put(State.TRAVERSING_INTERSECTION,
                 new TraversingIntersectionStateHandler());
 
+        stateHandlers.put(State.TRAVERSING_PARKING_LANE,
+                new TraversingParkingLaneStateHandler());
+
         stateHandlers.put(State.TERMINAL_STATE,
                 terminalStateHandler);
     }
@@ -180,8 +185,8 @@ public class CPMBasicCoordinator implements Coordinator{
          */
         @Override
         public boolean perform() {
-            // First check if we are in a RoadCorner.
-            // If so, then switch to traversing corner mode.
+            // First check if we are in a Connection or ParkingLane.
+            // If so, then switch to the relevant traversing mode.
             assert driver instanceof CPMBasicV2VDriver;
             if (((CPMBasicV2VDriver) driver).inCorner() != null){
                 setState(State.TRAVERSING_CORNER);
@@ -191,6 +196,10 @@ public class CPMBasicCoordinator implements Coordinator{
             }
             if (((CPMBasicV2VDriver) driver).inIntersection() != null){
                 setState(State.TRAVERSING_INTERSECTION);
+            }
+            if (driver.getCurrentLane() instanceof ParkingLane) {
+                System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
+                setState(State.TRAVERSING_PARKING_LANE);
             }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
@@ -278,6 +287,37 @@ public class CPMBasicCoordinator implements Coordinator{
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
             }
+            return false;
+        }
+    }
+
+    /**
+     * The state handler for the traversing parking lane state.
+     */
+    private class TraversingParkingLaneStateHandler implements StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // First check that we are still on a parking lane
+            assert(driver instanceof CPMBasicV2VDriver);
+            if (!((CPMBasicV2VDriver) driver).inParkingLane()){
+                System.out.println("Driver is now out of the parking lane.");
+                // Find out which state to be in next
+                if (((CPMBasicV2VDriver) driver).inCorner() != null){
+                    setState(State.TRAVERSING_CORNER);
+                } else if (((CPMBasicV2VDriver) driver).inJunction() != null){
+                    setState(State.TRAVERSING_JUNCTION);
+                } else if (((CPMBasicV2VDriver) driver).inIntersection() != null){
+                    setState(State.TRAVERSING_INTERSECTION);
+                } else {
+                    setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                }
+            }
+            pilot.followCurrentLane();
+            pilot.simpleThrottleAction();
+            pilot.dontPassParkingEndPoint();
             return false;
         }
     }

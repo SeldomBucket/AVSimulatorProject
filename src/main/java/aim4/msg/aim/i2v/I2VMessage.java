@@ -28,49 +28,32 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.v2i;
+package aim4.msg.aim.i2v;
 
 import aim4.config.Constants;
 
 /**
- * A message sent from a Vehicle to an Intersection Manager.
+ * A message sent from an Intersection Manager to a Vehicle.
  */
-public abstract class V2IMessage {
+public abstract class I2VMessage {
 
   /////////////////////////////////
   // NESTED CLASSES
   /////////////////////////////////
 
   /**
-   * The different types of Vehicle to Intersection Manager
-   * messages.
+   * The different types of Intersection Manager to
+   * Vehicle messages.
    */
   public enum Type {
-    /** Mesage requesting a reservation or a change of reservation. */
-    REQUEST,
-    /** Message cancelling a currently held reservation. */
-    CANCEL,
-    /** Message indicating that the vehicle has traversed the intersection. */
-    DONE,
-    /** Message requesting entry into the admission control zone. */
-    ACZ_REQUEST,
-    /** Message cancelling a previous ACZ_REQUEST. */
-    ACZ_CANCEL,
-    /**
-     * Message indicating the vehicle has completed entering the admission
-     * control zone.
-     */
-    ACZ_ENTERED,
-    /**
-     * Message indicating the vehicle has left the admission control zone by
-     * leaving the roadway.
-     */
-    ACZ_EXIT,
-    /**
-     * Message indicating the vehicle has left the admission control zone by
-     * driving straight out of it.
-     */
-    AWAY,
+    /** Message confirming a reservation Request. */
+    CONFIRM,
+    /** Message rejecting a Request. */
+    REJECT,
+    /** Message granting a request to enter the admission control zone. */
+    ACZ_CONFIRM,
+    /** Message rejecting a request to enter the admission control zone. */
+    ACZ_REJECT,
   };
 
   /////////////////////////////////
@@ -78,20 +61,22 @@ public abstract class V2IMessage {
   /////////////////////////////////
 
   /**
-   * The ID number of the Intersection Manager to which this message is
-   * being sent.
-   */
-  private int imId;
-  /**
-   * The ID number of the Vehicle sending this message
+   * The ID number of the Vehicle to which this message is being sent.
    */
   private int vin;
+  /**
+   * The ID number of the Intersection Manager from which this message
+   * is being sent.
+   */
+  private int imId;
 
   /////////////////////////////////
-  // PROTECTED FIELDS
+  // PRIVATE FIELDS
   /////////////////////////////////
 
-  /** The type of this message. */
+  /**
+   * The type of this message.
+   */
   protected Type messageType;
 
   /**
@@ -107,18 +92,23 @@ public abstract class V2IMessage {
    * Class constructor to be called by subclasses to set the source and
    * destination ID numbers.
    *
-   * @param vin      the ID number of the Vehicle sending this message
-   * @param imID the ID number of the IntersectionManager to which
-   *                      this message is being sent
+   * @param imId  the ID number of the IntersectionManager sending this message
+   * @param vin   the ID number of the Vehicle to which this message is being
+   *              sent
    */
-  public V2IMessage(int vin, int imID) {
+  public I2VMessage(int imId, int vin) {
+    this.imId = imId;
     this.vin = vin;
-    this.imId = imID;
   }
 
-  public V2IMessage(V2IMessage msg) {
-    this.vin = msg.vin;
+  /**
+   * Create a new copy of the message.
+   *
+   * @param msg  the message
+   */
+  public I2VMessage(I2VMessage msg) {
     this.imId = msg.imId;
+    this.vin = msg.vin;
     this.messageType = msg.messageType;
     this.size = msg.size;
   }
@@ -128,23 +118,23 @@ public abstract class V2IMessage {
   /////////////////////////////////
 
   /**
-   * Get the ID number of the Intersection Manager to which this
-   * message is being sent.
+   * Get the ID number of the Vehicle to which this message is being
+   * sent.
    *
-   * @return the ID number of the IntersectionManager to which this message is
-   *         being sent
-   */
-  public int getImId() {
-    return imId;
-  }
-
-  /**
-   * Get the ID number of the Vehicle sending this message.
-   *
-   * @return the ID number of the Vehicle sending this message
+   * @return the ID number of the Vehicle to which this message is being sent
    */
   public int getVin() {
     return vin;
+  }
+
+  /**
+   * Get the ID number of the Intersection Manager sending this
+   * message.
+   *
+   * @return the ID number of the IntersectionManager sending this message
+   */
+  public int getImId() {
+    return imId;
   }
 
   /**

@@ -40,7 +40,7 @@ import aim4.config.Debug;
 import aim4.im.TrackModel;
 import aim4.im.v2i.RequestHandler.BatchModeRequestHandler.IndexedProposal;
 import aim4.map.Road;
-import aim4.msg.v2i.Request.Proposal;
+import aim4.msg.aim.v2i.Request.Proposal;
 
 /**
  * The road-based reorder strategy.

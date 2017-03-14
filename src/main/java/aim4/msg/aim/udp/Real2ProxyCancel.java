@@ -28,56 +28,38 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.v2i;
+package aim4.msg.aim.udp;
 
-import aim4.config.Constants;
-import aim4.msg.v2i.V2IMessage.Type;
+import java.io.DataInputStream;
+import java.io.IOException;
 
 /**
- * Message sent from a Vehicle to an Intersection Manager to inform it that it
- * has completed its reservation.
+ * A real vehicle to proxy vehicle message for cancel message.
  */
-public class Done extends V2IMessage {
+public class Real2ProxyCancel extends Real2ProxyMsg {
 
   /////////////////////////////////
-  // PRIVATE FIELDS
+  // PUBLIC FINAL FIELDS
   /////////////////////////////////
 
-  /**
-   * The ID number of the reservation.
-   */
-  private int reservationID;
-
+  /** The reservation ID */
+  public final int reservationId;
 
   /////////////////////////////////
-  // CLASS CONSTRUCTORS
+  // CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Basic class constructor with all required fields.
+   * Create a real vehicle to proxy vehicle message for cancel message.
    *
-   * @param sourceID              the ID number of the Vehicle sending this
-   *                              message
-   * @param destinationID         the ID number of the IntersectionManager to
-   * @param reservationID         the ID number of the reservation
+   * @param dis           the I/O stream
+   * @param receivedTime  the time stamp
+   * @throws IOException
    */
-  public Done(int sourceID, int destinationID, int reservationID) {
-    // Set source and destination
-    super(sourceID, destinationID);
-    this.reservationID = reservationID;
-    messageType = Type.DONE;
-    size += Constants.INTEGER_SIZE;
-  }
-
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
-
-  /**
-   * Get the ID number of the reservation.
-   */
-  public int getReservationID() {
-    return reservationID;
+  public Real2ProxyCancel(DataInputStream dis, double receivedTime)
+      throws IOException {
+    super(Type.REQUEST, receivedTime);
+    reservationId = dis.readInt();
   }
 
   /////////////////////////////////
@@ -89,8 +71,7 @@ public class Done extends V2IMessage {
    */
   @Override
   public String toString() {
-    return "Done(vin" + getVin() + " -> im" + getImId() +
-           ", id" + reservationID + ")";
+    return "Real2ProxyCancel()";
   }
 
 }

@@ -28,50 +28,50 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.msg.udp;
-
-import java.io.DataInputStream;
-import java.io.IOException;
+package aim4.msg.aim.udp;
 
 /**
- * A real vehicle to proxy vehicle message for cancel message.
+ * A real vehicle to proxy vehicle message.
  */
-public class Real2ProxyCancel extends Real2ProxyMsg {
+public abstract class Real2ProxyMsg {
+
+  // ///////////////////////////////
+  // NESTED CLASSES
+  // ///////////////////////////////
+
+  /**
+   * The type of the message.
+   */
+  public enum Type {
+    PV_UPDATE,
+    REQUEST,
+    CANCEL,
+    DONE,
+  };
 
   /////////////////////////////////
   // PUBLIC FINAL FIELDS
   /////////////////////////////////
 
-  /** The reservation ID */
-  public final int reservationId;
+  /** The type of this message. */
+  public final Type messageType;
+
+  /** the received time of this message */
+  public final double receivedTime;
 
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
 
   /**
-   * Create a real vehicle to proxy vehicle message for cancel message.
+   * Create a real vehicle to proxy vehicle message.
    *
-   * @param dis           the I/O stream
+   * @param messageType   the message type
    * @param receivedTime  the time stamp
-   * @throws IOException
    */
-  public Real2ProxyCancel(DataInputStream dis, double receivedTime)
-      throws IOException {
-    super(Type.REQUEST, receivedTime);
-    reservationId = dis.readInt();
-  }
-
-  /////////////////////////////////
-  // DEBUG
-  /////////////////////////////////
-
-  /**
-   * {@inheritDoc}
-   */
-  @Override
-  public String toString() {
-    return "Real2ProxyCancel()";
+  public Real2ProxyMsg(Type messageType, double receivedTime) {
+    this.messageType = messageType;
+    this.receivedTime = receivedTime;
   }
 
 }
