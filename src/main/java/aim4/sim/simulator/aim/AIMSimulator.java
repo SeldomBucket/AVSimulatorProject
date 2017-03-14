@@ -1,4 +1,4 @@
-package aim4.sim.setup.aim;
+package aim4.sim.simulator.aim;
 
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.sim.Simulator;
