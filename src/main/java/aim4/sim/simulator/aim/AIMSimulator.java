@@ -20,9 +20,6 @@ public interface AIMSimulator extends Simulator {
     Set<AIMVehicleSimModel> getActiveVehicles();
 
     @Override
-    AIMVehicleSimModel getActiveVehicle(int vin);
-
-    @Override
     BasicIntersectionMap getMap();
 
     /**
@@ -31,4 +28,26 @@ public interface AIMSimulator extends Simulator {
      * @param vehicle  the proxy vehicle
      */
     void addProxyVehicle(ProxyVehicleSimModel vehicle);
+
+    /**
+     * Get average number of bits transmitted by completed vehicles.
+     *
+     * @return the average number of bits transmitted by completed vehicles
+     */
+    double getAvgBitsTransmittedByCompletedVehicles();
+
+    /**
+     * Get average number of bits received by completed vehicles.
+     *
+     * @return the average number of bits received by completed vehicles
+     */
+    double getAvgBitsReceivedByCompletedVehicles();
+
+    /**
+     * Get a particular active vehicle via a given VIN.
+     *
+     * @param vin  the VIN number of the vehicle
+     * @return the active vehicle
+     */
+    AIMVehicleSimModel getActiveVehicle(int vin);
 }

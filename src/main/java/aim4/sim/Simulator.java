@@ -77,27 +77,5 @@ public interface Simulator {
    */
   int getNumCompletedVehicles();
 
-  /**
-   * Get average number of bits transmitted by completed vehicles.
-   *
-   * @return the average number of bits transmitted by completed vehicles
-   */
-  double getAvgBitsTransmittedByCompletedVehicles();
-
-  /**
-   * Get average number of bits received by completed vehicles.
-   *
-   * @return the average number of bits received by completed vehicles
-   */
-  double getAvgBitsReceivedByCompletedVehicles();
-
-  /**
-   * Get a particular active vehicle via a given VIN.
-   *
-   * @param vin  the VIN number of the vehicle
-   * @return the active vehicle
-   */
-  VehicleSimModel getActiveVehicle(int vin);
-
 
 }
