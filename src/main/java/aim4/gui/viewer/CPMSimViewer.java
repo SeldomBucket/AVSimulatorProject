@@ -4,6 +4,7 @@ import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.screen.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
+import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import java.awt.event.MouseEvent;
 
@@ -18,7 +19,7 @@ public class CPMSimViewer extends SimViewer {
      * @param viewer
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
-        super(statusPanel, viewer, new CPMSimSetupPanel(), false);
+        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(5.0, 0.28)), false);
     }
 
     @Override

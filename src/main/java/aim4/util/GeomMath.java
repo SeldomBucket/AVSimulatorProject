@@ -134,6 +134,24 @@ public final class GeomMath {
   }
 
   /**
+   * Calculate the angle in degrees between two points, with a fixed point
+   * that is connected with the given two points by a line.
+   * @param point1
+   * @param point2
+   * @param fixed
+   * @return angle in radians
+   */
+  public static double angleBetweenTwoPointsWithFixedPoint(Point2D point1,
+                                                           Point2D point2,
+                                                           Point2D fixed) {
+
+    double angle1 = Math.atan2(point1.getY() - fixed.getY(), point1.getX() - fixed.getX());
+    double angle2 = Math.atan2(point2.getY() - fixed.getY(), point2.getX() - fixed.getX());
+
+    return angle1 - angle2;
+  }
+
+  /**
    * Find a point displaced by the given distance in the given direction.
    *
    * @param p     the starting point

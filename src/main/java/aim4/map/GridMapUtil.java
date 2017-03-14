@@ -53,6 +53,7 @@ import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.*;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.TrafficVolume;
 import aim4.map.aim.destination.DestinationSelector;
@@ -206,8 +207,12 @@ public class GridMapUtil {
     private VehicleSpec vehicleSpec;
     /** The destination road */
     private Road destinationRoad;
+    /**The destination selector to generate a destination.*/
+    private DestinationSelector destinationSelector;
     /** Whether the spec has been generated */
     private boolean isDone;
+    /**The map that spawn point will belong to. */
+    private BasicMap map;
 
     /**
      * Create a spec generator that generates just one vehicle in the entire
@@ -220,6 +225,16 @@ public class GridMapUtil {
       vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(vehicleSpecId);
       this.destinationRoad = destinationRoad;
       isDone = false;
+    }
+
+    /**
+     * Create a spec generator that generates just one vehicle in the entire
+     * simulation.
+     */
+    public OnlyOneSpawnSpecGenerator(BasicIntersectionMap map) {
+      vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+      isDone = false;
+      destinationSelector = new RandomDestinationSelector(map);
     }
 
     /**
@@ -621,5 +636,4 @@ public class GridMapUtil {
           traversalTime));
     }
   }
-
 }

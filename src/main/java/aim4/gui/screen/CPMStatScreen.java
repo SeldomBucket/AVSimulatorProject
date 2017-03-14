@@ -9,17 +9,16 @@ public class CPMStatScreen extends StatScreen {
 
     @Override
     public void start() {
-        System.out.println("Woo!");
+        System.out.println("Woo! CPM StatScreen started.");
     }
 
     @Override
     public void update() {
-        count++;
-        System.out.println("Help, I'm stuck in a CPM loop! " + count);
+
     }
 
     @Override
     public void cleanUp() {
-        System.out.println("Clean up crew active");
+        System.out.println("Clean up crew active for CPMStatScreen");
     }
 }

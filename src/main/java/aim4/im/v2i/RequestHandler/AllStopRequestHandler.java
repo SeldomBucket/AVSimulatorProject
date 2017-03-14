@@ -31,8 +31,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.im.v2i.RequestHandler;
 
 import aim4.im.v2i.policy.BasePolicyCallback;
-import aim4.msg.i2v.Reject;
-import aim4.msg.v2i.Request;
+import aim4.msg.aim.i2v.Reject;
+import aim4.msg.aim.v2i.Request;
 import aim4.sim.StatCollector;
 
 /**

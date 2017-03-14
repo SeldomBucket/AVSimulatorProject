@@ -40,6 +40,10 @@ public class MergeSpawnPoint extends SpawnPoint {
         }
     }
 
+    public static interface MergeSpawnSpecGenerator {
+        List<MergeSpawnSpec> act(MergeSpawnPoint spawnPoint, double timestep);
+    }
+
     @Override
     public List<MergeSpawnSpec> act(double timeStep) {
         return null;

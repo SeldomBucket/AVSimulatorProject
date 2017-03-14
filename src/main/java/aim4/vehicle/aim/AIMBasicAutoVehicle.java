@@ -37,11 +37,10 @@ import java.util.List;
 import java.util.Queue;
 
 import aim4.config.Debug;
-import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.AIMAutoDriver;
-import aim4.msg.i2v.I2VMessage;
-import aim4.msg.v2i.V2IMessage;
+import aim4.msg.aim.i2v.I2VMessage;
+import aim4.msg.aim.v2i.V2IMessage;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 

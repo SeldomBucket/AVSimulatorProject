@@ -35,7 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aim4.driver.aim.AIMDriver;
+import aim4.driver.cpm.CPMBasicV2VDriver;
 import aim4.map.Road;
+import aim4.map.SpawnPoint;
 import aim4.map.aim.AIMSpawnPoint;
 
 /**
@@ -69,8 +71,8 @@ public class VinRegistry {
   /**
    * A map from VINs to spawn points.
    */
-  private static Map<Integer,AIMSpawnPoint> vinToSpawnPoint =
-    new HashMap<Integer,AIMSpawnPoint>();
+  private static Map<Integer,SpawnPoint> vinToSpawnPoint =
+    new HashMap<Integer,SpawnPoint>();
 
   /**
    * A map from VINs to destination roads.
@@ -90,7 +92,7 @@ public class VinRegistry {
     vinGenerator = 1000;
     vinToVehicle = new HashMap<Integer,WeakReference<VehicleSimModel>>();
     vinToVehicleSpec = new HashMap<Integer,VehicleSpec>();
-    vinToSpawnPoint = new HashMap<Integer,AIMSpawnPoint>();
+    vinToSpawnPoint = new HashMap<Integer,SpawnPoint>();
     vinToDestRoad = new HashMap<Integer,Road>();
   }
 
@@ -109,6 +111,10 @@ public class VinRegistry {
       vinToSpawnPoint.put(vin, ((AIMDriver) vehicle.getDriver()).getSpawnPoint());
       vinToDestRoad.put(vin, ((AIMDriver) vehicle.getDriver()).getDestination());
     }
+    if(vehicle.getDriver() instanceof CPMBasicV2VDriver) { //TODO: Ugly, fix.
+      vinToSpawnPoint.put(vin, ((CPMBasicV2VDriver) vehicle.getDriver()).getSpawnPoint());
+    }
+
 
     vehicle.setVIN(vin);
 
@@ -219,7 +225,7 @@ public class VinRegistry {
    * @param vin  the VIN of the vehicle
    * @return the spawn point
    */
-  public static AIMSpawnPoint getSpawnPointFromVIN(int vin) {
+  public static SpawnPoint getSpawnPointFromVIN(int vin) {
     return vinToSpawnPoint.get(vin);
   }
 

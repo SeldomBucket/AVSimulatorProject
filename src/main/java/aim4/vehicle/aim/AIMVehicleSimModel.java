@@ -32,7 +32,7 @@ package aim4.vehicle.aim;
 
 import java.util.Queue;
 
-import aim4.msg.v2i.V2IMessage;
+import aim4.msg.aim.v2i.V2IMessage;
 import aim4.vehicle.VehicleSimModel;
 
 /**

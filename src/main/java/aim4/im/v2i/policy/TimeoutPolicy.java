@@ -42,11 +42,11 @@ import aim4.im.v2i.reservation.AczManager;
 import aim4.im.v2i.reservation.AdmissionControlZone;
 import aim4.im.v2i.reservation.ReservationGrid;
 import aim4.im.v2i.reservation.ReservationGridManager;
-import aim4.msg.i2v.Confirm;
-import aim4.msg.i2v.I2VMessage;
-import aim4.msg.i2v.Reject;
-import aim4.msg.v2i.Request;
-import aim4.msg.v2i.V2IMessage;
+import aim4.msg.aim.i2v.Confirm;
+import aim4.msg.aim.i2v.I2VMessage;
+import aim4.msg.aim.i2v.Reject;
+import aim4.msg.aim.v2i.Request;
+import aim4.msg.aim.v2i.V2IMessage;
 import aim4.sim.StatCollector;
 
 
