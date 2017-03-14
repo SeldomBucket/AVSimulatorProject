@@ -7,7 +7,8 @@ import aim4.driver.cpm.CPMBasicV2VDriver;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.cpm.CPMSpawnPoint;
+import aim4.map.cpm.CPMSpawnPoint.*;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.SensoredLine;
@@ -112,11 +113,11 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param timeStep  the time step
      */
     private void spawnVehicles(double timeStep) {
-        for(SpawnPoint spawnPoint : map.getSpawnPoints()) {
-            List<SpawnPoint.SpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+        for(CPMSpawnPoint spawnPoint : map.getSpawnPoints()) {
+            List<CPMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
-                    for(SpawnPoint.SpawnSpec spawnSpec : spawnSpecs) {
+                    for(CPMSpawnSpec spawnSpec : spawnSpecs) {
                         CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
                         VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
@@ -134,7 +135,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param spawnPoint  the spawn point
      * @return Whether the spawn point can spawn any vehicle
      */
-    private boolean canSpawnVehicle(SpawnPoint spawnPoint) {
+    private boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
         // return true for the moment.
         return true;
     }
@@ -146,8 +147,8 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param spawnSpec   the spawn specification
      * @return the vehicle
      */
-    private CPMBasicAutoVehicle makeVehicle(SpawnPoint spawnPoint,
-                                           SpawnPoint.SpawnSpec spawnSpec) {
+    private CPMBasicAutoVehicle makeVehicle(CPMSpawnPoint spawnPoint,
+                                           CPMSpawnSpec spawnSpec) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
         // Now just take the minimum of the max velocity of the vehicle, and

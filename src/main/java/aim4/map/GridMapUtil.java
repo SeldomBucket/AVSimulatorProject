@@ -53,6 +53,7 @@ import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.reservation.ReservationGridManager;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.*;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.TrafficVolume;
 import aim4.map.aim.destination.DestinationSelector;
@@ -633,14 +634,6 @@ public class GridMapUtil {
           layout.getDestinationRoads(),
           sp.getLane().getId() * traversalTime * numOfTraversals,
           traversalTime));
-    }
-  }
-
-  public static void setUpSimpleSpawnPoints(GridIntersectionMap map){
-    // The spawn point will only spawn one vehicle in the whole simulation
-    for(SpawnPoint sp : map.getSpawnPoints()) {
-      sp.setVehicleSpecChooser(
-              new OnlyOneSpawnSpecGenerator(map));
     }
   }
 }

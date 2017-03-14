@@ -1,4 +1,4 @@
-package aim4.map.merge;
+package aim4.map.cpm;
 
 import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
@@ -9,9 +9,10 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- * Created by Callum on 13/03/2017.
+ * Created by Callum on 14/03/2017.
  */
-public class MergeSpawnPoint extends SpawnPoint {
+public class CPMSpawnPoint extends SpawnPoint {
+    private CPMSpawnSpecGenerator vehicleSpecChooser;
 
     /**
      * Create a spawn point.
@@ -24,28 +25,33 @@ public class MergeSpawnPoint extends SpawnPoint {
      * @param lane          the lane
      * @param noVehicleZone the no vehicle zone
      */
-    public MergeSpawnPoint(double currentTime, Point2D pos, double heading, double steeringAngle, double acceleration, Lane lane, Rectangle2D noVehicleZone) {
+    public CPMSpawnPoint(double currentTime, Point2D pos, double heading, double steeringAngle, double acceleration,
+                         Lane lane, Rectangle2D noVehicleZone) {
         super(currentTime, pos, heading, steeringAngle, acceleration, lane, noVehicleZone);
     }
 
-    public static class MergeSpawnSpec extends SpawnSpec {
+    public void setVehicleSpecChooser(CPMSpawnSpecGenerator vehicleSpecChooser) {
+        this.vehicleSpecChooser = vehicleSpecChooser;
+    }
+
+    public static class CPMSpawnSpec extends SpawnSpec {
         /**
          * Create a spawn specification.
          *
          * @param spawnTime   the spawn time
          * @param vehicleSpec the vehicle specification
          */
-        public MergeSpawnSpec(double spawnTime, VehicleSpec vehicleSpec) {
+        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec) {
             super(spawnTime, vehicleSpec);
         }
     }
 
-    public static interface MergeSpawnSpecGenerator {
-        List<MergeSpawnSpec> act(MergeSpawnPoint spawnPoint, double timestep);
+    public static interface CPMSpawnSpecGenerator {
+        List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timestep);
     }
 
     @Override
-    public List<MergeSpawnSpec> act(double timeStep) {
+    public List<CPMSpawnSpec> act(double timeStep) {
         return null;
     }
 }

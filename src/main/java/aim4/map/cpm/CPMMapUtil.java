@@ -1,7 +1,7 @@
 package aim4.map.cpm;
 
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
+import aim4.map.cpm.CPMSpawnPoint.*;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -22,7 +22,7 @@ public class CPMMapUtil {
      * The spec generator that generates just one vehicle in the entire
      * simulation.
      */
-    public static class OnlyOneSpawnSpecGenerator implements SpawnPoint.SpawnSpecGenerator {
+    public static class OnlyOneSpawnSpecGenerator implements CPMSpawnSpecGenerator {
         /** The vehicle specification */
         private VehicleSpec vehicleSpec;
         /** Whether the spec has been generated */
@@ -41,14 +41,12 @@ public class CPMMapUtil {
          * {@inheritDoc}
          */
         @Override
-        public List<SpawnPoint.SpawnSpec> act(SpawnPoint spawnPoint, double timeStep) {
-            List<SpawnPoint.SpawnSpec> result = new ArrayList<SpawnPoint.SpawnSpec>(1);
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
             if (!isDone) {
                 isDone = true;
                 System.out.println("Vehicle spawned!");
-                result.add(new SpawnPoint.SpawnSpec(spawnPoint.getCurrentTime(),
-                        vehicleSpec,
-                        null));
+                result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec));
             }
             return result;
         }
@@ -57,7 +55,7 @@ public class CPMMapUtil {
 
     public static void setUpOneVehicleSpawnPoint(CPMMap simpleMap){
         // The spawn point will only spawn one vehicle in the whole simulation
-        for(SpawnPoint sp : simpleMap.getSpawnPoints()) {
+        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new OnlyOneSpawnSpecGenerator());
         }
@@ -70,8 +68,8 @@ public class CPMMapUtil {
      * @param currentLane the lane the vehicle is currently driving on
      * */
     public static void checkVehicleStillOnMap(CPMMap map,
-                                          Point2D vehiclePosition,
-                                          Lane currentLane){
+                                              Point2D vehiclePosition,
+                                              Lane currentLane){
         // For this map, should only drive off the map when it has
         // finished following the exit lane
         double x = vehiclePosition.getX();

@@ -337,8 +337,7 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     intersectionManagers = new ArrayList<IntersectionManager>(columns * rows);
     intersectionManagerGrid = new IntersectionManager[columns][rows];
 
-    // initializeSpawnPoints(initTime);
-    initializeOneSpawnPoint(initTime);
+    initializeSpawnPoints(initTime);
   }
 
   /**
@@ -380,8 +379,8 @@ public class GridIntersectionMap implements BasicIntersectionMap {
     if(rows > 1 || columns > 1) {
       throw new IllegalArgumentException("Undefined behaviour with one spawn point");
     }
-    spawnPoints = new ArrayList<SpawnPoint>(1);
-    horizontalSpawnPoints = new ArrayList<SpawnPoint>(1);
+    spawnPoints = new ArrayList<AIMSpawnPoint>(1);
+    horizontalSpawnPoints = new ArrayList<AIMSpawnPoint>(1);
 
     Lane lane = horizontalRoads.get(0).getLanes().get(0);
     horizontalSpawnPoints.add(makeSpawnPoint(initTime, lane));
