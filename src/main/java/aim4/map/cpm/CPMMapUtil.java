@@ -55,7 +55,7 @@ public class CPMMapUtil {
     }
 
 
-    public static void setUpSimpleSpawnPoints(CPMMap simpleMap){
+    public static void setUpOneVehicleSpawnPoint(CPMMap simpleMap){
         // The spawn point will only spawn one vehicle in the whole simulation
         for(SpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(

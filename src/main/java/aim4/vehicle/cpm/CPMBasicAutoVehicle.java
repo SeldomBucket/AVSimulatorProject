@@ -3,6 +3,7 @@ package aim4.vehicle.cpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.cpm.CPMBasicV2VDriver;
+import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -55,5 +56,18 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     public void setDriver(Driver driver) {
         assert driver instanceof CPMBasicV2VDriver;
         this.driver = (CPMBasicV2VDriver) driver;
+    }
+
+    /**
+     * Find out the distance between the front of the vehicle and
+     * the ParkingLane's parking end point.
+     * @return the distance between the front of the vehicle and
+     * the parking end point of the lane that the driver is currently on.
+     */
+    public double distanceToParkingEndPoint(){
+        assert(driver.getCurrentLane() instanceof ParkingLane);
+        Point2D endPoint = ((ParkingLane) driver.getCurrentLane()).getParkingEndPoint();
+        Point2D vehiclePosition = gaugePosition();
+        return vehiclePosition.distance(endPoint);
     }
 }

@@ -10,6 +10,8 @@ import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
+import aim4.map.cpm.parking.SensoredLine;
+import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
@@ -460,9 +462,18 @@ public class CPMAutoDriverSimulator implements Simulator {
 
             CPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
 
+            // Check if we've gone through a data collection line
             for(DataCollectionLine line : map.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }
+
+            // Check if we've gone through a sensored line
+            assert(map instanceof CPMCarParkWithStatus);
+            for (SensoredLine line : ((CPMCarParkWithStatus) map).getSensoredLines()) {
+                line.intersect(vehicle, currentTime, p1, p2);
+                // TODO CPM Do something if we have passed one
+            }
+
             if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
                 vehicle.printState();
             }

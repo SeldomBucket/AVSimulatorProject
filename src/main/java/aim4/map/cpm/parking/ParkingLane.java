@@ -13,6 +13,8 @@ public class ParkingLane extends LineSegmentLane {
     private Point2D parkingStartPoint;
     /**The point on the lane where the parking section ends.*/
     private Point2D parkingEndPoint;
+    /** The length of the parking area on this lane. */
+    private double totalParkingLength;
     /**The length of the access section of the lane, used to enter and exit the parking lane.*/
     private double accessLength;
     /**The width of the vertical roads the parking lanes will overlap with. */
@@ -32,6 +34,8 @@ public class ParkingLane extends LineSegmentLane {
         this.parkingEndPoint = new Point2D.Double(
                 this.getEndPoint().getX() - overlappingRoadWidth - accessLength,
                 this.getEndPoint().getY());
+
+        this.totalParkingLength = parkingEndPoint.getX() - parkingStartPoint.getX();
     }
 
     public ParkingLane(Point2D p1, Point2D p2, double laneWidth, double accessLength,
@@ -47,5 +51,7 @@ public class ParkingLane extends LineSegmentLane {
     public Point2D getParkingStartPoint() { return parkingStartPoint; }
 
     public Point2D getParkingEndPoint() { return parkingEndPoint;}
+
+    public double getTotalParkingLength() { return totalParkingLength; }
     
 }
