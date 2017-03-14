@@ -73,9 +73,23 @@ public class S2SIMMergeSimulator implements MergeSimulator {
         return 0;
     }
 
+    @Override
+    public double getAvgBitsTransmittedByCompletedVehicles() {
+        return 0;
+    }
+
+    @Override
+    public double getAvgBitsReceivedByCompletedVehicles() {
+        return 0;
+    }
+
+    @Override
+    public VehicleSimModel getActiveVehicle(int vin) {
+        return null;
+    }
+
     //PRIVATE METHODS//
     //STEP 1//
-
     private void spawnVehicles(double timeStep) {
         for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);

@@ -50,6 +50,7 @@ import aim4.msg.aim.udp.Real2ProxyMsg;
 import aim4.msg.aim.udp.Real2ProxyPVUpdate;
 import aim4.msg.aim.udp.Real2ProxyRequest;
 import aim4.msg.aim.udp.UdpHeader;
+import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.vehicle.aim.ProxyVehicle;
 import aim4.vehicle.aim.ProxyVehicleSimModel;
 import aim4.vehicle.VinRegistry;
