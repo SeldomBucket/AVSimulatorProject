@@ -24,6 +24,12 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     protected CPMBasicV2VDriver driver;
 
     /**
+     * The target parking lane for this vehicle, assigned
+     * on entry and on re-entry of the car park.
+     */
+    protected ParkingLane targetParkingLane;
+
+    /**
      * Construct a vehicle
      *
      * @param spec            the vehicle's specification
@@ -56,6 +62,14 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     public void setDriver(Driver driver) {
         assert driver instanceof CPMBasicV2VDriver;
         this.driver = (CPMBasicV2VDriver) driver;
+    }
+
+    public ParkingLane getTargetParkingLane() {
+        return targetParkingLane;
+    }
+
+    public void setTargetParkingLane(ParkingLane targetParkingLane) {
+        this.targetParkingLane = targetParkingLane;
     }
 
     /**

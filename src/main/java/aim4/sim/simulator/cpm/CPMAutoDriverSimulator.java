@@ -477,12 +477,15 @@ public class CPMAutoDriverSimulator implements Simulator {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
                      StatusMonitor statusMonitor = ((CPMCarParkWithStatus) map).getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
+                         System.out.println("Vehicle is entering.");
                          statusMonitor.vehicleOnEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.REENTRY) {
+                         System.out.println("Vehicle is re-entering.");
                          statusMonitor.vehicleOnReEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.EXIT) {
+                         System.out.println("Vehicle is exiting.");
                          statusMonitor.vehicleOnExit(vehicle);
                      }
                  }
