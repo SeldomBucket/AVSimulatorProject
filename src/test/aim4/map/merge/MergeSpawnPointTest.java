@@ -36,12 +36,9 @@ public class MergeSpawnPointTest {
 
     //Vehicle Spec Properties
     private MergeSpawnPoint.MergeSpawnSpecGenerator mockVehicleSpecChooser;
-    private VehicleSpec vehicleSpec1;
-    private VehicleSpec vehicleSpec2;
-    private VehicleSpec vehicleSpec3;
-    private MergeSpawnPoint.MergeSpawnSpec mergeSpawnSpec1;
-    private MergeSpawnPoint.MergeSpawnSpec mergeSpawnSpec2;
-    private MergeSpawnPoint.MergeSpawnSpec mergeSpawnSpec3;
+    private MergeSpawnPoint.MergeSpawnSpec mockMergeSpawnSpec1;
+    private MergeSpawnPoint.MergeSpawnSpec mockMergeSpawnSpec2;
+    private MergeSpawnPoint.MergeSpawnSpec mockMergeSpawnSpec3;
 
 
     @Before
@@ -77,111 +74,20 @@ public class MergeSpawnPointTest {
                 noVehicleZone
         );
 
-        //Create test vehicle specs
-        double maxAcceleration1 = 1.1;
-        double maxDeceleration1 = 2.1;
-        double maxVelocity1 = 3.1;
-        double minVelocity1 = 4.1;
-        double length1 = 5.1;
-        double width1 = 6.1;
-        double frontAxleDisplacement1 = 7.1;
-        double rearAxleDisplacement1 = 8.1;
-        double wheelSpan1 = 9.1;
-        double wheelRadius1 = 10.1;
-        double wheelWidth1 = 11.1;
-        double maxSteeringAngle1 = 11.1;
-        double maxTurnPerSecond1 = 13.1;
-
-        double maxAcceleration2 = 1.2;
-        double maxDeceleration2 = 2.2;
-        double maxVelocity2 = 3.2;
-        double minVelocity2 = 4.2;
-        double length2 = 5.2;
-        double width2 = 6.2;
-        double frontAxleDisplacement2 = 7.2;
-        double rearAxleDisplacement2 = 8.2;
-        double wheelSpan2 = 9.2;
-        double wheelRadius2 = 10.2;
-        double wheelWidth2 = 11.2;
-        double maxSteeringAngle2 = 11.2;
-        double maxTurnPerSecond2 = 13.2;
-
-        double maxAcceleration3 = 1.3;
-        double maxDeceleration3 = 2.3;
-        double maxVelocity3 = 3.3;
-        double minVelocity3 = 4.3;
-        double length3 = 5.3;
-        double width3 = 6.3;
-        double frontAxleDisplacement3 = 7.3;
-        double rearAxleDisplacement3 = 8.3;
-        double wheelSpan3 = 9.3;
-        double wheelRadius3 = 10.3;
-        double wheelWidth3 = 11.3;
-        double maxSteeringAngle3 = 11.3;
-        double maxTurnPerSecond3 = 13.3;
-
-        vehicleSpec1 = new VehicleSpec(
-                "Vehicle 1",
-                maxAcceleration1,
-                maxDeceleration1,
-                maxVelocity1,
-                minVelocity1,
-                length1,
-                width1,
-                frontAxleDisplacement1,
-                rearAxleDisplacement1,
-                wheelSpan1,
-                wheelRadius1,
-                wheelWidth1,
-                maxSteeringAngle1,
-                maxTurnPerSecond1
-        );
-
-        vehicleSpec2 = new VehicleSpec(
-                "Vehicle 2",
-                maxAcceleration2,
-                maxDeceleration2,
-                maxVelocity2,
-                minVelocity2,
-                length2,
-                width2,
-                frontAxleDisplacement2,
-                rearAxleDisplacement2,
-                wheelSpan2,
-                wheelRadius2,
-                wheelWidth2,
-                maxSteeringAngle2,
-                maxTurnPerSecond2
-        );
-
-        vehicleSpec3 = new VehicleSpec(
-                "Vehicle 3",
-                maxAcceleration3,
-                maxDeceleration3,
-                maxVelocity3,
-                minVelocity3,
-                length3,
-                width3,
-                frontAxleDisplacement3,
-                rearAxleDisplacement3,
-                wheelSpan3,
-                wheelRadius3,
-                wheelWidth3,
-                maxSteeringAngle3,
-                maxTurnPerSecond3
-        );
-
         //Create test merge specs
-        mergeSpawnSpec1 = new MergeSpawnPoint.MergeSpawnSpec(1.0, vehicleSpec1);
-        mergeSpawnSpec2 = new MergeSpawnPoint.MergeSpawnSpec(2.0, vehicleSpec2);
-        mergeSpawnSpec3 = new MergeSpawnPoint.MergeSpawnSpec(3.0, vehicleSpec3);
+        mockMergeSpawnSpec1 = mock(MergeSpawnPoint.MergeSpawnSpec.class);
+        mockMergeSpawnSpec2 = mock(MergeSpawnPoint.MergeSpawnSpec.class);
+        mockMergeSpawnSpec3 = mock(MergeSpawnPoint.MergeSpawnSpec.class);
+        when(mockMergeSpawnSpec1.toString()).thenReturn("Spec1");
+        when(mockMergeSpawnSpec2.toString()).thenReturn("Spec2");
+        when(mockMergeSpawnSpec3.toString()).thenReturn("Spec3");
 
         mockVehicleSpecChooser = mock(MergeSpawnPoint.MergeSpawnSpecGenerator.class);
         when(mockVehicleSpecChooser.act(any(MergeSpawnPoint.class), anyDouble())).thenReturn(
                 new ArrayList<MergeSpawnPoint.MergeSpawnSpec>(){{
-                    add(mergeSpawnSpec1);
-                    add(mergeSpawnSpec2);
-                    add(mergeSpawnSpec3);
+                    add(mockMergeSpawnSpec1);
+                    add(mockMergeSpawnSpec2);
+                    add(mockMergeSpawnSpec3);
                 }}
         );
 
@@ -204,9 +110,15 @@ public class MergeSpawnPointTest {
         double timestep = 5.0;
         List<MergeSpawnPoint.MergeSpawnSpec> results = spawnPoint.act(timestep);
 
-        assertEquals("mergeSpawnSpec1 did not match the results of the act", results.get(0), mergeSpawnSpec1);
-        assertEquals("mergeSpawnSpec2 did not match the results of the act", results.get(1), mergeSpawnSpec2);
-        assertEquals("mergeSpawnSpec3 did not match the results of the act", results.get(2), mergeSpawnSpec3);
+        assertEquals("mergeSpawnSpec1 did not match the results of the act", results.get(0), mockMergeSpawnSpec1);
+        assertEquals("mergeSpawnSpec2 did not match the results of the act", results.get(1), mockMergeSpawnSpec2);
+        assertEquals("mergeSpawnSpec3 did not match the results of the act", results.get(2), mockMergeSpawnSpec3);
+        assertEquals("mergeSpawnSpec1 toString did not match the results of the act list value toString",
+                results.get(0).toString(), mockMergeSpawnSpec1.toString());
+        assertEquals("mergeSpawnSpec2 toString did not match the results of the act list value toString",
+                results.get(1).toString(), mockMergeSpawnSpec2.toString());
+        assertEquals("mergeSpawnSpec3 toString did not match the results of the act list value toString",
+                results.get(2).toString(), mockMergeSpawnSpec3.toString());
         assertEquals(currentTime + timestep, spawnPoint.getCurrentTime(), 0);
     }
 

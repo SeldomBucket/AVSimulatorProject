@@ -24,4 +24,34 @@ public class CoreMergeSimulatorTest {
     public void testStep() throws Exception {
 
     }
+
+    @Test
+    public void testGetMap() throws Exception {
+
+    }
+
+    @Test
+    public void testGetSimulationTime() throws Exception {
+
+    }
+
+    @Test
+    public void testGetNumCompletedVehicles() throws Exception {
+
+    }
+
+    @Test
+    public void testGetAvgBitsTransmittedByCompletedVehicles() throws Exception {
+
+    }
+
+    @Test
+    public void testGetAvgBitsReceivedByCompletedVehicles() throws Exception {
+
+    }
+
+    @Test
+    public void testGetActiveVehicle() throws Exception {
+
+    }
 }
