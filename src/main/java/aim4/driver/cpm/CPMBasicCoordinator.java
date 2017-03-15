@@ -19,6 +19,31 @@ import java.util.EnumMap;
  */
 public class CPMBasicCoordinator implements Coordinator{
 
+    /**
+     * The different parking statuses that an agent can have.
+     */
+    public enum ParkingStatus {
+        /** The vehicle has been spawned and is waiting to enter the car park.
+         * If there is enough room they will be granted access by recieving
+         * the parking lane they should park in (the one with the most room).
+         * If there is not enough space, the vehicle will not recieve a parking
+         * lane and they should continue to wait.
+         * */
+        WAITING,
+        /** The vehicle has entered, or re-entered, the car park. They are
+         * now making their way to a parking lane to park.*/
+        PARKING,
+        /** The vehicle is relocating - they leave the parking lane and reenter
+         * the car park, allowing a vehicle it was blocking to exit. On reentry,
+         * they are given a new parking lane and go back to PARKING.
+         * */
+        RELOCATING,
+        /**
+         * The vehicle is being retrieved and should exit the car park.
+         * */
+        EXIT
+    }
+
     /////////////////////////////////
     // NESTED INTERFACES
     /////////////////////////////////
