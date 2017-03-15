@@ -1,4 +1,4 @@
-package aim4.vehicle.cpm;
+package aim4.cpm.vehicle;
 
 import aim4.gui.Viewer;
 import aim4.gui.viewer.CPMSimViewer;

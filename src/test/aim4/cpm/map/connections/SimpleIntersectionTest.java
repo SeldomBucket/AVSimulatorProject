@@ -1,6 +1,7 @@
-package aim4.map.connections;
+package aim4.cpm.map.connections;
 
 import aim4.map.Road;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.testmaps.CPMMapIntersection3Roads;
 import aim4.map.cpm.testmaps.CPMMapWithSimpleIntersection;
 import aim4.map.lane.Lane;
