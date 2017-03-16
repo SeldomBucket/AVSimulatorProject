@@ -29,7 +29,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     private ParkingArea parkingArea;
     /** The status monitor recording the status of this car park. */
     private StatusMonitor statusMonitor;
-    /** A list of sensroed lines used by the StatusMonitor. */
+    /** A list of sensored lines used by the StatusMonitor. */
     private List<SensoredLine> sensoredLines;
 
     public CPMCarParkWithStatus(int laneWidth, double speedLimit, double initTime,

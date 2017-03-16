@@ -120,11 +120,17 @@ public class CPMAutoDriverSimulator implements Simulator {
             if (!spawnSpecs.isEmpty()) {
                 if (canSpawnVehicle(spawnPoint)) {
                     for(CPMSpawnSpec spawnSpec : spawnSpecs) {
-                        CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        break; // only handle the first spawn vehicle
-                        // TODO: need to fix this
+                        // Only create the vehicle if there is room in the car park
+                        double vehicleLength = spawnSpec.getVehicleSpec().getLength();
+                        if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
+                            CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                            vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            break; // only handle the first spawn vehicle
+                            // TODO: need to fix this
+                        } else {
+                            System.out.println("Cannot spawn this vehicle.");
+                        }
                     }
                 } // else ignore the spawnSpecs and do nothing
             }

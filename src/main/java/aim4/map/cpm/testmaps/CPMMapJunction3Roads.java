@@ -4,6 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMBasicMap;
+import aim4.map.cpm.parking.StatusMonitor;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -102,5 +103,10 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
         junctions.add(junction);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public StatusMonitor getStatusMonitor() {
+        return null;
     }
 }

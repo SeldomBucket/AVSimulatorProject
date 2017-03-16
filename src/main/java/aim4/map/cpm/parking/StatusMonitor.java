@@ -40,6 +40,20 @@ public class StatusMonitor {
         }
     }
 
+    public boolean roomForVehicle(double vehicleLength) {
+        // Find the lane with the most room available
+        Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
+
+        // Check there is room for this vehicle
+        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
+        double spaceNeeded = vehicleLength + distanceBetweenVehicles;
+
+        if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
+            return true;
+        }
+        return false;
+    }
+
     public void vehicleOnEntry(CPMBasicAutoVehicle vehicle) {
         // TODO CPM Think about what to do if the vehicle has a targetParkingLane already
         /** ^ This might happen if say seem to be on the sensored line for a while
