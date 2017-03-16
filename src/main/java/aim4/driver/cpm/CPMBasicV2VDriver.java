@@ -188,6 +188,11 @@ public class CPMBasicV2VDriver extends BasicDriver
         return false;
     }
 
+    public ParkingLane getParkingLaneCurrentlyIn(){
+        assert(currentLane instanceof ParkingLane);
+        return (ParkingLane) currentLane;
+    }
+
     @Override
     public CPMBasicAutoVehicle getVehicle() {
         return vehicle;

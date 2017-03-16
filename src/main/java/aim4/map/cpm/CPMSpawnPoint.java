@@ -9,13 +9,47 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- * Created by Callum on 14/03/2017.
+ * A SpawnPoint for CPM simulations.
  */
 public class CPMSpawnPoint extends SpawnPoint {
-    private CPMSpawnSpecGenerator vehicleSpecChooser;
+
+    /////////////////////////////////
+    // NESTED CLASSES
+    /////////////////////////////////
+
+    /** The specification of a spawn */
+    public static class CPMSpawnSpec extends SpawnSpec {
+
+        /**
+         * Create a spawn specification.
+         *
+         * @param spawnTime       the spawn time
+         * @param vehicleSpec     the vehicle specification
+         */
+        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec) {
+            super(spawnTime, vehicleSpec);
+        }
+    }
 
     /**
-     * Create a spawn point.
+     * The interface of the spawn specification generator.
+     */
+    public static interface CPMSpawnSpecGenerator {
+        List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timestep);
+    }
+
+    /////////////////////////////////
+    // PRIVATE FIELDS
+    /////////////////////////////////
+
+    private CPMSpawnSpecGenerator vehicleSpecChooser;
+
+    /////////////////////////////////
+    // CONSTRUCTORS
+    /////////////////////////////////
+
+    /**
+     * Create a spawn point with a vehicleSpecChooser.
      *
      * @param currentTime   the current time
      * @param pos           the initial position
@@ -24,34 +58,64 @@ public class CPMSpawnPoint extends SpawnPoint {
      * @param acceleration  the initial acceleration
      * @param lane          the lane
      * @param noVehicleZone the no vehicle zone
+     * @param vehicleSpecChooser  the vehicle spec chooser
      */
-    public CPMSpawnPoint(double currentTime, Point2D pos, double heading, double steeringAngle, double acceleration,
-                         Lane lane, Rectangle2D noVehicleZone) {
-        super(currentTime, pos, heading, steeringAngle, acceleration, lane, noVehicleZone);
-    }
-
-    public void setVehicleSpecChooser(CPMSpawnSpecGenerator vehicleSpecChooser) {
+    public CPMSpawnPoint(double currentTime, Point2D pos,
+                         double heading, double steeringAngle,
+                         double acceleration, Lane lane,
+                         Rectangle2D noVehicleZone,
+                         CPMSpawnSpecGenerator vehicleSpecChooser) {
+        super(currentTime, pos, heading, steeringAngle,
+                acceleration, lane, noVehicleZone);
         this.vehicleSpecChooser = vehicleSpecChooser;
     }
 
-    public static class CPMSpawnSpec extends SpawnSpec {
-        /**
-         * Create a spawn specification.
-         *
-         * @param spawnTime   the spawn time
-         * @param vehicleSpec the vehicle specification
-         */
-        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec) {
-            super(spawnTime, vehicleSpec);
-        }
+    /**
+     * Create a spawn point without a vehicleSpecChooser.
+     *
+     * @param currentTime         the current time
+     * @param pos                 the initial position
+     * @param heading             the initial heading
+     * @param steeringAngle       the initial steering angle
+     * @param acceleration        the initial acceleration
+     * @param lane                the lane
+     * @param noVehicleZone       the no vehicle zone
+     */
+    public CPMSpawnPoint(double currentTime,
+                         Point2D pos,
+                         double heading,
+                         double steeringAngle,
+                         double acceleration,
+                         Lane lane,
+                         Rectangle2D noVehicleZone) {
+        super(currentTime, pos, heading, steeringAngle,
+                acceleration, lane, noVehicleZone);
+        this.vehicleSpecChooser = null;
     }
 
-    public static interface CPMSpawnSpecGenerator {
-        List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timestep);
-    }
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
 
-    @Override
+    /**
+     * Advance the time step.
+     *
+     * @param timeStep  the time step
+     * @return The list of spawn spec generated in this time step
+     */
     public List<CPMSpawnSpec> act(double timeStep) {
-        return null;
+        assert vehicleSpecChooser != null;
+        List<CPMSpawnSpec> spawnSpecs = vehicleSpecChooser.act(this, timeStep);
+        currentTime += timeStep;
+        return spawnSpecs;
+    }
+
+    /**
+     * Set the vehicle spec chooser.
+     *
+     * @param vehicleSpecChooser the vehicle spec chooser
+     */
+    public void setVehicleSpecChooser(CPMSpawnSpecGenerator vehicleSpecChooser) {
+        this.vehicleSpecChooser = vehicleSpecChooser;
     }
 }

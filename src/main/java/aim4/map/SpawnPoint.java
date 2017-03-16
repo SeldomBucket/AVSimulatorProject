@@ -8,7 +8,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- * Created by Callum on 13/03/2017.
+ * An abstract spawn point.
  */
 public abstract class SpawnPoint {
 

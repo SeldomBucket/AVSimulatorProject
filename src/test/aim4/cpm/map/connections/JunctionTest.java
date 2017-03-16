@@ -1,6 +1,7 @@
-package aim4.map.connections;
+package aim4.cpm.map.connections;
 
 import aim4.map.Road;
+import aim4.map.connections.Junction;
 import aim4.map.cpm.testmaps.CPMMapJunction3Roads;
 import aim4.map.cpm.testmaps.CPMMapWithTJunction;
 import aim4.map.lane.Lane;

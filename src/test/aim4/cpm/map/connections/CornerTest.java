@@ -1,4 +1,4 @@
-package aim4.map.connections;
+package aim4.cpm.map.connections;
 
 import aim4.map.Road;
 import aim4.map.connections.Corner;

@@ -1,5 +1,6 @@
-package aim4.map.cpm.parking;
+package aim4.cpm.map.parking;
 
+import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
 import org.junit.Test;
 

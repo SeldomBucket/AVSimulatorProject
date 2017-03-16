@@ -40,7 +40,7 @@ import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSpec;
 
 /**
- * A spawn point.
+ * A spawn point for AIM simulations.
  */
 public class AIMSpawnPoint extends SpawnPoint {
 
