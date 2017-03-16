@@ -89,6 +89,9 @@ public class CPMBasicCoordinator implements Coordinator{
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMV2VPilot pilot;
 
+    /** The sub-agent that decides where to go when there is a choice. */
+    private CPMBasicNavigator navigator;
+
     // state
 
     /**
@@ -127,7 +130,9 @@ public class CPMBasicCoordinator implements Coordinator{
                                 AutoDriver driver){
         this.vehicle = vehicle;
         this.driver = driver;
-        this.pilot = new CPMV2VPilot(vehicle, driver);
+        this.navigator = new CPMBasicNavigator(vehicle, driver);
+        this.pilot = new CPMV2VPilot(vehicle, driver, navigator);
+
 
         initStateHandlers();
 
@@ -275,7 +280,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
-                pilot.takeSteeringActionForTraversing(corner);
+                pilot.takeSteeringActionForTraversing(corner, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
             }
@@ -303,7 +308,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
-                pilot.takeSteeringActionForTraversing(junction);
+                pilot.takeSteeringActionForTraversing(junction, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
             }
@@ -331,7 +336,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
-                pilot.takeSteeringActionForTraversing(intersection);
+                pilot.takeSteeringActionForTraversing(intersection, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
             }

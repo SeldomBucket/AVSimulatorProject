@@ -66,9 +66,7 @@ public class StatusMonitor {
             System.out.println("There's not enough room in the car " +
                                "park from this vehicle to enter!");
         }
-
-        // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(1));
-        // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(0));
+        // sendParkingLaneMessage(vehicle, parkingArea.getParkingLanes().get(1));
     }
 
     public void vehicleOnReEntry(CPMBasicAutoVehicle vehicle) {
