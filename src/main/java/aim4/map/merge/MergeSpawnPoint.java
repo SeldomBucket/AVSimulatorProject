@@ -12,6 +12,7 @@ import java.util.List;
  * Created by Callum on 13/03/2017.
  */
 public class MergeSpawnPoint extends SpawnPoint {
+    private MergeSpawnSpecGenerator vehicleSpecChooser;
 
     /**
      * Create a spawn point.
@@ -46,6 +47,13 @@ public class MergeSpawnPoint extends SpawnPoint {
 
     @Override
     public List<MergeSpawnSpec> act(double timeStep) {
-        return null;
+        assert vehicleSpecChooser != null;
+        List<MergeSpawnSpec> spawnSpecs = vehicleSpecChooser.act(this, timeStep);
+        currentTime += timeStep;
+        return spawnSpecs;
+    }
+
+    public void setVehicleSpecChooser(MergeSpawnSpecGenerator vehicleSpecChooser) {
+        this.vehicleSpecChooser = vehicleSpecChooser;
     }
 }

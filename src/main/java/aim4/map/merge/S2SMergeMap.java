@@ -79,7 +79,8 @@ public class S2SMergeMap extends MergeMap {
          */
 
         double mergeHeight = mergeLeadInDistance * Math.sin(mergeAngleRad) + mergeEntranceYAdjustment;
-        double mergeBaseWidth = mergeLeadInDistance * Math.cos(mergeAngleRad) + mergeEntranceXAdjustment;
+        double mergeBaseWidth = mergeLeadInDistance * Math.cos(mergeAngleRad) +
+                mergeEntranceXAdjustment + mergeZoneLength/2;
 
         /*
         We want the merging road to meet the target road in the middle of the lane, where the target road line runs.
@@ -101,10 +102,10 @@ public class S2SMergeMap extends MergeMap {
         */
         double targetLaneLength = targetLeadInDistance + mergeZoneLength + targetLeadOutDistance;
         double width = 0;
-        if(targetLaneLength > (mergeBaseWidth + mergeZoneLength + targetLeadOutDistance))
+        if(targetLaneLength > (mergeBaseWidth + targetLeadOutDistance))
             width = targetLaneLength;
         else
-            width = mergeBaseWidth + mergeZoneLength + targetLeadOutDistance;
+            width = mergeBaseWidth + targetLeadOutDistance;
 
         //With these two measurements we can set our dimensions.
         double height = LOWER_BUFFER + LANE_WIDTH + mergeHeight;
@@ -138,9 +139,9 @@ public class S2SMergeMap extends MergeMap {
 
         //MERGING ROAD//
         double mergeZoneCentreX = width - targetLeadOutDistance - (mergeZoneLength/2);
-        double mergeLaneEndX = width - targetLeadOutDistance - (mergeZoneLength/2) + mergeLaneZoneToEndXAdjustment;
+        double mergeLaneEndX = mergeZoneCentreX + mergeLaneZoneToEndXAdjustment;
         double mergeLaneEndY = targetLaneCentreY;
-        double mergeLaneStartX = mergeZoneCentreX - mergeBaseWidth + mergeEntranceXAdjustment;
+        double mergeLaneStartX = width - targetLeadOutDistance - mergeBaseWidth + mergeEntranceXAdjustment;
         double mergeLaneStartY = height - mergeEntranceYAdjustment;
 
         Road mergeRoad = new Road("Merging Road", this);
@@ -160,20 +161,17 @@ public class S2SMergeMap extends MergeMap {
         addLaneToRoad(mergeLane, mergeRoad);
 
         //ADD DATA COLLECTION LINES
-        double targetLaneTopY = targetLaneCentreY + LANE_WIDTH/2;
-        double targetLaneBottomY = targetLaneCentreY - LANE_WIDTH/2;
-
         addDataCollectionLine("Target Lane Entrance",
-                new Point2D.Double(targetLaneStartX, targetLaneTopY),
-                new Point2D.Double(targetLaneStartX, targetLaneBottomY),
+                new Point2D.Double(targetLaneStartX, targetLaneUpperY),
+                new Point2D.Double(targetLaneStartX, targetLaneLowerY),
                 true);
         addDataCollectionLine("Target Lane Zone Entrance",
-                new Point2D.Double(targetLaneStartX + targetLeadInDistance, targetLaneTopY),
-                new Point2D.Double(targetLaneStartX + targetLeadInDistance, targetLaneBottomY),
+                new Point2D.Double(targetLaneStartX + targetLeadInDistance, targetLaneUpperY),
+                new Point2D.Double(targetLaneStartX + targetLeadInDistance, targetLaneLowerY),
                 true);
         addDataCollectionLine("Target Lane Exit",
-                new Point2D.Double(width, targetLaneTopY),
-                new Point2D.Double(width, targetLaneBottomY),
+                new Point2D.Double(width, targetLaneUpperY),
+                new Point2D.Double(width, targetLaneLowerY),
                 true);
         addDataCollectionLine("Merging Lane Entrance",
                 new Point2D.Double(mergeLaneStartX + mergeEntranceXAdjustment,
@@ -182,12 +180,12 @@ public class S2SMergeMap extends MergeMap {
                         mergeLaneStartY - mergeEntranceYAdjustment),
                 true);
         addDataCollectionLine("Merge Lane Zone Entrance",
-                new Point2D.Double(mergeZoneCentreX + mergeZoneLength/2, targetLaneTopY),
-                new Point2D.Double(mergeZoneCentreX - mergeZoneLength/2, targetLaneTopY),
+                new Point2D.Double(mergeZoneCentreX + mergeZoneLength/2, targetLaneUpperY),
+                new Point2D.Double(mergeZoneCentreX - mergeZoneLength/2, targetLaneUpperY),
                 true);
         addDataCollectionLine("Merge Zone Exit",
-                new Point2D.Double(width - targetLeadOutDistance, targetLaneTopY),
-                new Point2D.Double(width - targetLeadOutDistance, targetLaneBottomY),
+                new Point2D.Double(width - targetLeadOutDistance, targetLaneUpperY),
+                new Point2D.Double(width - targetLeadOutDistance, targetLaneLowerY),
                 true);
 
         //ADD ROADS TO roads.

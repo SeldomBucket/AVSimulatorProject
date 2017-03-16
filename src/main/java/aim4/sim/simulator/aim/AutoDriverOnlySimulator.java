@@ -659,7 +659,6 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
   // interval = vehicle.getPosition().
   //   distance(nextVehicle.get(vehicle).getPointAtRear());
 
-
   /**
    * Provide traffic light signals to a vehicle.
    *
