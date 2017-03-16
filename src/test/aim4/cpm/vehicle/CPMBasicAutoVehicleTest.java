@@ -9,34 +9,43 @@ import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
+import util.TestSimThread;
+
+import java.time.Duration;
 
 import static org.junit.Assert.*;
 
 public class CPMBasicAutoVehicleTest {
-    CPMCarParkWithStatus map = new CPMCarParkWithStatus(4, // laneWidth
-            10.0, // speedLimit
-            0.0, // initTime
-            2, // numberOfParkingLanes
-            20, // parkingLength
-            5); // access length
+    CPMCarParkWithStatus map;
+    TestSimThread simThread;
+    CPMAutoDriverSimulator sim;
+
+    @Before
+    public void setUp() {
+        this.map = new CPMCarParkWithStatus(4, // laneWidth
+                10.0, // speedLimit
+                0.0, // initTime
+                2, // numberOfParkingLanes
+                20, // parkingLength
+                5); // access length
+        CPMMapUtil.setUpOneVehicleSpawnPoint(map);
+        this.sim = new CPMAutoDriverSimulator(map);
+        this.simThread = new TestSimThread(sim);
+    }
+
 
     @Test
     public void testRunSimulator() throws Exception {
-        /** Viewer doesn't seem to do anything */
-        /*Viewer viewer = new Viewer();
+        simThread.start();
+    }
 
-        StatusPanelContainer statusPanel = new StatusPanelContainer(viewer);
-        CPMSimViewer cpmSimViewer = new CPMSimViewer(statusPanel, viewer);
-        cpmSimViewer.createSimulator();
-        viewer.startSimProcess();*/
-
-        /** Need a SimViewer to create a new SimThread*/
-        /*CPMMapUtil.setUpOneVehicleSpawnPoint(map);
-        CPMAutoDriverSimulator sim = new CPMAutoDriverSimulator(map);*/
-        /*double targetFrameRate = 20.0;
-        long timerDelay = (long) (1000.0 / targetFrameRate);
-        SimThread simThread = new SimThread(true, timerDelay);*/
+    @After
+    public void tearDown() throws Exception {
+        this.simThread.terminate();
     }
 
 
