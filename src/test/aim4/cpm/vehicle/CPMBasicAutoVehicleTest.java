@@ -40,7 +40,16 @@ public class CPMBasicAutoVehicleTest {
 
     @Test
     public void testRunSimulator() throws Exception {
-        simThread.start();
+        int stepCount = 4000;
+        for(int i = 0; i < stepCount; i++){
+            try {
+                sim.step(i);
+            } catch(RuntimeException e) {
+                throw new RuntimeException("RuntimeException thrown at simStep: " + i + ". Message was: " + e.getMessage());
+            }
+        }
+        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(((CPMCarParkWithStatus) sim.getMap()).getStatusMonitor().getVehicles().size() > 0);
     }
 
     @After

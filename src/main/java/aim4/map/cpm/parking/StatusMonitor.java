@@ -1,5 +1,7 @@
 package aim4.map.cpm.parking;
 
+import aim4.map.cpm.CPMMapUtil;
+import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.*;
@@ -128,5 +130,9 @@ public class StatusMonitor {
 
     private void sendParkingLaneMessage(CPMBasicAutoVehicle vehicle, ParkingLane parkingLane) {
         vehicle.sendMessageToI2VInbox(parkingLane);
+    }
+
+    public List<CPMBasicAutoVehicle> getVehicles() {
+        return vehicles;
     }
 }
