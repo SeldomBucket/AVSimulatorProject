@@ -29,6 +29,23 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      */
     protected ParkingLane targetParkingLane;
 
+    // messaging
+
+    /**
+     * The inbox for messages from the car park StatusMonitor.
+     * There will only ever be one message, which will be a
+     * ParkingLane (or null, if no room for vehicle to park).
+     */
+    private ParkingLane I2Vinbox;
+
+    /**
+     * The outbox for messages to the StatusMonitor.
+     * There will only ever be one message, which
+     * will be to enter, re-enter or exit the car
+     * park.
+     // TODO CPM somehow need to send VIN so StatusMonitor knows who msg if from
+     private ParkingStatus V2Ioutbox;*/
+
     /**
      * Construct a vehicle
      *
@@ -84,5 +101,18 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         Point2D endPoint = ((ParkingLane) driver.getCurrentLane()).getParkingEndPoint();
         Point2D vehiclePosition = gaugePosition();
         return vehiclePosition.distance(endPoint);
+    }
+
+    public void sendMessageToI2VInbox(ParkingLane parkingLane) {
+        I2Vinbox = parkingLane;
+
+    }
+
+    public ParkingLane getMessagesFromInbox() {
+        return I2Vinbox;
+    }
+
+    public void clearV2Iinbox() {
+        I2Vinbox = null;
     }
 }

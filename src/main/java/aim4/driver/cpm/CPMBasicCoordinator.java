@@ -86,7 +86,6 @@ public class CPMBasicCoordinator implements Coordinator{
     /** The driver of which this coordinator is a part. */
     private AutoDriver driver;
 
-    // TODO CPM Does it make sense to have this here? Should it be in Driver or Vehicle?
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMV2VPilot pilot;
 
@@ -103,13 +102,6 @@ public class CPMBasicCoordinator implements Coordinator{
      * This is part of how the two sub-agents communicate.
      */
     private ParkingStatus parkingStatus;
-
-    /**
-     * The inbox for messages from the car park StatusMonitor.
-     * There will only ever be one message, which will be a
-     * ParkingLane (or null, if no room for vehicle to park).
-     */
-    private ParkingLane V2Iinbox;
 
     /**
      * The most recent time at which the state was changed.
@@ -147,26 +139,23 @@ public class CPMBasicCoordinator implements Coordinator{
 
     @Override
     public void act() {
-        processV2Iinbox();
+        processI2Vinbox();
         callStateHandlers();
     }
 
     /**
-     * Process any messages in the V2I inbox, from the StatusMonitor.
+     * Process any messages in the I2V inbox, from the StatusMonitor.
      */
-    private void processV2Iinbox() {
-        if ((V2Iinbox != null && parkingStatus == ParkingStatus.WAITING) ||
-                (V2Iinbox != null && parkingStatus == ParkingStatus.RELOCATING) ) {
+    private void processI2Vinbox() {
+        ParkingLane I2Vinbox = vehicle.getMessagesFromInbox();
+        if ((I2Vinbox != null && parkingStatus == ParkingStatus.WAITING) ||
+                (I2Vinbox != null && parkingStatus == ParkingStatus.RELOCATING) ) {
             // We have been granted access to the car park and know where to park
             System.out.println("Changing status to PARKING.");
             setParkingStatus(ParkingStatus.PARKING);
-            vehicle.setTargetParkingLane(V2Iinbox);
-            clearV2Iinbox();
+            vehicle.setTargetParkingLane(I2Vinbox);
+            vehicle.clearV2Iinbox();
         }
-    }
-
-    private void clearV2Iinbox() {
-        this.V2Iinbox = null;
     }
 
     /**

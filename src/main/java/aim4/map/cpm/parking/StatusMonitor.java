@@ -58,9 +58,11 @@ public class StatusMonitor {
             parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailableSpace);
 
             // Allocate this parking lane to the vehicle
-            vehicle.setTargetParkingLane(parkingLaneEntry.getKey());
+            System.out.println("Status monitor sending parking lane to vehicle.");
+            sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
+
         } else {
-            // TODO CPM If not, send vehicle a message to wait
+            // If not enough room, don't send anything. They will continue to wait.
             System.out.println("There's not enough room in the car " +
                                "park from this vehicle to enter!");
         }
@@ -115,5 +117,9 @@ public class StatusMonitor {
             return true;
         }
         return false;
+    }
+
+    private void sendParkingLaneMessage(CPMBasicAutoVehicle vehicle, ParkingLane parkingLane) {
+        vehicle.sendMessageToI2VInbox(parkingLane);
     }
 }
