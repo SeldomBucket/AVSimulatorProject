@@ -1,7 +1,8 @@
-package aim4.map.cpm;
+package aim4.map.cpm.testmaps;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.parking.ParkingArea;
 
 import java.awt.geom.Point2D;
@@ -13,16 +14,16 @@ import java.util.List;
 /**
  * A car park map with a parking area.
  */
-public class CPMMapCarPark extends CPMBasicMap {
+public class CPMMapWithParkingArea extends CPMBasicMap {
 
     private int numberOfParkingLanes;
     private double parkingLength;
     private double accessLength;
     private ParkingArea parkingArea;
 
-    public CPMMapCarPark(int laneWidth, double speedLimit, double initTime,
-                         int numberOfParkingLanes, double parkingLength,
-                         double accessLength) {
+    public CPMMapWithParkingArea(int laneWidth, double speedLimit, double initTime,
+                                 int numberOfParkingLanes, double parkingLength,
+                                 double accessLength) {
         super(laneWidth, speedLimit, initTime);
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.parkingLength = parkingLength;
