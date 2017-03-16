@@ -102,7 +102,11 @@ public class StatusMonitor {
 
         for (Map.Entry<ParkingLane, Double> entry : parkingLanesSpace.entrySet())
         {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
+            boolean hasLowerId = false;
+            if (maxEntry != null && entry.getKey().getId() < maxEntry.getKey().getId()){ hasLowerId = true; }
+            if (maxEntry == null ||
+                    entry.getValue().compareTo(maxEntry.getValue()) > 0 ||
+                    (entry.getValue().equals(maxEntry.getValue()) && hasLowerId))
             {
                 maxEntry = entry;
                 name = entry.getKey().getRoadName();

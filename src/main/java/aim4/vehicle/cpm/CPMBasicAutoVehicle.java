@@ -90,6 +90,10 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.targetParkingLane = targetParkingLane;
     }
 
+    public void clearTargetParkingLane(){
+        targetParkingLane = null;
+    }
+
     /**
      * Find out the distance between the front of the vehicle and
      * the ParkingLane's parking end point.

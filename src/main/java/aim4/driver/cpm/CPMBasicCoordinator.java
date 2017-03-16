@@ -363,6 +363,11 @@ public class CPMBasicCoordinator implements Coordinator{
                     setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
                 }
             }
+            if (vehicle.getTargetParkingLane() ==
+                    ((CPMBasicV2VDriver)driver).getParkingLaneCurrentlyIn()){
+                System.out.println("Reached target parking lane");
+                vehicle.clearTargetParkingLane();
+            }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
             pilot.dontPassParkingEndPoint();
