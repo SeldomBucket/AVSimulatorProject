@@ -1,7 +1,8 @@
-package aim4.map.cpm.parking;
+package aim4.cpm.map.parking;
 
 import aim4.map.Road;
 import aim4.map.cpm.CPMMapCarPark;
+import aim4.map.cpm.parking.ParkingArea;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

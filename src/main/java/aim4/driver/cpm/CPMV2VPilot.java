@@ -45,7 +45,7 @@ public class CPMV2VPilot extends BasicPilot{
 
     private AutoDriver driver;
 
-    private Lane departureLane;
+    private Lane connectionDepartureLane;
 
     // ///////////////////////////////
     // CONSTRUCTORS
@@ -60,7 +60,7 @@ public class CPMV2VPilot extends BasicPilot{
     public CPMV2VPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver) {
         this.vehicle = vehicle;
         this.driver = driver;
-        this.departureLane = null;
+        this.connectionDepartureLane = null;
     }
 
     // ///////////////////////////////
@@ -127,42 +127,42 @@ public class CPMV2VPilot extends BasicPilot{
         System.out.println("Steering around a connection! Connection type: " + connection.getClass());
 
         // Check if we already have a departure lane.
-        if (departureLane == null) {
+        if (connectionDepartureLane == null) {
             // Determine the departure lane - depends if in a corner, junction or intersection
             Random random = new Random();
             if (connection instanceof Corner) {
                 // There is only one exit to a Corner
-                departureLane = connection.getExitLanes().get(0);
+                connectionDepartureLane = connection.getExitLanes().get(0);
             } else if (connection instanceof Junction) {
                 // Could have 1 or 2 exits
                 // TODO CPM Lets randomise for now
                 if (connection.getExitLanes().size() == 1) {
-                    departureLane = connection.getExitLanes().get(0);
+                    connectionDepartureLane = connection.getExitLanes().get(0);
                 } else {
                     int index = random.nextInt(2);
-                    departureLane = connection.getExitLanes().get(index);
+                    connectionDepartureLane = connection.getExitLanes().get(index);
                 }
             } else if (connection instanceof SimpleIntersection) {
                 // There will be 2 exits
                 // TODO CPM Lets randomise for now
                 int index = random.nextInt(2);
-                departureLane = connection.getExitLanes().get(index);
+                connectionDepartureLane = connection.getExitLanes().get(index);
             }
-            if (departureLane == null) {
+            if (connectionDepartureLane == null) {
                 throw new RuntimeException("Departure lane for the connection has not established!");
             }
         }
 
         // If we're not already in the departure lane
-        if (driver.getCurrentLane() != departureLane) {
+        if (driver.getCurrentLane() != connectionDepartureLane) {
             // Find out how far from the road of the departure lane we are
-            double distToLane = departureLane.nearestDistance(vehicle.gaugePosition());;
+            double distToLane = connectionDepartureLane.nearestDistance(vehicle.gaugePosition());;
             // If we're close enough...
             double traversingLaneChangeDistance =
                     TRAVERSING_LANE_CHANGE_LEAD_TIME * vehicle.gaugeVelocity();
             if (distToLane < traversingLaneChangeDistance) {
                 // Change to it
-                driver.setCurrentLane(departureLane);
+                driver.setCurrentLane(connectionDepartureLane);
             }
 
         }
@@ -171,11 +171,11 @@ public class CPMV2VPilot extends BasicPilot{
         followCurrentLane();
     }
 
-    public Lane getDepartureLane(){
-        return departureLane;
+    public Lane getConnectionDepartureLane(){
+        return connectionDepartureLane;
     }
 
     public void clearDepartureLane(){
-        this.departureLane = null;
+        this.connectionDepartureLane = null;
     }
 }
