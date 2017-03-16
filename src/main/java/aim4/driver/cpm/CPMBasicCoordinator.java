@@ -154,6 +154,7 @@ public class CPMBasicCoordinator implements Coordinator{
             System.out.println("Changing status to PARKING.");
             setParkingStatus(ParkingStatus.PARKING);
             vehicle.setTargetParkingLane(I2Vinbox);
+            System.out.println("Parking on " + I2Vinbox.getRoadName());
             vehicle.clearV2Iinbox();
         }
     }

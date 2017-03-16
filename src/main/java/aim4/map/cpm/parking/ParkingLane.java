@@ -1,5 +1,6 @@
 package aim4.map.cpm.parking;
 
+import aim4.map.Road;
 import aim4.map.lane.LineSegmentLane;
 
 import java.awt.geom.Line2D;
@@ -19,12 +20,15 @@ public class ParkingLane extends LineSegmentLane {
     private double accessLength;
     /**The width of the vertical roads the parking lanes will overlap with. */
     private double overlappingRoadWidth;
+    /** The road this parking lane belongs to */
+    private Road road;
 
     public ParkingLane(Line2D line, double laneWidth, double accessLength,
-                       double overlappingRoadWidth, double speedLimit) {
+                       double overlappingRoadWidth, double speedLimit, Road road) {
         super(line, laneWidth, speedLimit);
         this.accessLength = accessLength;
         this.overlappingRoadWidth = overlappingRoadWidth;
+        this.road = road;
 
         // Calculate the start and end end of the parking section of this lane
         this.parkingStartPoint = new Point2D.Double(
@@ -39,13 +43,15 @@ public class ParkingLane extends LineSegmentLane {
     }
 
     public ParkingLane(Point2D p1, Point2D p2, double laneWidth, double accessLength,
-                       double overlappingRoadWidth, double speedLimit) {
-        this(new Line2D.Double(p1, p2), laneWidth, accessLength, overlappingRoadWidth, speedLimit);
+                       double overlappingRoadWidth, double speedLimit, Road road) {
+        this(new Line2D.Double(p1, p2), laneWidth, accessLength,
+                overlappingRoadWidth, speedLimit, road);
     }
 
     public ParkingLane(double x1, double y1, double x2, double y2, double laneWidth,
-                       double accessLength, double overlappingRoadWidth, double speedLimit) {
-        this(new Line2D.Double(x1, y1, x2, y2), laneWidth, accessLength, overlappingRoadWidth, speedLimit);
+                       double accessLength, double overlappingRoadWidth, double speedLimit, Road road) {
+        this(new Line2D.Double(x1, y1, x2, y2), laneWidth, accessLength,
+                overlappingRoadWidth, speedLimit, road);
     }
 
     public Point2D getParkingStartPoint() { return parkingStartPoint; }
@@ -53,5 +59,9 @@ public class ParkingLane extends LineSegmentLane {
     public Point2D getParkingEndPoint() { return parkingEndPoint;}
 
     public double getTotalParkingLength() { return totalParkingLength; }
+
+    public String getRoadName(){
+        return road.getName();
+    }
     
 }

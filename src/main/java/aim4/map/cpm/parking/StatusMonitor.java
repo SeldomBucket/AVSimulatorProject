@@ -98,14 +98,17 @@ public class StatusMonitor {
 
     private Map.Entry<ParkingLane, Double> findLeastFullParkingLane() {
         Map.Entry<ParkingLane, Double> maxEntry = null;
+        String name = null;
 
         for (Map.Entry<ParkingLane, Double> entry : parkingLanesSpace.entrySet())
         {
             if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
             {
                 maxEntry = entry;
+                name = entry.getKey().getRoadName();
             }
         }
+        System.out.println("Lane with most room is " + name);
         return maxEntry;
     }
 
