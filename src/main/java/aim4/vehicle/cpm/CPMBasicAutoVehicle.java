@@ -51,6 +51,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
                                double currentTime) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration,
                 targetVelocity, currentTime);
+        this.targetParkingLane = null;
     }
 
     @Override

@@ -138,7 +138,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @return Whether the spawn point can spawn any vehicle
      */
     private boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
-        // return true for the moment.
+        // TODO CPM return true for the moment.
         return true;
     }
 

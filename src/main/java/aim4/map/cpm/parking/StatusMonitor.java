@@ -45,7 +45,7 @@ public class StatusMonitor {
         /** ^ This might happen if say seem to be on the sensored line for a while
         // Like letting another car go through the intersection first.*/
 
-        /*// Find the lane with the most room available
+        // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
         // Check there is room for this vehicle
@@ -63,9 +63,9 @@ public class StatusMonitor {
             // TODO CPM If not, send vehicle a message to wait
             System.out.println("There's not enough room in the car " +
                                "park from this vehicle to enter!");
-        }*/
+        }
 
-        vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(1));
+        // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(1));
         // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(0));
     }
 
