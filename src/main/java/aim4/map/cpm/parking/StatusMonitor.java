@@ -77,6 +77,9 @@ public class StatusMonitor {
             System.out.println("Status monitor sending parking lane to vehicle.");
             sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
 
+            // Register the vehicle with the StatusMonitor
+            vehicles.add(vehicle);
+
         } else {
             // If not enough room, don't send anything. They will continue to wait.
             System.out.println("There's not enough room in the car " +

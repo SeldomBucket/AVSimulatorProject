@@ -173,6 +173,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         // Set size of array for the sensored lines.
         // One on entry, one on reentry and one on exit
         sensoredLines = new ArrayList<SensoredLine>(3);
+
         // Create the sensored lines
         // CAR PARK ENTRY
         // x1 = parkingArea.getStartPoint().getX() - (BORDER/2); //TODO CPM try find out whats going on when in intersection

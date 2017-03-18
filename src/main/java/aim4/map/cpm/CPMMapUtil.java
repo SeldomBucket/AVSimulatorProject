@@ -75,7 +75,7 @@ public class CPMMapUtil {
         double x = vehiclePosition.getX();
         double y = vehiclePosition.getY();
 
-        // check if it is within the dimensions of the map
+        /*// check if it is within the dimensions of the map
         if (0 < x & x < map.getDimensions().getMaxX() &
                 0 < y & y < map.getDimensions().getMaxY()){
             return;
@@ -83,8 +83,16 @@ public class CPMMapUtil {
         // Allow it to drive off the map once it's followed the exit lane
         if (map.getExitLanes().contains(currentLane)){
             return;
+        }*/
+
+        // If the vehicle is off the map
+        if (!map.getDimensions().contains(new Point2D.Double(x, y))){
+            // And the vehicle is not on the exit lane
+            if (!map.getExitLanes().contains(currentLane)) {
+                throw new RuntimeException("Vehicle has driven off the map! Vehicle position " + vehiclePosition
+                + ", map dimensions " + map.getDimensions().getMaxX() + "," + map.getDimensions().getMaxY());
+            }
         }
-        throw new RuntimeException("Vehicle has driven off the map!");
     }
 
 }

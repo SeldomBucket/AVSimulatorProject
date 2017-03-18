@@ -59,7 +59,7 @@ public class CPMBasicNavigator {
         } else if (connection instanceof SimpleIntersection) {
             // There will be 2 exits, we are at the start of the parking area
             if (parkingStatus == ParkingStatus.PARKING) {
-                // Check if we cant turn onto the target parking lane
+                // Check if we can turn onto the target parking lane
                 if (connection.getExitLanes().contains(vehicle.getTargetParkingLane())){
                     return vehicle.getTargetParkingLane();
                 } else {

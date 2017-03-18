@@ -295,9 +295,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         // Vehicles.
         for(CPMBasicAutoVehicle vehicle: vinToVehicles.values()) {
             // If the vehicle is autonomous
-            if (vehicle instanceof CPMBasicAutoVehicle) {
-
-
+            if (vehicle != null) {
                 switch(vehicle.getLRFMode()) {
                     case DISABLED:
                         // Find the interval to the next vehicle
@@ -369,8 +367,8 @@ public class CPMAutoDriverSimulator implements Simulator {
         // Vehicle Tracking
         for(CPMBasicAutoVehicle vehicle: vinToVehicles.values()) {
             // If the vehicle is autonomous
-            if (vehicle instanceof CPMBasicAutoVehicle) {
-                CPMBasicAutoVehicle autoVehicle = (CPMBasicAutoVehicle)vehicle;
+            if (vehicle != null) {
+                CPMBasicAutoVehicle autoVehicle = vehicle;
 
                 if (autoVehicle.isVehicleTracking()) {
                     AutoDriver driver = autoVehicle.getDriver();
@@ -512,12 +510,12 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     @Override
     public double getSimulationTime() {
-        return 0;
+        return currentTime;
     }
 
     @Override
     public int getNumCompletedVehicles() {
-        return 0;
+        return numOfCompletedVehicles;
     }
 
     @Override
