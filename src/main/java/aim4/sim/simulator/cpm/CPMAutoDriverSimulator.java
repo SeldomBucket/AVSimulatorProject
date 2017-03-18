@@ -506,7 +506,7 @@ public class CPMAutoDriverSimulator implements Simulator {
 
 
     @Override
-    public BasicMap getMap() {
+    public CPMMap getMap() {
         return map;
     }
 
