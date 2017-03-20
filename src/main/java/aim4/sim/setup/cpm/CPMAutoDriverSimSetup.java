@@ -66,13 +66,14 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
         CPMMap layout = new CPMCarParkWithStatus(4, // laneWidth
                 10.0, // speedLimit
                 currentTime, // initTime
-                1, // numberOfParkingLanes
+                4, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
 
         // set up the spawn points: create a new method for this.
-        CPMMapUtil.setUpOneVehicleSpawnPoint(layout);
+        // CPMMapUtil.setUpOneVehicleSpawnPoint(layout);
         // CPMMapUtil.setUpInfiniteVehicleSpawnPoint(layout);
+        CPMMapUtil.setUpFiniteVehicleSpawnPoint(layout, 6);
         return new CPMAutoDriverSimulator(layout);
     }
 }

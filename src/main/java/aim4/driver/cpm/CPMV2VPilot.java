@@ -106,18 +106,21 @@ public class CPMV2VPilot extends BasicPilot{
     }
 
     /**
-     * If the end of the parking section is close, we need to slow to a stop.
+     * If the end of the parking section is close, we need to slow to a stop
+     * If we are PARKING.
      * Here, we treat the parking end point like a vehicle so use following distance.
      */
-    public void dontPassParkingEndPoint(){
-        double stoppingDistance =
-                VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
-                    vehicle.getSpec().getMaxDeceleration());
+    public void dontPassParkingEndPoint(ParkingStatus currentParkingStatus){
+        if (currentParkingStatus == ParkingStatus.PARKING) {
+            double stoppingDistance =
+                    VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
+                            vehicle.getSpec().getMaxDeceleration());
 
-        double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
+            double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
 
-        if (vehicle.distanceToParkingEndPoint() < followingDistance) {
-            vehicle.slowToStop();
+            if (vehicle.distanceToParkingEndPoint() < followingDistance) {
+                vehicle.slowToStop();
+            }
         }
     }
 

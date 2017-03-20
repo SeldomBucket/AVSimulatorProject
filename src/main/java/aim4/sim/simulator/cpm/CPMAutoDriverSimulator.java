@@ -169,7 +169,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
         // Generate a length of time that this car should park for
         // This is from entering to when the EXITING state is set.
-        double parkingTime = 200.0; // TODO CPM need a way of generating this to represent the data by ferreira
+        double parkingTime = 20000.0; // TODO CPM need a way of generating this to represent the data by ferreira
         // Obtain a Vehicle
         CPMBasicAutoVehicle vehicle =
                 new CPMBasicAutoVehicle(spec,

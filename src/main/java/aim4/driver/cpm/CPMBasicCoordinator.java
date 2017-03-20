@@ -92,6 +92,18 @@ public class CPMBasicCoordinator implements Coordinator{
     /** The sub-agent that decides where to go when there is a choice. */
     private CPMBasicNavigator navigator;
 
+    /**
+     * The corner that the agent is currently in, if any.
+     * Used to determine if it has entered a new corner.
+     * */
+    private Corner currentCorner;
+
+    /**
+     * The junction that the agent is currently in, if any.
+     * Used to determine if it has enetered a new junction.
+     * */
+    private Junction currentJunction;
+
     // state
 
     /**
@@ -257,9 +269,11 @@ public class CPMBasicCoordinator implements Coordinator{
             // If so, then switch to the relevant traversing mode.
             assert driver instanceof CPMBasicV2VDriver;
             if (((CPMBasicV2VDriver) driver).inCorner() != null){
+                currentCorner = ((CPMBasicV2VDriver) driver).inCorner();
                 setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
             if (((CPMBasicV2VDriver) driver).inJunction() != null){
+                currentJunction = ((CPMBasicV2VDriver) driver).inJunction();
                 setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
             if (((CPMBasicV2VDriver) driver).inIntersection() != null){
@@ -284,16 +298,22 @@ public class CPMBasicCoordinator implements Coordinator{
          */
         @Override
         public boolean perform() {
-            // Check to see if we are still in the corner
+            // Check to see if we are still in the same corner
             assert driver instanceof CPMBasicV2VDriver;
             Corner corner = ((CPMBasicV2VDriver) driver).inCorner();
             if (corner == null) {
                 System.out.println("Driver is now out of the corner.");
                 // The vehicle is out of the corner.
                 // Go back to default driving behaviour
+                currentCorner = null;
                 pilot.clearDepartureLane();
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
+                // if in a different corner, need to get a new departure lane
+                if (corner != currentCorner) {
+                    currentCorner = corner;
+                    pilot.clearDepartureLane();
+                }
                 // do nothing keep going
                 pilot.takeSteeringActionForTraversing(corner, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
@@ -312,16 +332,22 @@ public class CPMBasicCoordinator implements Coordinator{
          */
         @Override
         public boolean perform() {
-            // Check to see if we are still in the junction
+            // Check to see if we are still in the same junction
             assert driver instanceof CPMBasicV2VDriver;
             Junction junction = ((CPMBasicV2VDriver) driver).inJunction();
             if (junction == null) {
                 System.out.println("Driver is now out of the junction.");
                 // The vehicle is out of the junction.
                 // Go back to default driving behaviour
+                currentJunction = null;
                 pilot.clearDepartureLane();
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
+                // if in a different junction, need to get a new departure lane
+                if (junction != currentJunction) {
+                    currentJunction = junction;
+                    pilot.clearDepartureLane();
+                }
                 // do nothing keep going
                 pilot.takeSteeringActionForTraversing(junction, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
@@ -370,9 +396,10 @@ public class CPMBasicCoordinator implements Coordinator{
         public boolean perform() {
             // First check that we are still on a parking lane
             assert(driver instanceof CPMBasicV2VDriver);
-            if (!((CPMBasicV2VDriver) driver).inParkingLane()){
-                System.out.println("Driver is now out of the parking lane.");
+            if (!((CPMBasicV2VDriver) driver).inParkingLane() || parkingStatus == ParkingStatus.EXIT){
+                System.out.println("Driver is now leaving the parking lane.");
                 // Find out which state to be in next
+                // Find out if we need to change state
                 if (((CPMBasicV2VDriver) driver).inCorner() != null){
                     setDrivingState(DrivingState.TRAVERSING_CORNER);
                 } else if (((CPMBasicV2VDriver) driver).inJunction() != null){
@@ -390,7 +417,7 @@ public class CPMBasicCoordinator implements Coordinator{
             }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
-            pilot.dontPassParkingEndPoint();
+            pilot.dontPassParkingEndPoint(parkingStatus);
             return false;
         }
     }
