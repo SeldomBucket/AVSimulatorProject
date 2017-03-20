@@ -7,20 +7,20 @@ import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.lane.Lane;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
-import aim4.driver.cpm.CPMBasicCoordinator.*;
+import aim4.driver.cpm.CPMCoordinator.*;
 
 import java.util.List;
 
 /**
  * A navigator to decide where to go.
  */
-public class CPMBasicNavigator {
+public class CPMNavigator {
 
     private CPMBasicAutoVehicle vehicle;
 
     private AutoDriver driver;
 
-    public CPMBasicNavigator(CPMBasicAutoVehicle vehicle, AutoDriver driver){
+    public CPMNavigator(CPMBasicAutoVehicle vehicle, AutoDriver driver){
         this.driver = driver;
         this.vehicle = vehicle;
     }

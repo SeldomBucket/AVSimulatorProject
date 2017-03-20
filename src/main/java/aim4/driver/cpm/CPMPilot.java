@@ -9,7 +9,7 @@ import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
-import aim4.driver.cpm.CPMBasicCoordinator.*;
+import aim4.driver.cpm.CPMCoordinator.*;
 
 
 /**
@@ -17,7 +17,7 @@ import aim4.driver.cpm.CPMBasicCoordinator.*;
  * attempts to emulate the behavior of a real-world autonomous driver agent in
  * terms of physically controlling the Vehicle.
  */
-public class CPMV2VPilot extends BasicPilot{
+public class CPMPilot extends BasicPilot{
 
     // ///////////////////////////////
     // CONSTANTS
@@ -43,7 +43,7 @@ public class CPMV2VPilot extends BasicPilot{
 
     private AutoDriver driver;
 
-    private CPMBasicNavigator navigator;
+    private CPMNavigator navigator;
 
     private Lane connectionDepartureLane;
 
@@ -57,7 +57,7 @@ public class CPMV2VPilot extends BasicPilot{
      * @param vehicle      the vehicle to control
      * @param driver       the driver
      */
-    public CPMV2VPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver, CPMBasicNavigator navigator) {
+    public CPMPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver, CPMNavigator navigator) {
         this.vehicle = vehicle;
         this.driver = driver;
         this.navigator = navigator;

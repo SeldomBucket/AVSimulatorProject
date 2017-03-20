@@ -35,10 +35,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import aim4.driver.aim.AIMDriver;
-import aim4.driver.cpm.CPMBasicV2VDriver;
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
-import aim4.map.aim.AIMSpawnPoint;
 
 /**
  * The Vehicle Registry, the class that issues VIN to vehicles.
@@ -111,8 +110,8 @@ public class VinRegistry {
       vinToSpawnPoint.put(vin, ((AIMDriver) vehicle.getDriver()).getSpawnPoint());
       vinToDestRoad.put(vin, ((AIMDriver) vehicle.getDriver()).getDestination());
     }
-    if(vehicle.getDriver() instanceof CPMBasicV2VDriver) { //TODO: Ugly, fix.
-      vinToSpawnPoint.put(vin, ((CPMBasicV2VDriver) vehicle.getDriver()).getSpawnPoint());
+    if(vehicle.getDriver() instanceof CPMV2VDriver) { //TODO: Ugly, fix.
+      vinToSpawnPoint.put(vin, ((CPMV2VDriver) vehicle.getDriver()).getSpawnPoint());
     }
 
 

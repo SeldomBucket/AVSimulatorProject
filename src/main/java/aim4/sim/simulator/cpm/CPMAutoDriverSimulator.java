@@ -3,8 +3,7 @@ package aim4.sim.simulator.cpm;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.AutoDriver;
-import aim4.driver.cpm.CPMBasicV2VDriver;
-import aim4.map.BasicMap;
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.CPMSpawnPoint;
@@ -19,8 +18,6 @@ import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
-import aim4.vehicle.aim.AIMAutoVehicleSimModel;
-import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.*;
@@ -184,7 +181,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                         spawnSpec.getSpawnTime(),
                         parkingTime);
         // Set the driver
-        CPMBasicV2VDriver driver = new CPMBasicV2VDriver(vehicle, map);
+        CPMV2VDriver driver = new CPMV2VDriver(vehicle, map);
         driver.setCurrentLane(lane);
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);
@@ -526,7 +523,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         List<CPMBasicAutoVehicle> vehicles = map.getVehicles();
         for (CPMBasicAutoVehicle vehicle : vehicles) {
             // Check if the vehicle is in a parking lane
-            CPMBasicV2VDriver driver = (CPMBasicV2VDriver) vehicle.getDriver();
+            CPMV2VDriver driver = (CPMV2VDriver) vehicle.getDriver();
             if (driver.inParkingLane() && vehicle.getVelocity() == 0) {
                 parkedVehicles.add(vehicle);
             }

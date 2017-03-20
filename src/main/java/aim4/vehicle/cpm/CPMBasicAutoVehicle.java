@@ -2,7 +2,7 @@ package aim4.vehicle.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
-import aim4.driver.cpm.CPMBasicV2VDriver;
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
@@ -21,7 +21,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     /**
      * The Driver controlling this vehicle.
      */
-    protected CPMBasicV2VDriver driver;
+    protected CPMV2VDriver driver;
 
     /**
      * The target parking lane for this vehicle, assigned
@@ -101,8 +101,8 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
 
     @Override
     public void setDriver(Driver driver) {
-        assert driver instanceof CPMBasicV2VDriver;
-        this.driver = (CPMBasicV2VDriver) driver;
+        assert driver instanceof CPMV2VDriver;
+        this.driver = (CPMV2VDriver) driver;
     }
 
     public double getParkingTime() { return parkingTime; }
