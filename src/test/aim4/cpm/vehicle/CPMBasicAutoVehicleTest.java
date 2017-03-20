@@ -35,23 +35,6 @@ public class CPMBasicAutoVehicleTest {
         this.simThread = new TestSimThread(sim);
     }
 
-
-    @Test
-    public void testRunSimulator() throws Exception {
-
-        try {
-            simThread.start();
-            while (map.getStatusMonitor().getVehicles().size()==0) {
-                simThread.run();
-            }
-        } catch(RuntimeException e) {
-            throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
-        }
-
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
-        assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() > 0);
-    }
-
     @Test
     public void testNoTwoVehiclesInSameSpace() throws Exception {
 
@@ -66,8 +49,10 @@ public class CPMBasicAutoVehicleTest {
         }
 
         assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+
         // There should be 2 vehicles registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 2);
+
         // There should be 2 different vehicles registered as parked with the map.
         assertTrue(sim.getParkedVehicles().get(0) != sim.getParkedVehicles().get(1));
 

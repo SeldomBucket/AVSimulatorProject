@@ -34,8 +34,9 @@ public class TestSimThread implements Runnable {
     }
 
     public synchronized void terminate() {
-        assert blinker != null;
-        blinker = null;
+        if (blinker != null) {
+            blinker = null;
+        }
     }
 
     @Override
