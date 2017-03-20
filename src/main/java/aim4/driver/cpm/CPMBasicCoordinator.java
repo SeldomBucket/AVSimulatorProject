@@ -144,8 +144,22 @@ public class CPMBasicCoordinator implements Coordinator{
 
     @Override
     public void act() {
+        checkTimeToExit();
         processI2Vinbox();
         callStateHandlers();
+    }
+
+    /**
+     * Check the time left until exit, and change parking status
+     * to exiting if it is time to do so.
+     */
+    private void checkTimeToExit() {
+        if (vehicle.getTimeToExit() <= 0
+                && parkingStatus != ParkingStatus.EXIT) {
+            System.out.println("Parking time has elapsed, " +
+                               "setting parking status to EXIT.");
+            parkingStatus = ParkingStatus.EXIT;
+        }
     }
 
     /**
@@ -161,6 +175,7 @@ public class CPMBasicCoordinator implements Coordinator{
             vehicle.setTargetParkingLane(I2Vinbox);
             System.out.println("Parking on " + I2Vinbox.getRoadName());
             vehicle.clearV2Iinbox();
+            vehicle.setHasEntered();
         }
     }
 

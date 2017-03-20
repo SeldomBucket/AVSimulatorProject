@@ -122,6 +122,7 @@ public class CPMMapUtil {
          * of vehicles. This only spawns one VehicleSpec at the moment.
          */
         public InfiniteSpawnSpecGenerator() {
+            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;

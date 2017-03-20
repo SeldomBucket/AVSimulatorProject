@@ -167,6 +167,9 @@ public class CPMAutoDriverSimulator implements Simulator {
         // Now just take the minimum of the max velocity of the vehicle, and
         // the speed limit in the lane
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
+        // Generate a length of time that this car should park for
+        // This is from entering to when the EXITING state is set.
+        double parkingTime = 200.0; // TODO CPM need a way of generating this to represent the data by ferreira
         // Obtain a Vehicle
         CPMBasicAutoVehicle vehicle =
                 new CPMBasicAutoVehicle(spec,
@@ -176,7 +179,8 @@ public class CPMAutoDriverSimulator implements Simulator {
                         initVelocity, // velocity
                         initVelocity,  // target velocity
                         spawnPoint.getAcceleration(),
-                        spawnSpec.getSpawnTime());
+                        spawnSpec.getSpawnTime(),
+                        parkingTime);
         // Set the driver
         CPMBasicV2VDriver driver = new CPMBasicV2VDriver(vehicle, map);
         driver.setCurrentLane(lane);
@@ -500,11 +504,20 @@ public class CPMAutoDriverSimulator implements Simulator {
                  }
             }
 
+            // Update the time left for the vehicle to be parked.
+            if (vehicle.hasEnteredCarPark()) {
+                vehicle.updateTimeToExit(timeStep);
+            }
+
             if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
                 vehicle.printState();
             }
         }
     }
+
+    /////////////////////////////////
+    // STEP #
+    /////////////////////////////////
 
     private void observeParkedVehicles() {
         parkedVehicles.clear();
@@ -517,7 +530,6 @@ public class CPMAutoDriverSimulator implements Simulator {
             }
         }
     }
-
 
 
     @Override

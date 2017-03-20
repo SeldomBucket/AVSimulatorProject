@@ -72,6 +72,7 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
 
         // set up the spawn points: create a new method for this.
         CPMMapUtil.setUpOneVehicleSpawnPoint(layout);
+        // CPMMapUtil.setUpInfiniteVehicleSpawnPoint(layout);
         return new CPMAutoDriverSimulator(layout);
     }
 }

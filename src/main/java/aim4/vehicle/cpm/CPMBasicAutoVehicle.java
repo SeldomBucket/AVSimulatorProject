@@ -29,6 +29,24 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      */
     protected ParkingLane targetParkingLane;
 
+    /**
+     * The length of time the vehicle should park for,
+     * from entering the car park (crossing the entry
+     * sensored line) to when it should change it's
+     * parking status to EXITING.
+     */
+    protected double parkingTime;
+
+    /**
+     * The time left until the vehicle needs to exit the car park.
+     * Starts with parkingTime and is decreased with every timestep
+     * by the coordinator (who updates the parking status when it's
+     * tme to exit.)
+     */
+    protected double timeToExit;
+
+    protected boolean hasEntered;
+
     // messaging
 
     /**
@@ -57,6 +75,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      * @param targetVelocity  the initial target velocity
      * @param acceleration    the initial acceleration of the Vehicle
      * @param currentTime     the current time
+     * @param parkingTime     how long the vehicle will park for
      */
     public CPMBasicAutoVehicle(VehicleSpec spec,
                                Point2D pos,
@@ -65,10 +84,14 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
                                double velocity,
                                double targetVelocity,
                                double acceleration,
-                               double currentTime) {
+                               double currentTime,
+                               double parkingTime) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration,
                 targetVelocity, currentTime);
         this.targetParkingLane = null;
+        this.parkingTime = parkingTime;
+        this.timeToExit = parkingTime;
+        this.hasEntered = false;
     }
 
     @Override
@@ -80,6 +103,19 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     public void setDriver(Driver driver) {
         assert driver instanceof CPMBasicV2VDriver;
         this.driver = (CPMBasicV2VDriver) driver;
+    }
+
+    public double getParkingTime() { return parkingTime; }
+
+    public double getTimeToExit() { return timeToExit; }
+
+    public boolean hasEnteredCarPark() {
+        return hasEntered;
+    }
+
+    public void setHasEntered() {
+        assert !hasEntered;
+        hasEntered = true;
     }
 
     public ParkingLane getTargetParkingLane() {
@@ -119,5 +155,11 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     public void clearV2Iinbox() {
         System.out.println("vehicle inbox cleared");
         I2Vinbox = null;
+    }
+
+    public void updateTimeToExit(double timeStep) {
+        if (timeToExit > 0) {
+            timeToExit -= timeStep;
+        }
     }
 }
