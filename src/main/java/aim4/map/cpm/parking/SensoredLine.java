@@ -72,7 +72,7 @@ public class SensoredLine {
         int vin = v.getVIN();
         if (NO_REPEAT_TIME_PERIOD < time) {
             if (line.intersectsLine(p1.getX(), p1.getY(), p2.getX(), p2.getY())) {
-                System.out.println("INTERSECT WITH SENSORED LINE");
+                System.out.println("INTERSECT WITH SENSORED LINE " + time);
                 return true;
             } else {
                 return false;

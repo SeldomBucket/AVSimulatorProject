@@ -11,6 +11,7 @@ import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -56,6 +57,8 @@ public abstract class CPMBasicMap implements CPMMap{
     protected Rectangle2D dimensions;
     /** The data collection lines */
     protected List<DataCollectionLine> dataCollectionLines;
+    /** The vehicles currently on this map. */
+    private List<CPMBasicAutoVehicle> vehicles = new ArrayList<CPMBasicAutoVehicle>();
 
     // spawn points
     /** The spawn points */
@@ -205,6 +208,10 @@ public abstract class CPMBasicMap implements CPMMap{
         intersections.add(intersection);
     }
 
+    public void addVehicleToMap(CPMBasicAutoVehicle vehicle) {
+        vehicles.add(vehicle);
+    }
+
     public List<Road> getRoads() {
         return roads;
     }
@@ -265,6 +272,8 @@ public abstract class CPMBasicMap implements CPMMap{
     public List<SimpleIntersection> getIntersections() {
         return intersections;
     }
+
+    public List<CPMBasicAutoVehicle> getVehicles() { return vehicles; }
 
     public void printDataCollectionLinesData(String outFileName) {
         PrintStream outfile = null;

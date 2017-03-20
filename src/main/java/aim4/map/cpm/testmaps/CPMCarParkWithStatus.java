@@ -6,6 +6,7 @@ import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.parking.ParkingArea;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;

@@ -75,6 +75,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     private double currentTime;
     /** The number of completed vehicles */
     private int numOfCompletedVehicles;
+    /** A list of parked vehicles */
+    private List<CPMBasicAutoVehicle> parkedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
     private int totalBitsTransmittedByCompletedVehicles;
     /** The total number of bits received by the completed vehicles */
@@ -83,6 +85,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     public CPMAutoDriverSimulator(CPMMap map){
         this.map = map;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
+        this.parkedVehicles = new ArrayList<CPMBasicAutoVehicle>();
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
@@ -100,6 +103,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         // communication();
         moveVehicles(timeStep);
         // List<Integer> completedVINs = cleanUpCompletedVehicles();
+        observeParkedVehicles();
         currentTime += timeStep;
         // return new CPMAutoDriverSimStepResult(completedVINs);
         return null;
@@ -126,6 +130,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                             CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            map.addVehicleToMap(vehicle);
                             break; // only handle the first spawn vehicle
                             // TODO: need to fix this
                         } else {
@@ -501,6 +506,18 @@ public class CPMAutoDriverSimulator implements Simulator {
         }
     }
 
+    private void observeParkedVehicles() {
+        parkedVehicles.clear();
+        List<CPMBasicAutoVehicle> vehicles = map.getVehicles();
+        for (CPMBasicAutoVehicle vehicle : vehicles) {
+            // Check if the vehicle is in a parking lane
+            CPMBasicV2VDriver driver = (CPMBasicV2VDriver) vehicle.getDriver();
+            if (driver.inParkingLane() && vehicle.getVelocity() == 0) {
+                parkedVehicles.add(vehicle);
+            }
+        }
+    }
+
 
 
     @Override
@@ -517,6 +534,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     public int getNumCompletedVehicles() {
         return numOfCompletedVehicles;
     }
+
+    public List<CPMBasicAutoVehicle> getParkedVehicles() { return parkedVehicles; }
 
     @Override
     public double getAvgBitsTransmittedByCompletedVehicles() {

@@ -6,6 +6,7 @@ import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.List;
 
@@ -20,6 +21,8 @@ public interface CPMMap extends BasicMap {
     public List<SimpleIntersection> getIntersections();
     public List<CPMSpawnPoint> getSpawnPoints();
     public StatusMonitor getStatusMonitor();
+    public void addVehicleToMap(CPMBasicAutoVehicle vehicle);
+    public List<CPMBasicAutoVehicle> getVehicles();
 
 
 

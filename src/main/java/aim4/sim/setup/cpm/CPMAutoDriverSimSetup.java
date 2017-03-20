@@ -66,7 +66,7 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
         CPMMap layout = new CPMCarParkWithStatus(4, // laneWidth
                 10.0, // speedLimit
                 currentTime, // initTime
-                2, // numberOfParkingLanes
+                1, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
 
