@@ -1,8 +1,6 @@
 package aim4.sim.setup.cpm;
 
-import aim4.map.BasicMap;
 import aim4.sim.Simulator;
-import aim4.vehicle.VehicleSimModel;
 
 /**
  * The basic simulation setup for CPM. Common for all CPM simulation types.
@@ -36,8 +34,6 @@ public class BasicCPMSimSetup implements CPMSimSetup {
 
     @Override
     public Simulator getSimulator() {
-        // TODO: think how to avoid using the following assertation.
-        assert false : ("Cannot instantiate BasicCPMSimSetup");
-        return null;
+        throw new RuntimeException("Cannot instantiate BasicCPMSimSetup");
     }
 }

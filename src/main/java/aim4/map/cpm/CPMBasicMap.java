@@ -40,10 +40,6 @@ public abstract class CPMBasicMap implements CPMMap{
      * */
     protected static final double BORDER = 28.0;
 
-    /** The position of the data collection line on a lane */
-    protected static final double DATA_COLLECTION_LINE_POSITION =
-            NO_VEHICLE_ZONE_LENGTH;
-
     // general
     /**The initial time*/
     protected double initTime;

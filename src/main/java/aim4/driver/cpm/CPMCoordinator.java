@@ -1,7 +1,6 @@
 package aim4.driver.cpm;
 
 import aim4.config.Debug;
-import aim4.driver.AutoDriver;
 import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
@@ -84,7 +83,7 @@ public class CPMCoordinator implements Coordinator{
     private CPMBasicAutoVehicle vehicle;
 
     /** The driver of which this coordinator is a part. */
-    private AutoDriver driver;
+    private CPMV2VDriver driver;
 
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMPilot pilot;
@@ -139,7 +138,7 @@ public class CPMCoordinator implements Coordinator{
      * @param driver   the driver
      */
     public CPMCoordinator(CPMBasicAutoVehicle vehicle,
-                          AutoDriver driver){
+                          CPMV2VDriver driver){
         this.vehicle = vehicle;
         this.driver = driver;
         this.navigator = new CPMNavigator(vehicle, driver);

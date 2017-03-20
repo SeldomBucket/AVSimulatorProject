@@ -26,42 +26,6 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        /*CPMMap layout = new CPMMapWithCornersOneLane(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        /*CPMMap layout = new CPMMapWithSimpleIntersection(4, // laneWidth
-        10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        /*CPMMap layout = new CPMMapWithTJunction(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        /*CPMMap layout = new CPMMapCarPark(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                2, // numberOfParkingLanes
-                20, // parkingLength
-                5); // access length*/
-
-        /*CPMMap layout = new CPMMapIntersection3Roads(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        /*CPMMap layout = new CPMMapJunction3Roads(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
 
         CPMMap layout = new CPMCarParkWithStatus(4, // laneWidth
                 10.0, // speedLimit

@@ -1,6 +1,5 @@
 package aim4.driver.cpm;
 
-import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.aim.pilot.BasicPilot;
 import aim4.map.connections.BasicConnection;
@@ -41,7 +40,7 @@ public class CPMPilot extends BasicPilot{
 
     private CPMBasicAutoVehicle vehicle;
 
-    private AutoDriver driver;
+    private CPMV2VDriver driver;
 
     private CPMNavigator navigator;
 
@@ -57,7 +56,7 @@ public class CPMPilot extends BasicPilot{
      * @param vehicle      the vehicle to control
      * @param driver       the driver
      */
-    public CPMPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver, CPMNavigator navigator) {
+    public CPMPilot(CPMBasicAutoVehicle vehicle, CPMV2VDriver driver, CPMNavigator navigator) {
         this.vehicle = vehicle;
         this.driver = driver;
         this.navigator = navigator;

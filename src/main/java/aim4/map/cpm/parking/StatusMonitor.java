@@ -1,7 +1,5 @@
 package aim4.map.cpm.parking;
 
-import aim4.map.cpm.CPMMapUtil;
-import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.*;

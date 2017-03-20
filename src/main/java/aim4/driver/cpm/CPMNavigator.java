@@ -1,6 +1,5 @@
 package aim4.driver.cpm;
 
-import aim4.driver.AutoDriver;
 import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
@@ -18,9 +17,9 @@ public class CPMNavigator {
 
     private CPMBasicAutoVehicle vehicle;
 
-    private AutoDriver driver;
+    private CPMV2VDriver driver;
 
-    public CPMNavigator(CPMBasicAutoVehicle vehicle, AutoDriver driver){
+    public CPMNavigator(CPMBasicAutoVehicle vehicle, CPMV2VDriver driver){
         this.driver = driver;
         this.vehicle = vehicle;
     }

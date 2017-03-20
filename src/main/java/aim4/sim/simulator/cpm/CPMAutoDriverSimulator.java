@@ -2,7 +2,6 @@ package aim4.sim.simulator.cpm;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.AutoDriver;
 import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
@@ -379,7 +378,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                 CPMBasicAutoVehicle autoVehicle = vehicle;
 
                 if (autoVehicle.isVehicleTracking()) {
-                    AutoDriver driver = autoVehicle.getDriver();
+                    CPMV2VDriver driver = (CPMV2VDriver)autoVehicle.getDriver();
                     Lane targetLane = autoVehicle.getTargetLaneForVehicleTracking();
                     Point2D pos = autoVehicle.getPosition();
                     double dst = targetLane.distanceAlongLane(pos);

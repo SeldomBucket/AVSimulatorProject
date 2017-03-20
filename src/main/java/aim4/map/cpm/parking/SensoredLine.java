@@ -61,15 +61,15 @@ public class SensoredLine {
     /**
      * Whether the vehicle intersects the line.
      *
-     * @param v     the vehicle
+     * @param vehicle     the vehicle
      * @param time  the current time
      * @param p1    the first point of the vehicle
      * @param p2    the second point of the vehicle
      * @return whether the vehicle intersects the line
      */
-    public boolean intersect(VehicleSimModel v, double time,
+    public boolean intersect(VehicleSimModel vehicle, double time,
                              Point2D p1, Point2D p2) {
-        int vin = v.getVIN();
+        int vin = vehicle.getVIN();
         if (NO_REPEAT_TIME_PERIOD < time) {
             if (line.intersectsLine(p1.getX(), p1.getY(), p2.getX(), p2.getY())) {
                 System.out.println("INTERSECT WITH SENSORED LINE " + time);

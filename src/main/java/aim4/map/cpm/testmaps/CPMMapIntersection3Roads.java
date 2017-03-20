@@ -1,6 +1,5 @@
 package aim4.map.cpm.testmaps;
 
-import aim4.im.RoadBasedIntersection;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.SimpleIntersection;

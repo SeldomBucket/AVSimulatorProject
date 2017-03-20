@@ -111,7 +111,7 @@ public class CPMV2VDriver extends BasicDriver
         super.act();
         if (coordinator == null){
             // Create a new coordinator if the vehicle doesn't already have one.
-            coordinator = new CPMCoordinator(vehicle, vehicle.getDriver());
+            coordinator = new CPMCoordinator(vehicle, (CPMV2VDriver)vehicle.getDriver());
         }
 
         // the newly created coordinator can be called immediately.
