@@ -19,11 +19,14 @@ import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
+import aim4.vehicle.aim.AIMAutoVehicleSimModel;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.*;
 import java.util.List;
 
@@ -102,11 +105,10 @@ public class CPMAutoDriverSimulator implements Simulator {
         letDriversAct();
         // communication();
         moveVehicles(timeStep);
-        // List<Integer> completedVINs = cleanUpCompletedVehicles();
         observeParkedVehicles();
+        List<Integer> completedVINs = cleanUpCompletedVehicles();
         currentTime += timeStep;
-        // return new CPMAutoDriverSimStepResult(completedVINs);
-        return null;
+        return new CPMAutoDriverSimStepResult(completedVINs);
     }
 
     /////////////////////////////////
@@ -529,6 +531,39 @@ public class CPMAutoDriverSimulator implements Simulator {
                 parkedVehicles.add(vehicle);
             }
         }
+    }
+
+    /////////////////////////////////
+    // STEP #
+    /////////////////////////////////
+
+    /**
+     * Remove all completed vehicles.
+     *
+     * @return the VINs of the completed vehicles
+     */
+    private List<Integer> cleanUpCompletedVehicles() {
+        List<Integer> completedVINs = new LinkedList<Integer>();
+        Rectangle2D mapBoundary = map.getDimensions();
+        List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
+        for(int vin : vinToVehicles.keySet()) {
+            CPMBasicAutoVehicle vehicle = vinToVehicles.get(vin);
+            // If the vehicle is no longer in the layout
+            if(!vehicle.getShape().intersects(mapBoundary)) {
+                // Process anything we need to from this vehicle
+                // TODO CPM Do we need to get anything? Maybe distance travelled
+                assert map instanceof CPMCarParkWithStatus;
+                ((CPMCarParkWithStatus)map).removeCompletedVehicle(vehicle);
+                removedVINs.add(vin);
+            }
+        }
+        // Remove the marked vehicles
+        for(int vin : removedVINs) {
+            vinToVehicles.remove(vin);
+            completedVINs.add(vin);
+            numOfCompletedVehicles++;
+        }
+        return completedVINs;
     }
 
 

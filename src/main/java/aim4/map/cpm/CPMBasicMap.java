@@ -275,6 +275,10 @@ public abstract class CPMBasicMap implements CPMMap{
 
     public List<CPMBasicAutoVehicle> getVehicles() { return vehicles; }
 
+    public void removeCompletedVehicle(CPMBasicAutoVehicle vehicle) {
+        vehicles.remove(vehicle);
+    }
+
     public void printDataCollectionLinesData(String outFileName) {
         PrintStream outfile = null;
         try {

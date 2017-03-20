@@ -110,7 +110,25 @@ public class StatusMonitor {
 
     public void vehicleOnExit(CPMBasicAutoVehicle vehicle) {
         // Update capacity
-        // Check if any vehicles waiting to enter
+        Map.Entry<ParkingLane, Double>  entryToUpdate = findParkingLaneSpace(vehicle.getMessagesFromInbox());
+        vehicle.clearV2Iinbox();
+        double vehicleLength = vehicle.getSpec().getLength();
+        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
+        double spaceFreed = vehicleLength + distanceBetweenVehicles;
+        parkingLanesSpace.put(entryToUpdate.getKey(), entryToUpdate.getValue() - spaceFreed);
+
+        // Remove the vehicle from the status monitor's records
+        vehicles.remove(vehicle);
+    }
+
+    private Map.Entry<ParkingLane, Double> findParkingLaneSpace(ParkingLane parkingLane) {
+        for (Map.Entry<ParkingLane, Double> entry : parkingLanesSpace.entrySet())
+        {
+            if (entry.getKey() == parkingLane) {
+                return entry;
+            }
+        }
+        throw new RuntimeException("Parking lane could not be found.");
     }
 
     private Map.Entry<ParkingLane, Double> findLeastFullParkingLane() {
