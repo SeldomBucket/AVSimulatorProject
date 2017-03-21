@@ -474,7 +474,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
 
-            CPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
+            CPMMapUtil.checkVehicleStillOnMap(map, vehicle, p2, vehicle.getDriver().getCurrentLane());
 
             // Check if we've gone through a data collection line
             for(DataCollectionLine line : map.getDataCollectionLines()) {

@@ -81,7 +81,7 @@ public class StatusMonitor {
         } else {
             // If not enough room, don't send anything. They will continue to wait.
             System.out.println("There's not enough room in the car " +
-                               "park from this vehicle to enter!");
+                               "park for this vehicle to enter!");
         }
         // sendParkingLaneMessage(vehicle, parkingArea.getParkingLanes().get(1));
     }

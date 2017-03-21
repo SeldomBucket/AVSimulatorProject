@@ -1,11 +1,14 @@
 package aim4.map.cpm;
 
 import aim4.config.SimConfig;
+import aim4.driver.AutoDriver;
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.CPMSpawnPoint.*;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -176,12 +179,15 @@ public class CPMMapUtil {
      * @param currentLane the lane the vehicle is currently driving on
      * */
     public static void checkVehicleStillOnMap(CPMMap map,
+                                              CPMBasicAutoVehicle vehicle,
                                               Point2D vehiclePosition,
                                               Lane currentLane){
         // For this map, should only drive off the map when it has
         // finished following the exit lane
         double x = vehiclePosition.getX();
         double y = vehiclePosition.getY();
+
+        AutoDriver driver = vehicle.getDriver();
 
         // If the vehicle is off the map
         if (!map.getDimensions().contains(new Point2D.Double(x, y))){

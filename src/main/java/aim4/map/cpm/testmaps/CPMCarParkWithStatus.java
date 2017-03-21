@@ -32,7 +32,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     /** A list of sensored lines used by the StatusMonitor. */
     private List<SensoredLine> sensoredLines;
 
-    public CPMCarParkWithStatus(int laneWidth, double speedLimit, double initTime,
+    public CPMCarParkWithStatus(double laneWidth, double speedLimit, double initTime,
                          int numberOfParkingLanes, double parkingLength,
                          double accessLength) {
         super(laneWidth, speedLimit, initTime);
@@ -176,8 +176,11 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
 
         // Create the sensored lines
         // CAR PARK ENTRY
-        // x1 = parkingArea.getStartPoint().getX() - (BORDER/2); //TODO CPM try find out whats going on when in intersection
-        x1 = parkingArea.getStartPoint().getX();
+        /*x1 = parkingArea.getStartPoint().getX();
+        y1 = parkingArea.getStartPoint().getY();
+        x2 = x1;
+        y2 = y1 - laneWidth;*/
+        x1 = 0.5;
         y1 = parkingArea.getStartPoint().getY();
         x2 = x1;
         y2 = y1 - laneWidth;
@@ -203,7 +206,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
                         new Point2D.Double(x2, y2)));
 
         // CAR PARK EXIT
-        x1 = parkingArea.getStartPoint().getX();
+        x1 = 0.5;
         y1 = parkingArea.getStartPoint().getY();
         x2 = x1;
         y2 = y1 + laneWidth;

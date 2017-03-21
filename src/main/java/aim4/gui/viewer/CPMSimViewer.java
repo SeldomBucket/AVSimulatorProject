@@ -19,7 +19,14 @@ public class CPMSimViewer extends SimViewer {
      * @param viewer
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
-        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(5.0, 0.28)), false);
+        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
+                10.0, // speedLimit
+                0.28, // trafficLevel
+                4.0, // laneWidth
+                1, // numberOfParkingLanes
+                20.0, // parkingLength
+                5.0 // accessLength
+        )), false);
     }
 
     @Override

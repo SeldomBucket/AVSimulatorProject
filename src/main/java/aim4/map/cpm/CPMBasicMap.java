@@ -89,7 +89,7 @@ public abstract class CPMBasicMap implements CPMMap{
     /**The set of intersections */
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
-    public CPMBasicMap(int laneWidth, double speedLimit,
+    public CPMBasicMap(double laneWidth, double speedLimit,
                        double initTime) {
 
         this.laneWidth = laneWidth;
