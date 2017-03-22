@@ -265,16 +265,16 @@ public class CPMCoordinator implements Coordinator{
         public boolean perform() {
             // First check if we are in a Connection or ParkingLane.
             // If so, then switch to the relevant traversing mode.
-            assert driver instanceof CPMV2VDriver;
-            if (((CPMV2VDriver) driver).inCorner() != null){
-                currentCorner = ((CPMV2VDriver) driver).inCorner();
+            assert driver != null;
+            if (driver.inCorner() != null){
+                currentCorner = driver.inCorner();
                 setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
-            if (((CPMV2VDriver) driver).inJunction() != null){
-                currentJunction = ((CPMV2VDriver) driver).inJunction();
+            if (driver.inJunction() != null){
+                currentJunction = driver.inJunction();
                 setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
-            if (((CPMV2VDriver) driver).inIntersection() != null){
+            if (driver.inIntersection() != null){
                 setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
             }
             if (driver.getCurrentLane() instanceof ParkingLane) {
@@ -297,8 +297,8 @@ public class CPMCoordinator implements Coordinator{
         @Override
         public boolean perform() {
             // Check to see if we are still in the same corner
-            assert driver instanceof CPMV2VDriver;
-            Corner corner = ((CPMV2VDriver) driver).inCorner();
+            assert driver != null;
+            Corner corner = driver.inCorner();
             if (corner == null) {
                 System.out.println("Driver is now out of the corner.");
                 // The vehicle is out of the corner.
@@ -331,8 +331,8 @@ public class CPMCoordinator implements Coordinator{
         @Override
         public boolean perform() {
             // Check to see if we are still in the same junction
-            assert driver instanceof CPMV2VDriver;
-            Junction junction = ((CPMV2VDriver) driver).inJunction();
+            assert driver != null;
+            Junction junction = driver.inJunction();
             if (junction == null) {
                 System.out.println("Driver is now out of the junction.");
                 // The vehicle is out of the junction.
@@ -365,8 +365,8 @@ public class CPMCoordinator implements Coordinator{
         @Override
         public boolean perform() {
             // Check to see if we are still in the intersection
-            assert driver instanceof CPMV2VDriver;
-            SimpleIntersection intersection = ((CPMV2VDriver) driver).inIntersection();
+            assert driver != null;
+            SimpleIntersection intersection = driver.inIntersection();
             if (intersection == null) {
                 System.out.println("Driver is now out of the intersection.");
                 // The vehicle is out of the corner.
@@ -393,23 +393,23 @@ public class CPMCoordinator implements Coordinator{
         @Override
         public boolean perform() {
             // First check that we are still on a parking lane
-            assert(driver instanceof CPMV2VDriver);
-            if (!((CPMV2VDriver) driver).inParkingLane() || parkingStatus == ParkingStatus.EXIT){
+            assert(driver != null);
+            if (!driver.inParkingLane() || parkingStatus == ParkingStatus.EXIT){
                 System.out.println("Driver is now leaving the parking lane.");
                 // Find out which state to be in next
                 // Find out if we need to change state
-                if (((CPMV2VDriver) driver).inCorner() != null){
+                if (driver.inCorner() != null){
                     setDrivingState(DrivingState.TRAVERSING_CORNER);
-                } else if (((CPMV2VDriver) driver).inJunction() != null){
+                } else if (driver.inJunction() != null){
                     setDrivingState(DrivingState.TRAVERSING_JUNCTION);
-                } else if (((CPMV2VDriver) driver).inIntersection() != null){
+                } else if (driver.inIntersection() != null){
                     setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
                 } else {
                     setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
                 }
             }
             if (vehicle.getTargetParkingLane() ==
-                    ((CPMV2VDriver)driver).getParkingLaneCurrentlyIn()){
+                    driver.getParkingLaneCurrentlyIn()){
                 System.out.println("Reached target parking lane");
                 vehicle.clearTargetParkingLane();
             }
