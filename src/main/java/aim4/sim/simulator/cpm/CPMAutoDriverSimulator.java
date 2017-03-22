@@ -167,7 +167,19 @@ public class CPMAutoDriverSimulator implements Simulator {
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
         // Generate a length of time that this car should park for
         // This is from entering to when the EXITING state is set.
-        double parkingTime = 20000.0; // TODO CPM need a way of generating this to represent the data by ferreira
+
+        // TODO CPM need a way of generating this to represent the data by ferreira
+        // double parkingTime = 20000.0;
+
+        // This is so we can create scenario where vehicle needs to relocate.
+        // TODO CPM Should be able to put this in a test
+        double parkingTime;
+        if (map.getVehicles().size() == 0) {
+            parkingTime = 20000.0;
+        } else {
+            parkingTime = 10000.0;
+        }
+
         // Obtain a Vehicle
         CPMBasicAutoVehicle vehicle =
                 new CPMBasicAutoVehicle(spec,
@@ -483,10 +495,10 @@ public class CPMAutoDriverSimulator implements Simulator {
 
             // Check if we've gone through a sensored line
             // TODO CPM try remove the need for this assertion
-            assert(map instanceof CPMCarParkWithStatus);
+            assert map instanceof CPMCarParkWithStatus;
             for (SensoredLine line : ((CPMCarParkWithStatus) map).getSensoredLines()) {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
-                     StatusMonitor statusMonitor = ((CPMCarParkWithStatus) map).getStatusMonitor();
+                     StatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
                          System.out.println("Vehicle is entering.");
                          statusMonitor.vehicleOnEntry(vehicle);

@@ -94,6 +94,7 @@ public abstract class CPMBasicMap implements CPMMap{
 
         this.laneWidth = laneWidth;
         this.halfLaneWidth = laneWidth/2;
+        assert speedLimit < 30;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
     }
