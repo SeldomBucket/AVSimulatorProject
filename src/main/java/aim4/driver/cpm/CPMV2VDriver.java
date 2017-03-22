@@ -35,7 +35,7 @@ public class CPMV2VDriver extends BasicDriver
     private Coordinator coordinator;
 
     /** The map */
-    private BasicMap map;
+    private CPMMap map;
 
     /** Where this DriverAgent is coming from. */
     private SpawnPoint spawnPoint;
@@ -44,7 +44,7 @@ public class CPMV2VDriver extends BasicDriver
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public CPMV2VDriver(CPMBasicAutoVehicle vehicle, BasicMap map) {
+    public CPMV2VDriver(CPMBasicAutoVehicle vehicle, CPMMap map) {
         this.vehicle = vehicle;
         this.map = map;
         coordinator = null;
@@ -128,11 +128,10 @@ public class CPMV2VDriver extends BasicDriver
      * or null if not in a corner.
      */
     public Corner inCorner() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getCorners() == null){
+        if (map.getCorners() == null){
             return null;
         }
-        for (Corner corner : ((CPMMap) map).getCorners()){
+        for (Corner corner : map.getCorners()){
             if (intersectsArea(vehicle, corner.getArea())){
                 return corner;
             }
@@ -148,11 +147,10 @@ public class CPMV2VDriver extends BasicDriver
      * or null if not in a junction.
      */
     public Junction inJunction() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getJunctions() == null){
+        if (map.getJunctions() == null){
             return null;
         }
-        for (Junction junction : ((CPMMap) map).getJunctions()){
+        for (Junction junction : map.getJunctions()){
             if (intersectsArea(vehicle, junction.getArea())){
                 return junction;
             }
@@ -168,11 +166,10 @@ public class CPMV2VDriver extends BasicDriver
      * or null if not in an intersection.
      */
     public SimpleIntersection inIntersection() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getIntersections() == null){
+        if (map.getIntersections() == null){
             return null;
         }
-        for (SimpleIntersection intersection : ((CPMMap) map).getIntersections()){
+        for (SimpleIntersection intersection : map.getIntersections()){
             if (intersectsArea(vehicle, intersection.getArea())){
                 return intersection;
             }
