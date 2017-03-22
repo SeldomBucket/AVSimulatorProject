@@ -49,6 +49,7 @@ public class CPMCarParkWithStatusTest {
             while (sim.getNumCompletedVehicles() != numberOfVehicles) {
                 simThread.run();
             }
+            simThread.pause();
         } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }

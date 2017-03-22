@@ -45,6 +45,7 @@ public class FindBugTest {
             while (sim.getNumCompletedVehicles() != 2) {
                 simThread.run();
             }
+            simThread.pause();
         } catch (RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
