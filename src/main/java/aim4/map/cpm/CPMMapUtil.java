@@ -238,6 +238,14 @@ public class CPMMapUtil {
         }
     }
 
+    public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap){
+        // The spawn point will continuously spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new SimpleRelocateSpawnSpecGenerator());
+        }
+    }
+
     /**
      * Check that the vehicle is still on the map when it should be.
      * @param map   the map we are check the vehicle is still on
