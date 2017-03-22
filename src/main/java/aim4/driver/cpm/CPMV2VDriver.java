@@ -3,12 +3,12 @@ package aim4.driver.cpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.Coordinator;
-import aim4.map.BasicMap;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
+import aim4.map.cpm.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
@@ -18,8 +18,7 @@ import java.awt.geom.Area;
 /**
  * An agent that drives a {@link aim4.vehicle.cpm.CPMBasicAutoVehicle} while
  * coordinating with other Vehicles.  Such an agent consists
- * of two sub-agents, a Coordinator and a Pilot. The two
- * agents communicate by setting state in this class.
+ * of two sub-agents, a Coordinator and a Pilot.
  */
 public class CPMV2VDriver extends BasicDriver
                             implements AutoDriver {
@@ -38,7 +37,7 @@ public class CPMV2VDriver extends BasicDriver
     private CPMMap map;
 
     /** Where this DriverAgent is coming from. */
-    private SpawnPoint spawnPoint;
+    private CPMSpawnPoint spawnPoint;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -83,10 +82,11 @@ public class CPMV2VDriver extends BasicDriver
     /////////////////////////////////
 
     /**
-     * {@inheritDoc} -- find out where this came from
+     * Set where this driver agent is coming from.
+     *
+     * @param spawnPoint the spawn point that generated the driver
      */
-    //@Override
-    public void setSpawnPoint(SpawnPoint spawnPoint) {
+    public void setSpawnPoint(CPMSpawnPoint spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 

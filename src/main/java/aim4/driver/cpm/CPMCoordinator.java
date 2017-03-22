@@ -13,8 +13,9 @@ import java.util.EnumMap;
 /**
  * This class has a similar role to the V2ICoodinator for AIM.
  * It should handle the messages between vehicles, and with
- * the paypoint (if we have one). This includes processing messages
- * and sending messages.
+ * the StatusMonitor.
+ * The two agents (Coordinator and Pilot) communicate by setting
+ * the DrivingState and ParkingStatus in this class.
  */
 public class CPMCoordinator implements Coordinator{
 
@@ -75,7 +76,6 @@ public class CPMCoordinator implements Coordinator{
         TRAVERSING_JUNCTION,
         TRAVERSING_INTERSECTION,
         TRAVERSING_PARKING_LANE,
-        // TODO CPM Find out what this is
         TERMINAL_STATE
     }
 
