@@ -168,17 +168,6 @@ public class CPMAutoDriverSimulator implements Simulator {
         // Generate a length of time that this car should park for
         // This is from entering to when the EXITING state is set.
 
-        // TODO CPM need a way of generating this to represent the data by ferreira
-        // double parkingTime = 20000.0;
-
-        // This is so we can create scenario where vehicle needs to relocate.
-        // TODO CPM Should be able to put this in a test
-        double parkingTime;
-        if (map.getVehicles().size() == 0) {
-            parkingTime = 20000.0;
-        } else {
-            parkingTime = 10000.0;
-        }
 
         // Obtain a Vehicle
         CPMBasicAutoVehicle vehicle =
@@ -190,7 +179,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                         initVelocity,  // target velocity
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime(),
-                        parkingTime);
+                        spawnSpec.getParkingTime());
         // Set the driver
         CPMV2VDriver driver = new CPMV2VDriver(vehicle, map);
         driver.setCurrentLane(lane);

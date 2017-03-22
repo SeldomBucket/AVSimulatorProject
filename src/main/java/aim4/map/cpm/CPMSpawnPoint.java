@@ -20,15 +20,20 @@ public class CPMSpawnPoint extends SpawnPoint {
     /** The specification of a spawn */
     public static class CPMSpawnSpec extends SpawnSpec {
 
+        double parkingTime;
+
         /**
          * Create a spawn specification.
          *
          * @param spawnTime       the spawn time
          * @param vehicleSpec     the vehicle specification
          */
-        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec) {
+        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec, double parkingTime) {
             super(spawnTime, vehicleSpec);
+            this.parkingTime = parkingTime;
         }
+
+        public double getParkingTime() { return parkingTime; }
     }
 
     /**
