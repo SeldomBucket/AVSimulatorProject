@@ -64,7 +64,7 @@ public class StatusMonitor {
 
         // Check there is room for this vehicle
         double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
+        double distanceBetweenVehicles = 0.2; // TODO CPM find this value, must be defined somewhere
         double spaceNeeded = vehicleLength + distanceBetweenVehicles;
         if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
             // Update the space available on that lane

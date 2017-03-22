@@ -170,6 +170,7 @@ public class CPMCoordinator implements Coordinator{
             System.out.println("Parking time has elapsed, " +
                                "setting parking status to EXIT.");
             parkingStatus = ParkingStatus.EXIT;
+            drivingState = DrivingState.DEFAULT_DRIVING_BEHAVIOUR;
         }
     }
 
@@ -267,17 +268,23 @@ public class CPMCoordinator implements Coordinator{
             // If so, then switch to the relevant traversing mode.
             assert driver != null;
             if (driver.inCorner() != null){
+                System.out.println("Entering corner.");
                 currentCorner = driver.inCorner();
                 setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
             if (driver.inJunction() != null){
+                System.out.println("Entering junction.");
                 currentJunction = driver.inJunction();
                 setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
             if (driver.inIntersection() != null){
+                System.out.println("Entering intersection.");
                 setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
             }
-            if (driver.getCurrentLane() instanceof ParkingLane) {
+            // If on EXIT, we want default driving behaviour so vehicle will
+            // drive past the parking end point
+            if (driver.getCurrentLane() instanceof ParkingLane
+                    && parkingStatus != ParkingStatus.EXIT) {
                 System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
                 setDrivingState(DrivingState.TRAVERSING_PARKING_LANE);
             }

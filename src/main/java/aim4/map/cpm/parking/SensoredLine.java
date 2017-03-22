@@ -4,6 +4,10 @@ import aim4.vehicle.VehicleSimModel;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * A SensoredLine is used by a StatusMonitor: when a vehicle
@@ -27,7 +31,7 @@ public class SensoredLine {
     /////////////////////////////////
 
     /** The no repeat time period */
-    private static final double NO_REPEAT_TIME_PERIOD = 1.0; // seconds
+    private static final double NO_REPEAT_TIME_PERIOD = 2.0; // seconds
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -41,6 +45,8 @@ public class SensoredLine {
     private Line2D line;
     /** The type of this sensored line */
     SensoredLineType type;
+    /** The record of the times of the vehicle passing through the line */
+    private Map<Integer,List<Double>> vinToTime;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -52,6 +58,7 @@ public class SensoredLine {
         this.id = id;
         this.line = new Line2D.Double(p1,p2);
         this.type = type;
+        this.vinToTime = new HashMap<Integer,List<Double>>();
     }
 
     /////////////////////////////////
@@ -70,8 +77,17 @@ public class SensoredLine {
     public boolean intersect(VehicleSimModel vehicle, double time,
                              Point2D p1, Point2D p2) {
         int vin = vehicle.getVIN();
-        if (NO_REPEAT_TIME_PERIOD < time) {
+        if (!vinToTime.containsKey(vin)
+                || vinToTime.get(vin).get(vinToTime.get(vin).size()-1)
+                + NO_REPEAT_TIME_PERIOD < time) {
             if (line.intersectsLine(p1.getX(), p1.getY(), p2.getX(), p2.getY())) {
+                if (!vinToTime.containsKey(vin)) {
+                    List<Double> times = new LinkedList<Double>();
+                    times.add(time);
+                    vinToTime.put(vin, times);
+                } else {
+                    vinToTime.get(vin).add(time);
+                }
                 System.out.println("INTERSECT WITH SENSORED LINE " + time);
                 return true;
             } else {
