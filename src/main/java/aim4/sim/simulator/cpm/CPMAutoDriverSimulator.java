@@ -9,6 +9,7 @@ import aim4.map.cpm.CPMSpawnPoint;
 import aim4.map.cpm.CPMSpawnPoint.*;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
+import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
@@ -98,6 +99,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     public SimStepResult step(double timeStep) {
         spawnVehicles(timeStep);
         provideSensorInput();
+        findNextVehicles();
         letDriversAct();
         // communication();
         moveVehicles(timeStep);
@@ -445,6 +447,59 @@ public class CPMAutoDriverSimulator implements Simulator {
             }
         }
 
+    }
+
+    /////////////////////////////////
+    // STEP 3
+    /////////////////////////////////
+
+    /**
+     * Find the vehicle that is directly in front of each vehicle.
+     * Ideally, would like to use sensors, but lack of time and
+     * current understanding of LRF means we need a workaround.
+     */
+    private void findNextVehicles() {
+        for (CPMBasicAutoVehicle vehicle : map.getVehicles()){
+            vehicle.setVehicleInFront(getVehicleInFront(vehicle, map));
+        }
+    }
+
+    /**
+     * Get the vehicle that is directly in front of the given vehicle,
+     * on the same parking lane.
+     *
+     * @param vehicle the vehicle we want to find the vehicle in front for.
+     * @param map the map that the vehicle belongs to.
+     * @return the vehicle in front of the one given.
+     */
+    public CPMBasicAutoVehicle getVehicleInFront(CPMBasicAutoVehicle vehicle,
+                                                        CPMMap map) {
+        if (!(vehicle.getDriver().getCurrentLane() instanceof ParkingLane)) {
+            return null;
+        }
+
+        // Get all vehicles on the same lane
+        Lane lane = vehicle.getDriver().getCurrentLane();
+        List<CPMBasicAutoVehicle> vehiclesInFront = new ArrayList<CPMBasicAutoVehicle>();
+
+        for (CPMBasicAutoVehicle v : map.getVehicles()) {
+            if (v.getDriver().getCurrentLane() == lane) {
+                // Check if the vehicle is in front
+                if (v.getPosition().getX() > vehicle.getPosition().getX()) {
+                    vehiclesInFront.add(v);
+                }
+            }
+        }
+
+        // Now get the one that is directly in front
+        CPMBasicAutoVehicle closest = null;
+        for (CPMBasicAutoVehicle v : vehiclesInFront) {
+            if (closest == null || v.getPosition().getX() < closest.getPosition().getX()){
+                closest = v;
+            }
+        }
+
+        return closest;
     }
 
     /////////////////////////////////

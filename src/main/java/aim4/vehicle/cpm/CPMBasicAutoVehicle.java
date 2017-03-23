@@ -2,6 +2,7 @@ package aim4.vehicle.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
+import aim4.driver.cpm.CPMCoordinator.*;
 import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.BasicAutoVehicle;
@@ -54,15 +55,24 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      * There will only ever be one message, which will be a
      * ParkingLane (or null, if no room for vehicle to park).
      */
-    private ParkingLane I2Vinbox;
+    protected ParkingLane I2Vinbox;
 
     /**
-     * The outbox for messages to the StatusMonitor.
-     * There will only ever be one message, which
-     * will be to enter, re-enter or exit the car
+     * The outbox for messages to the StatusMonitor. There will only ever
+     * be one message, which will be to enter, re-enter or exit the car
      * park.
      // TODO CPM somehow need to send VIN so StatusMonitor knows who msg if from
      private ParkingStatus V2Ioutbox;*/
+
+    /**
+     * The inbox for messages from other vehicles. There will only ever
+     * be one message, which will be from the vehicle behind it, which
+     * will ask it to relocate. The message will indicate what this
+     * vehicle should change it's parking status to.
+     */
+    protected ParkingStatus V2Vinbox;
+
+    protected CPMBasicAutoVehicle vehicleInFront;
 
     /**
      * Construct a vehicle
@@ -92,6 +102,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.parkingTime = parkingTime;
         this.timeToExit = parkingTime;
         this.hasEntered = false;
+        this.vehicleInFront = null;
     }
 
     @Override
@@ -130,6 +141,14 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         targetParkingLane = null;
     }
 
+    public CPMBasicAutoVehicle getVehicleInFront() {
+        return vehicleInFront;
+    }
+
+    public void setVehicleInFront(CPMBasicAutoVehicle vehicleInFront) {
+        this.vehicleInFront = vehicleInFront;
+    }
+
     /**
      * Find out the distance between the front of the vehicle and
      * the ParkingLane's parking end point.
@@ -145,16 +164,28 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
 
     public void sendMessageToI2VInbox(ParkingLane parkingLane) {
         I2Vinbox = parkingLane;
-
     }
 
-    public ParkingLane getMessagesFromInbox() {
+    public ParkingLane getMessagesFromI2VInbox() {
         return I2Vinbox;
     }
 
-    public void clearV2Iinbox() {
-        System.out.println("vehicle inbox cleared");
+    public void clearI2Vinbox() {
+        System.out.println("I2V inbox cleared");
         I2Vinbox = null;
+    }
+
+    public void sendMessageToV2VInbox(ParkingStatus status) {
+        V2Vinbox = status;
+    }
+
+    public ParkingStatus getMessagesFromV2VInbox() {
+        return V2Vinbox;
+    }
+
+    public void clearV2Vinbox() {
+        System.out.println("V2V inbox cleared");
+        V2Vinbox = null;
     }
 
     public void updateTimeToExit(double timeStep) {

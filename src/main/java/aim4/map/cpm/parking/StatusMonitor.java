@@ -10,13 +10,19 @@ import java.util.*;
  * remaining capacity of the car park.
  */
 public class StatusMonitor {
+
+    // TODO CPM find this value, must be defined somewhere
+    private static final double MIN_DISTANCE_BETWEEN_PARKED_VEHICLES = 0.2;
+
     /** The parking area that we are recording the status of. */
     private ParkingArea parkingArea;
     /** A mapping from parking lanes to the amount of
      * space left for parking on that lane. */
     private Map<ParkingLane, Double> parkingLanesSpace = new HashMap<ParkingLane, Double>();
-    /** A list of vehicles which are currently in the car park. */
-    private List<CPMBasicAutoVehicle> vehicles = new ArrayList<CPMBasicAutoVehicle>();
+    /** A list of vehicles which are currently in the car park,
+     * and the lane they are parked in. */
+    private Map<CPMBasicAutoVehicle, ParkingLane> vehicles =
+            new HashMap<CPMBasicAutoVehicle, ParkingLane>();
 
     /**
      * Create a StatusMonitor to record the status of the car park.
@@ -40,12 +46,17 @@ public class StatusMonitor {
         }
     }
 
+    /**
+     * Calculate if there is enough room for the vehicle in the car park.
+     * @param vehicleLength The length of the vehicle that wishes to enter the car park
+     * @return true if there is space for the vehicle to park.
+     */
     public boolean roomForVehicle(double vehicleLength) {
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
         // Check there is room for this vehicle
-        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
+        double distanceBetweenVehicles = MIN_DISTANCE_BETWEEN_PARKED_VEHICLES;
         double spaceNeeded = vehicleLength + distanceBetweenVehicles;
 
         if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
@@ -54,6 +65,10 @@ public class StatusMonitor {
         return false;
     }
 
+    /**
+     * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
+     * @param vehicle The vehicle entering the car park.
+     */
     public void vehicleOnEntry(CPMBasicAutoVehicle vehicle) {
         // TODO CPM Think about what to do if the vehicle has a targetParkingLane already
         /** ^ This might happen if say seem to be on the sensored line for a while
@@ -62,61 +77,83 @@ public class StatusMonitor {
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
-        // Check there is room for this vehicle
-        double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = 0.2; // TODO CPM find this value, must be defined somewhere
-        double spaceNeeded = vehicleLength + distanceBetweenVehicles;
-        if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
-            // Update the space available on that lane
-            double newAvailableSpace = parkingLaneEntry.getValue() - spaceNeeded;
-            parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailableSpace);
+        // Update the space available on that lane
+        decreaseCapacity(vehicle, parkingLaneEntry);
 
-            // Allocate this parking lane to the vehicle
-            System.out.println("Status monitor sending parking lane to vehicle.");
-            sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
+        // Allocate this parking lane to the vehicle by sending message
+        System.out.println("Status monitor sending parking lane to vehicle.");
+        sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
 
-            // Register the vehicle with the StatusMonitor
-            vehicles.add(vehicle);
-
-        } else {
-            // If not enough room, don't send anything. They will continue to wait.
-            System.out.println("There's not enough room in the car " +
-                               "park for this vehicle to enter!");
-        }
-        // sendParkingLaneMessage(vehicle, parkingArea.getParkingLanes().get(1));
+        // Register the vehicle with the StatusMonitor, along with the
+        // parking lane it has been allocated
+        vehicles.put(vehicle, parkingLaneEntry.getKey());
     }
 
+    /**
+     * Update capacity and allocate a parking lane to a vehicle when
+     * re-entering the car park.
+     * @param vehicle The vehicle re-entering the car park.
+     */
     public void vehicleOnReEntry(CPMBasicAutoVehicle vehicle) {
+        // first update the capacity - the vehicle has just left a parking lane
+        increaseCapacity(vehicle);
+
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
-        // Check there is room for this vehicle
-        double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
-        double spaceNeeded = vehicleLength + distanceBetweenVehicles;
-        if (!willVehicleFit(parkingLaneEntry, spaceNeeded)){
-            throw new RuntimeException("Vehicle is re-entering, but not enough room!");
-        }
-
         // Update the space available on that lane
-        double newAvailableSpace = parkingLaneEntry.getValue() - spaceNeeded;
-        parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailableSpace);
+        decreaseCapacity(vehicle, parkingLaneEntry);
 
-        // Allocate this parking lane to the vehicle
-        vehicle.setTargetParkingLane(parkingLaneEntry.getKey());
+        // Allocate this parking lane to the vehicle by sending message
+        System.out.println("Status monitor sending parking lane to vehicle.");
+        sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
+
+        // Update the vehicles parking lane in StatusMonitor records
+        vehicles.put(vehicle, parkingLaneEntry.getKey());
     }
 
+    /**
+     * Update capacity when a vehicle exits the car park.
+     * @param vehicle The vehicle exiting the car park.
+     */
     public void vehicleOnExit(CPMBasicAutoVehicle vehicle) {
         // Update capacity
-        Map.Entry<ParkingLane, Double>  entryToUpdate = findParkingLaneSpace(vehicle.getMessagesFromInbox());
-        vehicle.clearV2Iinbox();
-        double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
-        double spaceFreed = vehicleLength + distanceBetweenVehicles;
-        parkingLanesSpace.put(entryToUpdate.getKey(), entryToUpdate.getValue() - spaceFreed);
+        increaseCapacity(vehicle);
 
         // Remove the vehicle from the status monitor's records
         vehicles.remove(vehicle);
+    }
+
+    /**
+     * Increase the capacity when a vehicle has left the parking area.
+     * This is on EXIT and RELOCATING.
+     * @param vehicle the vehicle that has left the parking area
+     */
+    private void increaseCapacity(CPMBasicAutoVehicle vehicle){
+        ParkingLane laneToUpdate = vehicles.get(vehicle);
+        Map.Entry<ParkingLane, Double>  entryToUpdate = findParkingLaneSpace(laneToUpdate);
+        double spaceFreed = calculateTotalVehicleSpace(vehicle);
+        parkingLanesSpace.put(entryToUpdate.getKey(), entryToUpdate.getValue() + spaceFreed);
+    }
+
+    /**
+     * Decrease the capacity when a vehicle is entering the parking area.
+     * This is on ENTRERING and RELOCATING
+     * @param vehicle The vehicle entering the parking area.
+     */
+    private void decreaseCapacity(CPMBasicAutoVehicle vehicle, Map.Entry<ParkingLane, Double>  parkingLaneEntry){
+        double spaceTaken = calculateTotalVehicleSpace(vehicle);
+        if (!willVehicleFit(parkingLaneEntry, spaceTaken)){
+            throw new RuntimeException("There's not enough room in the car " +
+                    "park for this vehicle to park!");
+        }
+        parkingLanesSpace.put(parkingLaneEntry.getKey(), parkingLaneEntry.getValue() - spaceTaken);
+    }
+
+    private double calculateTotalVehicleSpace(CPMBasicAutoVehicle vehicle) {
+        double vehicleLength = vehicle.getSpec().getLength();
+        double distanceBetweenVehicles = MIN_DISTANCE_BETWEEN_PARKED_VEHICLES; // TODO CPM find this value
+        return vehicleLength + distanceBetweenVehicles;
     }
 
     private Map.Entry<ParkingLane, Double> findParkingLaneSpace(ParkingLane parkingLane) {
@@ -163,7 +200,7 @@ public class StatusMonitor {
         vehicle.sendMessageToI2VInbox(parkingLane);
     }
 
-    public List<CPMBasicAutoVehicle> getVehicles() {
+    public Map<CPMBasicAutoVehicle, ParkingLane> getVehicles() {
         return vehicles;
     }
 }
