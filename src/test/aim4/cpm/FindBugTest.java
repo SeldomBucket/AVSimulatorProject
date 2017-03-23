@@ -26,12 +26,12 @@ public class FindBugTest {
          * */
 
         this.map = new CPMCarParkWithStatus(4, // laneWidth
-                25.0, // speedLimit
+                10.0, // speedLimit
                 0.0, // initTime
-                1, // numberOfParkingLanes
+                3, // numberOfParkingLanes
                 20, // parkingLength
-                10); // access length
-        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, 2);
+                5); // access length
+        CPMMapUtil.setUpInfiniteComplexSpawnPoint(map);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }
@@ -39,18 +39,18 @@ public class FindBugTest {
     @Test
     public void testToFindBug() throws Exception {
 
-       /* // Run the simulation until there are 2 vehicles parked.
+        // Run the simulation until 10 vehicles have completed.
         try {
             simThread.start();
-            while (sim.getNumCompletedVehicles() != 2) {
+            while (sim.getNumCompletedVehicles() != 10) {
                 simThread.run();
             }
             simThread.pause();
-        } catch (RuntimeException e) {
+        } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);*/
+        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
     }
 
 }

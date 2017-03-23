@@ -13,6 +13,7 @@ import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Utility class for CPM maps.
@@ -213,6 +214,44 @@ public class CPMMapUtil {
         }
     }
 
+    public static class InfiniteComplexSpawnSpecGenerator implements CPMSpawnSpecGenerator {
+        /** The vehicle specification */
+        private VehicleSpec vehicleSpec;
+        /** The probability of generating a vehicle in each spawn time step */
+        private double spawnProbability;
+        /**
+         * Create a spec generator that creates a simple relocate scenario.
+         */
+        public InfiniteComplexSpawnSpecGenerator() {
+            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+            spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
+            // Cannot generate more than one vehicle in each spawn time step
+            assert spawnProbability <= 1.0;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
+            double initTime = spawnPoint.getCurrentTime();
+            for(double time = initTime; time < initTime + timeStep;
+                time += SimConfig.SPAWN_TIME_STEP) {
+                if (Util.random.nextDouble() < spawnProbability) {
+                    // TODO CPM need a way of generating this to represent the data by ferreira
+                    double rangeMin = 2000.0;
+                    double rangeMax = 20000.0;
+                    Random r = new Random();
+                    double randomParkingTime = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+                    result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, randomParkingTime));
+                    System.out.println("Vehicle spawned!");
+                }
+            }
+            return result;
+        }
+    }
+
 
     public static void setUpOneVehicleSpawnPoint(CPMMap simpleMap){
         // The spawn point will only spawn one vehicle in the whole simulation
@@ -243,6 +282,14 @@ public class CPMMapUtil {
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new SimpleRelocateSpawnSpecGenerator());
+        }
+    }
+
+    public static void setUpInfiniteComplexSpawnPoint(CPMMap simpleMap){
+        // The spawn point will continuously spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new InfiniteComplexSpawnSpecGenerator());
         }
     }
 
