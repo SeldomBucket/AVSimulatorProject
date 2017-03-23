@@ -88,7 +88,7 @@ public class SensoredLine {
                 } else {
                     vinToTime.get(vin).add(time);
                 }
-                System.out.println("INTERSECT WITH SENSORED LINE " + time);
+                System.out.println("INTERSECT WITH " + type + " SENSORED LINE: " + time);
                 return true;
             } else {
                 return false;

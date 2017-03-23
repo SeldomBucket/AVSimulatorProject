@@ -21,6 +21,7 @@ public class CPMCoordinator implements Coordinator{
 
     /**
      * The different parking statuses that an agent can have.
+     * RELOCATING is also used as a message between vehicles.
      */
     public enum ParkingStatus {
         /** The vehicle has been spawned and is waiting to enter the car park.
@@ -118,12 +119,12 @@ public class CPMCoordinator implements Coordinator{
     private ParkingStatus parkingStatus;
 
     /**
-     * The most recent time at which the state was changed.
+     * The most recent time at which the driving state was changed.
      */
-    private double lastStateChangeTime = 0.0;
+    private double lastDrivingStateChangeTime = 0.0;
 
     /**
-     * The state handlers
+     * The driving state handlers
      */
     private EnumMap<DrivingState,StateHandler> stateHandlers;
 
@@ -132,7 +133,7 @@ public class CPMCoordinator implements Coordinator{
     /////////////////////////////////
 
     /**
-     * Create an basic V2V Coordinator to coordinate a Vehicle in CPM.
+     * Create a basic V2V Coordinator to coordinate a Vehicle in CPM.
      *
      * @param vehicle  the Vehicle to coordinate
      * @param driver   the driver
@@ -155,9 +156,10 @@ public class CPMCoordinator implements Coordinator{
 
     @Override
     public void act() {
-        checkTimeToExit();
-        processI2Vinbox();
-        callStateHandlers();
+        checkTimeToExit(); // check if the parking time has elapsed
+        processI2Vinbox(); // process any messages from the Status Monitor
+        processV2Vinbox(); // process any messages from other vehicles
+        callStateHandlers(); // act according to the driving state
     }
 
     /**

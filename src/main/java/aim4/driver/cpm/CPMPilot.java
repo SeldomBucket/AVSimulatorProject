@@ -128,8 +128,6 @@ public class CPMPilot extends BasicPilot{
      */
     public void takeSteeringActionForTraversing(BasicConnection connection,
                                                 ParkingStatus parkingStatus) {
-        // System.out.println("Steering around a connection! Connection type: " + connection.getClass());
-
         // Check if we already have a departure lane.
         if (connectionDepartureLane == null) {
             // Determine the departure lane
