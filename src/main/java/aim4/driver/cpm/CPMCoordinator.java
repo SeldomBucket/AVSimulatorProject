@@ -173,6 +173,27 @@ public class CPMCoordinator implements Coordinator{
                                "setting parking status to EXIT.");
             parkingStatus = ParkingStatus.EXIT;
             drivingState = DrivingState.DEFAULT_DRIVING_BEHAVIOUR;
+            // Tell the vehicle in front to relocate, if there is one
+            passMessageToVehicleInFront(ParkingStatus.RELOCATING);
+        }
+    }
+
+    /**
+     * Find the vehicle parked in front and send it a message to relocate
+     * so this agent can leave the parking lane.
+     * @param status The driving status that the vehicle in front should change to.
+     */
+    private void passMessageToVehicleInFront(ParkingStatus status){
+        // We only want to send the message if the vehicle is actually parked
+        // I.e. is stationary, no velocity, and if we haven't already sent it
+        // a message
+        System.out.println("Finding vehicle in front");
+        CPMBasicAutoVehicle vehicleInFront = vehicle.getVehicleInFront();
+        if(vehicleInFront != null
+            && vehicleInFront.getVelocity() == 0.0
+                && vehicleInFront.getMessagesFromV2VInbox() == null) {
+            System.out.println("Sending message " +  status.toString() + " to vehicle in front");
+            vehicleInFront.sendMessageToV2VInbox(status);
         }
     }
 
@@ -180,15 +201,34 @@ public class CPMCoordinator implements Coordinator{
      * Process any messages in the I2V inbox, from the StatusMonitor.
      */
     private void processI2Vinbox() {
-        ParkingLane I2Vinbox = vehicle.getMessagesFromInbox();
+        ParkingLane I2Vinbox = vehicle.getMessagesFromI2VInbox();
         if ((I2Vinbox != null && parkingStatus == ParkingStatus.WAITING) ||
                 (I2Vinbox != null && parkingStatus == ParkingStatus.RELOCATING) ) {
             // We have been granted access to the car park and know where to park
             System.out.println("Changing status to PARKING.");
             setParkingStatus(ParkingStatus.PARKING);
             vehicle.setTargetParkingLane(I2Vinbox);
-            System.out.println("Parking on " + I2Vinbox.getRoadName());
-            vehicle.setHasEntered();
+            vehicle.clearI2Vinbox();
+            System.out.println("Finding space on " + I2Vinbox.getRoadName());
+            if (!vehicle.hasEnteredCarPark()) {
+                vehicle.setHasEntered();
+            }
+        }
+    }
+
+    /**
+     * Process any messages in the V2V inbox, from the vehicle behind us.
+     */
+    private void processV2Vinbox() {
+        ParkingStatus V2Vinbox = vehicle.getMessagesFromV2VInbox();
+        if ((V2Vinbox == ParkingStatus.RELOCATING && parkingStatus == ParkingStatus.PARKING)) {
+            // The vehicle behind us needs to exit, so change our parking status
+            System.out.println("Changing status to " + V2Vinbox.toString());
+            setParkingStatus(V2Vinbox);
+            setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+            // If there is a vehicle in front, we need to send them the same message
+            passMessageToVehicleInFront(V2Vinbox);
+            vehicle.clearV2Vinbox();
         }
     }
 
@@ -283,10 +323,10 @@ public class CPMCoordinator implements Coordinator{
                 System.out.println("Entering intersection.");
                 setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
             }
-            // If on EXIT, we want default driving behaviour so vehicle will
-            // drive past the parking end point
+            // If on EXIT or RELOCATING, we want default driving behaviour
+            // so vehicle will drive past the parking end point
             if (driver.getCurrentLane() instanceof ParkingLane
-                    && parkingStatus != ParkingStatus.EXIT) {
+                    && parkingStatus == ParkingStatus.PARKING) {
                 System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
                 setDrivingState(DrivingState.TRAVERSING_PARKING_LANE);
             }
@@ -321,7 +361,7 @@ public class CPMCoordinator implements Coordinator{
                     currentCorner = corner;
                     pilot.clearDepartureLane();
                 }
-                // do nothing keep going
+                // do nothing, keep going around the corner
                 pilot.takeSteeringActionForTraversing(corner, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
@@ -355,7 +395,7 @@ public class CPMCoordinator implements Coordinator{
                     currentJunction = junction;
                     pilot.clearDepartureLane();
                 }
-                // do nothing keep going
+                // do nothing, keep going through the junction
                 pilot.takeSteeringActionForTraversing(junction, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
@@ -378,12 +418,12 @@ public class CPMCoordinator implements Coordinator{
             SimpleIntersection intersection = driver.inIntersection();
             if (intersection == null) {
                 System.out.println("Driver is now out of the intersection.");
-                // The vehicle is out of the corner.
+                // The vehicle is out of the intersection.
                 // Go back to default driving behaviour
                 pilot.clearDepartureLane();
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
-                // do nothing keep going
+                // do nothing keep going through the intersection
                 pilot.takeSteeringActionForTraversing(intersection, parkingStatus);
                 // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                 // pilot.followAccelerationProfile(rparameter);
@@ -422,6 +462,7 @@ public class CPMCoordinator implements Coordinator{
                 System.out.println("Reached target parking lane");
                 vehicle.clearTargetParkingLane();
             }
+            // keep driving on the parking lane
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
             pilot.dontPassParkingEndPoint(parkingStatus);
@@ -436,7 +477,7 @@ public class CPMCoordinator implements Coordinator{
                     vehicle.gaugeTime(), vehicle.getVIN(), drivingState);
         }
         this.drivingState = drivingState;
-        lastStateChangeTime = vehicle.gaugeTime();
+        lastDrivingStateChangeTime = vehicle.gaugeTime();
     }
 
     public ParkingStatus getParkingStatus() {
@@ -455,7 +496,7 @@ public class CPMCoordinator implements Coordinator{
      *         CoordinatingDriverAgent last changed
      */
     private double timeSinceStateChange() {
-        return vehicle.gaugeTime() - lastStateChangeTime;
+        return vehicle.gaugeTime() - lastDrivingStateChangeTime;
     }
 
     /**
