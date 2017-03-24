@@ -12,7 +12,7 @@ import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
-import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;

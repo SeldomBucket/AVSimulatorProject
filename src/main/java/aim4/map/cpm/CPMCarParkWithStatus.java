@@ -1,4 +1,4 @@
-package aim4.map.cpm.testmaps;
+package aim4.map.cpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;

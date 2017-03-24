@@ -1,7 +1,7 @@
 package aim4.cpm;
 
 import aim4.map.cpm.CPMMapUtil;
-import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import org.junit.Before;
 import org.junit.Test;

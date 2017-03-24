@@ -2,10 +2,8 @@ package aim4.cpm.map.parking;
 
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.ParkingLane;
-import aim4.map.cpm.parking.StatusMonitor;
-import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

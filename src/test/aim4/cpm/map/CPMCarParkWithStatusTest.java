@@ -2,13 +2,10 @@ package aim4.cpm.map;
 
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.vehicle.cpm.CPMBasicAutoVehicle;
-import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkWithStatus;
 import org.junit.Before;
 import org.junit.Test;
 import util.TestSimThread;
-
-import java.awt.geom.Point2D;
 
 import static org.junit.Assert.assertTrue;
 
@@ -16,7 +13,7 @@ import static org.junit.Assert.assertTrue;
  * Created by Becci on 20-Mar-17.
  */
 public class CPMCarParkWithStatusTest {
-    aim4.map.cpm.testmaps.CPMCarParkWithStatus map;
+    CPMCarParkWithStatus map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
     int numberOfVehicles = 6;
