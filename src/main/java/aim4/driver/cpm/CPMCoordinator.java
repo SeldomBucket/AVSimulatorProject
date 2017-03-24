@@ -11,9 +11,9 @@ import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import java.util.EnumMap;
 
 /**
- * This class has a similar role to the V2ICoodinator for AIM.
- * It should handle the messages between vehicles, and with
- * the StatusMonitor.
+ * The Coordinator is responsible for handling the messages
+ * between vehicles (V2VCommunication), and with the
+ * StatusMonitor (I2VCommunication.
  * The two agents (Coordinator and Pilot) communicate by setting
  * the DrivingState and ParkingStatus in this class.
  */
@@ -25,22 +25,28 @@ public class CPMCoordinator implements Coordinator{
      */
     public enum ParkingStatus {
         /** The vehicle has been spawned and is waiting to enter the car park.
-         * If there is enough room they will be granted access by recieving
+         * If there is enough room they will be granted access by receiving
          * the parking lane they should park in (the one with the most room).
-         * If there is not enough space, the vehicle will not recieve a parking
-         * lane and they should continue to wait.
+         * If there is not enough space, an exception is thrown, as vehicles
+         * are only spawned if there is enough room to cater for them.
          * */
         WAITING,
+
         /** The vehicle has entered, or re-entered, the car park. They are
          * now making their way to a parking lane to park.*/
         PARKING,
+
         /** The vehicle is relocating - they leave the parking lane and reenter
-         * the car park, allowing a vehicle it was blocking to exit. On reentry,
-         * they are given a new parking lane and go back to PARKING.
+         * the car park, allowing a vehicle it was blocking to exit. If a vehicle
+         * is blocking it, then it will send it a message telling it to RELOCATE.
+         * On reentry,the vehicle is given a new parking lane and go back to PARKING.
          * */
         RELOCATING,
+
         /**
          * The vehicle is being retrieved and should exit the car park.
+         * If it is blocked by the vehicle in front, it will send it a
+         * message to RELOCATE.
          * */
         EXIT
     }
@@ -69,27 +75,47 @@ public class CPMCoordinator implements Coordinator{
      */
     public enum DrivingState {
         /**
-         * The agent simply follows the current lanes until it exits the simulator.
-         * the intersection
+         * The agent simply follows the current lanes, ensuring not to hit
+         * the vehicle in front of it.
          */
         DEFAULT_DRIVING_BEHAVIOUR,
+        /**
+         * The agent is traversing around a corner.
+         */
         TRAVERSING_CORNER,
+        /**
+         * The agent is traversing through a junction.
+         */
         TRAVERSING_JUNCTION,
+        /**
+         * The agent is traversing through an intersection.
+         */
         TRAVERSING_INTERSECTION,
+        /**
+         * The agent is traversing a parking lane. More or less the same
+         * behaviour as DEFAULT_DRIVING_BEHAVIOUR, but it ensures that
+         * it doesn't pass the parking end point.
+         */
         TRAVERSING_PARKING_LANE,
+        /**
+         * The agent has completed and Coordinator has finished its job.
+         */
         TERMINAL_STATE
     }
 
     /** The Vehicle being coordinated by this coordinator. */
     private CPMBasicAutoVehicle vehicle;
 
-    /** The driver of which this coordinator is a part. */
+    /** The driver that this coordinator is a part of. */
     private CPMV2VDriver driver;
 
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMPilot pilot;
 
-    /** The sub-agent that decides where to go when there is a choice. */
+    /**
+     * The sub-agent that decides where to go when there is a choice.
+     * i.e. in junctions and intersections.
+     */
     private CPMNavigator navigator;
 
     /**
@@ -100,7 +126,7 @@ public class CPMCoordinator implements Coordinator{
 
     /**
      * The junction that the agent is currently in, if any.
-     * Used to determine if it has enetered a new junction.
+     * Used to determine if it has entered a new junction.
      * */
     private Junction currentJunction;
 
@@ -135,8 +161,8 @@ public class CPMCoordinator implements Coordinator{
     /**
      * Create a basic V2V Coordinator to coordinate a Vehicle in CPM.
      *
-     * @param vehicle  the Vehicle to coordinate
-     * @param driver   the driver
+     * @param vehicle  the Vehicle it will coordinate.
+     * @param driver   the driver agent it is a part of.
      */
     public CPMCoordinator(CPMBasicAutoVehicle vehicle,
                           CPMV2VDriver driver){
@@ -163,7 +189,7 @@ public class CPMCoordinator implements Coordinator{
     }
 
     /**
-     * Check the time left until exit, and change parking status
+     * Check the time left until it should exit, and change parking status
      * to exiting if it is time to do so.
      */
     private void checkTimeToExit() {
@@ -249,7 +275,7 @@ public class CPMCoordinator implements Coordinator{
     // State
 
     /**
-     * Get the current state of the CoordinatingDriverAgent.
+     * Get the current driving state of this driver agent.
      *
      * @return the current state of the driver agent
      */
@@ -470,8 +496,11 @@ public class CPMCoordinator implements Coordinator{
         }
     }
 
+    /**
+     * Set the driving state of this agent.
+     * @param drivingState the new driving state for this agent.
+     */
     private void setDrivingState(DrivingState drivingState) {
-        // log("Changing state to " + state.toString());
         if (Debug.isPrintDriverStateOfVIN(vehicle.getVIN())) {
             System.err.printf("At time %.2f, vin %d changes state to %s\n",
                     vehicle.gaugeTime(), vehicle.getVIN(), drivingState);
@@ -480,6 +509,10 @@ public class CPMCoordinator implements Coordinator{
         lastDrivingStateChangeTime = vehicle.gaugeTime();
     }
 
+    /**
+     * Get the current parking status of this agent.
+     * @return the current parming status of this agent.
+     */
     public ParkingStatus getParkingStatus() {
         return parkingStatus;
     }
@@ -489,11 +522,11 @@ public class CPMCoordinator implements Coordinator{
     }
 
     /**
-     * Get the amount of time, in seconds, since the state of this
-     * CoordinatingDriverAgent last changed.
+     * Get the amount of time, in seconds, since the driving state of this
+     * agent last changed.
      *
      * @return the amount of time, in seconds, since the state of this
-     *         CoordinatingDriverAgent last changed
+     *         agent last changed
      */
     private double timeSinceStateChange() {
         return vehicle.gaugeTime() - lastDrivingStateChangeTime;
