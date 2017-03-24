@@ -125,6 +125,8 @@ public class CPMAutoDriverSimulator implements Simulator {
                 if (canSpawnVehicle(spawnPoint)) {
                     for(CPMSpawnSpec spawnSpec : spawnSpecs) {
                         // Only create the vehicle if there is room in the car park
+                        // TODO CPM need to consider cars waiting too. Could make
+                        // no vehicle zone for spawn point span up to the entry sensored line
                         double vehicleLength = spawnSpec.getVehicleSpec().getLength();
                         if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
                             CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
@@ -149,7 +151,13 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @return Whether the spawn point can spawn any vehicle
      */
     private boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
-        // TODO CPM return true for the moment.
+        // TODO: can be made much faster.
+        Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
+        for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
+            if (vehicle.getShape().intersects(noVehicleZone)) {
+                return false;
+            }
+        }
         return true;
     }
 
@@ -530,7 +538,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
 
-            CPMMapUtil.checkVehicleStillOnMap(map, vehicle, p2, vehicle.getDriver().getCurrentLane());
+            CPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
 
             // Check if we've gone through a data collection line
             for(DataCollectionLine line : map.getDataCollectionLines()) {

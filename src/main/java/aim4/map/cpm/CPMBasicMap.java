@@ -32,7 +32,6 @@ public abstract class CPMBasicMap implements CPMMap{
 
     /** The length of the no vehicle zone */
     protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
-    // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
     /** The length of the map border, used for
      * space between map edge and elements, distance

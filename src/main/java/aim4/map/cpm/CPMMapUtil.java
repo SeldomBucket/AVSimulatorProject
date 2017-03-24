@@ -78,12 +78,12 @@ public class CPMMapUtil {
          * Create a spec generator that generates the specified number
          * of vehicles. This only spawns one VehicleSpec at the moment.
          */
-        public FiniteSpawnSpecGenerator(int numberOfVehiclesToSpawn) {
+        public FiniteSpawnSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
             this.numberOfSpawnedVehicles = 0;
             isDone = false;
-            spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
         }
@@ -127,9 +127,9 @@ public class CPMMapUtil {
          * Create a spec generator that generates the specified number
          * of vehicles. This only spawns one VehicleSpec at the moment.
          */
-        public InfiniteSpawnSpecGenerator() {
+        public InfiniteSpawnSpecGenerator(double trafficLevel) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
         }
@@ -175,11 +175,11 @@ public class CPMMapUtil {
         /**
          * Create a spec generator that creates a simple relocate scenario.
          */
-        public SimpleRelocateSpawnSpecGenerator() {
+        public SimpleRelocateSpawnSpecGenerator(double trafficLevel) {
             this.numberOfVehiclesToSpawn = 2;
             this.numberOfSpawnedVehicles = 0;
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
         }
@@ -222,9 +222,9 @@ public class CPMMapUtil {
         /**
          * Create a spec generator that creates a simple relocate scenario.
          */
-        public InfiniteComplexSpawnSpecGenerator() {
+        public InfiniteComplexSpawnSpecGenerator(double trafficLevel) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = 0.28 * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
         }
@@ -261,35 +261,37 @@ public class CPMMapUtil {
         }
     }
 
-    public static void setUpFiniteVehicleSpawnPoint(CPMMap simpleMap, int numberOfVehiclesToSpawn){
+    public static void setUpFiniteVehicleSpawnPoint(CPMMap simpleMap,
+                                                    int numberOfVehiclesToSpawn,
+                                                    double trafficLevel){
         // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new FiniteSpawnSpecGenerator(numberOfVehiclesToSpawn));
+                    new FiniteSpawnSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
         }
     }
 
-    public static void setUpInfiniteVehicleSpawnPoint(CPMMap simpleMap){
+    public static void setUpInfiniteVehicleSpawnPoint(CPMMap simpleMap, double trafficLevel){
         // The spawn point will continuously spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnSpecGenerator());
+                    new InfiniteSpawnSpecGenerator(trafficLevel));
         }
     }
 
-    public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap){
+    public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap, double trafficLevel){
         // The spawn point will continuously spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new SimpleRelocateSpawnSpecGenerator());
+                    new SimpleRelocateSpawnSpecGenerator(trafficLevel));
         }
     }
 
-    public static void setUpInfiniteComplexSpawnPoint(CPMMap simpleMap){
+    public static void setUpInfiniteComplexSpawnPoint(CPMMap simpleMap, double trafficLevel){
         // The spawn point will continuously spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteComplexSpawnSpecGenerator());
+                    new InfiniteComplexSpawnSpecGenerator(trafficLevel));
         }
     }
 
@@ -300,15 +302,12 @@ public class CPMMapUtil {
      * @param currentLane the lane the vehicle is currently driving on
      * */
     public static void checkVehicleStillOnMap(CPMMap map,
-                                              CPMBasicAutoVehicle vehicle,
                                               Point2D vehiclePosition,
                                               Lane currentLane){
         // For this map, should only drive off the map when it has
         // finished following the exit lane
         double x = vehiclePosition.getX();
         double y = vehiclePosition.getY();
-
-        AutoDriver driver = vehicle.getDriver();
 
         // If the vehicle is off the map
         if (!map.getDimensions().contains(new Point2D.Double(x, y))){

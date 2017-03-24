@@ -35,7 +35,7 @@ public class CPMCarParkWithStatusTest {
                 3, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, numberOfVehicles);
+        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, numberOfVehicles, 0.28);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }

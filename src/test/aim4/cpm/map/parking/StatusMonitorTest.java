@@ -32,7 +32,7 @@ public class StatusMonitorTest {
                 1, // numberOfParkingLanes
                 0, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteVehicleSpawnPoint(mapNoParkingSpace);
+        CPMMapUtil.setUpInfiniteVehicleSpawnPoint(mapNoParkingSpace, 0.28);
         this.simForNoParkingSpace = new CPMAutoDriverSimulator(mapNoParkingSpace);
         this.simThreadForNoParkingSpace = new TestSimThread(simForNoParkingSpace);
 
@@ -46,7 +46,7 @@ public class StatusMonitorTest {
                 2, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpFiniteVehicleSpawnPoint(mapTwoLanes, 2);
+        CPMMapUtil.setUpFiniteVehicleSpawnPoint(mapTwoLanes, 2, 0.28);
         this.simForTwoLanes = new CPMAutoDriverSimulator(mapTwoLanes);
         this.simThreadForTwoLanes = new TestSimThread(simForTwoLanes);
     }

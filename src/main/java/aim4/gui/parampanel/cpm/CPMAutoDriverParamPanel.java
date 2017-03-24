@@ -16,7 +16,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider numberOfParkingLanesSlider;
     LabeledSlider parkingLengthSlider;
     LabeledSlider accessLengthSlider;
-    LabeledSlider trafficLevelSlider;
+    LabeledSlider trafficRateSlider;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -70,13 +70,13 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "%.0f");
         add(accessLengthSlider);
 
-        trafficLevelSlider =
+        trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
                         simSetup.getTrafficLevel() * 3600.0, // CPM TODO Why?
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
-        add(trafficLevelSlider);
+        add(trafficRateSlider);
 
 
     }
@@ -102,7 +102,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
         return (int)numberOfParkingLanesSlider.getValue();
     }
 
-    public double getTrafficLevel() {
-        return trafficLevelSlider.getValue();
+    public double getTrafficRate() {
+        return trafficRateSlider.getValue()/ 3600.0;
     }
 }

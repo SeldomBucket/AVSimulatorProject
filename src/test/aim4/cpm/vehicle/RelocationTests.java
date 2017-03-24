@@ -36,7 +36,7 @@ public class RelocationTests {
                 1, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpSimpleRelocateSpawnPoint(map);
+        CPMMapUtil.setUpSimpleRelocateSpawnPoint(map, 0.28);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }
