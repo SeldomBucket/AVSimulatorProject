@@ -2,7 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
-import aim4.driver.aim.pilot.BasicPilot;
+import aim4.driver.BasicPilot;
 import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;

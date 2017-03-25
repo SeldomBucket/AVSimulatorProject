@@ -1,21 +1,12 @@
 package aim4.cpm.vehicle;
 
-import aim4.gui.StatusPanelContainer;
-import aim4.gui.Viewer;
-import aim4.gui.viewer.CPMSimViewer;
-import aim4.gui.viewer.SimViewer;
-import aim4.gui.viewer.SimViewer.*;
-import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.internal.exceptions.ExceptionIncludingMockitoWarnings;
-import util.TestSimThread;
-
-import java.time.Duration;
+import util.sim.TestSimThread;
 
 import static org.junit.Assert.*;
 

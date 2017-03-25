@@ -2,7 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.config.Debug;
 import aim4.driver.AutoDriver;
-import aim4.driver.aim.coordinator.Coordinator;
+import aim4.driver.Coordinator;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;

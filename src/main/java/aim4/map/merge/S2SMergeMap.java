@@ -32,8 +32,8 @@ public class S2SMergeMap extends MergeMap {
         /*
         We need to determine the length of the merging zone, as the lane comes in at an angle.
         The understanding for this calculation is as follows:
-        1. Consider a right angled triangle at the merge point.
-            - The hypotenuse is the length of the merge point.
+        1. Consider a right angled triangle at the merge zone.
+            - The hypotenuse is the length of the merge zone.
             - The adjacent side is the upper edge of the merge lane.
             - The opposite side is the width of the lane. The side spans from where the lower edge of the merging lane
             meets meets the target lane, to the upper edge of the merging lane.

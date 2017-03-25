@@ -24,32 +24,13 @@ public class MergeAutoDriver extends MergeDriver implements AutoDriver {
     }
 
     @Override
-    public void addCurrentlyOccupiedLane(Lane lane) {
-
+    public VehicleDriverModel getVehicle() {
+        return this.vehicle;
     }
 
     @Override
     public void act() {
 
-    }
-
-    @Override
-    public VehicleDriverModel getVehicle() {
-        return null;
-    }
-
-    @Override
-    public Lane getCurrentLane() {
-        return null;
-    }
-
-    @Override
-    public Set<Lane> getCurrentlyOccupiedLanes() {
-        return null;
-    }
-
-    @Override
-    public void setCurrentLane(Lane lane) {
 
     }
 }

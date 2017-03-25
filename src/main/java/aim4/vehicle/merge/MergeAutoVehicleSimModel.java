@@ -9,7 +9,4 @@ import aim4.vehicle.AutoVehicleSimModel;
  */
 public interface MergeAutoVehicleSimModel extends MergeAutoVehicleDriverModel,
         MergeVehicleSimModel, AutoVehicleSimModel {
-
-    @Override
-    MergeAutoDriver getDriver();
 }

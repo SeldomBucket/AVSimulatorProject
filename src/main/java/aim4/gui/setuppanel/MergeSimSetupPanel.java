@@ -2,8 +2,6 @@ package aim4.gui.setuppanel;
 
 import aim4.gui.parampanel.merge.*;
 import aim4.sim.setup.SimSetup;
-import aim4.sim.setup.merge.BasicMergeSimSetup;
-import aim4.sim.setup.merge.MergeSimSetup;
 
 import javax.swing.*;
 import java.awt.*;

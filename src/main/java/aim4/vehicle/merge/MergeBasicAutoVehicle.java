@@ -11,6 +11,8 @@ import java.awt.geom.Point2D;
  * Created by Callum on 14/03/2017.
  */
 public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAutoVehicleSimModel {
+    private MergeAutoDriver driver;
+
     /**
      * Construct a vehicle
      *
@@ -31,11 +33,12 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
 
     @Override
     public MergeAutoDriver getDriver() {
-        return null;
+        return driver;
     }
 
     @Override
     public void setDriver(Driver driver) {
-
+        assert driver instanceof MergeAutoDriver;
+        this.driver = (MergeAutoDriver) driver;
     }
 }
