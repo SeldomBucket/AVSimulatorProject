@@ -1,6 +1,7 @@
 package aim4.driver.merge;
 
 import aim4.driver.AutoDriver;
+import aim4.driver.merge.coordinator.MergeAutoCoordinator;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.vehicle.VehicleDriverModel;
@@ -15,8 +16,12 @@ import java.util.Set;
  * Created by Callum on 14/03/2017.
  */
 public class MergeAutoDriver extends MergeDriver implements AutoDriver {
+    /*The vehicle controlled by this MergeAutoDriver*/
     private MergeAutoVehicleDriverModel vehicle;
+    /*The map navigated by this MergeAutoDriver*/
     private MergeMap map;
+    /*The sub-agent controlling vehicle co-ordination*/
+    private MergeAutoCoordinator coordinator;
 
     public MergeAutoDriver(MergeAutoVehicleDriverModel vehicle, MergeMap map){
         this.vehicle = vehicle;
@@ -30,7 +35,12 @@ public class MergeAutoDriver extends MergeDriver implements AutoDriver {
 
     @Override
     public void act() {
+        if(coordinator == null || coordinator.isTerminated()) {
+            coordinator = new MergeAutoCoordinator(vehicle, this, map);
+        }
 
-
+        if(!coordinator.isTerminated()) {
+            coordinator.act();
+        }
     }
 }
