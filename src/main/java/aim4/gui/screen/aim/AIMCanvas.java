@@ -1,4 +1,4 @@
-package aim4.gui.screen;
+package aim4.gui.screen.aim;
 
 import aim4.config.Debug;
 import aim4.driver.aim.AIMAutoDriver;

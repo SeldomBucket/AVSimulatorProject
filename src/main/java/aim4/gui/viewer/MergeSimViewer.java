@@ -2,7 +2,7 @@ package aim4.gui.viewer;
 
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
-import aim4.gui.screen.MergeStatScreen;
+import aim4.gui.screen.merge.MergeStatScreen;
 import aim4.gui.setuppanel.MergeSimSetupPanel;
 import aim4.gui.setuppanel.SimSetupPanel;
 
@@ -23,8 +23,12 @@ public class MergeSimViewer extends SimViewer {
     }
 
     @Override
-    protected void createStatScreen() {
-        this.statScreen = new MergeStatScreen();
+    protected void createStatScreen(Viewer viewer) {
+        SimSetupPanel generalSetupPanel = getSimSetupPanel();
+        assert(generalSetupPanel instanceof MergeSimSetupPanel);
+        MergeSimSetupPanel setupPanel = (MergeSimSetupPanel) generalSetupPanel;
+
+        this.statScreen = new MergeStatScreen(viewer, this, setupPanel);
     }
 
     @Override

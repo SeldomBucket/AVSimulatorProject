@@ -1,7 +1,9 @@
 package aim4.gui.setuppanel;
 
 import aim4.gui.parampanel.merge.*;
-import aim4.sim.setup.SimSetup;
+import aim4.sim.setup.merge.enums.MapType;
+import aim4.sim.setup.merge.MergeSimSetup;
+import aim4.sim.setup.merge.enums.ProtocolType;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,9 +19,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
      * Merge types for Merge Combobox
      */
     final static String S2S_MERGE_TITLE = "Single-to-Single Merge";
-    final static String S2D_MERGE_TITLE = "Single-to-Double Merge";
-    final static String D2D_MERGE_TITLE = "Double-to-Double Merge";
-    final static String OBSTRUCTION_MERGE_TITLE = "Obstruction Merge";
+    final static String SINGLE_LANE_TEST = "Single Lane Test";
 
     //GUI ELEMENTS//
     private JComboBox mergeComboBox;
@@ -27,9 +27,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
     private CardLayout cardLayout;
 
     private S2SMergeParamPanel s2sPanel;
-    private S2DMergeParamPanel s2dPanel;
-    private D2DMergeParamPanel d2dPanel;
-    private ObstructionMergeParamPanel obstructionPanel;
+    private SingleLaneParamPanel singleLaneParamPanel;
 
     public MergeSimSetupPanel(){
         //Setup the mergeComboBox
@@ -39,9 +37,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
         String comboBoxItems[] =
                 {
                         S2S_MERGE_TITLE,
-                        S2D_MERGE_TITLE,
-                        D2D_MERGE_TITLE,
-                        OBSTRUCTION_MERGE_TITLE
+                        SINGLE_LANE_TEST
                 };
         mergeComboBox = new JComboBox(comboBoxItems);
         mergeComboBox.setEditable(false);
@@ -54,13 +50,9 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
 
         //Create the parameter panels
         s2sPanel = new S2SMergeParamPanel();
-        s2dPanel = new S2DMergeParamPanel();
-        d2dPanel = new D2DMergeParamPanel();
-        obstructionPanel = new ObstructionMergeParamPanel();
+        singleLaneParamPanel = new SingleLaneParamPanel();
         addParamPanel(s2sPanel, S2S_MERGE_TITLE);
-        addParamPanel(s2dPanel, S2D_MERGE_TITLE);
-        addParamPanel(d2dPanel, D2D_MERGE_TITLE);
-        addParamPanel(obstructionPanel, OBSTRUCTION_MERGE_TITLE);
+        addParamPanel(singleLaneParamPanel, SINGLE_LANE_TEST);
 
         //Put them together
         setLayout(new BorderLayout());
@@ -75,13 +67,27 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
     }
 
     @Override
-    public SimSetup getSimSetup() {
+    public MergeSimSetup getSimSetup() {
         switch(mergeComboBox.getSelectedIndex()){
             case 0: return s2sPanel.getSimSetup();
-            case 1: return s2dPanel.getSimSetup();
-            case 2: return d2dPanel.getSimSetup();
-            case 3: return obstructionPanel.getSimSetup();
-            default: throw new RuntimeException("Merge Combo Box went out of range");
+            case 1: return singleLaneParamPanel.getSimSetup();
+            default: throw new RuntimeException("Merge type combo box went out of range");
+        }
+    }
+
+    public MapType getMapType() {
+        switch(mergeComboBox.getSelectedIndex()){
+            case 0: return MapType.S2S;
+            case 1: return MapType.SINGLE;
+            default: throw new RuntimeException("Merge type combo box went out of range");
+        }
+    }
+
+    public ProtocolType getProtocolType() {
+        switch(mergeComboBox.getSelectedIndex()){
+            case 0: s2sPanel.getProtocolType();
+            case 1: return ProtocolType.NONE;
+            default: throw new RuntimeException("Merge type combo box went out of range");
         }
     }
 

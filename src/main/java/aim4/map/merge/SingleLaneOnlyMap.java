@@ -1,4 +1,4 @@
-package util.map;
+package aim4.map.merge;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;

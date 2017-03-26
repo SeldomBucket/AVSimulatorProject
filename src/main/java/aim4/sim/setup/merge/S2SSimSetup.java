@@ -3,6 +3,7 @@ package aim4.sim.setup.merge;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.sim.Simulator;
+import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.sim.simulator.merge.MergingProtocol;
 import com.sun.scenario.effect.Merge;
 
@@ -59,7 +60,7 @@ public class S2SSimSetup implements MergeSimSetup {
     }
 
     @Override
-    public Simulator getSimulator() {
+    public MergeSimulator getSimulator() {
         double currentTime = 0.0;
         S2SMergeMap layout = new S2SMergeMap(currentTime,
                 targetLaneSpeedLimit, mergingLaneSpeedLimit,

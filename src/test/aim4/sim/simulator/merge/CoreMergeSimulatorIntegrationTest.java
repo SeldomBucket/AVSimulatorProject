@@ -4,15 +4,11 @@ import aim4.config.SimConfig;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.MergeSpawnPoint;
-import aim4.sim.Simulator;
-import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 import org.junit.Before;
 import org.junit.Test;
-import util.map.SingleLaneOnlyMap;
-
-import java.util.List;
+import aim4.map.merge.SingleLaneOnlyMap;
 
 import static org.junit.Assert.*;
 /**
