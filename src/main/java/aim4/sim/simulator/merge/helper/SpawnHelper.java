@@ -76,10 +76,10 @@ public class SpawnHelper {
                 new MergeBasicAutoVehicle(spec,
                         spawnPoint.getPosition(),
                         spawnPoint.getHeading(),
+                        initVelocity,
                         spawnPoint.getSteeringAngle(),
-                        initVelocity,
-                        initVelocity,
                         spawnPoint.getAcceleration(),
+                        lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
 
         MergeAutoDriver driver = new MergeAutoDriver(vehicle, map);
