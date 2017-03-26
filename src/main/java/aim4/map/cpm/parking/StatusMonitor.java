@@ -1,5 +1,7 @@
 package aim4.map.cpm.parking;
 
+import aim4.map.cpm.CPMMapUtil;
+import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.*;
@@ -41,6 +43,10 @@ public class StatusMonitor {
     }
 
     public void vehicleOnEntry(CPMBasicAutoVehicle vehicle) {
+        // TODO CPM Think about what to do if the vehicle has a targetParkingLane already
+        /** ^ This might happen if say seem to be on the sensored line for a while
+        // Like letting another car go through the intersection first.*/
+
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
@@ -49,17 +55,42 @@ public class StatusMonitor {
         double distanceBetweenVehicles = 0.2; // TODO CPM find this value
         double spaceNeeded = vehicleLength + distanceBetweenVehicles;
         if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
-            // Update the space avilable on that lane
-            double newAvailbleSpace = parkingLaneEntry.getValue() - spaceNeeded;
-            parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailbleSpace);
-            // TODO CPM Send vehicle message with parking lane
+            // Update the space available on that lane
+            double newAvailableSpace = parkingLaneEntry.getValue() - spaceNeeded;
+            parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailableSpace);
+
+            // Allocate this parking lane to the vehicle
+            System.out.println("Status monitor sending parking lane to vehicle.");
+            sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
+
         } else {
-            // TODO CPM If not, send vehicle a message to wait
+            // If not enough room, don't send anything. They will continue to wait.
+            System.out.println("There's not enough room in the car " +
+                               "park from this vehicle to enter!");
         }
+
+        // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(1));
+        // vehicle.setTargetParkingLane(parkingArea.getParkingLanes().get(0));
     }
 
     public void vehicleOnReEntry(CPMBasicAutoVehicle vehicle) {
-        // Send it a parking lane
+        // Find the lane with the most room available
+        Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
+
+        // Check there is room for this vehicle
+        double vehicleLength = vehicle.getSpec().getLength();
+        double distanceBetweenVehicles = 0.2; // TODO CPM find this value
+        double spaceNeeded = vehicleLength + distanceBetweenVehicles;
+        if (!willVehicleFit(parkingLaneEntry, spaceNeeded)){
+            throw new RuntimeException("Vehicle is re-entering, but not enough room!");
+        }
+
+        // Update the space available on that lane
+        double newAvailableSpace = parkingLaneEntry.getValue() - spaceNeeded;
+        parkingLanesSpace.put(parkingLaneEntry.getKey(), newAvailableSpace);
+
+        // Allocate this parking lane to the vehicle
+        vehicle.setTargetParkingLane(parkingLaneEntry.getKey());
     }
 
     public void vehicleOnExit(CPMBasicAutoVehicle vehicle) {
@@ -69,14 +100,21 @@ public class StatusMonitor {
 
     private Map.Entry<ParkingLane, Double> findLeastFullParkingLane() {
         Map.Entry<ParkingLane, Double> maxEntry = null;
+        String name = null;
 
         for (Map.Entry<ParkingLane, Double> entry : parkingLanesSpace.entrySet())
         {
-            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0)
+            boolean hasLowerId = false;
+            if (maxEntry != null && entry.getKey().getId() < maxEntry.getKey().getId()){ hasLowerId = true; }
+            if (maxEntry == null ||
+                    entry.getValue().compareTo(maxEntry.getValue()) > 0 ||
+                    (entry.getValue().equals(maxEntry.getValue()) && hasLowerId))
             {
                 maxEntry = entry;
+                name = entry.getKey().getRoadName();
             }
         }
+        System.out.println("Lane with most room is " + name);
         return maxEntry;
     }
 
@@ -88,5 +126,13 @@ public class StatusMonitor {
             return true;
         }
         return false;
+    }
+
+    private void sendParkingLaneMessage(CPMBasicAutoVehicle vehicle, ParkingLane parkingLane) {
+        vehicle.sendMessageToI2VInbox(parkingLane);
+    }
+
+    public List<CPMBasicAutoVehicle> getVehicles() {
+        return vehicles;
     }
 }

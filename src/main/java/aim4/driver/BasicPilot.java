@@ -28,17 +28,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.driver.aim.pilot;
+package aim4.driver;
 
 import java.awt.Color;
 import java.awt.geom.Point2D;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
-import aim4.driver.BasicDriver;
-import aim4.driver.Driver;
-import aim4.driver.DriverUtil;
-import aim4.driver.aim.AIMDriver;
 import aim4.vehicle.VehicleDriverModel;
 
 /**

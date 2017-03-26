@@ -24,6 +24,29 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     protected CPMBasicV2VDriver driver;
 
     /**
+     * The target parking lane for this vehicle, assigned
+     * on entry and on re-entry of the car park.
+     */
+    protected ParkingLane targetParkingLane;
+
+    // messaging
+
+    /**
+     * The inbox for messages from the car park StatusMonitor.
+     * There will only ever be one message, which will be a
+     * ParkingLane (or null, if no room for vehicle to park).
+     */
+    private ParkingLane I2Vinbox;
+
+    /**
+     * The outbox for messages to the StatusMonitor.
+     * There will only ever be one message, which
+     * will be to enter, re-enter or exit the car
+     * park.
+     // TODO CPM somehow need to send VIN so StatusMonitor knows who msg if from
+     private ParkingStatus V2Ioutbox;*/
+
+    /**
      * Construct a vehicle
      *
      * @param spec            the vehicle's specification
@@ -45,6 +68,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
                                double currentTime) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration,
                 targetVelocity, currentTime);
+        this.targetParkingLane = null;
     }
 
     @Override
@@ -58,6 +82,18 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.driver = (CPMBasicV2VDriver) driver;
     }
 
+    public ParkingLane getTargetParkingLane() {
+        return targetParkingLane;
+    }
+
+    public void setTargetParkingLane(ParkingLane targetParkingLane) {
+        this.targetParkingLane = targetParkingLane;
+    }
+
+    public void clearTargetParkingLane(){
+        targetParkingLane = null;
+    }
+
     /**
      * Find out the distance between the front of the vehicle and
      * the ParkingLane's parking end point.
@@ -69,5 +105,19 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         Point2D endPoint = ((ParkingLane) driver.getCurrentLane()).getParkingEndPoint();
         Point2D vehiclePosition = gaugePosition();
         return vehiclePosition.distance(endPoint);
+    }
+
+    public void sendMessageToI2VInbox(ParkingLane parkingLane) {
+        I2Vinbox = parkingLane;
+
+    }
+
+    public ParkingLane getMessagesFromInbox() {
+        return I2Vinbox;
+    }
+
+    public void clearV2Iinbox() {
+        System.out.println("vehicle inbox cleared");
+        I2Vinbox = null;
     }
 }

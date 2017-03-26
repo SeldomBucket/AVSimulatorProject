@@ -35,6 +35,7 @@ import java.util.Queue;
 
 import aim4.config.Debug;
 import aim4.config.SimConfig;
+import aim4.driver.BasicPilot;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.coordinator.V2ICoordinator.ReservationParameter;

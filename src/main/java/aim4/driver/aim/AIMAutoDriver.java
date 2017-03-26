@@ -36,7 +36,7 @@ import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.aim.coordinator.NoIntersectionCoordinator;
 import aim4.driver.aim.coordinator.V2ICoordinator;
-import aim4.driver.aim.coordinator.Coordinator;
+import aim4.driver.Coordinator;
 import aim4.im.IntersectionManager;
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.vehicle.AutoVehicleDriverModel;

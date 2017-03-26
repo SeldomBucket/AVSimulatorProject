@@ -2,7 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.config.Debug;
 import aim4.driver.AutoDriver;
-import aim4.driver.aim.coordinator.Coordinator;
+import aim4.driver.Coordinator;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
@@ -18,6 +18,31 @@ import java.util.EnumMap;
  * and sending messages.
  */
 public class CPMBasicCoordinator implements Coordinator{
+
+    /**
+     * The different parking statuses that an agent can have.
+     */
+    public enum ParkingStatus {
+        /** The vehicle has been spawned and is waiting to enter the car park.
+         * If there is enough room they will be granted access by recieving
+         * the parking lane they should park in (the one with the most room).
+         * If there is not enough space, the vehicle will not recieve a parking
+         * lane and they should continue to wait.
+         * */
+        WAITING,
+        /** The vehicle has entered, or re-entered, the car park. They are
+         * now making their way to a parking lane to park.*/
+        PARKING,
+        /** The vehicle is relocating - they leave the parking lane and reenter
+         * the car park, allowing a vehicle it was blocking to exit. On reentry,
+         * they are given a new parking lane and go back to PARKING.
+         * */
+        RELOCATING,
+        /**
+         * The vehicle is being retrieved and should exit the car park.
+         * */
+        EXIT
+    }
 
     /////////////////////////////////
     // NESTED INTERFACES
@@ -41,7 +66,7 @@ public class CPMBasicCoordinator implements Coordinator{
      * aspect of how the two subagents, the Pilot and the Coordinator,
      * communicate.
      */
-    public enum State {
+    public enum DrivingState {
         /**
          * The agent simply follows the current lanes until it exits the simulator.
          * the intersection
@@ -61,17 +86,22 @@ public class CPMBasicCoordinator implements Coordinator{
     /** The driver of which this coordinator is a part. */
     private AutoDriver driver;
 
-    // TODO CPM Does it make sense to have this here? Should it be in Driver or Vehicle?
     /** The sub-agent that controls physical manipulation of the vehicle */
     private CPMV2VPilot pilot;
 
     // state
 
     /**
-     * The current state of the agent. This is part of how the two sub-agents
-     * communicate.
+     * The current driving state of the agent.
+     * This is part of how the two sub-agents communicate.
      */
-    private State state;
+    private DrivingState drivingState;
+
+    /**
+     * The current parking status of the agent.
+     * This is part of how the two sub-agents communicate.
+     */
+    private ParkingStatus parkingStatus;
 
     /**
      * The most recent time at which the state was changed.
@@ -81,7 +111,7 @@ public class CPMBasicCoordinator implements Coordinator{
     /**
      * The state handlers
      */
-    private EnumMap<State,StateHandler> stateHandlers;
+    private EnumMap<DrivingState,StateHandler> stateHandlers;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -101,14 +131,32 @@ public class CPMBasicCoordinator implements Coordinator{
 
         initStateHandlers();
 
-        // Set the intial state of the coordinator
-        setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+        // Set the intial driving state of the coordinator
+        setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+        // Set the initial parking status of the coordinator
+        setParkingStatus(ParkingStatus.WAITING);
     }
 
     @Override
     public void act() {
-        // messageHandler()
+        processI2Vinbox();
         callStateHandlers();
+    }
+
+    /**
+     * Process any messages in the I2V inbox, from the StatusMonitor.
+     */
+    private void processI2Vinbox() {
+        ParkingLane I2Vinbox = vehicle.getMessagesFromInbox();
+        if ((I2Vinbox != null && parkingStatus == ParkingStatus.WAITING) ||
+                (I2Vinbox != null && parkingStatus == ParkingStatus.RELOCATING) ) {
+            // We have been granted access to the car park and know where to park
+            System.out.println("Changing status to PARKING.");
+            setParkingStatus(ParkingStatus.PARKING);
+            vehicle.setTargetParkingLane(I2Vinbox);
+            System.out.println("Parking on " + I2Vinbox.getRoadName());
+            vehicle.clearV2Iinbox();
+        }
     }
 
     /**
@@ -117,8 +165,8 @@ public class CPMBasicCoordinator implements Coordinator{
     private void callStateHandlers() {
         boolean shouldContinue = true;
         while(shouldContinue) {
-            if (stateHandlers.containsKey(state)) {
-                shouldContinue = stateHandlers.get(state).perform();
+            if (stateHandlers.containsKey(drivingState)) {
+                shouldContinue = stateHandlers.get(drivingState).perform();
             } else {
                 throw new RuntimeException("Unknown state.");
             }
@@ -132,8 +180,8 @@ public class CPMBasicCoordinator implements Coordinator{
      *
      * @return the current state of the driver agent
      */
-    public State getState() {
-        return state;
+    public DrivingState getDrivingState() {
+        return drivingState;
     }
 
     /////////////////////////////////
@@ -144,24 +192,24 @@ public class CPMBasicCoordinator implements Coordinator{
      * Initialize the state handlers.
      */
     private void initStateHandlers() {
-        stateHandlers = new EnumMap<State,StateHandler>(State.class);
+        stateHandlers = new EnumMap<DrivingState,StateHandler>(DrivingState.class);
 
-        stateHandlers.put(State.DEFAULT_DRIVING_BEHAVIOUR,
+        stateHandlers.put(DrivingState.DEFAULT_DRIVING_BEHAVIOUR,
                 new DefaultDrivingBehaviourStateHandler());
 
-        stateHandlers.put(State.TRAVERSING_CORNER,
+        stateHandlers.put(DrivingState.TRAVERSING_CORNER,
                 new TraversingCornerStateHandler());
 
-        stateHandlers.put(State.TRAVERSING_JUNCTION,
+        stateHandlers.put(DrivingState.TRAVERSING_JUNCTION,
                 new TraversingJunctionStateHandler());
 
-        stateHandlers.put(State.TRAVERSING_INTERSECTION,
+        stateHandlers.put(DrivingState.TRAVERSING_INTERSECTION,
                 new TraversingIntersectionStateHandler());
 
-        stateHandlers.put(State.TRAVERSING_PARKING_LANE,
+        stateHandlers.put(DrivingState.TRAVERSING_PARKING_LANE,
                 new TraversingParkingLaneStateHandler());
 
-        stateHandlers.put(State.TERMINAL_STATE,
+        stateHandlers.put(DrivingState.TERMINAL_STATE,
                 terminalStateHandler);
     }
 
@@ -189,17 +237,17 @@ public class CPMBasicCoordinator implements Coordinator{
             // If so, then switch to the relevant traversing mode.
             assert driver instanceof CPMBasicV2VDriver;
             if (((CPMBasicV2VDriver) driver).inCorner() != null){
-                setState(State.TRAVERSING_CORNER);
+                setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
             if (((CPMBasicV2VDriver) driver).inJunction() != null){
-                setState(State.TRAVERSING_JUNCTION);
+                setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
             if (((CPMBasicV2VDriver) driver).inIntersection() != null){
-                setState(State.TRAVERSING_INTERSECTION);
+                setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
             }
             if (driver.getCurrentLane() instanceof ParkingLane) {
                 System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
-                setState(State.TRAVERSING_PARKING_LANE);
+                setDrivingState(DrivingState.TRAVERSING_PARKING_LANE);
             }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
@@ -224,7 +272,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 // The vehicle is out of the corner.
                 // Go back to default driving behaviour
                 pilot.clearDepartureLane();
-                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
                 pilot.takeSteeringActionForTraversing(corner);
@@ -252,7 +300,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 // The vehicle is out of the junction.
                 // Go back to default driving behaviour
                 pilot.clearDepartureLane();
-                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
                 pilot.takeSteeringActionForTraversing(junction);
@@ -280,7 +328,7 @@ public class CPMBasicCoordinator implements Coordinator{
                 // The vehicle is out of the corner.
                 // Go back to default driving behaviour
                 pilot.clearDepartureLane();
-                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // do nothing keep going
                 pilot.takeSteeringActionForTraversing(intersection);
@@ -306,14 +354,19 @@ public class CPMBasicCoordinator implements Coordinator{
                 System.out.println("Driver is now out of the parking lane.");
                 // Find out which state to be in next
                 if (((CPMBasicV2VDriver) driver).inCorner() != null){
-                    setState(State.TRAVERSING_CORNER);
+                    setDrivingState(DrivingState.TRAVERSING_CORNER);
                 } else if (((CPMBasicV2VDriver) driver).inJunction() != null){
-                    setState(State.TRAVERSING_JUNCTION);
+                    setDrivingState(DrivingState.TRAVERSING_JUNCTION);
                 } else if (((CPMBasicV2VDriver) driver).inIntersection() != null){
-                    setState(State.TRAVERSING_INTERSECTION);
+                    setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
                 } else {
-                    setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                    setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
                 }
+            }
+            if (vehicle.getTargetParkingLane() ==
+                    ((CPMBasicV2VDriver)driver).getParkingLaneCurrentlyIn()){
+                System.out.println("Reached target parking lane");
+                vehicle.clearTargetParkingLane();
             }
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
@@ -322,14 +375,22 @@ public class CPMBasicCoordinator implements Coordinator{
         }
     }
 
-    private void setState(State state) {
+    private void setDrivingState(DrivingState drivingState) {
         // log("Changing state to " + state.toString());
         if (Debug.isPrintDriverStateOfVIN(vehicle.getVIN())) {
             System.err.printf("At time %.2f, vin %d changes state to %s\n",
-                    vehicle.gaugeTime(), vehicle.getVIN(), state);
+                    vehicle.gaugeTime(), vehicle.getVIN(), drivingState);
         }
-        this.state = state;
+        this.drivingState = drivingState;
         lastStateChangeTime = vehicle.gaugeTime();
+    }
+
+    public ParkingStatus getParkingStatus() {
+        return parkingStatus;
+    }
+
+    private void setParkingStatus(ParkingStatus parkingStatus) {
+        this.parkingStatus = parkingStatus;
     }
 
     /**
@@ -348,6 +409,6 @@ public class CPMBasicCoordinator implements Coordinator{
      */
     @Override
     public boolean isTerminated() {
-        return state == State.TERMINAL_STATE;
+        return drivingState == DrivingState.TERMINAL_STATE;
     }
 }
