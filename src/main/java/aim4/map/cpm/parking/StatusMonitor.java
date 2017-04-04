@@ -108,7 +108,9 @@ public class StatusMonitor {
         System.out.println("Status monitor sending parking lane to vehicle.");
         sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
 
-        // Update the vehicles parking lane in StatusMonitor records
+        // Update the vehicles parking lane in StatusMonitor records, along with the
+        // parking lane it has been allocated
+        // TODO CPM rename vehicles to vehiclesToLane
         vehicles.put(vehicle, parkingLaneEntry.getKey());
     }
 

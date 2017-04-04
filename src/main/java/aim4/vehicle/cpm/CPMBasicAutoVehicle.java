@@ -46,6 +46,10 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      */
     protected double timeToExit;
 
+    /**
+     * If the vehicle has entered the car park. Used by the simulator
+     * to know when to start depleting the parking time.
+     */
     protected boolean hasEntered;
 
     // messaging
@@ -58,13 +62,6 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     protected ParkingLane I2Vinbox;
 
     /**
-     * The outbox for messages to the StatusMonitor. There will only ever
-     * be one message, which will be to enter, re-enter or exit the car
-     * park.
-     // TODO CPM somehow need to send VIN so StatusMonitor knows who msg if from
-     private ParkingStatus V2Ioutbox;*/
-
-    /**
      * The inbox for messages from other vehicles. There will only ever
      * be one message, which will be from the vehicle behind it, which
      * will ask it to relocate. The message will indicate what this
@@ -72,6 +69,10 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      */
     protected ParkingStatus V2Vinbox;
 
+    /**
+     * The vehicle that is directly in front of this one on the same
+     * parking lane, used to send RELOCATING messages.
+     */
     protected CPMBasicAutoVehicle vehicleInFront;
 
     /**
