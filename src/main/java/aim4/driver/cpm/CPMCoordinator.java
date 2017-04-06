@@ -2,7 +2,6 @@ package aim4.driver.cpm;
 
 import aim4.config.Debug;
 import aim4.driver.aim.coordinator.Coordinator;
-import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
@@ -18,7 +17,7 @@ import java.util.EnumMap;
  * The two agents (Coordinator and Pilot) communicate by setting
  * the DrivingState and ParkingStatus in this class.
  */
-public class CPMCoordinator implements Coordinator{
+public class CPMCoordinator implements Coordinator {
 
     /**
      * The different parking statuses that an agent can have.

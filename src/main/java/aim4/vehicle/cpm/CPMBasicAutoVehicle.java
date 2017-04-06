@@ -6,7 +6,6 @@ import aim4.driver.cpm.CPMCoordinator.*;
 import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.connections.BasicConnection;
 import aim4.map.cpm.parking.ParkingLane;
-import aim4.util.GeomMath;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 

@@ -52,25 +52,25 @@ public class DataCollectionLine {
   /////////////////////////////////
 
   /** The no repeat time period */
-  private static final double NO_REPEAT_TIME_PERIOD = 1.0; // seconds
+  protected static final double NO_REPEAT_TIME_PERIOD = 1.0; // seconds
 
   /////////////////////////////////
   // PRIVATE FIELDS
   /////////////////////////////////
 
   /** The name of this data collection line */
-  private String name;
+  protected String name;
   /** The ID of this data collection line */
-  private int id;
+  protected int id;
   /** The line */
-  private Line2D line;
+  protected Line2D line;
   /** The record of the times of the vehicle passing through the line */
-  private Map<Integer,List<Double>> vinToTime;
+  protected Map<Integer,List<Double>> vinToTime;
   /**
    * Whether vehicles should not be counted more than once when it passes
    * through the line more than once within the NO_REPEAT_TIME_PERIOD.
    */
-  private boolean isNoRepeat;
+  protected boolean isNoRepeat;
 
   /////////////////////////////////
   // CONSTRUCTORS
