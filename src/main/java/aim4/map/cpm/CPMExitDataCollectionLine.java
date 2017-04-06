@@ -24,6 +24,9 @@ public class CPMExitDataCollectionLine extends DataCollectionLine {
     /** The record of the parking time of the vehicle passing through the line */
     private Map<Integer,Double> vinToParkingTime;
 
+    /** The record of the number of re-entries of the vehicle passing through the line */
+    private Map<Integer,Integer> vinToNumberOfReEntries;
+
     /**
      * Create a data collection line.
      *
@@ -39,6 +42,7 @@ public class CPMExitDataCollectionLine extends DataCollectionLine {
         this.vinToEstimatedDistanceTravelled = new HashMap<Integer,Double>();
         this.vinToRetrievalTime = new HashMap<Integer,Double>();
         this.vinToParkingTime = new HashMap<Integer,Double>();
+        this.vinToNumberOfReEntries = new HashMap<Integer,Integer>();
     }
 
     /**
@@ -69,6 +73,7 @@ public class CPMExitDataCollectionLine extends DataCollectionLine {
                 double parkingTime = ((CPMBasicAutoVehicle) v).getParkingTime();
                 vinToParkingTime.put(vin, parkingTime);
                 vinToEstimatedDistanceTravelled.put(vin, ((CPMBasicAutoVehicle) v).getEstimatedDistanceTravelled());
+                vinToNumberOfReEntries.put(vin, ((CPMBasicAutoVehicle) v).getNumberOfReEntries());
                 System.out.println("INTERSECT WITH DCL");
                 return true;
             } else {
@@ -98,5 +103,15 @@ public class CPMExitDataCollectionLine extends DataCollectionLine {
      */
     public Double getEstimatedDistanceTravelled(int vin) {
         return vinToEstimatedDistanceTravelled.get(vin);
+    }
+
+    /**
+     * Get the number of re-entries of a vehicle passing through the line.
+     *
+     * @param vin  the VIN of the vehicle
+     * @return the number of re-entries of the vehicle passing through the line
+     */
+    public int getNumberOfReEntries(int vin) {
+        return vinToNumberOfReEntries.get(vin);
     }
 }

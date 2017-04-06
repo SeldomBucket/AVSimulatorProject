@@ -250,18 +250,19 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         DataCollectionLine entryDataCollectionLine = dataCollectionLines.get(0);
 
         outfile.printf("Printing file for CPM simulation%n");
-        outfile.printf("VIN,VehicleType,EntryTime,ExitTime,ParkingTime,TimeToRetrieve,EstimatedDistanceTravelled%n");
+        outfile.printf("VIN,VehicleType,EntryTime,ExitTime,ParkingTime,TimeToRetrieve,EstimatedDistanceTravelled,NumberOfReEntries%n");
 
         for (int vin : exitDataCollectionLine.getAllVIN()) {
             for(double time : exitDataCollectionLine.getTimes(vin)) {
-                outfile.printf("%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f",
+                outfile.printf("%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%d",
                         vin,
                         VinRegistry.getVehicleSpecFromVIN(vin).getName(),
                         entryDataCollectionLine.getTimes(vin).get(0),
                         time,
                         exitDataCollectionLine.getParkingTime(vin),
                         calculateTimeToRetrieve(entryDataCollectionLine, vin, time),
-                        exitDataCollectionLine.getEstimatedDistanceTravelled(vin)
+                        exitDataCollectionLine.getEstimatedDistanceTravelled(vin),
+                        exitDataCollectionLine.getNumberOfReEntries(vin)
                         );
             }
         }

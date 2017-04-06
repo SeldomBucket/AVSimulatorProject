@@ -238,6 +238,8 @@ public class CPMCoordinator implements Coordinator {
             System.out.println("Finding space on " + I2Vinbox.getRoadName());
             if (!vehicle.hasEnteredCarPark()) {
                 vehicle.setHasEntered();
+            } else {
+                vehicle.increaseNumberOfReEntries();
             }
         }
     }

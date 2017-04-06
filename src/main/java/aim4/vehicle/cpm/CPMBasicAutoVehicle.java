@@ -52,7 +52,15 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      * This is an estimate as it doesn't consider the trajectories
      * through road connections (corners, junctions, intersections).
      */
-    protected double estimatedDistanceTravelled;
+    protected double estimatedDistanceTravelled = 0;
+
+    /**
+     * The number of times that this vehicle re-entered the car park.
+     * This is incremented each time the coordinator receives a parking lane
+     * from the Status Monitor, checking it has entered so we don't include
+     * the first message received.
+     */
+    protected int numberOfReEntries = 0;
 
     /**
      * The last connection the vehicle traversed through.
@@ -119,7 +127,6 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.timeToExit = parkingTime;
         this.hasEntered = false;
         this.vehicleInFront = null;
-        this.estimatedDistanceTravelled = 0.0;
     }
 
     @Override
@@ -169,6 +176,12 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     public double getEstimatedDistanceTravelled() { return estimatedDistanceTravelled; }
 
     public BasicConnection getLastConnection() { return lastConnection; }
+
+    public int getNumberOfReEntries() { return numberOfReEntries; }
+
+    public void increaseNumberOfReEntries() {
+        this.numberOfReEntries++;
+    }
 
     /**
      * Find out the distance between the front of the vehicle and
