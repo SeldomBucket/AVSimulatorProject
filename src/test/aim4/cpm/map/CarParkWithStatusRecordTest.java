@@ -10,36 +10,32 @@ import util.TestSimThread;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Becci on 20-Mar-17.
+ * TEST SUITE PURPOSE: Ensure that the map records the correct data.
  */
-public class CPMCarParkWithStatusTest {
+public class CarParkWithStatusRecordTest {
     CPMCarParkWithStatus map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
-    int numberOfVehicles = 6;
+    int numberOfVehicles = 5;
 
     @Before
     public void setUp() {
         /**
-         * Set up a map where 2 vehicles are spawned in a car
-         * park with one parking lane. They will both be sent
-         * to the same parking lane.
+         * Set up a map.
          * */
-
         this.map = new CPMCarParkWithStatus(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 3, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, numberOfVehicles, 0.28);
+        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, numberOfVehicles, 0.001);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }
 
     @Test
     public void testCompletedVehicles() throws Exception {
-
         // Run the simulation until all vehicles have completed
         try {
             simThread.start();

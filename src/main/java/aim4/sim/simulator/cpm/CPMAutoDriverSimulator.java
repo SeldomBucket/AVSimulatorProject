@@ -101,7 +101,6 @@ public class CPMAutoDriverSimulator implements Simulator {
         provideSensorInput();
         findNextVehicles();
         letDriversAct();
-        // communication();
         moveVehicles(timeStep);
         observeParkedVehicles();
         List<Integer> completedVINs = cleanUpCompletedVehicles();
@@ -511,7 +510,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     /////////////////////////////////
-    // STEP 3
+    // STEP 4
     /////////////////////////////////
 
     /**
@@ -524,7 +523,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     /////////////////////////////////
-    // STEP #
+    // STEP 5
     /////////////////////////////////
 
     /**
@@ -578,7 +577,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     /////////////////////////////////
-    // STEP #
+    // STEP 6
     /////////////////////////////////
 
     private void observeParkedVehicles() {
@@ -594,7 +593,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     /////////////////////////////////
-    // STEP #
+    // STEP 7
     /////////////////////////////////
 
     /**

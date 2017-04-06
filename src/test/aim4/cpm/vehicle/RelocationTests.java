@@ -1,5 +1,6 @@
 package aim4.cpm.vehicle;
 
+import aim4.map.cpm.CPMExitDataCollectionLine;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
@@ -101,6 +102,8 @@ public class RelocationTests {
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 1);
 
         // TODO CPM Complete this test when communication added.
+        CPMExitDataCollectionLine exitDataCollectionLine = ((CPMCarParkWithStatus)map).getExitDataCollectionLine();
+        // TODO CPM Need to collect the VINs of completed vehicles to be able to test them
 
     }
 

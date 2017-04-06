@@ -7,7 +7,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ParkingAreaTest {
+/**
+ * TEST SUITE PURPOSE: Check that when a Parking Area is created, it has all the correct attributes.
+ */
+public class ParkingAreaInitialisationTest {
     CPMMapWithParkingArea map1Lane = new CPMMapWithParkingArea(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime

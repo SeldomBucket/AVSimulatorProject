@@ -185,7 +185,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         y1 = parkingArea.getStartPoint().getY();
         x2 = x1;
         y2 = y1 - laneWidth;*/
-        x1 = 0.5;
+        // x1 = 0.5;
+        x1 = BORDER/2;
         y1 = parkingArea.getStartPoint().getY();
         x2 = x1;
         y2 = y1 - laneWidth;
@@ -234,6 +235,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     public StatusMonitor getStatusMonitor() { return statusMonitor; }
 
     public List<SensoredLine> getSensoredLines() { return sensoredLines; }
+
+    public CPMExitDataCollectionLine getExitDataCollectionLine() { return exitDataCollectionLine; }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {

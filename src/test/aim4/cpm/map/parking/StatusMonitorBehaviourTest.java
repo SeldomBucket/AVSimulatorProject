@@ -13,7 +13,10 @@ import java.awt.geom.Point2D;
 
 import static org.junit.Assert.*;
 
-public class StatusMonitorTest {
+/**
+ * TEST SUITE PURPOSE: Ensure that the behaviour of the Status Monitor is correct.
+ */
+public class StatusMonitorBehaviourTest {
     CPMCarParkWithStatus mapNoParkingSpace, mapTwoLanes;
     TestSimThread simThreadForNoParkingSpace, simThreadForTwoLanes;
     CPMAutoDriverSimulator simForNoParkingSpace, simForTwoLanes;
@@ -67,11 +70,13 @@ public class StatusMonitorTest {
         assertTrue(simForNoParkingSpace.getMap() instanceof CPMCarParkWithStatus);
         // There should be no vehicles on the map.
         assertTrue(mapNoParkingSpace.getVehicles().size() == 0);
+        // There should be no vehicles registered with the status monitor
+        assertTrue(mapNoParkingSpace.getStatusMonitor().getVehicles().size() == 0);
     }
 
     @Test
     public void testCorrectLaneAllocated() throws Exception {
-
+        // TODO CPM This test is temperamental, if the first vehicle exits before the second has parked, condition never met
         // Run the simulation until 2 vehicles are parked.
         try {
             simThreadForTwoLanes.start();
