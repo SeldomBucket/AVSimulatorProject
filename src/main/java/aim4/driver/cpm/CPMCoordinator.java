@@ -2,6 +2,7 @@ package aim4.driver.cpm;
 
 import aim4.config.Debug;
 import aim4.driver.aim.coordinator.Coordinator;
+import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
@@ -338,15 +339,19 @@ public class CPMCoordinator implements Coordinator{
             if (driver.inCorner() != null){
                 System.out.println("Entering corner.");
                 currentCorner = driver.inCorner();
+                vehicle.updateEstimatedDistanceTravelled(currentCorner);
                 setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
             if (driver.inJunction() != null){
                 System.out.println("Entering junction.");
                 currentJunction = driver.inJunction();
+                vehicle.updateEstimatedDistanceTravelled(currentJunction);
                 setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
             if (driver.inIntersection() != null){
                 System.out.println("Entering intersection.");
+                SimpleIntersection currentIntersection = driver.inIntersection();
+                vehicle.updateEstimatedDistanceTravelled(currentIntersection);
                 setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
             }
             // If on EXIT or RELOCATING, we want default driving behaviour
@@ -383,8 +388,10 @@ public class CPMCoordinator implements Coordinator{
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // if in a different corner, need to get a new departure lane
+                // and estimate the distance travelled.
                 if (corner != currentCorner) {
                     currentCorner = corner;
+                    vehicle.updateEstimatedDistanceTravelled(currentCorner);
                     pilot.clearDepartureLane();
                 }
                 // do nothing, keep going around the corner
@@ -417,8 +424,10 @@ public class CPMCoordinator implements Coordinator{
                 setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             } else {
                 // if in a different junction, need to get a new departure lane
+                // and estimate the distance travelled.
                 if (junction != currentJunction) {
                     currentJunction = junction;
+                    vehicle.updateEstimatedDistanceTravelled(currentJunction);
                     pilot.clearDepartureLane();
                 }
                 // do nothing, keep going through the junction

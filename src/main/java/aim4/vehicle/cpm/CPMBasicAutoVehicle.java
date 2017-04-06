@@ -4,7 +4,9 @@ import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.cpm.CPMCoordinator.*;
 import aim4.driver.cpm.CPMV2VDriver;
+import aim4.map.connections.BasicConnection;
 import aim4.map.cpm.parking.ParkingLane;
+import aim4.util.GeomMath;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -45,6 +47,20 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      * tme to exit.)
      */
     protected double timeToExit;
+
+    /**
+     * The distance the vehicle has travelled whilst in the car park.
+     * This is an estimate as it doesn't consider the trajectories
+     * through road connections (corners, junctions, intersections).
+     */
+    protected double estimatedDistanceTravelled;
+
+    /**
+     * The last connection the vehicle traversed through.
+     * This is used to calculate an estimation of the
+     * distance travelled by the vehicle in the car park.
+     */
+    protected BasicConnection lastConnection;
 
     /**
      * If the vehicle has entered the car park. Used by the simulator
@@ -104,6 +120,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.timeToExit = parkingTime;
         this.hasEntered = false;
         this.vehicleInFront = null;
+        this.estimatedDistanceTravelled = 0.0;
     }
 
     @Override
@@ -150,6 +167,10 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         this.vehicleInFront = vehicleInFront;
     }
 
+    public double getEstimatedDistanceTravelled() { return estimatedDistanceTravelled; }
+
+    public BasicConnection getLastConnection() { return lastConnection; }
+
     /**
      * Find out the distance between the front of the vehicle and
      * the ParkingLane's parking end point.
@@ -193,5 +214,34 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
         if (timeToExit > 0) {
             timeToExit -= timeStep;
         }
+    }
+
+    /**
+     * The vehicle has just entered a connection, so we caluclate how far it has travelled
+     * on the current lane by comparing the intersection point (centroid) of the current connection
+     * and the intersection point of the last connection it was in.
+     * @param currentConnection the connection it has just entered.
+     */
+    public void updateEstimatedDistanceTravelled(BasicConnection currentConnection) {
+        // If hasn't yet been through a connection, it has entered the car park
+        if (lastConnection == null) {
+            // add the distance from the ENTRY sensored line to the intersection point of the current connection
+            // TODO CPM should DCL deal with this?
+            lastConnection = currentConnection;
+        }
+        else if (currentConnection == lastConnection){
+            throw new RuntimeException("The vehicle has just entered the same connection.");
+        }
+
+        // The the centre points of the 2 connections we are using
+        Point2D centreOfCurrentConnection = currentConnection.getCentroid();
+        Point2D centreOfLastConnection = lastConnection.getCentroid();
+
+        // Find out distance between them
+        double distanceTravelled = centreOfCurrentConnection.distance(centreOfLastConnection);
+        estimatedDistanceTravelled += distanceTravelled;
+
+        // update the last connection
+        lastConnection = currentConnection;
     }
 }

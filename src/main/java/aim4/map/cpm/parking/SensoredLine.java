@@ -2,6 +2,7 @@ package aim4.map.cpm.parking;
 
 import aim4.vehicle.VehicleSimModel;
 
+import java.awt.*;
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
@@ -123,4 +124,11 @@ public class SensoredLine {
      * @return the type of the line
      */
     public SensoredLineType getType() { return type; }
+
+    /**
+     * Get the line that represents this sensored line
+     *
+     * @return the line for this sensored line
+     */
+    public Line2D getLine() { return line; }
 }
