@@ -6,9 +6,12 @@ import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.parking.ParkingArea;
+import aim4.vehicle.VinRegistry;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +34,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     private StatusMonitor statusMonitor;
     /** A list of sensored lines used by the StatusMonitor. */
     private List<SensoredLine> sensoredLines;
+    /** The exit data collection line */
+    private CPMExitDataCollectionLine exitDataCollectionLine;
 
     public CPMCarParkWithStatus(double laneWidth, double speedLimit, double initTime,
                          int numberOfParkingLanes, double parkingLength,
@@ -162,14 +167,14 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         y1 = exitLanes.get(0).getEndPoint().getY() + halfLaneWidth;
         x2 = x1;
         y2 = y1 - laneWidth;
-        dataCollectionLines.add(
-                new DataCollectionLine(
+        exitDataCollectionLine =
+                new CPMExitDataCollectionLine(
                         "Car Park Exit",
                         dataCollectionLines.size(),
                         new Point2D.Double(x1, y1),
                         new Point2D.Double(x2, y2),
-                        true));
-
+                        true);
+        dataCollectionLines.add(exitDataCollectionLine);
         // Set size of array for the sensored lines.
         // One on entry, one on reentry and one on exit
         sensoredLines = new ArrayList<SensoredLine>(3);
@@ -229,4 +234,47 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     public StatusMonitor getStatusMonitor() { return statusMonitor; }
 
     public List<SensoredLine> getSensoredLines() { return sensoredLines; }
+
+    @Override
+    public void printDataCollectionLinesData(String outFileName) {
+        PrintStream outfile = null;
+        try {
+            outfile = new PrintStream(outFileName);
+        } catch (FileNotFoundException e) {
+            System.err.printf("Cannot open file %s%n", outFileName);
+            return;
+        }
+        // get the data collection time for entry
+        dataCollectionLines.remove(exitDataCollectionLine);
+        assert dataCollectionLines.size() == 1;
+        DataCollectionLine entryDataCollectionLine = dataCollectionLines.get(0);
+
+        outfile.printf("Printing file for CPM simulation%n");
+        outfile.printf("VIN,VehicleType,EntryTime,ExitTime,ParkingTime,TimeToRetrieve,EstimatedDistanceTravelled%n");
+
+        for (int vin : exitDataCollectionLine.getAllVIN()) {
+            for(double time : exitDataCollectionLine.getTimes(vin)) {
+                outfile.printf("%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f",
+                        vin,
+                        VinRegistry.getVehicleSpecFromVIN(vin).getName(),
+                        entryDataCollectionLine.getTimes(vin).get(0),
+                        time,
+                        exitDataCollectionLine.getParkingTime(vin),
+                        calculateTimeToRetrieve(entryDataCollectionLine, vin, time),
+                        exitDataCollectionLine.getEstimatedDistanceTravelled(vin)
+                        );
+            }
+        }
+
+
+        outfile.close();
+    }
+
+    private Double calculateTimeToRetrieve(DataCollectionLine entryDataCollectionLine, int vin, double exitTime){
+        double entryTime = entryDataCollectionLine.getTimes(vin).get(0); // TODO CPM why is it a list, will this give us the right thing?
+        double parkingTime = exitDataCollectionLine.getParkingTime(vin);
+        double retrievalTime = entryTime + parkingTime;
+        double timeToRetrieve = exitTime - retrievalTime;
+        return timeToRetrieve;
+    }
 }
