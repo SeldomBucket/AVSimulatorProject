@@ -119,27 +119,24 @@ public class CPMAutoDriverSimulator implements Simulator {
      */
     private void spawnVehicles(double timeStep) {
         for(CPMSpawnPoint spawnPoint : map.getSpawnPoints()) {
-            List<CPMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
-            if (!spawnSpecs.isEmpty()) {
-                if (canSpawnVehicle(spawnPoint)) {
-                    for(CPMSpawnSpec spawnSpec : spawnSpecs) {
-                        // Only create the vehicle if there is room in the car park
-                        // TODO CPM need to consider cars waiting too. Could make
-                        // no vehicle zone for spawn point span up to the entry sensored line
-                        double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                        if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
-                            CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
-                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-                            vinToVehicles.put(vehicle.getVIN(), vehicle);
-                            map.addVehicleToMap(vehicle);
-                            break; // only handle the first spawn vehicle
-                            // TODO: need to fix this
-                        } else {
-                            System.out.println("Cannot spawn this vehicle.");
-                        }
+            if (canSpawnVehicle(spawnPoint)) {
+                List<CPMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+                for(CPMSpawnSpec spawnSpec : spawnSpecs) {
+                    // Only create the vehicle if there is room in the car park
+                    // TODO CPM need to consider cars waiting too. Could make
+                    // no vehicle zone for spawn point span up to the entry sensored line
+                    double vehicleLength = spawnSpec.getVehicleSpec().getLength();
+                    if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
+                        CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                        vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        map.addVehicleToMap(vehicle);
+                        break; // only handle the first spawn vehicle
+                    } else {
+                        System.out.println("Spawned vehicle discarded: not enough room.");
                     }
-                } // else ignore the spawnSpecs and do nothing
-            }
+                }
+            } // else ignore the spawnSpecs and do nothingSystem.out.println("No vehicle spawned: canSpawn = False.");
         }
     }
 
@@ -147,7 +144,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * Whether a spawn point can spawn any vehicle
      *
      * @param spawnPoint  the spawn point
-     * @return Whether the spawn point can spawn any vehicle
+     * @return Whether the spawn point can spawn a vehicle
      */
     private boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
         // TODO: can be made much faster.

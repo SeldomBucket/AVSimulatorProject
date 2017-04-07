@@ -280,7 +280,6 @@ public class CPMMapUtil {
     }
 
     public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap, double trafficLevel){
-        // The spawn point will continuously spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new SimpleRelocateSpawnSpecGenerator(trafficLevel));
