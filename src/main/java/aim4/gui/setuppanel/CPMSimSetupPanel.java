@@ -1,10 +1,7 @@
 package aim4.gui.setuppanel;
 
-import aim4.gui.parampanel.aim.AutoDriverOnlyParamPanel;
-import aim4.gui.parampanel.aim.TrafficSignalParamPanel;
 import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
 import aim4.sim.setup.SimSetup;
-import aim4.sim.setup.aim.BasicSimSetup;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.setup.cpm.CPMAutoDriverSimSetup;
 

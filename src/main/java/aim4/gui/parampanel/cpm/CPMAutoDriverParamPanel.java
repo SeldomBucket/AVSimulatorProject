@@ -30,11 +30,11 @@ public class CPMAutoDriverParamPanel extends JPanel {
         // create the components
 
         speedLimitSlider =
-                new LabeledSlider(5.0, 25.0,
+                new LabeledSlider(1.0, 10.0,
                         simSetup.getSpeedLimit(),
-                        10.0, 5.0,
-                        "Speed Limit: %.0f meters/second",
-                        "%.0f");
+                        1.0, 0.25,
+                        "Speed Limit: %.2f meters/second",
+                        "%.2f");
         add(speedLimitSlider);
 
         laneWidthSlider =

@@ -20,12 +20,12 @@ public class CPMSimViewer extends SimViewer {
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
         super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
-                10.0, // speedLimit
+                2.25, // speedLimit - approx. 5mph
                 0.28, // trafficLevel
                 4.0, // laneWidth
                 1, // numberOfParkingLanes
                 20.0, // parkingLength
-                5.0 // accessLength
+                1.0 // accessLength
         )), false);
     }
 
