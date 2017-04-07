@@ -269,7 +269,10 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
                         );
             }
         }
-
+        // TODO CPM move this to statscreen
+        outfile.print("Number of denied entries: " + statusMonitor.getNumberOfDeniedEntries() + "%n");
+        outfile.print("Number of allowed entries: " + statusMonitor.getNumberOfAllowedEntries() + "%n");
+        outfile.print("Most number of vehicles in car park: " + statusMonitor.getMostNumberOfVehicles() + "%n");
 
         outfile.close();
     }

@@ -21,8 +21,13 @@ public class StatusMonitor {
     private Map<ParkingLane, Double> parkingLanesSpace = new HashMap<ParkingLane, Double>();
     /** A list of vehicles which are currently in the car park,
      * and the lane they are parked in. */
-    private Map<CPMBasicAutoVehicle, ParkingLane> vehicles =
-            new HashMap<CPMBasicAutoVehicle, ParkingLane>();
+    private Map<CPMBasicAutoVehicle, ParkingLane> vehicles = new HashMap<CPMBasicAutoVehicle, ParkingLane>();
+    /** The number of vehicles denied entry due to not enough room.*/
+    private int numberOfDeniedEntries;
+    /** The number of vehicles allowed entry as there is enough room.*/
+    private int numberOfAllowedEntries;
+    /** The most number of vehicles that have been in the car park at any one time during simulation.*/
+    private int mostNumberOfVehicles;
 
     /**
      * Create a StatusMonitor to record the status of the car park.
@@ -30,7 +35,9 @@ public class StatusMonitor {
      */
     public StatusMonitor(ParkingArea parkingArea) {
         this.parkingArea = parkingArea;
-
+        numberOfDeniedEntries = 0;
+        numberOfAllowedEntries = 0;
+        mostNumberOfVehicles = 0;
         initialiseParkingLanesSpace(parkingArea);
     }
 
@@ -60,8 +67,10 @@ public class StatusMonitor {
         double spaceNeeded = vehicleLength + distanceBetweenVehicles;
 
         if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
+            numberOfAllowedEntries++;
             return true;
         }
+        numberOfDeniedEntries++;
         return false;
     }
 
@@ -202,7 +211,20 @@ public class StatusMonitor {
         vehicle.sendMessageToI2VInbox(parkingLane);
     }
 
+    public void updateMostNumberOfVehicles(){
+        int currentNumberOfVehicles = vehicles.size();
+        if (currentNumberOfVehicles > mostNumberOfVehicles) {
+            mostNumberOfVehicles = currentNumberOfVehicles;
+        }
+    }
+
     public Map<CPMBasicAutoVehicle, ParkingLane> getVehicles() {
         return vehicles;
     }
+
+    public int getNumberOfDeniedEntries() { return numberOfDeniedEntries; }
+
+    public int getNumberOfAllowedEntries() { return numberOfAllowedEntries; }
+
+    public int getMostNumberOfVehicles() { return mostNumberOfVehicles; }
 }

@@ -103,6 +103,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         letDriversAct();
         moveVehicles(timeStep);
         observeParkedVehicles();
+        observeNumberOfVehiclesInCarPark();
         List<Integer> completedVINs = cleanUpCompletedVehicles();
         currentTime += timeStep;
         return new CPMAutoDriverSimStepResult(completedVINs);
@@ -591,6 +592,14 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     /////////////////////////////////
     // STEP 7
+    /////////////////////////////////
+
+    private void observeNumberOfVehiclesInCarPark() {
+        map.getStatusMonitor().updateMostNumberOfVehicles();
+    }
+
+    /////////////////////////////////
+    // STEP 8
     /////////////////////////////////
 
     /**
