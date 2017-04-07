@@ -2,7 +2,6 @@ package aim4.map.cpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.parking.ParkingArea;
@@ -34,8 +33,10 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     private StatusMonitor statusMonitor;
     /** A list of sensored lines used by the StatusMonitor. */
     private List<SensoredLine> sensoredLines;
-    /** The exit data collection line */
+    /** The exit data collection line. */
     private CPMExitDataCollectionLine exitDataCollectionLine;
+    /** The total area of the car park. */
+    private double totalCarParkArea; // in square metres
 
     public CPMCarParkWithStatus(double laneWidth, double speedLimit, double initTime,
                          int numberOfParkingLanes, double parkingLength,
@@ -226,6 +227,43 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
 
         // Initialise the spawn point
         initializeSpawnPoints(initTime);
+
+        // Calculate the total area of the car park
+        calculateAreaOfCarPark();
+    }
+
+    private void calculateAreaOfCarPark() {
+        double totalArea = 0;
+        /*// Add the area of each parking lane
+        for (ParkingLane parkingLane : parkingArea.getParkingLanes()) {
+            totalArea += parkingLane.getLength() * parkingLane.getWidth();
+        }
+        // Add the vertical roads
+        for (Road road : verticalRoads){
+            totalArea += road.getOnlyLane().getLength() * road.getOnlyLane().getWidth();
+        }
+
+        // Add the West road, but only up to the
+        // length of the parking area
+        totalArea += getRoadByName("Westbound Avenue").getOnlyLane().getWidth() * parkingArea.getTotalLength();
+
+        // Minus the area of all connections
+        // Don't want to double count where roads overlap.
+        for (BasicConnection corner : corners) {
+            assert GeomMath.polygonalShapeAreas(corner.getArea()).size() == 1;
+            totalArea =- GeomMath.polygonalShapeAreas(corner.getArea()).get(0);
+        }
+
+        totalCarParkArea = totalArea;*/
+
+        // Add the area of the parking area (w*h)
+        totalArea += parkingArea.getTotalLength()*(parkingArea.getNumberOfParkingLanes()*parkingArea.getParkingLaneWidth());
+
+        // Add the West road, but only up to the
+        // length of the parking area
+        totalArea += getRoadByName("Westbound Avenue").getOnlyLane().getWidth() * parkingArea.getTotalLength();
+
+        totalCarParkArea = totalArea;
     }
 
     public ParkingArea getParkingArea(){
@@ -237,6 +275,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     public List<SensoredLine> getSensoredLines() { return sensoredLines; }
 
     public CPMExitDataCollectionLine getExitDataCollectionLine() { return exitDataCollectionLine; }
+
+    public double getTotalCarParkArea() { return totalCarParkArea; }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {
@@ -273,6 +313,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         outfile.print("Number of denied entries: " + statusMonitor.getNumberOfDeniedEntries() + "%n");
         outfile.print("Number of allowed entries: " + statusMonitor.getNumberOfAllowedEntries() + "%n");
         outfile.print("Most number of vehicles in car park: " + statusMonitor.getMostNumberOfVehicles() + "%n");
+        outfile.print("Total area of car park: " + getTotalCarParkArea() + "%n");
+
 
         outfile.close();
     }
