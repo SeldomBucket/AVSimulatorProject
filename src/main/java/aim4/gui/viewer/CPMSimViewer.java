@@ -4,6 +4,7 @@ import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.screen.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
+import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import java.awt.event.MouseEvent;
@@ -25,7 +26,8 @@ public class CPMSimViewer extends SimViewer {
                 4.0, // laneWidth
                 1, // numberOfParkingLanes
                 20.0, // parkingLength
-                1.0 // accessLength
+                1.0, // accessLength,
+                SpawnSpecType.SINGLE // spawn spec type
         )), false);
     }
 

@@ -1,5 +1,7 @@
 package aim4.sim.setup.cpm;
 
+import aim4.map.cpm.CPMMapUtil;
+import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.Simulator;
 
 /**
@@ -20,6 +22,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     protected double parkingLength;
     /** The length of the parking lanes used for accessing the parking.*/
     protected double accessLength;
+    /** The type of spawn specification. */
+    protected SpawnSpecType spawnSpecType;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -33,6 +37,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.numberOfParkingLanes = basicSimSetup.numberOfParkingLanes;
         this.parkingLength = basicSimSetup.parkingLength;
         this.accessLength = basicSimSetup.accessLength;
+        this.spawnSpecType = basicSimSetup.spawnSpecType;
     }
 
     /**
@@ -42,13 +47,15 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      */
     public BasicCPMSimSetup(double speedLimit, double trafficLevel,
                             double laneWidth, int numberOfParkingLanes,
-                            double parkingLength, double accessLength) {
+                            double parkingLength, double accessLength,
+                            SpawnSpecType spawnSpecType) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
+        this.spawnSpecType = spawnSpecType;
     }
 
     @Override
@@ -100,7 +107,9 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         return accessLength;
     }
 
-    public void setAccessLength(double accessLength) {
-        this.accessLength = accessLength;
-    }
+    public void setAccessLength(double accessLength) { this.accessLength = accessLength; }
+
+    public SpawnSpecType getSpawnSpecType() { return spawnSpecType; }
+
+    public void setSpawnSpecType(SpawnSpecType spawnSpecType) { this.spawnSpecType = spawnSpecType; }
 }

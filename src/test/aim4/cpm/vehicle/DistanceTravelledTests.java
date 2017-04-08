@@ -3,13 +3,10 @@ package aim4.cpm.vehicle;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import util.TestSimThread;
-
-import java.awt.geom.Point2D;
 
 import static org.junit.Assert.assertTrue;
 
@@ -34,7 +31,7 @@ public class DistanceTravelledTests {
                 1, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpFiniteVehicleSpawnPoint(map, 1, 0.28);
+        CPMMapUtil.setUpFiniteSingleSpecSpawnPoint(map, 1, 0.28);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }

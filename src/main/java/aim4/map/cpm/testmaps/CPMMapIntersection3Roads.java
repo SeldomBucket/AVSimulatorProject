@@ -4,6 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMBasicMap;
+import aim4.map.cpm.parking.ParkingArea;
 import aim4.map.cpm.parking.StatusMonitor;
 
 import java.awt.geom.Point2D;
@@ -108,6 +109,11 @@ public class CPMMapIntersection3Roads extends CPMBasicMap {
 
     @Override
     public StatusMonitor getStatusMonitor() {
+        return null;
+    }
+
+    @Override
+    public ParkingArea getParkingArea() {
         return null;
     }
 }

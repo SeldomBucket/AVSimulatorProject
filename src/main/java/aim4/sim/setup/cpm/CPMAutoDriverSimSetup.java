@@ -34,15 +34,14 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                 parkingLength,
                 accessLength);
 
-        // set up the spawn points: create a new method for this.
-        // CPMMapUtil.setUpOneVehicleSpawnPoint(layout);
-        // CPMMapUtil.setUpInfiniteVehicleSpawnPoint(layout);
+        // Set up the correct spawn point
+        switch(spawnSpecType) {
+            case SINGLE: CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+                break;
+            case RANDOM: CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                break;
+        }
 
-
-
-
-        CPMMapUtil.setUpInfiniteComplexSpawnPoint(layout, trafficLevel);
-        // TODO CPM make use of traffic level
         return new CPMAutoDriverSimulator(layout);
     }
 }

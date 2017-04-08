@@ -25,7 +25,7 @@ public class SpawnTests {
     }
 
     @Test
-    public void testNoSpawn() throws Exception {
+    public void testNoRoomNoSpawn() throws Exception {
         /**
          * Set up a map where there is no room to park.
          * */
@@ -36,7 +36,7 @@ public class SpawnTests {
                 1, // numberOfParkingLanes
                 1, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteVehicleSpawnPoint(map, 0.28);
+        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
 
@@ -60,7 +60,47 @@ public class SpawnTests {
         // There should be 0 vehicles registered as parked with the map.
         assertTrue(sim.getParkedVehicles().size() == 0);
 
-        // There should be 1 vehicle on the map
+        // There should be no vehicle on the map
+        assertTrue(map.getVehicles().size() == 0);
+    }
+
+    @Test
+    public void testNotWideEnoughNoSpawn() throws Exception {
+        /**
+         * Set up a map where the lanes are not wide enough for any vehicle.
+         * */
+
+        this.map = new CPMCarParkWithStatus(1, // laneWidth
+                10.0, // speedLimit
+                0.0, // initTime
+                1, // numberOfParkingLanes
+                1, // parkingLength
+                5); // access length
+        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
+        this.sim = new CPMAutoDriverSimulator(map);
+        this.simThread = new TestSimThread(sim);
+
+        // Run the simulation for a period of time.
+        try {
+            int count = 1000000000;
+            simThread.start();
+            while (count != 0) {
+                simThread.run();
+                count--;
+            }
+        } catch(RuntimeException e) {
+            throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
+        }
+
+        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+
+        // There should be 0 vehicles registered with the status monitor.
+        assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 0);
+
+        // There should be 0 vehicles registered as parked with the map.
+        assertTrue(sim.getParkedVehicles().size() == 0);
+
+        // There should be no vehicle on the map
         assertTrue(map.getVehicles().size() == 0);
     }
 
@@ -77,7 +117,7 @@ public class SpawnTests {
                 1, // numberOfParkingLanes
                 5, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteVehicleSpawnPoint(map, 0.28);
+        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
 

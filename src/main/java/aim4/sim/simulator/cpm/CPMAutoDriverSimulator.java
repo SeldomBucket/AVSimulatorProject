@@ -123,18 +123,23 @@ public class CPMAutoDriverSimulator implements Simulator {
             if (canSpawnVehicle(spawnPoint)) {
                 List<CPMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
                 for(CPMSpawnSpec spawnSpec : spawnSpecs) {
-                    // Only create the vehicle if there is room in the car park
-                    // TODO CPM need to consider cars waiting too. Could make
-                    // no vehicle zone for spawn point span up to the entry sensored line
-                    double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                    if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
-                        CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        map.addVehicleToMap(vehicle);
-                        break; // only handle the first spawn vehicle
+                    // Check that the car park caters for vehicles this wide
+                    double vehicleWidth = spawnSpec.getVehicleSpec().getWidth();
+                    double parkingLaneWidth = map.getParkingArea().getParkingLaneWidth();
+                    if (parkingLaneWidth < vehicleWidth) {
+                        System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
-                        System.out.println("Spawned vehicle discarded: not enough room.");
+                        // Only create the vehicle if there is room in the car park
+                        double vehicleLength = spawnSpec.getVehicleSpec().getLength();
+                        if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
+                            CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                            VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
+                            vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            map.addVehicleToMap(vehicle);
+                            break; // only handle the first spawn vehicle
+                        } else {
+                            System.out.println("Spawned vehicle discarded: not enough room.");
+                        }
                     }
                 }
             } // else ignore the spawnSpecs and do nothingSystem.out.println("No vehicle spawned: canSpawn = False.");

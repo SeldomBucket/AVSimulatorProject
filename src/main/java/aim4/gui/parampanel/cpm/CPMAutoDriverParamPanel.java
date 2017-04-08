@@ -1,6 +1,8 @@
 package aim4.gui.parampanel.cpm;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.component.CPMSpawnSpecRadioButtons;
+import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import javax.swing.*;
@@ -17,6 +19,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider parkingLengthSlider;
     LabeledSlider accessLengthSlider;
     LabeledSlider trafficRateSlider;
+    CPMSpawnSpecRadioButtons spawnSpecRadioButtons;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -78,6 +81,8 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "%.0f");
         add(trafficRateSlider);
 
+        spawnSpecRadioButtons = new CPMSpawnSpecRadioButtons();
+        add(spawnSpecRadioButtons);
 
     }
 
@@ -104,5 +109,9 @@ public class CPMAutoDriverParamPanel extends JPanel {
 
     public double getTrafficRate() {
         return trafficRateSlider.getValue()/ 3600.0;
+    }
+
+    public SpawnSpecType getSpawnSpecType() {
+        return SpawnSpecType.valueOf(spawnSpecRadioButtons.getSelected().getActionCommand());
     }
 }

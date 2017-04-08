@@ -1,14 +1,11 @@
 package aim4.map.cpm;
 
 import aim4.config.SimConfig;
-import aim4.driver.AutoDriver;
-import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.CPMSpawnPoint.*;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -20,49 +17,24 @@ import java.util.Random;
  */
 public class CPMMapUtil {
 
+    /**
+     * The different spawn specification types.
+     */
+    public enum SpawnSpecType {
+        /** Single - all vehicles spawned will have the same specification */
+        SINGLE,
+        /** Random - all vehicles spawned will have a randomly selected specification */
+        RANDOM
+    }
+
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
-    /**
-     * The spec generator that generates just one vehicle in the entire
-     * simulation.
-     */
-    public static class OnlyOneSpawnSpecGenerator implements CPMSpawnSpecGenerator {
-        /** The vehicle specification */
-        private VehicleSpec vehicleSpec;
-        /** Whether the spec has been generated */
-        private boolean isDone;
-
-        /**
-         * Create a spec generator that generates just one vehicle in the entire
-         * simulation.
-         */
-        public OnlyOneSpawnSpecGenerator() {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            isDone = false;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
-            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
-            if (!isDone) {
-                isDone = true;
-                // TODO CPM need a way of generating this to represent the data by ferreira
-                double parkingTime = 20000.0;
-                result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                System.out.println("Vehicle spawned!");
-            }
-            return result;
-        }
-    }
 
     /**
      * The spec generator that generates a finite number of vehicles of the same spec.
      */
-    public static class FiniteSpawnSpecGenerator implements CPMSpawnSpecGenerator {
+    public static class FiniteSpawnSingleSpecGenerator implements CPMSpawnSpecGenerator {
         /** The vehicle specification */
         private VehicleSpec vehicleSpec;
         /** Number of vehicles to be spawned. */
@@ -76,9 +48,9 @@ public class CPMMapUtil {
 
         /**
          * Create a spec generator that generates the specified number
-         * of vehicles. This only spawns one VehicleSpec at the moment.
+         * of vehicles. This only spawns one VehicleSpec.
          */
-        public FiniteSpawnSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
+        public FiniteSpawnSingleSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
             this.numberOfSpawnedVehicles = 0;
@@ -102,8 +74,7 @@ public class CPMMapUtil {
                 for(double time = initTime; time < initTime + timeStep;
                     time += SimConfig.SPAWN_TIME_STEP) {
                     if (Util.random.nextDouble() < spawnProbability) {
-                        // TODO CPM need a way of generating this to represent the data by ferreira
-                        double parkingTime = 20000.0;
+                        double parkingTime = generateParkingTime();
                         result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                         numberOfSpawnedVehicles += 1;
                         System.out.println("Vehicle spawned!");
@@ -112,22 +83,25 @@ public class CPMMapUtil {
             }
             return result;
         }
+
+        public double generateParkingTime(){
+            return 20000.0;
+        }
     }
 
     /**
      * The spec generator that continuously generates vehicles of the same spec.
      */
-    public static class InfiniteSpawnSpecGenerator implements CPMSpawnSpecGenerator {
+    public static class InfiniteSpawnSingleSpecGenerator implements CPMSpawnSpecGenerator {
         /** The vehicle specification */
         private VehicleSpec vehicleSpec;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
 
         /**
-         * Create a spec generator that generates the specified number
-         * of vehicles. This only spawns one VehicleSpec at the moment.
+         * Create a spec generator that infinitely generates vehicles of the same spec.
          */
-        public InfiniteSpawnSpecGenerator(double trafficLevel) {
+        public InfiniteSpawnSingleSpecGenerator(double trafficLevel) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
@@ -144,13 +118,151 @@ public class CPMMapUtil {
             for(double time = initTime; time < initTime + timeStep;
                 time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < spawnProbability) {
-                    // TODO CPM need a way of generating this to represent the data by ferreira
-                    double parkingTime = 20000.0;
+                    double parkingTime = generateParkingTime();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                     System.out.println("Vehicle spawned!");
                 }
             }
             return result;
+        }
+
+        @Override
+        public double generateParkingTime() {
+            // Returns a random double
+            double rangeMin = 2000.0;
+            double rangeMax = 20000.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        }
+    }
+
+    /**
+     * The spec generator that generates a finite number of vehicles,
+     * randomly selecting the spec of each one.
+     */
+    public static class FiniteSpawnRandomSpecGenerator implements CPMSpawnSpecGenerator {
+        /** The proportion of each spec */
+        private List<Double> proportion;
+        /** Number of vehicles to be spawned. */
+        private int numberOfVehiclesToSpawn;
+        /** Number vehicles that have been spawned so far. */
+        private int numberOfSpawnedVehicles;
+        /** Whether the spec has been generated */
+        private boolean isDone;
+        /** The probability of generating a vehicle in each spawn time step */
+        private double spawnProbability;
+
+        /**
+         * Create a spec generator that generates the specified number
+         * of vehicles. The vehicle spec is chosen at random.
+         */
+        public FiniteSpawnRandomSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
+            this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
+            this.numberOfSpawnedVehicles = 0;
+            isDone = false;
+
+            int n = VehicleSpecDatabase.getNumOfSpec();
+            proportion = new ArrayList<Double>(n);
+            double p = 1.0 / n;
+            for(int i=0; i<n; i++) {
+                proportion.add(p);
+            }
+
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
+            // Cannot generate more than one vehicle in each spawn time step
+            assert spawnProbability <= 1.0;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
+
+            if (numberOfSpawnedVehicles == numberOfVehiclesToSpawn) {
+                isDone = true;
+            }
+            if (!isDone) {
+                double initTime = spawnPoint.getCurrentTime();
+                for(double time = initTime; time < initTime + timeStep;
+                    time += SimConfig.SPAWN_TIME_STEP) {
+                    if (Util.random.nextDouble() < spawnProbability) {
+                        int i = Util.randomIndex(proportion);
+                        VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                        double parkingTime = generateParkingTime();
+                        result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
+                                vehicleSpec,
+                                parkingTime));
+                        numberOfSpawnedVehicles += 1;
+                        System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                    }
+                }
+            }
+            return result;
+        }
+
+        public double generateParkingTime(){
+            return 20000.0;
+        }
+    }
+
+    /**
+     * The spec generator that infinitely generates vehicles with a random spec.
+     */
+    public static class InfiniteSpawnRandomSpecGenerator implements CPMSpawnSpecGenerator {
+        /** The proportion of each spec */
+        private List<Double> proportion;
+        /** The probability of generating a vehicle in each spawn time step */
+        private double spawnProbability;
+
+        /**
+         * Create a spec generator that infinitely generates vehicles.
+         * The vehicle spec is chosen at random.
+         */
+        public InfiniteSpawnRandomSpecGenerator(double trafficLevel) {
+            int n = VehicleSpecDatabase.getNumOfSpec();
+            proportion = new ArrayList<Double>(n);
+            double p = 1.0 / n;
+            for(int i=0; i<n; i++) {
+                proportion.add(p);
+            }
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
+            // Cannot generate more than one vehicle in each spawn time step
+            assert spawnProbability <= 1.0;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
+
+            double initTime = spawnPoint.getCurrentTime();
+            for(double time = initTime; time < initTime + timeStep;
+                time += SimConfig.SPAWN_TIME_STEP) {
+                if (Util.random.nextDouble() < spawnProbability) {
+                    int i = Util.randomIndex(proportion);
+                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                    double parkingTime = generateParkingTime();
+                    result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
+                                                vehicleSpec,
+                                                parkingTime));
+                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        public double generateParkingTime() {
+            // Returns a random double
+            double rangeMin = 2000.0;
+            double rangeMax = 20000.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
     }
 
@@ -198,12 +310,7 @@ public class CPMMapUtil {
                 for(double time = initTime; time < initTime + timeStep;
                     time += SimConfig.SPAWN_TIME_STEP) {
                     if (Util.random.nextDouble() < spawnProbability) {
-                        double parkingTime;
-                        if (numberOfSpawnedVehicles == 0) {
-                            parkingTime = 20000.0;
-                        } else {
-                            parkingTime = 10000.0;
-                        }
+                        double parkingTime = generateParkingTime();
                         result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                         System.out.println("Vehicle spawned!");
                         numberOfSpawnedVehicles += 1;
@@ -212,85 +319,58 @@ public class CPMMapUtil {
             }
             return result;
         }
-    }
 
-    public static class InfiniteComplexSpawnSpecGenerator implements CPMSpawnSpecGenerator {
-        /** The vehicle specification */
-        private VehicleSpec vehicleSpec;
-        /** The probability of generating a vehicle in each spawn time step */
-        private double spawnProbability;
-        /**
-         * Create a spec generator that creates a simple relocate scenario.
-         */
-        public InfiniteComplexSpawnSpecGenerator(double trafficLevel) {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
-            // Cannot generate more than one vehicle in each spawn time step
-            assert spawnProbability <= 1.0;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
         @Override
-        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
-            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
-            double initTime = spawnPoint.getCurrentTime();
-            for(double time = initTime; time < initTime + timeStep;
-                time += SimConfig.SPAWN_TIME_STEP) {
-                if (Util.random.nextDouble() < spawnProbability) {
-                    // TODO CPM need a way of generating this to represent the data by ferreira
-                    double rangeMin = 2000.0;
-                    double rangeMax = 20000.0;
-                    Random r = new Random();
-                    double randomParkingTime = rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-                    result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, randomParkingTime));
-                    System.out.println("Vehicle spawned!");
-                }
+        public double generateParkingTime() {
+            if (numberOfSpawnedVehicles == 0) {
+                return 20000.0;
+            } else {
+                return 10000.0;
             }
-            return result;
         }
     }
 
-
-    public static void setUpOneVehicleSpawnPoint(CPMMap simpleMap){
-        // The spawn point will only spawn one vehicle in the whole simulation
-        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
-            sp.setVehicleSpecChooser(
-                    new OnlyOneSpawnSpecGenerator());
-        }
-    }
-
-    public static void setUpFiniteVehicleSpawnPoint(CPMMap simpleMap,
-                                                    int numberOfVehiclesToSpawn,
-                                                    double trafficLevel){
+    public static void setUpFiniteSingleSpecSpawnPoint(CPMMap map,
+                                                       int numberOfVehiclesToSpawn,
+                                                       double trafficLevel){
         // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
-        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new FiniteSpawnSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
+                    new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
         }
     }
 
-    public static void setUpInfiniteVehicleSpawnPoint(CPMMap simpleMap, double trafficLevel){
-        // The spawn point will continuously spawn vehicles of the same spec.
-        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
+    public static void setUpInfiniteSingleSpecVehicleSpawnPoint(CPMMap map, double trafficLevel){
+        // The spawn point will infinitely spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnSpecGenerator(trafficLevel));
+                    new InfiniteSpawnSingleSpecGenerator(trafficLevel));
+        }
+    }
+
+    public static void setUpFiniteRandomSpecSpawnPoint(CPMMap map,
+                                                       int numberOfVehiclesToSpawn,
+                                                       double trafficLevel){
+        // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new FiniteSpawnRandomSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
+        }
+    }
+
+    public static void setUpInfiniteRandomSpecVehicleSpawnPoint(CPMMap map, double trafficLevel){
+        // The spawn point will infinitely spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new InfiniteSpawnRandomSpecGenerator(trafficLevel));
         }
     }
 
     public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap, double trafficLevel){
+        // The spawn point will spawn 2 vehicles which will trigger a relocation scenario.
         for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new SimpleRelocateSpawnSpecGenerator(trafficLevel));
-        }
-    }
-
-    public static void setUpInfiniteComplexSpawnPoint(CPMMap simpleMap, double trafficLevel){
-        // The spawn point will continuously spawn vehicles of the same spec.
-        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
-            sp.setVehicleSpecChooser(
-                    new InfiniteComplexSpawnSpecGenerator(trafficLevel));
         }
     }
 

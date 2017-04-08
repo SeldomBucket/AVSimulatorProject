@@ -41,6 +41,7 @@ public class CPMSpawnPoint extends SpawnPoint {
      */
     public static interface CPMSpawnSpecGenerator {
         List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timestep);
+        double generateParkingTime();
     }
 
     /////////////////////////////////
