@@ -41,11 +41,11 @@ public class CPMAutoDriverParamPanel extends JPanel {
         add(speedLimitSlider);
 
         laneWidthSlider =
-                new LabeledSlider(1.0, 10.0,
+                new LabeledSlider(1.0, 5.0,
                         simSetup.getLaneWidth(),
-                        1.0, 1.0,
-                        "Width of Lanes: %.0f",
-                        "%.0f");
+                        1.0, 0.5,
+                        "Width of Lanes (parking lanes and roads): %.1f meters",
+                        "%.1f");
         add(laneWidthSlider);
 
         numberOfParkingLanesSlider =
@@ -66,16 +66,16 @@ public class CPMAutoDriverParamPanel extends JPanel {
 
         // TODO CPM What is minimum length for this?
         accessLengthSlider =
-                new LabeledSlider(0.0, 10.0,
+                new LabeledSlider(0.0, 5.0,
                         simSetup.getAccessLength(),
-                        10.0, 1.0,
+                        1.0, 1.0,
                         "Length of Parking Lane Access: %.0f meters",
                         "%.0f");
         add(accessLengthSlider);
 
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
-                        simSetup.getTrafficLevel() * 3600.0, // CPM TODO Why?
+                        simSetup.getTrafficLevel() * 3600.0,
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");

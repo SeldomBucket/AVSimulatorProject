@@ -1,5 +1,6 @@
 package aim4.map.cpm.parking;
 
+import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.*;
@@ -10,9 +11,6 @@ import java.util.*;
  * remaining capacity of the car park.
  */
 public class StatusMonitor {
-
-    // TODO CPM find this value, must be defined somewhere
-    private static final double MIN_DISTANCE_BETWEEN_PARKED_VEHICLES = 0.2;
 
     /** The parking area that we are recording the status of. */
     private ParkingArea parkingArea;
@@ -62,8 +60,9 @@ public class StatusMonitor {
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
+
         // Check there is room for this vehicle
-        double distanceBetweenVehicles = MIN_DISTANCE_BETWEEN_PARKED_VEHICLES;
+        double distanceBetweenVehicles = CPMAutoDriverSimulator.MIN_DISTANCE_BETWEEN_PARKED_VEHICLES;;
         double spaceNeeded = vehicleLength + distanceBetweenVehicles;
 
         if (willVehicleFit(parkingLaneEntry, spaceNeeded)) {
@@ -163,7 +162,7 @@ public class StatusMonitor {
 
     private double calculateTotalVehicleSpace(CPMBasicAutoVehicle vehicle) {
         double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = MIN_DISTANCE_BETWEEN_PARKED_VEHICLES; // TODO CPM find this value
+        double distanceBetweenVehicles = CPMAutoDriverSimulator.MIN_DISTANCE_BETWEEN_PARKED_VEHICLES; // TODO CPM find this value from AIM
         return vehicleLength + distanceBetweenVehicles;
     }
 

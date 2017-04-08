@@ -63,6 +63,9 @@ public class CPMAutoDriverSimulator implements Simulator {
         }
     }
 
+    // TODO CPM find this value, must be defined somewhere
+    public static final double MIN_DISTANCE_BETWEEN_PARKED_VEHICLES = 0.2;
+
     /////////////////////////////////
     // PRIVATE FIELDS
     /////////////////////////////////
@@ -126,7 +129,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                     // Check that the car park caters for vehicles this wide
                     double vehicleWidth = spawnSpec.getVehicleSpec().getWidth();
                     double parkingLaneWidth = map.getParkingArea().getParkingLaneWidth();
-                    if (parkingLaneWidth < vehicleWidth) {
+                    if (parkingLaneWidth < (vehicleWidth+MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
                         // Only create the vehicle if there is room in the car park

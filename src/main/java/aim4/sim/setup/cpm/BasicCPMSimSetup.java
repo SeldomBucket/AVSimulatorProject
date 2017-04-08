@@ -1,6 +1,5 @@
 package aim4.sim.setup.cpm;
 
-import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.Simulator;
 
