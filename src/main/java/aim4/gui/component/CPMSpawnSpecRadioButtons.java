@@ -40,29 +40,6 @@ public class CPMSpawnSpecRadioButtons extends JPanel implements ChangeListener {
         group.add(singleSpecButton);
         group.add(randomSpecButton);
 
-        class VoteActionListener implements ActionListener {
-            public void actionPerformed(ActionEvent ex) {
-                String choice = group.getSelection().getActionCommand();
-                System.out.println("ACTION Candidate Selected: " + choice);
-            }
-        }
-
-        class VoteItemListener implements ItemListener {
-            public void itemStateChanged(ItemEvent ex) {
-                String item = ((AbstractButton) ex.getItemSelectable()).getActionCommand();
-                boolean selected = (ex.getStateChange() == ItemEvent.SELECTED);
-                System.out.println("ITEM Candidate Selected: " + selected + " Selection: " + item);
-            }
-        }
-
-        ActionListener al = new VoteActionListener();
-        singleSpecButton.addActionListener(al);
-        randomSpecButton.addActionListener(al);
-
-        ItemListener il = new VoteItemListener();
-        singleSpecButton.addItemListener(il);
-        randomSpecButton.addItemListener(il);
-
         this.setVisible(true);
 
     }
