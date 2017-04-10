@@ -521,7 +521,7 @@ public class CPMCoordinator implements Coordinator {
 
     /**
      * Get the current parking status of this agent.
-     * @return the current parming status of this agent.
+     * @return the current parking status of this agent.
      */
     public ParkingStatus getParkingStatus() {
         return parkingStatus;

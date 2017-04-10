@@ -2,7 +2,6 @@ package aim4.driver.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
-import aim4.driver.aim.coordinator.Coordinator;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
@@ -12,6 +11,7 @@ import aim4.map.cpm.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import aim4.driver.cpm.CPMCoordinator.*;
 
 import java.awt.geom.Area;
 
@@ -31,7 +31,7 @@ public class CPMV2VDriver extends BasicDriver
     private CPMBasicAutoVehicle vehicle;
 
     /** The sub-agent that controls coordination */
-    private Coordinator coordinator;
+    private CPMCoordinator coordinator;
 
     /** The map */
     private CPMMap map;
@@ -192,5 +192,9 @@ public class CPMV2VDriver extends BasicDriver
     @Override
     public CPMBasicAutoVehicle getVehicle() {
         return vehicle;
+    }
+    
+    public ParkingStatus getParkingStatus() {
+        return coordinator.getParkingStatus();
     }
 }

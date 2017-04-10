@@ -1,5 +1,6 @@
 package aim4.map.cpm.parking;
 
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
@@ -82,6 +83,9 @@ public class StatusMonitor {
         /** ^ This might happen if say seem to be on the sensored line for a while
         // Like letting another car go through the intersection first.*/
 
+        // check that the vehicle has not already entered the car park
+        assert(!vehicle.hasEnteredCarPark());
+
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
 
@@ -154,8 +158,11 @@ public class StatusMonitor {
     private void decreaseCapacity(CPMBasicAutoVehicle vehicle, Map.Entry<ParkingLane, Double>  parkingLaneEntry){
         double spaceTaken = calculateTotalVehicleSpace(vehicle);
         if (!willVehicleFit(parkingLaneEntry, spaceTaken)){
+            // if the vehicle is not registered with the Status Monitor???
+            assert vehicle.getDriver() instanceof CPMV2VDriver;
             throw new RuntimeException("There's not enough room in the car " +
-                    "park for this vehicle to park!");
+                    "park for this vehicle to park! Vehicle is " +
+                    ((CPMV2VDriver)vehicle.getDriver()).getParkingStatus());
         }
         parkingLanesSpace.put(parkingLaneEntry.getKey(), parkingLaneEntry.getValue() - spaceTaken);
     }
