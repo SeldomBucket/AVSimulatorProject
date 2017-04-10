@@ -40,6 +40,8 @@ public class SpawnHelper {
                         MergeVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        if(!canSpawnVehicle(spawnPoint))
+                            break;
                     }
                 }
             }

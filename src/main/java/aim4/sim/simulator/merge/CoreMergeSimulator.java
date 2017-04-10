@@ -29,15 +29,13 @@ import java.util.*;
 public class CoreMergeSimulator implements MergeSimulator {
     //NESTED CLASSES//
     public static class CoreMergeSimStepResult implements SimStepResult {
-        private List<Integer> completedVINs;
+        private Map<Integer, MergeVehicleSimModel> completedVehicles;
 
-        public CoreMergeSimStepResult(List<Integer> completedVINs) {
-            this.completedVINs = completedVINs;
+        public CoreMergeSimStepResult(Map<Integer, MergeVehicleSimModel> completedVehicles) {
+            this.completedVehicles = completedVehicles;
         }
 
-        public List<Integer> getCompletedVINs(){
-            return completedVINs;
-        }
+        public Map<Integer, MergeVehicleSimModel> getCompletedVehicles(){ return completedVehicles; }
     }
 
     //PROPERTIES//
@@ -74,10 +72,10 @@ public class CoreMergeSimulator implements MergeSimulator {
         letDriversAct();
         moveVehicles(timeStep);
 
-        List<Integer> completedVINs = cleanUpCompletedVehicles();
+        Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
         currentTime += timeStep;
 
-        return new CoreMergeSimStepResult(completedVINs);
+        return new CoreMergeSimStepResult(completedVehicles);
     }
 
     @Override
@@ -115,6 +113,11 @@ public class CoreMergeSimulator implements MergeSimulator {
         return this.vinToVehicles;
     }
 
+    @Override
+    public double calculateDelay(MergeVehicleSimModel vehicle) {
+        return 0;
+    }
+
     //STEP DRIVERS//
     private void letDriversAct() {
         for(MergeVehicleSimModel vehicle : vinToVehicles.values()) {
@@ -134,25 +137,25 @@ public class CoreMergeSimulator implements MergeSimulator {
     }
 
     //CLEAN UP//
-    private List<Integer> cleanUpCompletedVehicles() {
-        List<Integer> completedVINs = new LinkedList<Integer>();
+    private Map<Integer, MergeVehicleSimModel> cleanUpCompletedVehicles() {
+        Map<Integer, MergeVehicleSimModel> completedVehicles = new HashMap<Integer, MergeVehicleSimModel>();
 
         Rectangle2D mapBoundary = map.getDimensions();
 
-        List<Integer> removedVINS = new ArrayList<Integer>(vinToVehicles.size());
+        List<MergeVehicleSimModel> removedVehicles = new ArrayList<MergeVehicleSimModel>(vinToVehicles.size());
         for(int vin : vinToVehicles.keySet()) {
             MergeVehicleSimModel v = vinToVehicles.get(vin);
             if(!v.getShape().intersects(mapBoundary)){
-                removedVINS.add(vin);
+                removedVehicles.add(v);
             }
         }
-        for(int vin : removedVINS) {
-            vinToVehicles.remove(vin);
-            completedVINs.add(vin);
+        for(MergeVehicleSimModel vehicle : removedVehicles) {
+            vinToVehicles.remove(vehicle.getVIN());
+            completedVehicles.put(vehicle.getVIN(), vehicle);
             numberOfCompletedVehicles++;
         }
 
-        return completedVINs;
+        return completedVehicles;
     }
 
 }

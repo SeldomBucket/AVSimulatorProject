@@ -125,8 +125,7 @@ public class MergeMapUtil {
             List<MergeSpawnSpec> result = new LinkedList<MergeSpawnSpec>();
 
             double initTime = spawnPoint.getCurrentTime();
-            for(double time = initTime; time < initTime + timestep;
-                time += SimConfig.SPAWN_TIME_STEP) {
+            for(double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < prob) {
                     int i = Util.randomIndex(proportion);
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);

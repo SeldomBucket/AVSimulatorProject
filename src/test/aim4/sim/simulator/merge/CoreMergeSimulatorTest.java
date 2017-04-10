@@ -147,8 +147,8 @@ public class CoreMergeSimulatorTest {
 
         assertEquals(sim.getSimulationTime(), timeStep, 0);
         assertEquals(sim.getNumCompletedVehicles(), 1); //Vehicle 2 completes
-        assertEquals(result.getCompletedVINs().size(), 1);
-        assertEquals(result.getCompletedVINs().get(0), Integer.valueOf(mockVehicle2.getVIN()));
+        assertEquals(result.getCompletedVehicles().keySet().size(), 1);
+        assertTrue(result.getCompletedVehicles().keySet().contains(mockVehicle2.getVIN()));
         verify(mockSpawnHelper, times(1)).spawnVehicles(timeStep);
         verify(mockSensorInputHelper, times(1)).provideSensorInput();
         verify(mockDriver1, times(1)).act();

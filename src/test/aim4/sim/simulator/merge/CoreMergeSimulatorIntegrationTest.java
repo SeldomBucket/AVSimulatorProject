@@ -91,7 +91,7 @@ public class CoreMergeSimulatorIntegrationTest {
         }
 
         assertNotNull(result);
-        assertTrue(result.getCompletedVINs().contains(vin));
+        assertTrue(result.getCompletedVehicles().keySet().contains(vin));
         assertEquals(sim.getNumCompletedVehicles(), 1);
         assertEquals(sim.getVinToVehicles().size(), 0);
         assertEquals(map.getExitDCLine().getTimes(vin).size(), 1);
