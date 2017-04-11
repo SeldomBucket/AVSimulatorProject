@@ -4,6 +4,7 @@ import aim4.driver.Coordinator;
 import aim4.driver.merge.MergeAutoDriver;
 import aim4.driver.merge.navigator.MergeAutoNavigator;
 import aim4.driver.merge.pilot.MergeAutoPilot;
+import aim4.map.connections.MergeConnection;
 import aim4.map.merge.MergeMap;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
 
@@ -29,9 +30,10 @@ public class MergeAutoCoordinator implements Coordinator {
                 }
             };
 
-    public enum State {
+    public enum MergeDrivingState {
         PLANNING,
         DEFAULT_DRIVING_BEHAVIOUR,
+        TRAVERSING_MERGE,
         TERMINAL_STATE
     }
 
@@ -43,10 +45,10 @@ public class MergeAutoCoordinator implements Coordinator {
     private MergeAutoPilot pilot;
     private MergeMap map;
 
-    //State
-    private State state;
+    //MergeDrivingState
+    private MergeDrivingState state;
     private double lastStateChangeTime = 0.0;
-    private EnumMap<State, StateHandler> stateHandlers;
+    private EnumMap<MergeDrivingState, StateHandler> stateHandlers;
 
     //CONSTRUCTOR//
     public MergeAutoCoordinator(MergeAutoVehicleDriverModel vehicle, MergeAutoDriver driver, MergeMap map) {
@@ -57,25 +59,26 @@ public class MergeAutoCoordinator implements Coordinator {
 
         initStateHandlers();
 
-        setState(State.PLANNING);
+        setState(MergeDrivingState.PLANNING);
     }
 
     //STATE CONTROLLERS//
-    public State getState() {
+    public MergeDrivingState getState() {
         return state;
     }
 
-    private void setState(State state) {
+    private void setState(MergeDrivingState state) {
         this.state = state;
         lastStateChangeTime = vehicle.gaugeTime();
     }
 
     private void initStateHandlers() {
-        stateHandlers = new EnumMap<State, StateHandler>(State.class);
+        stateHandlers = new EnumMap<MergeDrivingState, StateHandler>(MergeDrivingState.class);
 
-        stateHandlers.put(State.PLANNING, new PlanningStateHandler());
-        stateHandlers.put(State.DEFAULT_DRIVING_BEHAVIOUR, new DefaultDrivingBehaviourHandler());
-        stateHandlers.put(State.TERMINAL_STATE, terminalStateHandler);
+        stateHandlers.put(MergeDrivingState.PLANNING, new PlanningStateHandler());
+        stateHandlers.put(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR, new DefaultDrivingBehaviourHandler());
+        stateHandlers.put(MergeDrivingState.TRAVERSING_MERGE, new TraversingMergeStateHandler());
+        stateHandlers.put(MergeDrivingState.TERMINAL_STATE, terminalStateHandler);
     }
 
     private void callStateHandlers() {
@@ -93,7 +96,11 @@ public class MergeAutoCoordinator implements Coordinator {
     private class PlanningStateHandler implements StateHandler {
         @Override
         public boolean perform() {
-            setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+            if(driver.inMerge() != null) {
+                setState(MergeDrivingState.TRAVERSING_MERGE);
+            } else {
+                setState(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+            }
             return true;
         }
     }
@@ -103,7 +110,23 @@ public class MergeAutoCoordinator implements Coordinator {
         public boolean perform() {
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
-            setState(State.PLANNING);
+            setState(MergeDrivingState.PLANNING);
+            return false;
+        }
+    }
+
+    private class TraversingMergeStateHandler implements StateHandler {
+        @Override
+        public boolean perform() {
+            MergeConnection mergeConnection = driver.inMerge();
+            if(mergeConnection == null){
+                //Vehicle cleared connection. Return to normal driving
+                setState(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+            } else {
+                pilot.steerThroughMergeConnection(mergeConnection);
+            }
+            pilot.followCurrentLane();
+            pilot.simpleThrottleAction();
             return false;
         }
     }
@@ -117,6 +140,6 @@ public class MergeAutoCoordinator implements Coordinator {
     //GETTERS
     @Override
     public boolean isTerminated() {
-        return state == State.TERMINAL_STATE;
+        return state == MergeDrivingState.TERMINAL_STATE;
     }
 }

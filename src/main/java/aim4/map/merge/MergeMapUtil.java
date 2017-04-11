@@ -35,11 +35,29 @@ public class MergeMapUtil {
         }
     }
 
+    public static void setSingleSpawnPointS2STargetOnly(S2SMergeMap map, VehicleSpec spec) {
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new SingleSpawnSpecGenerator(spec));
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
+    public static void setSingleSpawnPointS2SMergeOnly(S2SMergeMap map, VehicleSpec spec) {
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new SingleSpawnSpecGenerator(spec));
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
     public static void setUniformSpawnSpecGenerator(MergeMap map, double trafficLevel) {
         for(MergeSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new UniformSpawnSpecGenerator(trafficLevel)
             );
+        }
+    }
+
+    public static class NoSpawnSpecGenerator implements MergeSpawnSpecGenerator {
+
+        @Override
+        public List<MergeSpawnSpec> act(MergeSpawnPoint spawnPoint, double timestep) {
+            return new ArrayList<MergeSpawnSpec>();
         }
     }
 
