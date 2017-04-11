@@ -41,69 +41,9 @@ public class FindBugTest {
         this.simThread = new TestSimThread(sim);
     }
 
-    @Test
-    public void testBothVehiclesPark() throws Exception {
 
-        // Run the simulation until there are 2 vehicles parked.
-        try {
-            simThread.start();
-            while (sim.getParkedVehicles().size() != 2) {
-                simThread.run();
-            }
-        } catch(RuntimeException e) {
-            throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
-        }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
 
-        // There should be 2 vehicles registered with the status monitor.
-        assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 2);
-
-        // There should be 2 different vehicles registered as parked with the map.
-        assertTrue(sim.getParkedVehicles().get(0) != sim.getParkedVehicles().get(1));
-
-        // The vehicles should not be parked in the same place.
-        Point2D p1 = sim.getParkedVehicles().get(0).getPosition();
-        Point2D p2 = sim.getParkedVehicles().get(1).getPosition();
-        assert(p1 != p2);
-
-        // Find which car is parked at the front to ensure cars not touching
-        CPMBasicAutoVehicle firstParkedCar, secondParkedCar;
-        if (p1.getX() < p2.getX()) {
-            secondParkedCar = sim.getParkedVehicles().get(0);
-            firstParkedCar = sim.getParkedVehicles().get(1);
-        } else {
-            secondParkedCar = sim.getParkedVehicles().get(1);
-            firstParkedCar = sim.getParkedVehicles().get(0);
-        }
-        Point2D pointAtBack = firstParkedCar.getPointAtRear();
-        Point2D pointAtFront = secondParkedCar.getPointAtMiddleFront(0.001);
-        assertTrue(pointAtBack.getX() - pointAtFront.getX() > 0 );
-    }
-
-    @Test
-    public void testVehicleRelocates() throws Exception {
-
-        // Run the simulation until 1 vehicle has completed.
-        try {
-            simThread.start();
-            while (sim.getNumCompletedVehicles() != 1) {
-                simThread.run();
-            }
-            simThread.pause();
-        } catch(RuntimeException e) {
-            throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
-        }
-
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
-
-        // There should be 1 vehicle registered with the status monitor.
-        assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 1);
-
-        // TODO CPM Complete this test when communication added.
-        CPMExitDataCollectionLine exitDataCollectionLine = ((CPMCarParkWithStatus)map).getExitDataCollectionLine();
-
-    }
 
     @After
     public void tearDown() throws Exception {

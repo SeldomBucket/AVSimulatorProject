@@ -1,6 +1,5 @@
 package aim4.cpm.vehicle;
 
-import aim4.map.cpm.CPMExitDataCollectionLine;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
