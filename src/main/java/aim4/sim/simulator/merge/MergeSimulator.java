@@ -10,4 +10,5 @@ import java.util.Map;
  */
 public interface MergeSimulator extends Simulator {
     public Map<Integer, MergeVehicleSimModel> getVinToVehicles();
+    public double calculateDelay(MergeVehicleSimModel vehicle);
 }

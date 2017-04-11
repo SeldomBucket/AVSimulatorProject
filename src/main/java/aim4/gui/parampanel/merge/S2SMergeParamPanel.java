@@ -2,9 +2,9 @@ package aim4.gui.parampanel.merge;
 
 import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.merge.MergeSimSetup;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.setup.merge.S2SSimSetup;
 import aim4.sim.simulator.merge.MergingProtocol;
-import javafx.scene.control.Labeled;
 
 import javax.swing.*;
 import java.awt.*;
@@ -123,10 +123,18 @@ public class S2SMergeParamPanel extends MergeParamPanel {
         );
     }
 
+    public ProtocolType getProtocolType() {
+        switch(protocolComboBox.getSelectedIndex()){
+            case 0: return ProtocolType.AIM;
+            default: throw new RuntimeException("Protocol type combo box went out of range");
+
+        }
+    }
+
     private MergingProtocol getSelectedProtocol(){
         switch (protocolComboBox.getSelectedIndex()) {
             case 0: return MergingProtocol.AIM;
-            default: throw new RuntimeException("Protocol Combo Box went out of range");
+            default: throw new RuntimeException("Protocol type combo box went out of range");
         }
     }
 }

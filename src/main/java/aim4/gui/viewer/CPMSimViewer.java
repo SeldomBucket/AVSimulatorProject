@@ -2,7 +2,7 @@ package aim4.gui.viewer;
 
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
-import aim4.gui.screen.CPMStatScreen;
+import aim4.gui.screen.cpm.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
@@ -34,7 +34,7 @@ public class CPMSimViewer extends SimViewer {
     }
 
     @Override
-    protected void createStatScreen() {
+    protected void createStatScreen(Viewer viewer) {
         this.statScreen = new CPMStatScreen();
     }
 

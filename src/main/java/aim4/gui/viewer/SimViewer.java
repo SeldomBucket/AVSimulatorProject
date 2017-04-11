@@ -4,7 +4,7 @@ import aim4.config.Constants;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.gui.*;
-import aim4.gui.screen.Canvas;
+import aim4.gui.screen.aim.Canvas;
 import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.screen.SimScreen;
 import aim4.gui.screen.StatScreen;
@@ -152,7 +152,7 @@ public abstract class SimViewer extends JPanel implements
             createCanvas(viewer);
             simScreen = this.canvas;
         } else {
-            createStatScreen();
+            createStatScreen(viewer);
             simScreen = this.statScreen;
         }
         setComponentsLayout();
@@ -477,7 +477,7 @@ public abstract class SimViewer extends JPanel implements
         throw new NoCanvasException();
     }
 
-    protected void createStatScreen() {
+    protected void createStatScreen(Viewer viewer) {
         throw new NoStatScreenException();
     }
 
@@ -572,6 +572,13 @@ public abstract class SimViewer extends JPanel implements
      */
     public void setImageCounter(int imageCounter) {
         this.imageCounter = imageCounter;
+    }
+
+    // ///////////////////////////////
+    // PROCTECTED ACCESSORS
+    // ///////////////////////////////
+    protected SimSetupPanel getSimSetupPanel() {
+        return this.simSetupPanel;
     }
 
     // ///////////////////////////////
@@ -775,9 +782,7 @@ public abstract class SimViewer extends JPanel implements
                 }
             }
         }
-        if (canvas != null){
-            canvas.requestFocusInWindow();
-        }
+        requestScreenFocusInWindow();
     }
 
     /**

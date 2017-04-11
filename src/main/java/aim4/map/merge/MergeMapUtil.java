@@ -35,11 +35,29 @@ public class MergeMapUtil {
         }
     }
 
+    public static void setSingleSpawnPointS2STargetOnly(S2SMergeMap map, VehicleSpec spec) {
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new SingleSpawnSpecGenerator(spec));
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
+    public static void setSingleSpawnPointS2SMergeOnly(S2SMergeMap map, VehicleSpec spec) {
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new SingleSpawnSpecGenerator(spec));
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
     public static void setUniformSpawnSpecGenerator(MergeMap map, double trafficLevel) {
         for(MergeSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new UniformSpawnSpecGenerator(trafficLevel)
             );
+        }
+    }
+
+    public static class NoSpawnSpecGenerator implements MergeSpawnSpecGenerator {
+
+        @Override
+        public List<MergeSpawnSpec> act(MergeSpawnPoint spawnPoint, double timestep) {
+            return new ArrayList<MergeSpawnSpec>();
         }
     }
 
@@ -125,8 +143,7 @@ public class MergeMapUtil {
             List<MergeSpawnSpec> result = new LinkedList<MergeSpawnSpec>();
 
             double initTime = spawnPoint.getCurrentTime();
-            for(double time = initTime; time < initTime + timestep;
-                time += SimConfig.SPAWN_TIME_STEP) {
+            for(double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < prob) {
                     int i = Util.randomIndex(proportion);
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);

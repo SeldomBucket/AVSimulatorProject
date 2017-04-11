@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.gui.screen;
+package aim4.gui.screen.aim;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -65,6 +65,7 @@ import javax.swing.SwingUtilities;
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.gui.Viewer;
+import aim4.gui.screen.SimScreen;
 import aim4.gui.viewer.SimViewer;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;

@@ -40,6 +40,8 @@ public class SpawnHelper {
                         MergeVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        if(!canSpawnVehicle(spawnPoint))
+                            break;
                     }
                 }
             }
@@ -76,10 +78,10 @@ public class SpawnHelper {
                 new MergeBasicAutoVehicle(spec,
                         spawnPoint.getPosition(),
                         spawnPoint.getHeading(),
+                        initVelocity,
                         spawnPoint.getSteeringAngle(),
-                        initVelocity,
-                        initVelocity,
                         spawnPoint.getAcceleration(),
+                        lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
 
         MergeAutoDriver driver = new MergeAutoDriver(vehicle, map);
