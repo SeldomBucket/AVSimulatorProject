@@ -44,7 +44,12 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                     CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
                 }
                 break;
-            case RANDOM: CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+            case RANDOM:
+                if (!useCSVFile.getKey()){
+                    CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
                 break;
         }
 
