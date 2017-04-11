@@ -11,7 +11,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-import util.TestSimThread;
+import util.sim.TestSimThread;
 
 import java.io.File;
 import java.io.FileWriter;

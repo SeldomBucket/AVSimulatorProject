@@ -6,7 +6,7 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import util.TestSimThread;
+import util.sim.TestSimThread;
 
 import static org.junit.Assert.assertTrue;
 

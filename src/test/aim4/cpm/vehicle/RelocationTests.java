@@ -7,7 +7,7 @@ import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import util.TestSimThread;
+import util.sim.TestSimThread;
 
 import java.awt.geom.Point2D;
 

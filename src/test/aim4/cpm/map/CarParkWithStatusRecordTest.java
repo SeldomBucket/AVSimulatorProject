@@ -5,7 +5,7 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import org.junit.Before;
 import org.junit.Test;
-import util.TestSimThread;
+import util.sim.TestSimThread;
 
 import static org.junit.Assert.assertTrue;
 
