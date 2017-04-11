@@ -3,7 +3,7 @@ package aim4.sim.setup.cpm;
 import aim4.sim.setup.SimSetup;
 
 /**
- * Created by Becci on 08-Feb-17.
+ * Interface for any CPMSimSetup classes.
  */
 public interface CPMSimSetup extends SimSetup {
 }

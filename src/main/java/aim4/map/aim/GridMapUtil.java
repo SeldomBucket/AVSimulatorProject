@@ -28,7 +28,7 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.map;
+package aim4.map.aim;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -51,6 +51,8 @@ import aim4.im.v2i.RequestHandler.RequestHandler;
 import aim4.im.v2i.batch.RoadBasedReordering;
 import aim4.im.v2i.policy.BasePolicy;
 import aim4.im.v2i.reservation.ReservationGridManager;
+import aim4.map.BasicMap;
+import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.*;
 import aim4.map.aim.BasicIntersectionMap;

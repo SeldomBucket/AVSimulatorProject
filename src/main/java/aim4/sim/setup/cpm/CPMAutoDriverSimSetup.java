@@ -2,7 +2,7 @@ package aim4.sim.setup.cpm;
 
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
-import aim4.map.cpm.testmaps.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
 
@@ -26,52 +26,33 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        /*CPMMap layout = new CPMMapWithCornersOneLane(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
 
-        /*CPMMap layout = new CPMMapWithSimpleIntersection(4, // laneWidth
-        10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
+        CPMMap layout = new CPMCarParkWithStatus(laneWidth, // laneWidth
+                speedLimit,
+                currentTime,
+                numberOfParkingLanes,
+                parkingLength,
+                accessLength);
 
-        /*CPMMap layout = new CPMMapWithTJunction(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
+        if (spawnSpecType == CPMMapUtil.SpawnSpecType.SINGLE)
+        // Set up the correct spawn point
+        switch(spawnSpecType) {
+            case SINGLE:
+                if (!useCSVFile.getKey()){
+                    CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
+                break;
+            case RANDOM:
+                if (!useCSVFile.getKey()){
+                    CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
+                break;
+        }
 
-        /*CPMMap layout = new CPMMapCarPark(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                2, // numberOfParkingLanes
-                20, // parkingLength
-                5); // access length*/
-
-        /*CPMMap layout = new CPMMapIntersection3Roads(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        /*CPMMap layout = new CPMMapJunction3Roads(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                500, //width
-                500); //height*/
-
-        CPMMap layout = new CPMCarParkWithStatus(4, // laneWidth
-                10.0, // speedLimit
-                currentTime, // initTime
-                2, // numberOfParkingLanes
-                20, // parkingLength
-                5); // access length
-
-        // set up the spawn points: create a new method for this.
-        CPMMapUtil.setUpOneVehicleSpawnPoint(layout);
         return new CPMAutoDriverSimulator(layout);
     }
 }

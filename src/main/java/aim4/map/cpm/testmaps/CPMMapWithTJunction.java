@@ -3,6 +3,8 @@ package aim4.map.cpm.testmaps;
 import aim4.map.*;
 import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMBasicMap;
+import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.StatusMonitor;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -87,5 +89,15 @@ public class CPMMapWithTJunction extends CPMBasicMap {
         junctions.add(junction);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public StatusMonitor getStatusMonitor() {
+        return null;
+    }
+
+    @Override
+    public ParkingArea getParkingArea() {
+        return null;
     }
 }

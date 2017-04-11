@@ -2,26 +2,25 @@ package aim4.driver.cpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
-import aim4.driver.Coordinator;
-import aim4.map.BasicMap;
 import aim4.map.connections.Corner;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
+import aim4.map.cpm.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import aim4.driver.cpm.CPMCoordinator.*;
 
 import java.awt.geom.Area;
 
 /**
  * An agent that drives a {@link aim4.vehicle.cpm.CPMBasicAutoVehicle} while
  * coordinating with other Vehicles.  Such an agent consists
- * of two sub-agents, a Coordinator and a Pilot. The two
- * agents communicate by setting state in this class.
+ * of two sub-agents, a Coordinator and a Pilot.
  */
-public class CPMBasicV2VDriver extends BasicDriver
+public class CPMV2VDriver extends BasicDriver
                             implements AutoDriver {
 
     /////////////////////////////////
@@ -32,19 +31,19 @@ public class CPMBasicV2VDriver extends BasicDriver
     private CPMBasicAutoVehicle vehicle;
 
     /** The sub-agent that controls coordination */
-    private Coordinator coordinator;
+    private CPMCoordinator coordinator;
 
     /** The map */
-    private BasicMap map;
+    private CPMMap map;
 
     /** Where this DriverAgent is coming from. */
-    private SpawnPoint spawnPoint;
+    private CPMSpawnPoint spawnPoint;
 
     /////////////////////////////////
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public CPMBasicV2VDriver(CPMBasicAutoVehicle vehicle, BasicMap map) {
+    public CPMV2VDriver(CPMBasicAutoVehicle vehicle, CPMMap map) {
         this.vehicle = vehicle;
         this.map = map;
         coordinator = null;
@@ -83,10 +82,11 @@ public class CPMBasicV2VDriver extends BasicDriver
     /////////////////////////////////
 
     /**
-     * {@inheritDoc} -- find out where this came from
+     * Set where this driver agent is coming from.
+     *
+     * @param spawnPoint the spawn point that generated the driver
      */
-    //@Override
-    public void setSpawnPoint(SpawnPoint spawnPoint) {
+    public void setSpawnPoint(CPMSpawnPoint spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 
@@ -111,7 +111,7 @@ public class CPMBasicV2VDriver extends BasicDriver
         super.act();
         if (coordinator == null){
             // Create a new coordinator if the vehicle doesn't already have one.
-            coordinator = new CPMBasicCoordinator(vehicle, vehicle.getDriver());
+            coordinator = new CPMCoordinator(vehicle, (CPMV2VDriver)vehicle.getDriver());
         }
 
         // the newly created coordinator can be called immediately.
@@ -128,11 +128,10 @@ public class CPMBasicV2VDriver extends BasicDriver
      * or null if not in a corner.
      */
     public Corner inCorner() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getCorners() == null){
+        if (map.getCorners() == null){
             return null;
         }
-        for (Corner corner : ((CPMMap) map).getCorners()){
+        for (Corner corner : map.getCorners()){
             if (intersectsArea(vehicle, corner.getArea())){
                 return corner;
             }
@@ -148,11 +147,10 @@ public class CPMBasicV2VDriver extends BasicDriver
      * or null if not in a junction.
      */
     public Junction inJunction() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getJunctions() == null){
+        if (map.getJunctions() == null){
             return null;
         }
-        for (Junction junction : ((CPMMap) map).getJunctions()){
+        for (Junction junction : map.getJunctions()){
             if (intersectsArea(vehicle, junction.getArea())){
                 return junction;
             }
@@ -168,11 +166,10 @@ public class CPMBasicV2VDriver extends BasicDriver
      * or null if not in an intersection.
      */
     public SimpleIntersection inIntersection() {
-        assert map instanceof CPMMap;
-        if (((CPMMap) map).getIntersections() == null){
+        if (map.getIntersections() == null){
             return null;
         }
-        for (SimpleIntersection intersection : ((CPMMap) map).getIntersections()){
+        for (SimpleIntersection intersection : map.getIntersections()){
             if (intersectsArea(vehicle, intersection.getArea())){
                 return intersection;
             }
@@ -195,5 +192,9 @@ public class CPMBasicV2VDriver extends BasicDriver
     @Override
     public CPMBasicAutoVehicle getVehicle() {
         return vehicle;
+    }
+
+    public ParkingStatus getParkingStatus() {
+        return coordinator.getParkingStatus();
     }
 }

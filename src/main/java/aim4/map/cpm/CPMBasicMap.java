@@ -11,6 +11,7 @@ import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
+import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -31,17 +32,12 @@ public abstract class CPMBasicMap implements CPMMap{
 
     /** The length of the no vehicle zone */
     protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
-    // private static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
     /** The length of the map border, used for
      * space between map edge and elements, distance
      * of DCL from edge etc.
      * */
     protected static final double BORDER = 28.0;
-
-    /** The position of the data collection line on a lane */
-    protected static final double DATA_COLLECTION_LINE_POSITION =
-            NO_VEHICLE_ZONE_LENGTH;
 
     // general
     /**The initial time*/
@@ -56,6 +52,8 @@ public abstract class CPMBasicMap implements CPMMap{
     protected Rectangle2D dimensions;
     /** The data collection lines */
     protected List<DataCollectionLine> dataCollectionLines;
+    /** The vehicles currently on this map. */
+    private List<CPMBasicAutoVehicle> vehicles = new ArrayList<CPMBasicAutoVehicle>();
 
     // spawn points
     /** The spawn points */
@@ -90,11 +88,12 @@ public abstract class CPMBasicMap implements CPMMap{
     /**The set of intersections */
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
-    public CPMBasicMap(int laneWidth, double speedLimit,
+    public CPMBasicMap(double laneWidth, double speedLimit,
                        double initTime) {
 
         this.laneWidth = laneWidth;
         this.halfLaneWidth = laneWidth/2;
+        assert speedLimit < 30;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
     }
@@ -205,6 +204,10 @@ public abstract class CPMBasicMap implements CPMMap{
         intersections.add(intersection);
     }
 
+    public void addVehicleToMap(CPMBasicAutoVehicle vehicle) {
+        vehicles.add(vehicle);
+    }
+
     public List<Road> getRoads() {
         return roads;
     }
@@ -264,6 +267,12 @@ public abstract class CPMBasicMap implements CPMMap{
 
     public List<SimpleIntersection> getIntersections() {
         return intersections;
+    }
+
+    public List<CPMBasicAutoVehicle> getVehicles() { return vehicles; }
+
+    public void removeCompletedVehicle(CPMBasicAutoVehicle vehicle) {
+        vehicles.remove(vehicle);
     }
 
     public void printDataCollectionLinesData(String outFileName) {

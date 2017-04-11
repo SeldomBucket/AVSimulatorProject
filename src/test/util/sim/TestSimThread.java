@@ -4,16 +4,21 @@ import aim4.config.SimConfig;
 import aim4.sim.Simulator;
 
 /**
- * Created by Callum on 16/03/2017.
+ * Create a thread to run simulations for testing.
  */
 public class TestSimThread implements Runnable {
 
     private volatile Thread blinker;
     private static final long timeDelay = (long) (1000.0 / 30.0); //Assuming 30fps
     private Simulator sim;
+    /**
+     * Whether the simulation is stopped
+     */
+    private boolean isStopped;
 
     public TestSimThread(Simulator sim) {
         this.sim = sim;
+        this.isStopped = false;
     }
 
     public synchronized void start() {
@@ -21,9 +26,17 @@ public class TestSimThread implements Runnable {
         blinker.start();
     }
 
+    public void pause() {
+        // must have no synchronized keyword in order to avoid
+        // funny behavior when the user clicks the "Pause" button.
+        assert !isStopped;
+        isStopped = true;
+    }
+
     public synchronized void terminate() {
-        assert blinker != null;
-        blinker = null;
+        if (blinker != null) {
+            blinker = null;
+        }
     }
 
     @Override
@@ -34,7 +47,7 @@ public class TestSimThread implements Runnable {
             runSimulationStep();
             Thread.yield();
         }
-        System.err.printf("Simulation was terminated");
+        // System.err.printf("Simulation was terminated");
     }
 
     private Simulator.SimStepResult runSimulationStep() {
