@@ -1,9 +1,11 @@
 package aim4.gui.parampanel.cpm;
 
+import aim4.gui.component.CPMUseCSVFileRadioButtons;
 import aim4.gui.component.LabeledSlider;
 import aim4.gui.component.CPMSpawnSpecRadioButtons;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import javafx.util.Pair;
 
 import javax.swing.*;
 
@@ -20,6 +22,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider accessLengthSlider;
     LabeledSlider trafficRateSlider;
     CPMSpawnSpecRadioButtons spawnSpecRadioButtons;
+    CPMUseCSVFileRadioButtons useCSVFileRadioButtons;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -84,6 +87,9 @@ public class CPMAutoDriverParamPanel extends JPanel {
         spawnSpecRadioButtons = new CPMSpawnSpecRadioButtons();
         add(spawnSpecRadioButtons);
 
+        useCSVFileRadioButtons = new CPMUseCSVFileRadioButtons();
+        add(useCSVFileRadioButtons);
+
     }
 
 
@@ -113,5 +119,23 @@ public class CPMAutoDriverParamPanel extends JPanel {
 
     public SpawnSpecType getSpawnSpecType() {
         return SpawnSpecType.valueOf(spawnSpecRadioButtons.getSelected().getActionCommand());
+    }
+
+    /**
+     * Get the details for using a CSV file for spawn times and parking times.
+     * @return a pair (boolean, string), where the boolean is true if a CSV file is
+     * to be used, and the string gives the location of the CSV file. If false,
+     * the string is empty.
+     */
+    public Pair<Boolean, String> getUseCSVFileDetails() {
+        String selectedButtonValue = useCSVFileRadioButtons.getSelected().getActionCommand();
+        boolean useCSV = false;
+        String fileLocation = "";
+        if (selectedButtonValue == "TRUE") {
+            useCSV = true;
+            fileLocation = useCSVFileRadioButtons.getFileLocation();
+        }
+        Pair<Boolean, String> useCSVFilePair = new Pair<Boolean, String>(useCSV, fileLocation);
+        return useCSVFilePair;
     }
 }

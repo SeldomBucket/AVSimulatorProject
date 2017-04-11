@@ -193,7 +193,7 @@ public class CPMV2VDriver extends BasicDriver
     public CPMBasicAutoVehicle getVehicle() {
         return vehicle;
     }
-    
+
     public ParkingStatus getParkingStatus() {
         return coordinator.getParkingStatus();
     }

@@ -35,6 +35,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     private List<SensoredLine> sensoredLines;
     /** The exit data collection line. */
     private CPMExitDataCollectionLine exitDataCollectionLine;
+    /** The entry data collection line. */
+    private DataCollectionLine entryDataCollectionLine;
     /** The total area of the car park. */
     private double totalCarParkArea; // in square metres
 
@@ -156,13 +158,13 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         y1 = entranceLane.getStartPoint().getY() + halfLaneWidth;
         x2 = x1;
         y2 = y1 - laneWidth;
-        dataCollectionLines.add(
-                new DataCollectionLine(
-                        "Car Park Entrance",
-                        dataCollectionLines.size(),
-                        new Point2D.Double(x1, y1),
-                        new Point2D.Double(x2, y2),
-                        true));
+        entryDataCollectionLine = new DataCollectionLine(
+                "Car Park Entrance",
+                dataCollectionLines.size(),
+                new Point2D.Double(x1, y1),
+                new Point2D.Double(x2, y2),
+                true);
+        dataCollectionLines.add(entryDataCollectionLine);
 
         x1 = exitLanes.get(0).getEndPoint().getX() + BORDER;
         y1 = exitLanes.get(0).getEndPoint().getY() + halfLaneWidth;
@@ -275,6 +277,8 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     public List<SensoredLine> getSensoredLines() { return sensoredLines; }
 
     public CPMExitDataCollectionLine getExitDataCollectionLine() { return exitDataCollectionLine; }
+
+    public DataCollectionLine getEntryDataCollectionLine() { return entryDataCollectionLine; }
 
     public double getTotalCarParkArea() { return totalCarParkArea; }
 

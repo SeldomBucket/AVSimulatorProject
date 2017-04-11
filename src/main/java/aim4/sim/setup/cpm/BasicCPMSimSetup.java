@@ -2,6 +2,7 @@ package aim4.sim.setup.cpm;
 
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.Simulator;
+import javafx.util.Pair;
 
 /**
  * The basic simulation setup for CPM. Common for all CPM simulation types.
@@ -23,6 +24,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     protected double accessLength;
     /** The type of spawn specification. */
     protected SpawnSpecType spawnSpecType;
+    /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
+    protected Pair<Boolean, String> useCSVFile;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -37,6 +40,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.parkingLength = basicSimSetup.parkingLength;
         this.accessLength = basicSimSetup.accessLength;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
+        this.useCSVFile = basicSimSetup.useCSVFile;
     }
 
     /**
@@ -47,7 +51,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     public BasicCPMSimSetup(double speedLimit, double trafficLevel,
                             double laneWidth, int numberOfParkingLanes,
                             double parkingLength, double accessLength,
-                            SpawnSpecType spawnSpecType) {
+                            SpawnSpecType spawnSpecType, Pair<Boolean, String> useCSVFile) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
@@ -55,6 +59,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
         this.spawnSpecType = spawnSpecType;
+        this.useCSVFile = useCSVFile;
     }
 
     @Override
@@ -111,4 +116,12 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     public SpawnSpecType getSpawnSpecType() { return spawnSpecType; }
 
     public void setSpawnSpecType(SpawnSpecType spawnSpecType) { this.spawnSpecType = spawnSpecType; }
+
+    public Pair<Boolean, String> getUseCSVFile() {
+        return useCSVFile;
+    }
+
+    public void setUseCSVFile(Pair<Boolean, String> useCSVFile) {
+        this.useCSVFile = useCSVFile;
+    }
 }

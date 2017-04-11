@@ -34,9 +34,15 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                 parkingLength,
                 accessLength);
 
+        if (spawnSpecType == CPMMapUtil.SpawnSpecType.SINGLE)
         // Set up the correct spawn point
         switch(spawnSpecType) {
-            case SINGLE: CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+            case SINGLE:
+                if (!useCSVFile.getKey()){
+                    CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
                 break;
             case RANDOM: CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
                 break;

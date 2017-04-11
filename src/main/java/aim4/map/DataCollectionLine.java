@@ -133,7 +133,6 @@ public class DataCollectionLine {
         } else {
           vinToTime.get(vin).add(time);
         }
-        System.out.println("INTERSECT WITH DCL");
         return true;
       } else {
         return false;

@@ -671,4 +671,6 @@ public class CPMAutoDriverSimulator implements Simulator {
     public VehicleSimModel getActiveVehicle(int vin) {
         return null;
     }
+
+    public Map<Integer, CPMBasicAutoVehicle> getVinToVehicles() { return vinToVehicles; }
 }

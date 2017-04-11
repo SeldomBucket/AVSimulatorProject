@@ -86,6 +86,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
             newSimSetup.setParkingLength(autoDriverOnlySetupPanel.getParkingLength());
             newSimSetup.setAccessLength(autoDriverOnlySetupPanel.getAccessLength());
             newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
+            newSimSetup.setUseCSVFile(autoDriverOnlySetupPanel.getUseCSVFileDetails());
             return newSimSetup;
         } else {
             throw new RuntimeException(
