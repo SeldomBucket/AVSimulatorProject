@@ -590,8 +590,9 @@ public class CPMAutoDriverSimulator implements Simulator {
         parkedVehicles.clear();
         List<CPMBasicAutoVehicle> vehicles = map.getVehicles();
         for (CPMBasicAutoVehicle vehicle : vehicles) {
-            // Check if the vehicle is in a parking lane
+            // Check if the vehicle is in a parking lane.
             CPMV2VDriver driver = (CPMV2VDriver) vehicle.getDriver();
+            // Check the vehicle is not moving.
             if (driver.inParkingLane() && vehicle.getVelocity() == 0) {
                 parkedVehicles.add(vehicle);
             }

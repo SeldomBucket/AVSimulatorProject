@@ -84,7 +84,9 @@ public class StatusMonitor {
         // Like letting another car go through the intersection first.*/
 
         // check that the vehicle has not already entered the car park
-        assert(!vehicle.hasEnteredCarPark());
+        if (vehicle.hasEnteredCarPark()) {
+            throw new RuntimeException("The vehicle has already entered, should not be entering again.");
+        }
 
         // Find the lane with the most room available
         Map.Entry<ParkingLane, Double>  parkingLaneEntry = findLeastFullParkingLane();
@@ -158,7 +160,6 @@ public class StatusMonitor {
     private void decreaseCapacity(CPMBasicAutoVehicle vehicle, Map.Entry<ParkingLane, Double>  parkingLaneEntry){
         double spaceTaken = calculateTotalVehicleSpace(vehicle);
         if (!willVehicleFit(parkingLaneEntry, spaceTaken)){
-            // if the vehicle is not registered with the Status Monitor???
             assert vehicle.getDriver() instanceof CPMV2VDriver;
             throw new RuntimeException("There's not enough room in the car " +
                     "park for this vehicle to park! Vehicle is " +

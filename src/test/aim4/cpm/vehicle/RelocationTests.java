@@ -85,10 +85,13 @@ public class RelocationTests {
     @Test
     public void testVehicleRelocates() throws Exception {
 
-        // Run the simulation until 1 vehicle has completed.
+        // Run the simulation until 1 vehicle has completed and the other has relocated.
         try {
             simThread.start();
             while (sim.getNumCompletedVehicles() != 1) {
+                simThread.run();
+            }
+            while (sim.getParkedVehicles().size() != 1) {
                 simThread.run();
             }
             simThread.pause();
@@ -100,10 +103,6 @@ public class RelocationTests {
 
         // There should be 1 vehicle registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 1);
-
-        // TODO CPM Complete this test when communication added.
-        CPMExitDataCollectionLine exitDataCollectionLine = ((CPMCarParkWithStatus)map).getExitDataCollectionLine();
-        // TODO CPM Need to collect the VINs of completed vehicles to be able to test them
 
     }
 
