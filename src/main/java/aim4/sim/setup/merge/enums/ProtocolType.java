@@ -6,5 +6,7 @@ package aim4.sim.setup.merge.enums;
 public enum ProtocolType {
     AIM,
     DECENTRALISED,
+    TEST_MERGE,
+    TEST_TARGET,
     NONE
 }

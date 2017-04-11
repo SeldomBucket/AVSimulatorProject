@@ -184,7 +184,10 @@ public class CoreMergeSimulatorIntegrationTest {
             currentYPos = vehicle.getPosition().getY();
             currentHeading = vehicle.getHeading();
 
-            /*assertTrue(currentXPos > lastXPos);
+            assertTrue(currentXPos > lastXPos);
+            /*
+            TODO: Currently disabled tests. The vehicle still tends towards the centre of the target lane but not cleanly.
+
             if(currentYPos != targetYPos) {
                 assertTrue(currentYPos < lastYPos);
             }
@@ -193,7 +196,17 @@ public class CoreMergeSimulatorIntegrationTest {
             if(currentHeading != targetHeading) {
                 assertTrue(currentHeading > lastHeading);
             }
-            assertTrue(currentHeading == targetHeading || currentHeading < 2*Math.PI);*/
+            assertTrue(currentHeading == targetHeading || currentHeading < 2*Math.PI);
+            */
+        }
+
+        //Leaving merge zone
+        while(vehicle.getShape().intersects(map.getDimensions())){
+            double lastXPos = vehicle.getPosition().getX();
+            sim.step(TIME_STEP);
+            stepsTaken++;
+            currentXPos = vehicle.getPosition().getX();
+            assertTrue(lastXPos > currentXPos);
         }
     }
 

@@ -4,8 +4,11 @@ import aim4.driver.Coordinator;
 import aim4.driver.merge.MergeAutoDriver;
 import aim4.driver.merge.navigator.MergeAutoNavigator;
 import aim4.driver.merge.pilot.MergeAutoPilot;
+import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
+import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
+import aim4.map.merge.RoadNames;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
 
 import java.util.EnumMap;
@@ -54,6 +57,7 @@ public class MergeAutoCoordinator implements Coordinator {
     public MergeAutoCoordinator(MergeAutoVehicleDriverModel vehicle, MergeAutoDriver driver, MergeMap map) {
         this.vehicle = vehicle;
         this.driver = driver;
+        this.map = map;
         this.pilot = new MergeAutoPilot(vehicle, driver);
         this.navigator = new MergeAutoNavigator(vehicle.getSpec(), map);
 
@@ -122,10 +126,16 @@ public class MergeAutoCoordinator implements Coordinator {
             if(mergeConnection == null){
                 //Vehicle cleared connection. Return to normal driving
                 setState(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                Lane target = null;
+                for(Road r : map.getRoads())
+                    if(r.getName().equals(RoadNames.TARGET_ROAD.toString()))
+                        target = r.getOnlyLane();
+                assert target != null;
+                driver.setCurrentLane(target);
+                pilot.followCurrentLane();
             } else {
                 pilot.steerThroughMergeConnection(mergeConnection);
             }
-            pilot.followCurrentLane();
             pilot.simpleThrottleAction();
             return false;
         }
