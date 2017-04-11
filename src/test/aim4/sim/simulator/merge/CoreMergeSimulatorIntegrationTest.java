@@ -23,7 +23,7 @@ public class CoreMergeSimulatorIntegrationTest {
     private final static double TARGET_LEAD_IN_DISTANCE = 150.0;
     private final static double TARGET_LEAD_OUT_DISTANCE = 150.0;
     private final static double MERGE_LEAD_IN_DISTANCE = 150.0;
-    private final static double MERGE_ANGLE = 45.0;
+    private final static double MERGE_ANGLE = 90.0;
     private final static double MERGE_ANGLE_RAD = Math.toRadians(MERGE_ANGLE);
 
     @Test

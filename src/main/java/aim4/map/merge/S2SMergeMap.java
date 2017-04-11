@@ -210,6 +210,7 @@ public class S2SMergeMap extends MergeMap {
         Point2D exitPoint = new Point2D.Double(targetLaneEndX - targetLeadOutDistance, targetLaneCentreY);
         S2SMergeConnection mergeConnection =
                 new S2SMergeConnection(getRoads(), targetEntryPoint, mergeEntryPoint, exitPoint);
+
         addMergeConnection(mergeConnection);
     }
 
