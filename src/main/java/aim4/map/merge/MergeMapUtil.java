@@ -53,6 +53,16 @@ public class MergeMapUtil {
         }
     }
 
+    public static void setUniformSpawnSpecGeneratorMergeLaneOnly(S2SMergeMap map, double trafficLevel) {
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new UniformSpawnSpecGenerator(trafficLevel));
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
+    public static void setUniformSpawnSpecGeneratorTargetLaneOnly(S2SMergeMap map, double trafficLevel) {
+        map.getTargetSpawnPoint().setVehicleSpecChooser(new UniformSpawnSpecGenerator(trafficLevel));
+        map.getMergeSpawnPoint().setVehicleSpecChooser(new NoSpawnSpecGenerator());
+    }
+
     public static class NoSpawnSpecGenerator implements MergeSpawnSpecGenerator {
 
         @Override

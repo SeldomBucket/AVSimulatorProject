@@ -85,7 +85,7 @@ public class MergeSimSetupPanel extends SimSetupPanel implements ItemListener {
 
     public ProtocolType getProtocolType() {
         switch(mergeComboBox.getSelectedIndex()){
-            case 0: s2sPanel.getProtocolType();
+            case 0: return s2sPanel.getProtocolType();
             case 1: return ProtocolType.NONE;
             default: throw new RuntimeException("Merge type combo box went out of range");
         }
