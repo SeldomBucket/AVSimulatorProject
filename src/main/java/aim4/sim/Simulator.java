@@ -30,13 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.sim;
 
-import java.util.Set;
-
 import aim4.map.BasicMap;
-import aim4.map.aim.BasicIntersectionMap;
 import aim4.vehicle.VehicleSimModel;
-import aim4.vehicle.aim.AIMVehicleSimModel;
-import aim4.vehicle.aim.ProxyVehicleSimModel;
 
 /**
  * An interface for simulators.

@@ -12,7 +12,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class CornerTest {
+/**
+ * TEST SUITE PURPOSE: Check that when 2 roads are given, a corner with the correct attributes is created.
+ */
+public class CornerInitialisationTest {
     CPMMapWithCornersOneLane map = new CPMMapWithCornersOneLane(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
@@ -162,10 +165,5 @@ public class CornerTest {
         double actualExitHeading = testCorner.getExitHeading(exitLane);
 
         assertEquals(expectedExitHeading, actualExitHeading, 0.01);
-    }
-
-    @Test
-    public void testCalcTurnDirection() throws Exception {
-
     }
 }

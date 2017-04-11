@@ -1,25 +1,22 @@
 package aim4.driver.cpm;
 
-import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.BasicPilot;
 import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
-import aim4.map.connections.Junction;
-import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import aim4.driver.cpm.CPMCoordinator.*;
 
-import java.util.Random;
 
 /**
  * An agent that pilots an AutoVehicleDriverModel autonomously. This agent
  * attempts to emulate the behavior of a real-world autonomous driver agent in
  * terms of physically controlling the Vehicle.
  */
-public class CPMV2VPilot extends BasicPilot{
+public class CPMPilot extends BasicPilot{
 
     // ///////////////////////////////
     // CONSTANTS
@@ -43,7 +40,9 @@ public class CPMV2VPilot extends BasicPilot{
 
     private CPMBasicAutoVehicle vehicle;
 
-    private AutoDriver driver;
+    private CPMV2VDriver driver;
+
+    private CPMNavigator navigator;
 
     private Lane connectionDepartureLane;
 
@@ -57,9 +56,10 @@ public class CPMV2VPilot extends BasicPilot{
      * @param vehicle      the vehicle to control
      * @param driver       the driver
      */
-    public CPMV2VPilot(CPMBasicAutoVehicle vehicle, AutoDriver driver) {
+    public CPMPilot(CPMBasicAutoVehicle vehicle, CPMV2VDriver driver, CPMNavigator navigator) {
         this.vehicle = vehicle;
         this.driver = driver;
+        this.navigator = navigator;
         this.connectionDepartureLane = null;
     }
 
@@ -105,48 +105,39 @@ public class CPMV2VPilot extends BasicPilot{
     }
 
     /**
-     * If the end of the parking section is close, we need to slow to a stop.
+     * If the end of the parking section is close, we need to slow to a stop
+     * If we are PARKING.
      * Here, we treat the parking end point like a vehicle so use following distance.
      */
-    public void dontPassParkingEndPoint(){
-        double stoppingDistance =
-                VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
-                    vehicle.getSpec().getMaxDeceleration());
+    public void dontPassParkingEndPoint(ParkingStatus currentParkingStatus){
+        if (currentParkingStatus == ParkingStatus.PARKING) {
+            double stoppingDistance =
+                    VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
+                            vehicle.getSpec().getMaxDeceleration());
 
-        double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
+            double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
 
-        if (vehicle.distanceToParkingEndPoint() < followingDistance) {
-            vehicle.slowToStop();
+            if (vehicle.distanceToParkingEndPoint() < followingDistance) {
+                vehicle.slowToStop();
+            }
         }
     }
 
     /**
      * Set the steering action when the vehicle is traversing a corner.
      */
-    public void takeSteeringActionForTraversing(BasicConnection connection) {
-        System.out.println("Steering around a connection! Connection type: " + connection.getClass());
-
+    public void takeSteeringActionForTraversing(BasicConnection connection,
+                                                ParkingStatus parkingStatus) {
         // Check if we already have a departure lane.
         if (connectionDepartureLane == null) {
-            // Determine the departure lane - depends if in a corner, junction or intersection
-            Random random = new Random();
+            // Determine the departure lane
             if (connection instanceof Corner) {
                 // There is only one exit to a Corner
                 connectionDepartureLane = connection.getExitLanes().get(0);
-            } else if (connection instanceof Junction) {
-                // Could have 1 or 2 exits
-                // TODO CPM Lets randomise for now
-                if (connection.getExitLanes().size() == 1) {
-                    connectionDepartureLane = connection.getExitLanes().get(0);
-                } else {
-                    int index = random.nextInt(2);
-                    connectionDepartureLane = connection.getExitLanes().get(index);
-                }
-            } else if (connection instanceof SimpleIntersection) {
-                // There will be 2 exits
-                // TODO CPM Lets randomise for now
-                int index = random.nextInt(2);
-                connectionDepartureLane = connection.getExitLanes().get(index);
+            } else {
+                // There could be a choice of where to go, use the navigator
+                connectionDepartureLane = navigator.navigateConnection(connection,
+                                                                       parkingStatus);
             }
             if (connectionDepartureLane == null) {
                 throw new RuntimeException("Departure lane for the connection has not established!");

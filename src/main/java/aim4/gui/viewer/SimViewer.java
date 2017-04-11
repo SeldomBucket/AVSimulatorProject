@@ -775,7 +775,9 @@ public abstract class SimViewer extends JPanel implements
                 }
             }
         }
-        canvas.requestFocusInWindow();
+        if (canvas != null){
+            canvas.requestFocusInWindow();
+        }
     }
 
     /**

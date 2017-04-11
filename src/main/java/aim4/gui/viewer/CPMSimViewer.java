@@ -4,7 +4,9 @@ import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.screen.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
+import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import javafx.util.Pair;
 
 import java.awt.event.MouseEvent;
 
@@ -19,7 +21,16 @@ public class CPMSimViewer extends SimViewer {
      * @param viewer
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
-        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(5.0, 0.28)), false);
+        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
+                2.25, // speedLimit - approx. 5mph
+                0.28, // trafficLevel
+                2.0, // laneWidth
+                1, // numberOfParkingLanes
+                20.0, // parkingLength
+                1.0, // accessLength,
+                SpawnSpecType.SINGLE, // spawn spec type
+                new Pair<Boolean, String>(false, "")
+        )), false);
     }
 
     @Override

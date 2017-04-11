@@ -1,21 +1,24 @@
 package aim4.cpm.map.parking;
 
 import aim4.map.Road;
-import aim4.map.cpm.CPMMapCarPark;
+import aim4.map.cpm.testmaps.CPMMapWithParkingArea;
 import aim4.map.cpm.parking.ParkingArea;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class ParkingAreaTest {
-    CPMMapCarPark map1Lane = new CPMMapCarPark(4, // laneWidth
+/**
+ * TEST SUITE PURPOSE: Check that when a Parking Area is created, it has all the correct attributes.
+ */
+public class ParkingAreaInitialisationTest {
+    CPMMapWithParkingArea map1Lane = new CPMMapWithParkingArea(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
             1, // numberOfParkingLanes
             10, // parkingLength
             5); // accessLength
 
-    CPMMapCarPark map2Lanes = new CPMMapCarPark(4, // laneWidth
+    CPMMapWithParkingArea map2Lanes = new CPMMapWithParkingArea(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
             2, // numberOfParkingLanes

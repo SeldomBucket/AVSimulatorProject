@@ -15,7 +15,10 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-public class JunctionTest {
+/**
+ * TEST SUITE PURPOSE: Check that when 2 and 3 roads are given, a junction with the correct attributes is created.
+ */
+public class JunctionInitialisationTest {
      CPMMapWithTJunction map2Roads = new CPMMapWithTJunction(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
@@ -89,11 +92,6 @@ public class JunctionTest {
 
         area = testJunction3Roads.getArea();
         assert(area.isRectangular());
-    }
-
-    @Test
-    public void testGetCentroid() throws Exception {
-        // TODO find out what this actually does.
     }
 
     @Test
@@ -280,10 +278,5 @@ public class JunctionTest {
         actualExitHeading = testJunction3Roads.getExitHeading(exitLane);
 
         assertEquals(expectedExitHeading, actualExitHeading, 0.01);
-    }
-
-    @Test
-    public void testCalcTurnDirection() throws Exception {
-        // TODO CPM Write a test for this
     }
 }

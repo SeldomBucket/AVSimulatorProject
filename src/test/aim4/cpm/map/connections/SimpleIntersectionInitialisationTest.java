@@ -14,7 +14,10 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class SimpleIntersectionTest {
+/**
+ * TEST SUITE PURPOSE: Check that when 2 roads are given, an intersection with the correct attributes is created.
+ */
+public class SimpleIntersectionInitialisationTest {
     CPMMapWithSimpleIntersection map2Roads = new CPMMapWithSimpleIntersection(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
@@ -63,11 +66,6 @@ public class SimpleIntersectionTest {
 
         area = testIntersection3Roads.getArea();
         assert(area.isRectangular());
-    }
-
-    @Test
-    public void testGetCentroid() throws Exception {
-        // TODO CPM Write a test for this
     }
 
     @Test
@@ -342,10 +340,5 @@ public class SimpleIntersectionTest {
         actualExitHeading = testIntersection3Roads.getExitHeading(exitLane);
 
         assertEquals(expectedExitHeading, actualExitHeading, 0.01);
-    }
-
-    @Test
-    public void testCalcTurnDirection() throws Exception {
-        // TODO CPM Write test for this
     }
 }
