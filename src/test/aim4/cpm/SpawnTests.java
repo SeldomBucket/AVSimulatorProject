@@ -1,5 +1,6 @@
 package aim4.cpm;
 
+import aim4.config.SimConfig;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
@@ -133,13 +134,14 @@ public class SpawnTests {
                 1, // numberOfParkingLanes
                 5, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
+        Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\2vehicles1spawn.csv");
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
 
         // Run the simulation for a period of time.
         try {
-            int count = 1000000000;
+            int count = 700000000;
             simThread.start();
             while (count != 0) {
                 simThread.run();
