@@ -1,4 +1,4 @@
-package util;
+package util.sim;
 
 import aim4.config.SimConfig;
 import aim4.sim.Simulator;

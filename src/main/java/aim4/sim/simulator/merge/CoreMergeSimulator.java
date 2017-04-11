@@ -27,10 +27,9 @@ import java.util.*;
  * Created by Callum on 08/03/2017.
  */
 public class CoreMergeSimulator implements MergeSimulator {
-
     //NESTED CLASSES//
     public static class CoreMergeSimStepResult implements SimStepResult {
-        List<Integer> completedVINs;
+        private List<Integer> completedVINs;
 
         public CoreMergeSimStepResult(List<Integer> completedVINs) {
             this.completedVINs = completedVINs;
@@ -76,6 +75,7 @@ public class CoreMergeSimulator implements MergeSimulator {
         moveVehicles(timeStep);
 
         List<Integer> completedVINs = cleanUpCompletedVehicles();
+        currentTime += timeStep;
 
         return new CoreMergeSimStepResult(completedVINs);
     }
@@ -106,8 +106,13 @@ public class CoreMergeSimulator implements MergeSimulator {
     }
 
     @Override
-    public VehicleSimModel getActiveVehicle(int vin) {
+    public MergeVehicleSimModel getActiveVehicle(int vin) {
         return vinToVehicles.get(vin);
+    }
+
+    @Override
+    public Map<Integer, MergeVehicleSimModel> getVinToVehicles() {
+        return this.vinToVehicles;
     }
 
     //STEP DRIVERS//

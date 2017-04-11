@@ -16,6 +16,9 @@ public class S2SMergeParamPanel extends MergeParamPanel {
     //COMBOBOX OPTIONS//
     final static String AIM_PROTOCOL_TITLE = "AIM Protocol";
 
+    //SIM SETUP//
+    private S2SSimSetup simSetup;
+
     //GUI ELEMENTS
     /**Combo box indicating the protocol to use**/
     private JComboBox protocolComboBox;
@@ -52,43 +55,43 @@ public class S2SMergeParamPanel extends MergeParamPanel {
         //Create option components
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
-                        800.0,
+                        S2SSimSetup.DEFAULT_TRAFFIC_LEVEL * 3600.0,
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f");
         targetLaneSpeedSlider =
                 new LabeledSlider(0.0, 80.0,
-                        40.0,
+                        S2SSimSetup.DEFAULT_TARGET_LANE_SPEED_LIMIT,
                         10.0, 5.0,
                         "Target Lane Speed Limit: %.0f metres/second",
                         "%.0f");
         mergeLaneSpeedSlider =
                 new LabeledSlider(0.0, 80.0,
-                        40.0,
+                        S2SSimSetup.DEFAULT_MERGING_LANE_SPEED_LIMIT,
                         10.0, 5.0,
                         "Merge Lane Speed Limit: %.0f metres/second",
                         "%.0f");
         targetLeadInDistanceSlider =
                 new LabeledSlider(50.0, 300.0,
-                        150.0,
+                        S2SSimSetup.DEFAULT_TARGET_LEAD_IN_DISTANCE,
                         50.0, 10.0,
                         "Target Lane lead in distance: %.0f metres",
                         "%.0f");
         targetLeadOutDistanceSlider =
                 new LabeledSlider(50.0, 300.0,
-                        150.0,
+                        S2SSimSetup.DEFAULT_TARGET_LEAD_OUT_DISTANCE,
                         50.0, 10.0,
                         "Target Lane lead out distance: %.0f metres",
                         "%.0f");
         mergeLeadInDistanceSlider =
                 new LabeledSlider(50.0, 300.0,
-                        150.0,
+                        S2SSimSetup.DEFAULT_MERGE_LEAD_IN_DISTANCE,
                         50.0, 10.0,
-                        "Merging Lane distance: %.0f metres",
+                        "Merging Lane lead in distance: %.0f metres",
                         "%.0f");
         mergingAngleSlider =
                 new LabeledSlider(0.0, 90.0,
-                        45.0,
+                        S2SSimSetup.DEFAULT_MERGING_ANGLE,
                         10.0, 1.0,
                         "Merging Angle: %.0f degrees",
                         "%.0f");
@@ -112,10 +115,8 @@ public class S2SMergeParamPanel extends MergeParamPanel {
 
     @Override
     public MergeSimSetup getSimSetup() {
-
-
         return new S2SSimSetup(
-                trafficRateSlider.getValue(), getSelectedProtocol(),
+                getSelectedProtocol(), trafficRateSlider.getValue(),
                 targetLaneSpeedSlider.getValue(),       mergeLaneSpeedSlider.getValue(),
                 targetLeadInDistanceSlider.getValue(),  targetLeadOutDistanceSlider.getValue(),
                 mergeLeadInDistanceSlider.getValue(),   mergingAngleSlider.getValue()

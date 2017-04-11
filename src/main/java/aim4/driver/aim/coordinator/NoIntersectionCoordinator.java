@@ -30,9 +30,9 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.coordinator;
 
+import aim4.driver.Coordinator;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.pilot.V2IPilot;
-import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 
 /**

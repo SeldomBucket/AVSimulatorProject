@@ -38,6 +38,7 @@ import java.util.Queue;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.Constants.TurnDirection;
+import aim4.driver.Coordinator;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.AutoDriverCoordinatorView;
 import aim4.driver.DriverUtil;

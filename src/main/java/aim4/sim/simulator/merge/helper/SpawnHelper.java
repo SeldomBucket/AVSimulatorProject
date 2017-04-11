@@ -87,6 +87,8 @@ public class SpawnHelper {
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);
 
+
+
         return vehicle;
     }
 }
