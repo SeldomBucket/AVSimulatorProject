@@ -140,18 +140,16 @@ public class SpawnTests {
         this.simThread = new TestSimThread(sim);
 
         // Run the simulation for a period of time.
+
         try {
-            int count = 700000000;
             simThread.start();
-            while (count != 0) {
+            while (sim.getSimulationTime() < 110) {
                 simThread.run();
-                count--;
             }
+            simThread.pause();
         } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
-
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
 
         // There should be 1 vehicle registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 1);

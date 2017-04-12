@@ -3,6 +3,7 @@ package aim4.cpm.map;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.map.cpm.CPMCarParkWithStatus;
+import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
 import util.sim.TestSimThread;
@@ -29,7 +30,9 @@ public class CarParkWithStatusRecordTest {
                 3, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpFiniteSingleSpecSpawnPoint(map, numberOfVehicles, 0.001);
+        Pair<Boolean, String> useCsvPair =
+                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\secondParksLongerThanFirst.csv");
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map,useCsvPair );
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }
@@ -39,7 +42,7 @@ public class CarParkWithStatusRecordTest {
         // Run the simulation until all vehicles have completed
         try {
             simThread.start();
-            while (sim.getNumCompletedVehicles() != numberOfVehicles) {
+            while (sim.getNumCompletedVehicles() != 2) {
                 simThread.run();
             }
             simThread.pause();

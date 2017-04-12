@@ -1,17 +1,13 @@
 package aim4.cpm.map.parking;
 
-import aim4.driver.AutoDriver;
 import aim4.driver.cpm.CPMCoordinator;
-import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.testmaps.CPMMapParkingLane;
-import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import javafx.util.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import util.cpm.MockCPMBasicAutoVehicle;
 import util.cpm.MockCPMDriver;
 import util.cpm.SimulatorForMapParkingLane;
 import util.sim.TestSimThread;
@@ -24,7 +20,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 /**
- * Created by Becci on 12-Apr-17.
+ * Validate the behaviour of vehicles on a parking lane.
  */
 public class ParkingLaneBehaviourTest {
     CPMMapParkingLane map;
@@ -47,7 +43,7 @@ public class ParkingLaneBehaviourTest {
                 2, // overlappingRoadWidth
                 2); // parkingLaneWidth
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks30Seconds.csv");
+                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapParkingLane(map);
         this.simThread = new TestSimThread(sim);
@@ -72,7 +68,7 @@ public class ParkingLaneBehaviourTest {
     }
 
     @Test
-    public void testVehicleStopsBeforeParkingEndPoint() throws Exception {
+    public void testVehicleStopsBeforeParkingEndPointAndCompletes() throws Exception {
 
         // Set up a map with one parking lane.
         this.map = new CPMMapParkingLane(2, // laneWidth
@@ -82,7 +78,7 @@ public class ParkingLaneBehaviourTest {
                 2, // overlappingRoadWidth
                 2); // parkingLaneWidth
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks30Seconds.csv");
+                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapParkingLane(map);
         this.simThread = new TestSimThread(sim);
@@ -108,7 +104,6 @@ public class ParkingLaneBehaviourTest {
             }
 
             assert(map.getVehicles().size() == 0);
-
 
         } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
@@ -164,7 +159,7 @@ public class ParkingLaneBehaviourTest {
             assertEquals(stoppingPointX, secondVehiclePosition.getX(), 0.1);
             assertTrue(stoppingPointY == secondVehiclePosition.getY());
 
-
+        // TODO CPM Temperamental, message thrown is null.
         } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
