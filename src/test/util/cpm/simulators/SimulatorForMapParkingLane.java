@@ -1,4 +1,4 @@
-package util.cpm;
+package util.cpm.simulators;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
@@ -18,6 +18,8 @@ import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import util.cpm.MockCPMBasicAutoVehicle;
+import util.cpm.MockCPMDriver;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -51,10 +53,6 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
         currentTime += timeStep;
         return new CPMAutoDriverSimStepResult(completedVINs);
     }
-
-    /////////////////////////////////
-    // STEP 1
-    /////////////////////////////////
 
     /**
      * Spawn vehicles.
@@ -121,7 +119,8 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime(),
                         spawnSpec.getParkingTime(),
-                        ((CPMMapParkingLane)map).getOnlyParkingLane());
+                        ((CPMMapParkingLane)map).getOnlyParkingLane(),
+                        true);
         // Set the driver
         MockCPMDriver driver = new MockCPMDriver(vehicle, map, CPMCoordinator.ParkingStatus.PARKING,
                                                  CPMCoordinator.DrivingState.TRAVERSING_PARKING_LANE);
@@ -131,12 +130,6 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
 
         return vehicle;
     }
-
-
-
-    /////////////////////////////////
-    // STEP 5
-    /////////////////////////////////
 
     /**
      * Move all the vehicles.
@@ -160,10 +153,6 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
             // Update the time left for the vehicle to be parked.
             if (vehicle.hasEnteredCarPark()) {
                 vehicle.updateTimeToExit(timeStep);
-            }
-
-            if (Debug.isPrintVehicleStateOfVIN(vehicle.getVIN())) {
-                vehicle.printState();
             }
         }
     }

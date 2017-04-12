@@ -9,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import util.cpm.MockCPMDriver;
-import util.cpm.SimulatorForMapParkingLane;
+import util.cpm.simulators.SimulatorForMapParkingLane;
 import util.sim.TestSimThread;
 
 import java.awt.geom.Point2D;
@@ -60,7 +60,7 @@ public class ParkingLaneBehaviourTest {
             CPMBasicAutoVehicle vehicle = map.getVehicles().get(0);
             MockCPMDriver driver = (MockCPMDriver)vehicle.getDriver();
             assertTrue(driver.getParkingStatus() == CPMCoordinator.ParkingStatus.PARKING);
-            assertTrue(driver.getDrivingStatus() == CPMCoordinator.DrivingState.TRAVERSING_PARKING_LANE);
+            assertTrue(driver.getDrivingState() == CPMCoordinator.DrivingState.TRAVERSING_PARKING_LANE);
 
         } catch(RuntimeException e) {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());

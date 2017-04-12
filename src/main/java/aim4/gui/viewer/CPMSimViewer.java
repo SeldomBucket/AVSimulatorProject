@@ -22,11 +22,11 @@ public class CPMSimViewer extends SimViewer {
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
         super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
-                2.25, // speedLimit - approx. 5mph
+                5.0, // speedLimit - approx. 10mph
                 0.28, // trafficLevel
                 2.0, // laneWidth
                 1, // numberOfParkingLanes
-                20.0, // parkingLength
+                50.0, // parkingLength
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
                 new Pair<Boolean, String>(false, "")

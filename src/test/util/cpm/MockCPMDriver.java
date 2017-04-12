@@ -42,5 +42,5 @@ public class MockCPMDriver extends CPMV2VDriver {
 
     public CPMCoordinator.ParkingStatus getParkingStatus() { return coordinator.getParkingStatus(); }
 
-    public CPMCoordinator.DrivingState getDrivingStatus() { return coordinator.getDrivingState(); }
+    public CPMCoordinator.DrivingState getDrivingState() { return coordinator.getDrivingState(); }
 }

@@ -33,9 +33,10 @@ public class MockCPMBasicAutoVehicle extends CPMBasicAutoVehicle {
      */
     public MockCPMBasicAutoVehicle(VehicleSpec spec, Point2D pos, double heading, double steeringAngle,
                                    double velocity, double targetVelocity, double acceleration,
-                                   double currentTime, double parkingTime, ParkingLane targetParkingLane) {
+                                   double currentTime, double parkingTime, ParkingLane targetParkingLane,
+                                   boolean hasEntered) {
         super(spec, pos, heading, steeringAngle, velocity, targetVelocity, acceleration, currentTime, parkingTime);
         this.targetParkingLane = targetParkingLane;
-        this.hasEntered = true;
+        this.hasEntered = hasEntered;
     }
 }
