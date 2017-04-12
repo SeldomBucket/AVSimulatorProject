@@ -28,16 +28,16 @@ public class CPMV2VDriver extends BasicDriver
     /////////////////////////////////
 
     /** The vehicle this driver will control */
-    private CPMBasicAutoVehicle vehicle;
+    protected CPMBasicAutoVehicle vehicle;
 
     /** The sub-agent that controls coordination */
-    private CPMCoordinator coordinator;
+    protected CPMCoordinator coordinator;
 
     /** The map */
-    private CPMMap map;
+    protected CPMMap map;
 
     /** Where this DriverAgent is coming from. */
-    private CPMSpawnPoint spawnPoint;
+    protected CPMSpawnPoint spawnPoint;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -60,7 +60,7 @@ public class CPMV2VDriver extends BasicDriver
      * @param area        the area
      * @return            whether the Vehicle is currently in the area
      */
-    private static boolean intersectsArea(AutoVehicleDriverModel vehicle, Area area) {
+    protected static boolean intersectsArea(AutoVehicleDriverModel vehicle, Area area) {
         // TODO: move this function to somewhere else.
 
         // As a quick check, see if the front or rear point is in the area
