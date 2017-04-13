@@ -2,9 +2,11 @@ package aim4.gui.viewer;
 
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
-import aim4.gui.screen.MergeStatScreen;
+import aim4.gui.screen.merge.MergeStatScreen;
 import aim4.gui.setuppanel.MergeSimSetupPanel;
 import aim4.gui.setuppanel.SimSetupPanel;
+import aim4.sim.Simulator;
+import aim4.sim.simulator.merge.CoreMergeSimulator;
 
 import java.awt.event.MouseEvent;
 
@@ -23,8 +25,24 @@ public class MergeSimViewer extends SimViewer {
     }
 
     @Override
-    protected void createStatScreen() {
-        this.statScreen = new MergeStatScreen();
+    protected void createStatScreen(Viewer viewer) {
+        SimSetupPanel generalSetupPanel = getSimSetupPanel();
+        assert(generalSetupPanel instanceof MergeSimSetupPanel);
+        MergeSimSetupPanel setupPanel = (MergeSimSetupPanel) generalSetupPanel;
+
+        this.statScreen = new MergeStatScreen(viewer, this, setupPanel);
+    }
+
+    @Override
+    protected Simulator.SimStepResult runSimulationStep() {
+        Simulator.SimStepResult stepResult = super.runSimulationStep();
+
+        assert stepResult instanceof CoreMergeSimulator.CoreMergeSimStepResult;
+        CoreMergeSimulator.CoreMergeSimStepResult mergeStepResult =
+                (CoreMergeSimulator.CoreMergeSimStepResult) stepResult;
+        ((MergeStatScreen) this.statScreen).addResultToProcess(mergeStepResult);
+
+        return stepResult;
     }
 
     @Override

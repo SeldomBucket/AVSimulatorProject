@@ -1,6 +1,7 @@
 package aim4.driver.merge;
 
 import aim4.driver.BasicDriver;
+import aim4.map.connections.MergeConnection;
 import aim4.map.merge.MergeSpawnPoint;
 
 /**

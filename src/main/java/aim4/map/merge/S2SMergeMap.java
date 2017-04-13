@@ -2,6 +2,7 @@ package aim4.map.merge;
 
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
+import aim4.map.connections.S2SMergeConnection;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 
@@ -13,6 +14,8 @@ import java.awt.geom.Rectangle2D;
  * Created by Callum on 08/03/2017.
  */
 public class S2SMergeMap extends MergeMap {
+    private MergeSpawnPoint mergeSpawnPoint;
+    private MergeSpawnPoint targetSpawnPoint;
 
     /**
      * Creates the map for a Single-to-Single lane merge.
@@ -121,7 +124,7 @@ public class S2SMergeMap extends MergeMap {
         double targetLaneEndX = width;
 
         /*Then we create the road and it's lane*/
-        Road targetRoad = new Road("Target Road", this);
+        Road targetRoad = new Road(RoadNames.TARGET_ROAD.toString(), this);
         Point2D targetLaneStart = new Point2D.Double(targetLaneStartX, targetLaneCentreY);
         Point2D targetLaneEnd = new Point2D.Double(targetLaneEndX, targetLaneCentreY);
         Line2D targetLaneLine = new Line2D.Double(
@@ -144,7 +147,7 @@ public class S2SMergeMap extends MergeMap {
         double mergeLaneStartX = width - targetLeadOutDistance - mergeBaseWidth + mergeEntranceXAdjustment;
         double mergeLaneStartY = height - mergeEntranceYAdjustment;
 
-        Road mergeRoad = new Road("Merging Road", this);
+        Road mergeRoad = new Road(RoadNames.MERGING_ROAD.toString(), this);
         Point2D mergeLaneStart = new Point2D.Double(mergeLaneStartX, mergeLaneStartY);
         Point2D mergeLaneEnd = new Point2D.Double(mergeLaneEndX, mergeLaneEndY);
         Line2D mergeLaneLine = new Line2D.Double(
@@ -197,7 +200,25 @@ public class S2SMergeMap extends MergeMap {
         MergeSpawnPoint mergeSpawn = makeSpawnPoint(mergeRoad.getLanes().get(0), 0.0, 0.0);
         addSpawnPoint(targetSpawn);
         addSpawnPoint(mergeSpawn);
+
+        this.mergeSpawnPoint = mergeSpawn;
+        this.targetSpawnPoint = targetSpawn;
+
+        //CREATE CONNECTION
+        Point2D targetEntryPoint = new Point2D.Double(targetLaneStartX + targetLeadInDistance, targetLaneCentreY);
+        Point2D mergeEntryPoint = new Point2D.Double(mergeZoneCentreX, targetLaneUpperY);
+        Point2D exitPoint = new Point2D.Double(targetLaneEndX - targetLeadOutDistance, targetLaneCentreY);
+        S2SMergeConnection mergeConnection =
+                new S2SMergeConnection(getRoads(), targetEntryPoint, mergeEntryPoint, exitPoint);
+
+        addMergeConnection(mergeConnection);
     }
 
+    public MergeSpawnPoint getMergeSpawnPoint() {
+        return mergeSpawnPoint;
+    }
 
+    public MergeSpawnPoint getTargetSpawnPoint() {
+        return targetSpawnPoint;
+    }
 }

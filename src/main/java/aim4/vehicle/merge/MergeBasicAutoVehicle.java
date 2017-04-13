@@ -41,4 +41,14 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
         assert driver instanceof MergeAutoDriver;
         this.driver = (MergeAutoDriver) driver;
     }
+
+    @Override
+    public double getMaxAcceleration() {
+        return 0;
+    }
+
+    @Override
+    public double getMaxDeceleration() {
+        return 0;
+    }
 }

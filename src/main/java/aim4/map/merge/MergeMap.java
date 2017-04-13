@@ -3,6 +3,9 @@ package aim4.map.merge;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.connections.MergeConnection;
+import aim4.map.connections.RoadConnection;
+import aim4.map.connections.S2SMergeConnection;
 import aim4.map.merge.MergeSpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.util.ArrayListRegistry;
@@ -31,6 +34,8 @@ public class MergeMap implements BasicMap {
     private List<DataCollectionLine> dataCollectionLines = new ArrayList<DataCollectionLine>();
     /** The spawn points */
     private List<MergeSpawnPoint> spawnPoints = new ArrayList<MergeSpawnPoint>();
+    /** The merge connections */
+    private List<MergeConnection> mergeConnections = new ArrayList<MergeConnection>();
     /** The lane registry */
     private Registry<Lane> laneRegistry = new ArrayListRegistry<Lane>();
     /** A mapping form lanes to roads they belong */
@@ -120,6 +125,11 @@ public class MergeMap implements BasicMap {
         outfile.close();
     }
 
+    //PUBLIC ACCESSORS//
+    public List<MergeConnection> getMergeConnections() {
+        return this.mergeConnections;
+    }
+
     //PROTECTED ACCESSORS//
     protected void addLaneToRoad(Lane lane, Road road){
         laneToRoad.put(lane, road);
@@ -148,6 +158,8 @@ public class MergeMap implements BasicMap {
     protected void addSpawnPoint(MergeSpawnPoint spawn){
         spawnPoints.add(spawn);
     }
+
+    protected void addMergeConnection(MergeConnection connection) { mergeConnections.add(connection); }
 
     //PROTECTED UTILITIES//
     protected MergeSpawnPoint makeSpawnPoint(Lane lane, double initTime, double startDistance) {

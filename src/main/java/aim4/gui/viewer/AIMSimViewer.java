@@ -1,7 +1,7 @@
 package aim4.gui.viewer;
 
 import aim4.config.Debug;
-import aim4.gui.screen.AIMCanvas;
+import aim4.gui.screen.aim.AIMCanvas;
 import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
