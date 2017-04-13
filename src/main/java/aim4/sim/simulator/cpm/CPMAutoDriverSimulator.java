@@ -12,6 +12,7 @@ import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
+import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -39,24 +40,24 @@ public class CPMAutoDriverSimulator implements Simulator {
     public static class CPMAutoDriverSimStepResult implements SimStepResult {
 
         /** The VIN of the completed vehicles in this time step */
-        List<Integer> completedVINs;
+        List<CPMBasicAutoVehicle> completedVehicles;
 
         /**
          * Create a result of a simulation step
          *
-         * @param completedVINs  the VINs of completed vehicles.
+         * @param completedVehicles  the completed vehicles.
          */
-        public CPMAutoDriverSimStepResult(List<Integer> completedVINs) {
-            this.completedVINs = completedVINs;
+        public CPMAutoDriverSimStepResult(List<CPMBasicAutoVehicle> completedVehicles) {
+            this.completedVehicles = completedVehicles;
         }
 
         /**
-         * Get the list of VINs of completed vehicles.
+         * Get the list of completed vehicles.
          *
-         * @return the list of VINs of completed vehicles.
+         * @return the list of completed vehicles.
          */
-        public List<Integer> getCompletedVINs() {
-            return completedVINs;
+        public List<CPMBasicAutoVehicle> getCompletedVehicles() {
+            return completedVehicles;
         }
     }
 
@@ -104,9 +105,9 @@ public class CPMAutoDriverSimulator implements Simulator {
         moveVehicles(timeStep);
         observeParkedVehicles();
         observeNumberOfVehiclesInCarPark();
-        List<Integer> completedVINs = cleanUpCompletedVehicles();
+        List<CPMBasicAutoVehicle> completedVehicles = cleanUpCompletedVehicles();
         currentTime += timeStep;
-        return new CPMAutoDriverSimStepResult(completedVINs);
+        return new CPMAutoDriverSimStepResult(completedVehicles);
     }
 
     /////////////////////////////////
@@ -555,6 +556,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                      StatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
                          System.out.println("Vehicle is entering.");
+                         vehicle.setEntryTime(currentTime);
                          statusMonitor.vehicleOnEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.REENTRY) {
@@ -563,6 +565,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.EXIT) {
                          System.out.println("Vehicle is exiting.");
+                         vehicle.setExitTime(currentTime);
                          statusMonitor.vehicleOnExit(vehicle);
                      }
                  }
@@ -615,8 +618,8 @@ public class CPMAutoDriverSimulator implements Simulator {
      *
      * @return the VINs of the completed vehicles
      */
-    protected List<Integer> cleanUpCompletedVehicles() {
-        List<Integer> completedVINs = new LinkedList<Integer>();
+    protected List<CPMBasicAutoVehicle> cleanUpCompletedVehicles() {
+        List<CPMBasicAutoVehicle> completedVehicles = new LinkedList<CPMBasicAutoVehicle>();
         Rectangle2D mapBoundary = map.getDimensions();
         List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
         for(int vin : vinToVehicles.keySet()) {
@@ -631,11 +634,11 @@ public class CPMAutoDriverSimulator implements Simulator {
         }
         // Remove the marked vehicles
         for(int vin : removedVINs) {
+            completedVehicles.add(vinToVehicles.get(vin));
             vinToVehicles.remove(vin);
-            completedVINs.add(vin);
             numOfCompletedVehicles++;
         }
-        return completedVINs;
+        return completedVehicles;
     }
 
 

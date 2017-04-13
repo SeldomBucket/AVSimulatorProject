@@ -49,7 +49,7 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
         moveVehicles(timeStep);
         observeParkedVehicles();
         observeNumberOfVehiclesInCarPark();
-        List<Integer> completedVINs = cleanUpCompletedVehicles();
+        List<CPMBasicAutoVehicle> completedVINs = cleanUpCompletedVehicles();
         currentTime += timeStep;
         return new CPMAutoDriverSimStepResult(completedVINs);
     }

@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.util.List;
 
 /**
- * Created by Becci on 13-Apr-17.
+ * A table displaying information for the vehicles that have completed the simulation.
  */
 public class CompletedVehiclesTable extends JPanel implements CPMStatScreenComponent {
     private MapKeyTableModel model; // TODO CPM Move this class out of merge
@@ -25,7 +25,6 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
                 "Exit time",
                 "Retrieval time",
                 "Number of re-entries",
-                "Completed",
                 "Distance travelled"
         });
 
@@ -36,21 +35,28 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
     }
 
     @Override
-    public void update(CPMAutoDriverSimulator sim, List<CPMAutoDriverSimStepResult> results) {
-        /*for(CPMAutoDriverSimStepResult stepResult : results) {
-            for (int vin : stepResult.getCompletedVehicles().keySet()) {
-                MergeVehicleSimModel vehicle = stepResult.getCompletedVehicles().get(vin);
-                model.addOrUpdateRow(vin, new Object[]{
+    public void update(CPMAutoDriverSimulator sim,
+                       List<CPMAutoDriverSimStepResult> results) {
+        for(CPMAutoDriverSimStepResult stepResult : results) {
+            for (CPMBasicAutoVehicle vehicle : stepResult.getCompletedVehicles()) {
+                model.addOrUpdateRow(vehicle.getVIN(), new Object[]{
                         vehicle.getVIN(),
-                        vehicle.getVelocity(),
-                        vehicle.getPosition().getX(),
-                        vehicle.getPosition().getY(),
-                        vehicle.getMaxAcceleration(),
-                        vehicle.getMaxDeceleration(),
-                        sim.calculateDelay(vehicle)
+                        vehicle.getSpec().getName(),
+                        vehicle.getEntryTime(),
+                        vehicle.getParkingTime(),
+                        vehicle.getExitTime(),
+                        calculateRetrievalTime(vehicle),
+                        vehicle.getNumberOfReEntries(),
+                        vehicle.getEstimatedDistanceTravelled()
                 });
             }
-        }*/
+        }
+    }
+
+    private double calculateRetrievalTime(CPMBasicAutoVehicle vehicle) {
+        double timeRetrieved = vehicle.getEntryTime() + vehicle.getParkingTime();
+        double timeTakenToRetrieve = vehicle.getExitTime() - timeRetrieved;
+        return timeTakenToRetrieve;
     }
 
 }
