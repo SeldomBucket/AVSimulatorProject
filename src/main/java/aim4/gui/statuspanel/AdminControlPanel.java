@@ -40,12 +40,12 @@ import javax.swing.JPanel;
 import aim4.config.Debug;
 import aim4.gui.StatusPanelInterface;
 import aim4.gui.Viewer;
-import aim4.im.IntersectionManager;
-import aim4.im.v2i.V2IManager;
-import aim4.im.v2i.RequestHandler.AllStopRequestHandler;
-import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
-import aim4.im.v2i.RequestHandler.GoStraightRequestHandler;
-import aim4.im.v2i.policy.BasePolicy;
+import aim4.im.aim.IntersectionManager;
+import aim4.im.aim.v2i.V2IManager;
+import aim4.im.aim.v2i.RequestHandler.AllStopRequestHandler;
+import aim4.im.aim.v2i.RequestHandler.FCFSRequestHandler;
+import aim4.im.aim.v2i.RequestHandler.GoStraightRequestHandler;
+import aim4.im.aim.v2i.policy.BasePolicy;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.aim.AIMSimulator;
 

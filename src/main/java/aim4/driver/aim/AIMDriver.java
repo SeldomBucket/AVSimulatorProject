@@ -1,7 +1,7 @@
 package aim4.driver.aim;
 
 import aim4.driver.BasicDriver;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
 
