@@ -3,13 +3,10 @@ package aim4.gui.screen.cpm.components;
 import aim4.gui.screen.merge.components.MapKeyTableModel;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
-import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
-import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import javax.swing.*;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Becci on 13-Apr-17.
@@ -40,16 +37,20 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
 
     @Override
     public void update(CPMAutoDriverSimulator sim, List<CPMAutoDriverSimStepResult> results) {
-        List<CPMBasicAutoVehicle> vehiclesOnMap = sim.getMap().getVehicles();
-        for(int vin : vehiclesOnMap){
-            if (model.)
-            model.addOrUpdateRow(vin, new Object[]{
-                    vin,
-                    vehicle.getSpec().getName(),
-                    vehicle.getPosition().getX(),
-                    vehicle.getPosition().getY()
-            });
-        }
+        /*for(CPMAutoDriverSimStepResult stepResult : results) {
+            for (int vin : stepResult.getCompletedVehicles().keySet()) {
+                MergeVehicleSimModel vehicle = stepResult.getCompletedVehicles().get(vin);
+                model.addOrUpdateRow(vin, new Object[]{
+                        vehicle.getVIN(),
+                        vehicle.getVelocity(),
+                        vehicle.getPosition().getX(),
+                        vehicle.getPosition().getY(),
+                        vehicle.getMaxAcceleration(),
+                        vehicle.getMaxDeceleration(),
+                        sim.calculateDelay(vehicle)
+                });
+            }
+        }*/
     }
 
 }
