@@ -1,27 +1,17 @@
 package aim4.sim.simulator.merge;
 
-import aim4.driver.merge.MergeAutoDriver;
-import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
-import aim4.map.lane.Lane;
-import aim4.map.merge.MergeSpawnPoint;
-import aim4.map.merge.MergeSpawnPoint.*;
 import aim4.map.merge.MergeMap;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
-import aim4.vehicle.VehicleSimModel;
-import aim4.vehicle.VehicleSpec;
-import aim4.vehicle.VinRegistry;
-import aim4.vehicle.aim.AIMVehicleSimModel;
-import aim4.vehicle.merge.MergeAutoVehicleSimModel;
-import aim4.vehicle.merge.MergeBasicAutoVehicle;
 import aim4.vehicle.merge.MergeVehicleSimModel;
-import com.sun.scenario.effect.Merge;
-import sun.management.Sensor;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by Callum on 08/03/2017.
@@ -73,13 +63,13 @@ public class CoreMergeSimulator implements MergeSimulator {
         moveVehicles(timeStep);
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
-        currentTime += timeStep;
+        incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);
     }
 
     @Override
-    public BasicMap getMap() {
+    public MergeMap getMap() {
         return map;
     }
 
@@ -118,14 +108,18 @@ public class CoreMergeSimulator implements MergeSimulator {
         return 0;
     }
 
+    protected void incrementCurrentTime(double timeStep) {
+        currentTime += timeStep;
+    }
+
     //STEP DRIVERS//
-    private void letDriversAct() {
+    protected void letDriversAct() {
         for(MergeVehicleSimModel vehicle : vinToVehicles.values()) {
             vehicle.getDriver().act();
         }
     }
 
-    private void moveVehicles(double timestep) {
+    protected void moveVehicles(double timestep) {
         for(MergeVehicleSimModel vehicle : vinToVehicles.values()) {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timestep);
@@ -137,7 +131,7 @@ public class CoreMergeSimulator implements MergeSimulator {
     }
 
     //CLEAN UP//
-    private Map<Integer, MergeVehicleSimModel> cleanUpCompletedVehicles() {
+    protected Map<Integer, MergeVehicleSimModel> cleanUpCompletedVehicles() {
         Map<Integer, MergeVehicleSimModel> completedVehicles = new HashMap<Integer, MergeVehicleSimModel>();
 
         Rectangle2D mapBoundary = map.getDimensions();

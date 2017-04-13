@@ -1,6 +1,7 @@
 package aim4.sim.simulator.merge.helper;
 
 import aim4.driver.merge.MergeAutoDriver;
+import aim4.driver.merge.MergeCentralAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.map.merge.MergeSpawnPoint;
@@ -8,6 +9,7 @@ import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.merge.MergeAutoVehicleSimModel;
 import aim4.vehicle.merge.MergeBasicAutoVehicle;
+import aim4.vehicle.merge.MergeCentralAutoVehicle;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import java.awt.geom.Rectangle2D;
@@ -38,6 +40,28 @@ public class SpawnHelper {
                 if(canSpawnVehicle(spawnPoint)) {
                     for(MergeSpawnPoint.MergeSpawnSpec spawnSpec : spawnSpecs) {
                         MergeVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
+                        VinRegistry.registerVehicle(vehicle);
+                        vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        if(!canSpawnVehicle(spawnPoint))
+                            break;
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Spawn vehicles
+     *
+     * @param timeStep
+     */
+    public void spawnCentralVehicles(double timeStep) {
+        for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
+            List<MergeSpawnPoint.MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
+            if(!spawnSpecs.isEmpty()){
+                if(canSpawnVehicle(spawnPoint)) {
+                    for(MergeSpawnPoint.MergeSpawnSpec spawnSpec : spawnSpecs) {
+                        MergeVehicleSimModel vehicle = makeCentralVehicle(spawnPoint, spawnSpec);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
                         if(!canSpawnVehicle(spawnPoint))
@@ -89,7 +113,35 @@ public class SpawnHelper {
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);
 
+        return vehicle;
+    }
 
+    /**
+     * Creates a vehicle at the spawn point. This vehicle is for CentralManagementMergeSimulations
+     * @param spawnPoint
+     * @param spawnSpec
+     * @return
+     */
+    private MergeVehicleSimModel makeCentralVehicle(
+            MergeSpawnPoint spawnPoint, MergeSpawnPoint.MergeSpawnSpec spawnSpec) {
+        VehicleSpec spec = spawnSpec.getVehicleSpec();
+        Lane lane = spawnPoint.getLane();
+        double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
+
+        MergeAutoVehicleSimModel vehicle =
+                new MergeCentralAutoVehicle(spec,
+                        spawnPoint.getPosition(),
+                        spawnPoint.getHeading(),
+                        initVelocity,
+                        spawnPoint.getSteeringAngle(),
+                        spawnPoint.getAcceleration(),
+                        lane.getSpeedLimit(),
+                        spawnSpec.getSpawnTime());
+
+        MergeCentralAutoDriver driver = new MergeCentralAutoDriver(vehicle, map);
+        driver.setCurrentLane(lane);
+        driver.setSpawnPoint(spawnPoint);
+        vehicle.setDriver(driver);
 
         return vehicle;
     }

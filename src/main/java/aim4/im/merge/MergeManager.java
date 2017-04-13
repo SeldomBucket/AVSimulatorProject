@@ -3,7 +3,10 @@ package aim4.im.merge;
 import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
+import aim4.util.Registry;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -16,10 +19,12 @@ import java.awt.geom.Rectangle2D;
  */
 public abstract class MergeManager {
     //PRIVATE FIELDS//
-    /*The merge managed by this manager*/
-    private MergeConnection merge;
+    /** The ID number of this merge manager. */
+    protected int id;
     /*The current time for this manager*/
     protected double currentTime;
+    /*The merge managed by this manager*/
+    private MergeConnection merge;
 
     //CONSTRUCTORS//
 
@@ -27,10 +32,14 @@ public abstract class MergeManager {
      * Creates a MergeManager
      * @param merge The merge connection this manager will manage vehicles through.
      * @param currentTime The current simulation time.
+     * @param mmRegistry a Merge Manager registry
      */
-    public MergeManager(MergeConnection merge, double currentTime){
+    public MergeManager(MergeConnection merge, double currentTime, Registry<MergeManager> mmRegistry){
         this.merge = merge;
         this.currentTime = currentTime;
+        this.id = mmRegistry.register(this);
+
+        registerWithLanes();
     }
 
     /**
@@ -54,6 +63,14 @@ public abstract class MergeManager {
     }
 
     //ACCESSORS
+    /**
+     * Get the unique ID number of this MergeManager.
+     *
+     * @return the ID number of this MergeManager
+     */
+    public int getId() {
+        return id;
+    }
 
     /**
      * Returns the current time
@@ -92,6 +109,25 @@ public abstract class MergeManager {
     }
 
     //CHECKS
+    /**
+     * Determine whether the given Vehicle is currently entirely contained
+     * within the Area governed by this IntersectionManager.
+     *
+     * @param vehicle the Vehicle
+     * @return        whether the Vehicle is currently entirely contained within
+     *                the Area governed by this IntersectionManager
+     */
+    public boolean contains(AIMVehicleSimModel vehicle) {
+        // Get all corners of the vehicle and make sure they are inside the
+        // intersection.
+        for(Point2D corner : vehicle.getCornerPoints()) {
+            if (!merge.getArea().contains(corner)) {
+                return false;
+            }
+        }
+        // If all corners are inside, the whole thing is considered inside.
+        return true;
+    }
 
     /**
      * Returns true if the Rectangle2D provided intersects the MergeConnection the MergeManager is managing.

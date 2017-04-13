@@ -1,11 +1,13 @@
 package aim4.map.merge;
 
 import aim4.config.SimConfig;
-import aim4.map.Road;
-import aim4.map.SpawnPoint;
-import aim4.map.aim.AIMSpawnPoint;
-import aim4.map.aim.destination.DestinationSelector;
-import aim4.map.merge.MergeSpawnPoint.*;
+import aim4.im.merge.V2IMergeManager;
+import aim4.im.merge.policy.BaseMergePolicy;
+import aim4.im.merge.policy.FCFSMergeRequestHandler;
+import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.map.connections.MergeConnection;
+import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpec;
+import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpecGenerator;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -13,12 +15,28 @@ import aim4.vehicle.VehicleSpecDatabase;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Callum on 17/03/2017.
  */
 public class MergeMapUtil {
+    //MERGE MANAGERS//
+    public static void setFCFSMergeManagers(MergeMap layout, double currentTime, ReservationMergeManager.Config mergeReservationConfig) {
+        layout.removeAllMergeManagers();
+        for(MergeConnection merge : layout.getMergeConnections()) {
+            V2IMergeManager mm = new V2IMergeManager(
+                    merge,
+                    currentTime,
+                    mergeReservationConfig,
+                    layout.getMMRegistry(),
+                    layout
+            );
+            mm.setMergePolicy(new BaseMergePolicy(mm, new FCFSMergeRequestHandler()));
+            layout.addMergeManager(mm);
+        }
+    }
+
+    //SPAWN POINTS//
     public static void setSingleSpawnPoints(MergeMap map) {
         for(MergeSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(

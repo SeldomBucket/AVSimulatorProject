@@ -41,7 +41,7 @@ import aim4.im.aim.TrackModel;
 import aim4.im.aim.v2i.V2IManager;
 import aim4.im.aim.v2i.V2IManagerCallback;
 import aim4.im.aim.v2i.RequestHandler.RequestHandler;
-import aim4.im.aim.v2i.reservation.AczManager;
+import aim4.im.AczManager;
 import aim4.im.aim.v2i.reservation.ReservationGrid;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
 import aim4.im.aim.v2i.reservation.ReservationGridManager.Plan;

@@ -37,7 +37,7 @@ import java.util.List;
 import java.util.Map;
 
 import aim4.config.SimConfig;
-import aim4.driver.CrashTestDummy;
+import aim4.driver.aim.CrashTestDummy;
 import aim4.driver.Driver;
 import aim4.im.aim.IntersectionManager;
 import aim4.map.lane.Lane;
@@ -558,7 +558,7 @@ public class VehicleUtil {
    * @param area  the area
    * @return      whether the Vehicle is currently in the area
    */
-  public static boolean intersects(AIMVehicleSimModel v, Area area) {
+  public static boolean intersects(VehicleSimModel v, Area area) {
     // As a quick check, see if the front or rear point is in the intersection
     // Most of the time this should work
     if (area.contains(v.getPosition()) || area.contains(v.getPointAtRear())) {

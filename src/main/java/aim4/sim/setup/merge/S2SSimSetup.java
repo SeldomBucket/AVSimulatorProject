@@ -1,8 +1,11 @@
 package aim4.sim.setup.merge;
 
+import aim4.config.SimConfig;
+import aim4.im.merge.reservation.ReservationMergeManager;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.sim.setup.merge.enums.ProtocolType;
+import aim4.sim.simulator.merge.CentralManagementMergeSimulator;
 import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 
@@ -64,10 +67,15 @@ public class S2SSimSetup implements MergeSimSetup {
                 targetLeadInDistance, targetLeadOutDistance,
                 mergeLeadInDistance, mergingAngle);
 
+
+
         switch(mergingProtocol){
             case AIM:
+                ReservationMergeManager.Config mergeReservationConfig =
+                        new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
+                MergeMapUtil.setFCFSMergeManagers(layout, currentTime, mergeReservationConfig);
                 MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
-                return null;
+                return new CentralManagementMergeSimulator(layout);
             case DECENTRALISED:
                 MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
                 return null;

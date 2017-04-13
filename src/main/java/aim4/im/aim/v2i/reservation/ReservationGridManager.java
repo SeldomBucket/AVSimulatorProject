@@ -44,8 +44,9 @@ import java.util.Set;
 
 import aim4.config.Constants;
 import aim4.config.Debug;
-import aim4.driver.CrashTestDummy;
+import aim4.driver.aim.CrashTestDummy;
 import aim4.driver.Driver;
+import aim4.im.ReservationManager;
 import aim4.im.aim.Intersection;
 import aim4.im.aim.v2i.reservation.ReservationGrid.TimeTile;
 import aim4.map.lane.Lane;
@@ -62,9 +63,9 @@ import aim4.vehicle.VehicleUtil;
  * The reservation grid manager.
  */
 public class ReservationGridManager implements
-    ReservationManager<ReservationGridManager.Query,
-                       ReservationGridManager.Plan,
-                       Integer> {
+        ReservationManager<ReservationGridManager.Query,
+                               ReservationGridManager.Plan,
+                               Integer> {
 
   /////////////////////////////////
   // NESTED CLASSES
@@ -519,7 +520,7 @@ public class ReservationGridManager implements
   public ReservationGridManager(Config config,
                                 Intersection intersection,
                                 TiledArea tiledArea,
-                                ReservationGrid reservationGrid) {
+                                ReservationGrid reservationGrid){
     this(0.0, config, intersection, tiledArea, reservationGrid);
   }
 

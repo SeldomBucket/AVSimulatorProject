@@ -1,12 +1,10 @@
 package aim4.map.merge;
 
+import aim4.im.merge.MergeManager;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
-import aim4.map.connections.RoadConnection;
-import aim4.map.connections.S2SMergeConnection;
-import aim4.map.merge.MergeSpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
@@ -36,8 +34,12 @@ public class MergeMap implements BasicMap {
     private List<MergeSpawnPoint> spawnPoints = new ArrayList<MergeSpawnPoint>();
     /** The merge connections */
     private List<MergeConnection> mergeConnections = new ArrayList<MergeConnection>();
+    /** The merge managers */
+    private List<MergeManager> mergeManagers = new ArrayList<MergeManager>();
     /** The lane registry */
     private Registry<Lane> laneRegistry = new ArrayListRegistry<Lane>();
+    /** The merge manager registry */
+    private Registry<MergeManager> mergeManagerRegistry = new ArrayListRegistry<MergeManager>();
     /** A mapping form lanes to roads they belong */
     private Map<Lane,Road> laneToRoad = new HashMap<Lane,Road>();
     /** The maximum speed limit  */
@@ -128,6 +130,23 @@ public class MergeMap implements BasicMap {
     //PUBLIC ACCESSORS//
     public List<MergeConnection> getMergeConnections() {
         return this.mergeConnections;
+    }
+
+    public List<MergeManager> getMergeManagers() {
+        return this.mergeManagers;
+    }
+
+    public Registry<MergeManager> getMMRegistry() {
+        return mergeManagerRegistry;
+    }
+
+    public void removeAllMergeManagers() {
+        mergeManagers.clear();
+    }
+
+    public void addMergeManager(MergeManager mergeManager) {
+        mergeManagers.add(mergeManager);
+        mergeManagerRegistry.register(mergeManager);
     }
 
     //PROTECTED ACCESSORS//

@@ -11,7 +11,7 @@ import java.awt.geom.Point2D;
  * Created by Callum on 14/03/2017.
  */
 public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAutoVehicleSimModel {
-    private MergeAutoDriver driver;
+    protected MergeAutoDriver driver;
 
     /**
      * Construct a vehicle

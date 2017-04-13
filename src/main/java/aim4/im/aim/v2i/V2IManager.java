@@ -30,22 +30,13 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim.v2i;
 
-import java.awt.Shape;
-import java.io.FileNotFoundException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import aim4.config.Debug;
+import aim4.im.AczManager;
+import aim4.im.AdmissionControlZone;
 import aim4.im.aim.Intersection;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.TrackModel;
 import aim4.im.aim.v2i.policy.Policy;
-import aim4.im.aim.v2i.reservation.AczManager;
-import aim4.im.aim.v2i.reservation.AdmissionControlZone;
 import aim4.im.aim.v2i.reservation.ReservationGrid;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
 import aim4.map.lane.Lane;
@@ -54,6 +45,12 @@ import aim4.msg.aim.v2i.V2IMessage;
 import aim4.sim.StatCollector;
 import aim4.util.Registry;
 import aim4.util.TiledArea;
+
+import java.awt.*;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
+import java.util.*;
+import java.util.List;
 
 /**
  * An intersection manager that takes requests from vehicles and coordinates

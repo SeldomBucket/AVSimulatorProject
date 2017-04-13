@@ -28,13 +28,13 @@ CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
 OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package aim4.im.aim.v2i.reservation;
+package aim4.im;
 
 /**
  * The ACZ manager.
  */
 public class AczManager implements
-  ReservationManager<AczManager.Query,AczManager.Plan,Integer> {
+        ReservationManager<AczManager.Query,AczManager.Plan,Integer> {
 
   /////////////////////////////////
   // NESTED CLASSES

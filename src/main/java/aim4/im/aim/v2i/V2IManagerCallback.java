@@ -32,8 +32,8 @@ package aim4.im.aim.v2i;
 
 import aim4.im.aim.Intersection;
 import aim4.im.aim.TrackModel;
-import aim4.im.aim.v2i.reservation.AczManager;
-import aim4.im.aim.v2i.reservation.AdmissionControlZone;
+import aim4.im.AczManager;
+import aim4.im.AdmissionControlZone;
 import aim4.im.aim.v2i.reservation.ReservationGrid;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
 import aim4.msg.aim.i2v.I2VMessage;

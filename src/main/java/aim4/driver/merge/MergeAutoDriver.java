@@ -3,47 +3,45 @@ package aim4.driver.merge;
 import aim4.driver.AutoDriver;
 import aim4.driver.merge.coordinator.MergeAutoCoordinator;
 import aim4.map.connections.MergeConnection;
-import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
-import aim4.vehicle.VehicleDriverModel;
-import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
-import com.sun.scenario.effect.Effect;
-import com.sun.scenario.effect.Merge;
 
 import java.awt.geom.Area;
-import java.util.Set;
 
 /**
  * Created by Callum on 14/03/2017.
  */
 public class MergeAutoDriver extends MergeDriver implements AutoDriver {
-    /*The vehicle controlled by this MergeAutoDriver*/
-    private MergeAutoVehicleDriverModel vehicle;
-    /*The map navigated by this MergeAutoDriver*/
-    private MergeMap map;
-    /*The sub-agent controlling vehicle co-ordination*/
-    private MergeAutoCoordinator coordinator;
+    // PROTECTED FIELDS //
 
-    public MergeAutoDriver(MergeAutoVehicleDriverModel vehicle, MergeMap map){
+    /*The vehicle controlled by this MergeAutoDriver*/
+    protected MergeAutoVehicleDriverModel vehicle;
+    /*The sub-agent controlling vehicle co-ordination*/
+    protected MergeAutoCoordinator coordinator;
+    /*The map navigated by this MergeAutoDriver*/
+    protected MergeMap map;
+
+    public MergeAutoDriver(MergeAutoVehicleDriverModel vehicle, MergeMap map) {
         this.vehicle = vehicle;
         this.map = map;
-    }
-
-    @Override
-    public VehicleDriverModel getVehicle() {
-        return this.vehicle;
+        coordinator = null;
     }
 
     @Override
     public void act() {
         if(coordinator == null || coordinator.isTerminated()) {
-            coordinator = new MergeAutoCoordinator(vehicle, this, map);
+            this.coordinator = new MergeAutoCoordinator(vehicle, this, map);
         }
 
         if(!coordinator.isTerminated()) {
             coordinator.act();
         }
+    }
+
+
+    @Override
+    public MergeAutoVehicleDriverModel getVehicle() {
+        return this.vehicle;
     }
 
     public MergeConnection inMerge() {
@@ -57,7 +55,7 @@ public class MergeAutoDriver extends MergeDriver implements AutoDriver {
         return null;
     }
 
-    private boolean intersectsArea(MergeAutoVehicleDriverModel vehicle, Area area) {
+    protected boolean intersectsArea(MergeAutoVehicleDriverModel vehicle, Area area) {
         // As a quick check, see if the front or rear point is in the area
         // Most of the time this should work
         if(area.contains(vehicle.gaugePosition()) || area.contains(vehicle.gaugePointAtRear())){
