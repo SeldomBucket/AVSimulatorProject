@@ -3,11 +3,15 @@ package aim4.im.merge.policy.grid;
 import aim4.msg.merge.i2v.Reject;
 import aim4.msg.merge.v2i.Request;
 
+import java.util.LinkedList;
+import java.util.Queue;
+
 /**
  * Created by Callum on 17/04/2017.
  */
 public class FCFSMergeGridRequestHandler implements MergeGridRequestHandler {
     // PRIVATE FIELDS //
+    Queue<Integer> vinQueue = new LinkedList<Integer>();
 
     /** The base policy */
     private BaseMergeGridPolicyCallback basePolicy = null;
@@ -41,7 +45,6 @@ public class FCFSMergeGridRequestHandler implements MergeGridRequestHandler {
     @Override
     public void processRequestMsg(Request msg) {
         int vin = msg.getVin();
-
         // If the vehicle has got a reservation already, reject it.
         if (basePolicy.hasReservation(vin)) {
             basePolicy.sendRejectMsg(vin,
@@ -60,14 +63,23 @@ public class FCFSMergeGridRequestHandler implements MergeGridRequestHandler {
                     filterResult.getReason());
         }
 
-        // try to see if reservation is possible for the remaining proposals.
-        BaseMergeGridPolicy.ReserveParam reserveParam =
-                basePolicy.findReserveParam(msg, filterResult.getProposals());
-        if (reserveParam != null) {
-            basePolicy.sendConfirmMessage(msg.getRequestId(), reserveParam);
+        //Using vinQueue to reduce delay. Those who have been sending good requests for longer will get priority.
+        if(!vinQueue.contains(vin))
+            vinQueue.add(vin);
+
+        if(vinQueue.peek() != vin) {
+            basePolicy.sendRejectMsg(vin, msg.getRequestId(), Reject.Reason.NO_CLEAR_PATH);
         } else {
-            basePolicy.sendRejectMsg(vin, msg.getRequestId(),
-                    Reject.Reason.NO_CLEAR_PATH);
+            // try to see if reservation is possible for the remaining proposals.
+            BaseMergeGridPolicy.ReserveParam reserveParam =
+                    basePolicy.findReserveParam(msg, filterResult.getProposals());
+            if (reserveParam != null) {
+                basePolicy.sendConfirmMessage(msg.getRequestId(), reserveParam);
+                vinQueue.remove();
+            } else {
+                basePolicy.sendRejectMsg(vin, msg.getRequestId(),
+                        Reject.Reason.NO_CLEAR_PATH);
+            }
         }
     }
 }
