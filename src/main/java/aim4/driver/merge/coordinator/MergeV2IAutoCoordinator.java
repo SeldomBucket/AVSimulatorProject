@@ -20,7 +20,7 @@ import aim4.msg.merge.v2i.Request;
 import aim4.util.Util;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.VehicleUtil;
-import aim4.vehicle.merge.MergeCentralAutoVehicleDriverModel;
+import aim4.vehicle.merge.MergeV2IAutoVehicleDriverModel;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
@@ -149,7 +149,7 @@ public class MergeV2IAutoCoordinator extends MergeCoordinator {
     private double nextAllowedSendingRequestTime;
 
     // CONSTRUCTOR //
-    public MergeV2IAutoCoordinator(MergeCentralAutoVehicleDriverModel vehicle,
+    public MergeV2IAutoCoordinator(MergeV2IAutoVehicleDriverModel vehicle,
                                    MergeV2IAutoDriver driver,
                                    MergeMap map) {
         this.vehicle = vehicle;
@@ -773,26 +773,25 @@ public class MergeV2IAutoCoordinator extends MergeCoordinator {
         public boolean perform() {
             if (getDriver().inCurrentMerge()) {
                 if (!checkArrivalTime()) {
-                    System.err.printf("At time %.2f, the arrival time of vin %d is " +
-                                    "incorrect.\n",
+                    String errorMessage =
+                            String.format("At time %.2f, the arrival time of vin %d is incorrect.\n",
+                            vehicle.gaugeTime(),
+                            vehicle.getVIN()) +
+                            String.format("The arrival time is time %.5f,\n",
+                                    rparameter.getArrivalTime()) +
+                            String.format("but the vehicle arrives at time %.5f\n",
+                                    vehicle.gaugeTime()) +
+                            String.format("distance to next merge = %.5f\n",
+                                    vehicle.getDriver().distanceToNextMerge());
+                    System.err.print(errorMessage);
+                    throw new RuntimeException(errorMessage);
+                } else if (!checkArrivalVelocity()) {
+                    String errorMessage = String.format("At time %.2f, the arrival velocity of vin %d is " +
+                                    "incorrect:\n",
                             vehicle.gaugeTime(),
                             vehicle.getVIN());
-                    System.err.printf("The reservation arrival time is %.5f,\n",
-                            rparameter.getArrivalTime());
-                    System.err.printf("but the vehicle arrives at time %.5f\n",
-                            vehicle.gaugeTime());
-                    System.err.printf("distance to next merge = %.5f\n",
-                            getDriver().distanceToNextMerge());
-
-                    throw new RuntimeException("The arrival time is incorrect.\n");
-                } else if (!checkArrivalVelocity()) {
-                    System.err.printf("At time %.2f, the arrival velocity of vin %d is " +
-                                    "incorrect. Expected velocity to be %.5f, velocity was actually %.5f\n",
-                            vehicle.gaugeTime(),
-                            vehicle.getVIN(),
-                            rparameter.getArrivalVelocity(),
-                            vehicle.gaugeVelocity());
-                    throw new RuntimeException("The arrival velocity is incorrect.\n");
+                    System.err.print(errorMessage);
+                    throw new RuntimeException(errorMessage);
                 } else {
                     setState(State.TRAVERSING);
                     return true;
@@ -1034,9 +1033,9 @@ public class MergeV2IAutoCoordinator extends MergeCoordinator {
     }
 
     // ACCESSORS //
-    private MergeCentralAutoVehicleDriverModel getVehicle() {
-        assert vehicle instanceof MergeCentralAutoVehicleDriverModel;
-        return (MergeCentralAutoVehicleDriverModel) vehicle;
+    private MergeV2IAutoVehicleDriverModel getVehicle() {
+        assert vehicle instanceof MergeV2IAutoVehicleDriverModel;
+        return (MergeV2IAutoVehicleDriverModel) vehicle;
     }
 
     private MergeV2IAutoDriver getDriver() {

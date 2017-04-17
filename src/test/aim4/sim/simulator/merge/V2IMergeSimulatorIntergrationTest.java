@@ -16,7 +16,7 @@ import aim4.map.track.WayPoint;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.merge.MergeCentralAutoVehicle;
+import aim4.vehicle.merge.MergeV2IAutoVehicle;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -102,8 +102,8 @@ public class V2IMergeSimulatorIntergrationTest {
 
         //ACQUIRE VEHICLE AND DRIVER
         int vin = sim.getVinToVehicles().keySet().iterator().next();
-        assert sim.getActiveVehicle(vin) instanceof MergeCentralAutoVehicle;
-        MergeCentralAutoVehicle vehicle = (MergeCentralAutoVehicle) sim.getActiveVehicle(vin);
+        assert sim.getActiveVehicle(vin) instanceof MergeV2IAutoVehicle;
+        MergeV2IAutoVehicle vehicle = (MergeV2IAutoVehicle) sim.getActiveVehicle(vin);
         MergeV2IAutoDriver driver = vehicle.getDriver();
         double startXPosition = vehicle.getPosition().getX();
         double startYPosition = vehicle.getPosition().getY();
@@ -169,7 +169,7 @@ public class V2IMergeSimulatorIntergrationTest {
         assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         //COMMS CHECKS
-        final Field i2VInboxField = MergeCentralAutoVehicle.class.getDeclaredField("i2vInbox");
+        final Field i2VInboxField = MergeV2IAutoVehicle.class.getDeclaredField("i2vInbox");
         i2VInboxField.setAccessible(true);
         assertEquals(((Queue<I2VMergeMessage>)i2VInboxField.get(vehicle)).size(), 1);
 
@@ -341,8 +341,8 @@ public class V2IMergeSimulatorIntergrationTest {
 
         //ACQUIRE VEHICLE AND DRIVER
         int vin = sim.getVinToVehicles().keySet().iterator().next();
-        assert sim.getActiveVehicle(vin) instanceof MergeCentralAutoVehicle;
-        MergeCentralAutoVehicle vehicle = (MergeCentralAutoVehicle) sim.getActiveVehicle(vin);
+        assert sim.getActiveVehicle(vin) instanceof MergeV2IAutoVehicle;
+        MergeV2IAutoVehicle vehicle = (MergeV2IAutoVehicle) sim.getActiveVehicle(vin);
         MergeV2IAutoDriver driver = vehicle.getDriver();
         double startXPosition = vehicle.getPosition().getX();
         double startYPosition = vehicle.getPosition().getY();
@@ -408,7 +408,7 @@ public class V2IMergeSimulatorIntergrationTest {
         assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         //COMMS CHECKS
-        final Field i2VInboxField = MergeCentralAutoVehicle.class.getDeclaredField("i2vInbox");
+        final Field i2VInboxField = MergeV2IAutoVehicle.class.getDeclaredField("i2vInbox");
         i2VInboxField.setAccessible(true);
         assertEquals(((Queue<I2VMergeMessage>)i2VInboxField.get(vehicle)).size(), 1);
 

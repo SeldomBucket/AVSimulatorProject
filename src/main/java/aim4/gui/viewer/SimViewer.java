@@ -315,20 +315,24 @@ public abstract class SimViewer extends JPanel implements
         @Override
         public void run() {
             Thread thisThread = Thread.currentThread();
-            while (blinker == thisThread) {
-                if (isStopped) {
-                    try {
-                        Thread.sleep(10L); // just sleep for a very short moment
-                    } catch (InterruptedException e) {
-                        // do nothing
+            try {
+                while (blinker == thisThread) {
+                    if (isStopped) {
+                        try {
+                            Thread.sleep(10L); // just sleep for a very short moment
+                        } catch (InterruptedException e) {
+                            // do nothing
+                        }
+                    } else if (isTurboMode) {
+                        runTurboMode();
+                    } else {
+                        runNormalMode();
                     }
-                } else if (isTurboMode) {
-                    runTurboMode();
-                } else {
-                    runNormalMode();
+                    // in any case, give other threads a chance to execute
+                    Thread.yield();
                 }
-                // in any case, give other threads a chance to execute
-                Thread.yield();
+            } catch (Exception e) {
+                showErrorMessage(e);
             }
             System.err.printf("The simulation has terminated.\n");
         }
@@ -465,6 +469,13 @@ public abstract class SimViewer extends JPanel implements
                             + ".png";
             canvas.saveScreenShot(outFileName);
         }
+    }
+
+    private void showErrorMessage(Exception e) {
+        String stackTraceMessage = "";
+        for(StackTraceElement line : e.getStackTrace())
+            stackTraceMessage += line.toString() + "\n";
+        JOptionPane.showMessageDialog(this, "An error was thrown!\nMessage:" + e.getLocalizedMessage() + "\nStack Trace:\n" + stackTraceMessage);
     }
 
     // //////////////////////////////////////////////////

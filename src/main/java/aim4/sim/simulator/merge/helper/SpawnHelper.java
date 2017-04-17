@@ -126,8 +126,8 @@ public class SpawnHelper {
         Lane lane = spawnPoint.getLane();
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
 
-        MergeCentralAutoVehicleSimModel vehicle =
-                new MergeCentralAutoVehicle(spec,
+        MergeV2IAutoVehicleSimModel vehicle =
+                new MergeV2IAutoVehicle(spec,
                         spawnPoint.getPosition(),
                         spawnPoint.getHeading(),
                         initVelocity,

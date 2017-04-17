@@ -9,7 +9,7 @@ import java.util.Queue;
 /**
  * Created by Callum on 13/04/2017.
  */
-public interface MergeCentralAutoVehicleDriverModel extends MergeAutoVehicleDriverModel {
+public interface MergeV2IAutoVehicleDriverModel extends MergeAutoVehicleDriverModel {
     // communications systems (V2I)
 
     /**

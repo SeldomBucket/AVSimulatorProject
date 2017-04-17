@@ -19,7 +19,7 @@ import java.util.*;
 /**
  * Created by Callum on 17/04/2017.
  */
-public class V2IMergeGridManager extends BasicMergeManager implements V2IMergeGridManagerCallback, MergeManager {
+public class V2IMergeGridManager extends BasicMergeManager implements V2IMergeGridManagerCallback, V2IEnabledMergeManager {
     //CONSTANTS//
     /**
      * The maximum amount of time, in seconds, in the future, for which the

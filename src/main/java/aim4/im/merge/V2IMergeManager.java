@@ -23,7 +23,7 @@ import java.util.*;
  * A merge manager that takes requests from vehicles and coordinates their traversals of the merge zone to ensure that
  * there are no collisions. The V2IMergeManager makes it's decisions using a merge control {@Link MergePolicy}
  */
-public class V2IMergeManager extends BasicMergeManager implements V2IMergeManagerCallback, MergeManager {
+public class V2IMergeManager extends BasicMergeManager implements V2IMergeManagerCallback, V2IEnabledMergeManager {
     //CONSTANTS//
     /**
      * The maximum amount of time, in seconds, in the future, for which the

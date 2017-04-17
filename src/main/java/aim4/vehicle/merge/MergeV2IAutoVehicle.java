@@ -15,7 +15,7 @@ import java.util.Queue;
 /**
  * Created by Callum on 13/04/2017.
  */
-public class MergeCentralAutoVehicle extends MergeBasicAutoVehicle implements MergeCentralAutoVehicleSimModel {
+public class MergeV2IAutoVehicle extends MergeBasicAutoVehicle implements MergeV2IAutoVehicleSimModel {
 
     // CONSTANTS //
     /**
@@ -54,7 +54,7 @@ public class MergeCentralAutoVehicle extends MergeBasicAutoVehicle implements Me
      * @param targetVelocity the initial target velocity
      * @param currentTime    the current time
      */
-    public MergeCentralAutoVehicle(VehicleSpec spec, Point2D pos, double heading, double velocity, double steeringAngle, double acceleration, double targetVelocity, double currentTime) {
+    public MergeV2IAutoVehicle(VehicleSpec spec, Point2D pos, double heading, double velocity, double steeringAngle, double acceleration, double targetVelocity, double currentTime) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration, targetVelocity, currentTime);
     }
 
