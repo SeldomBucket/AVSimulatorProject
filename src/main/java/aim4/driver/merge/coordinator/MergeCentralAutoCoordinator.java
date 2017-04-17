@@ -956,6 +956,7 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
                             vehicle.gaugeTime());
                     System.err.printf("distance to next merge = %.5f\n",
                             getDriver().distanceToNextMerge());
+
                     throw new RuntimeException("The arrival time is incorrect.\n");
                 } else if (!checkArrivalVelocity()) {
                     System.err.printf("At time %.2f, the arrival velocity of vin %d is " +

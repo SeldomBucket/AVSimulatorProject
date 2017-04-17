@@ -23,7 +23,7 @@ import java.util.Queue;
  */
 public class MergeAutoPilot extends BasicPilot {
     //CONSTS//
-    public static final double MINIMUM_FOLLOWING_DISTANCE = 0.5; //metres
+    public static final double MINIMUM_FOLLOWING_DISTANCE = 2; //metres
     /**
      * The distance, expressed in units of the Vehicle's velocity, at which to
      * switch to a new lane when turning. {@value} seconds.
