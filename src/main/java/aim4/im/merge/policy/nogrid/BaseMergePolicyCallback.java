@@ -1,8 +1,7 @@
 package aim4.im.merge.policy.nogrid;
 
-import aim4.im.merge.policy.nogrid.BaseMergePolicy;
-import aim4.im.merge.reservation.ReservationMerge;
 import aim4.im.merge.policy.nogrid.BaseMergePolicy.ReserveParam;
+import aim4.im.merge.reservation.nogrid.ReservationMerge;
 import aim4.msg.merge.i2v.Reject;
 import aim4.msg.merge.v2i.Request;
 

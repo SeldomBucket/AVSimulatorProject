@@ -2,8 +2,8 @@ package aim4.im.merge.policy.grid;
 
 import aim4.im.AczManager;
 import aim4.im.AdmissionControlZone;
-import aim4.im.merge.reservation.ReservationMergeGrid;
-import aim4.im.merge.reservation.ReservationMergeGridManager;
+import aim4.im.merge.reservation.grid.ReservationMergeGrid;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
 import aim4.map.connections.MergeConnection;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 

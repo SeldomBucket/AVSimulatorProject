@@ -1,6 +1,6 @@
 package aim4.im.merge.policy.grid;
 
-import aim4.im.merge.reservation.ReservationMergeGrid;
+import aim4.im.merge.reservation.grid.ReservationMergeGrid;
 import aim4.msg.merge.i2v.Reject;
 import aim4.msg.merge.v2i.Request;
 
