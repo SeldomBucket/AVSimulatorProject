@@ -1,4 +1,4 @@
-package aim4.im.merge.reservation;
+package aim4.im.merge.reservation.nogrid;
 
 import aim4.config.Constants;
 import aim4.driver.Driver;
@@ -366,7 +366,7 @@ public class ReservationMergeManager implements
     @Override
     public Integer accept(Plan plan) {
         boolean b = reservationMerge.reserve(plan.getVin(), plan.getWorkingList());
-        assert b == true;
+        assert b;
         return plan.getVin();
     }
 

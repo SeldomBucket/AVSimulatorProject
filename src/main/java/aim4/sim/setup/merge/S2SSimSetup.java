@@ -1,11 +1,12 @@
 package aim4.sim.setup.merge;
 
 import aim4.config.SimConfig;
-import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
+import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.sim.setup.merge.enums.ProtocolType;
-import aim4.sim.simulator.merge.CentralManagementMergeSimulator;
+import aim4.sim.simulator.merge.V2IMergeSimulator;
 import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 
@@ -68,12 +69,25 @@ public class S2SSimSetup implements MergeSimSetup {
                 mergeLeadInDistance, mergingAngle);
 
         switch(mergingProtocol){
-            case AIM:
+            case AIM_GRID:
+                ReservationMergeGridManager.Config mergeGridReservationConfig =
+                        new ReservationMergeGridManager.Config(
+                                SimConfig.TIME_STEP,
+                                SimConfig.GRID_TIME_STEP,
+                                0.1,
+                                0.15,
+                                0.15,
+                                true,
+                                1.0);
+                MergeMapUtil.setFCFSGridMergeManagers(layout, currentTime, mergeGridReservationConfig);
+                MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
+                return new V2IMergeSimulator(layout);
+            case AIM_NO_GRID:
                 ReservationMergeManager.Config mergeReservationConfig =
                         new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
                 MergeMapUtil.setFCFSMergeManagers(layout, currentTime, mergeReservationConfig);
                 MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
-                return new CentralManagementMergeSimulator(layout);
+                return new V2IMergeSimulator(layout);
             case DECENTRALISED:
                 MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
                 return null;

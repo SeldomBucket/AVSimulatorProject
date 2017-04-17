@@ -1,7 +1,7 @@
 package aim4.vehicle.merge;
 
 import aim4.driver.Driver;
-import aim4.driver.merge.MergeCentralAutoDriver;
+import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.msg.merge.v2i.V2IMergeMessage;
 import aim4.vehicle.VehicleSpec;
@@ -64,19 +64,19 @@ public class MergeCentralAutoVehicle extends MergeBasicAutoVehicle implements Me
      * {@inheritDoc}
      */
     @Override
-    public MergeCentralAutoDriver getDriver() {
-        assert driver instanceof MergeCentralAutoDriver;
-        return (MergeCentralAutoDriver) driver;
+    public MergeV2IAutoDriver getDriver() {
+        assert driver instanceof MergeV2IAutoDriver;
+        return (MergeV2IAutoDriver) driver;
     }
 
     /**
      * {@inheritDoc}
      *
-     * In this instance, forces Driver to be a MergeCentralAutoDriver
+     * In this instance, forces Driver to be a MergeV2IAutoDriver
      */
     @Override
     public void setDriver(Driver driver) {
-        assert driver instanceof MergeCentralAutoDriver;
+        assert driver instanceof MergeV2IAutoDriver;
         super.setDriver(driver);
     }
 

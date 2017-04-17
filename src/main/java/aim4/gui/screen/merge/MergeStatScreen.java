@@ -47,7 +47,8 @@ public class MergeStatScreen extends StatScreen {
             case SINGLE: setupSingleLaneScreen(); break;
             case S2S:
                 switch(protocolType) {
-                    case AIM: setupS2SAimScreen(); break;
+                    case AIM_GRID: setupS2SAimScreen(); break;
+                    case AIM_NO_GRID: setupS2SAimScreen(); break;
                     case DECENTRALISED: setupS2SDecentralisedScreen(); break;
                     case TEST_MERGE: setupS2STestMergeScreen(); break;
                     case TEST_TARGET: setupS2STestTargetScreen(); break;

@@ -1,7 +1,7 @@
 package aim4.map.merge;
 
 import aim4.config.SimConfig;
-import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
 import org.junit.Test;

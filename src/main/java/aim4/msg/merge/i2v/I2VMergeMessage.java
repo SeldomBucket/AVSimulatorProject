@@ -1,7 +1,5 @@
 package aim4.msg.merge.i2v;
 
-import aim4.config.Constants;
-
 /**
  * Created by Callum on 13/04/2017.
  */

@@ -3,7 +3,7 @@ package aim4.driver.merge.coordinator;
 import aim4.config.SimConfig;
 import aim4.driver.DriverUtil;
 import aim4.driver.aim.coordinator.*;
-import aim4.driver.merge.MergeCentralAutoDriver;
+import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.driver.merge.pilot.MergeAutoPilot;
 import aim4.im.merge.V2IMergeManager;
 import aim4.map.Road;
@@ -26,12 +26,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
-import java.util.Queue;
 
 /**
  * Created by Callum on 13/04/2017.
  */
-public class MergeCentralAutoCoordinator extends MergeCoordinator {
+public class MergeV2IAutoCoordinator extends MergeCoordinator {
     // CONSTANTS //
     /**
      * The maximum amount of error in the clock of the vehicle. {@value} seconds.
@@ -121,178 +120,6 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
         TERMINAL_STATE
     }
 
-    /**
-     * Postprocessing the reservation parameters
-     */
-    public static class ReservationParameter {
-
-        /**
-         * The Lane in which the Vehicle should arrive at the merge.
-         */
-        private Lane arrivalLane;
-
-        /**
-         * The Lane in which the Vehicle will depart the merge.
-         */
-        private Lane departureLane;
-
-        /**
-         * The time at which the Vehicle should arrive at the merge.
-         */
-        private double arrivalTime;
-
-        /**
-         * The allowed amount of time, in seconds before the exact planned arrival
-         * time for which the Vehicle is allowed to arrive at the merge.
-         */
-        private double earlyError;
-
-        /**
-         * The allowed amount of time, in seconds after the exact planned arrival
-         * time for which the Vehicle is allowed to arrive at the merge.
-         */
-        private double lateError;
-
-        /**
-         * The velocity, in meters per second, at which the Vehicle should arrive
-         * at the merge.
-         */
-        private double arrivalVelocity;
-
-        /**
-         * The distance after the merge that is protected by an Admission
-         * Control Zone.
-         */
-        private double aczDistance;
-
-        /**
-         * The list of acceleration/duration pairs the vehicle should use to
-         * cross the merge safely.  If empty or null, the vehicle should
-         * accelerate to top speed or the speed limit, whichever is lower.
-         */
-        private Queue<double[]> accelerationProfile;
-
-        /////////////////////////////////
-        // CONSTRUCTORS
-        /////////////////////////////////
-
-        /**
-         * Create a reservation parameter object
-         */
-        public ReservationParameter(Confirm msg, MergeMap map) {
-            this.arrivalLane =
-                    map.getLaneRegistry().get(msg.getArrivalLaneID());
-            this.departureLane =
-                    map.getLaneRegistry().get(msg.getDepartureLaneID());
-            this.arrivalTime = msg.getArrivalTime();
-            this.earlyError = msg.getEarlyError();
-            this.lateError = msg.getLateError();
-            this.arrivalVelocity = msg.getArrivalVelocity();
-            this.aczDistance = msg.getACZDistance();
-            this.accelerationProfile = msg.getAccelerationProfile();
-        }
-
-        /**
-         * Get the Lane in which this driver agent's Vehicle should
-         * arrive to comply with the reservation this driver agent is holding. If
-         * the driver agent is not holding a reservation, the return value is not
-         *  defined.
-         *
-         * @return the arrival lane for the reservation this driver agent is holding
-         */
-        public Lane getArrivalLane() {
-            return arrivalLane;
-        }
-
-        /**
-         * Get the Lane in which this driver agent's Vehicle should
-         * arrive to comply with the reservation this driver agent is holding. If
-         * the driver agent is not holding a reservation, the return value is not
-         * defined.
-         *
-         * @return the departure Lane for the reservation this driver agent is
-         *         holding
-         */
-        public Lane getDepartureLane() {
-            return departureLane;
-        }
-
-        /**
-         * Get the arrival time of the reservation this driver agent is holding. If
-         * the driver agent is not holding a reservation, the return value is not
-         * defined.
-         *
-         * @return the arrival time of the reservation this driver agent is holding
-         */
-        public double getArrivalTime() {
-            return arrivalTime;
-        }
-
-        /**
-         * Get the maximum amount of time, in seconds, before the official arrival
-         * time that the driver agent's vehicle can arrive at the merge, for
-         * the current reservation the driver agent is holding.  If the driver agent
-         * is not holding a reservation, the return value is undefined.
-         *
-         * @return the maximum early error for the driver agent's current
-         *         reservation
-         */
-        public double getEarlyError() {
-            return earlyError;
-        }
-
-        /**
-         * Get the maximum amount of time, in seconds, after the official arrival
-         * time that the driver agent's vehicle can arrive at the merge, for
-         * the current reservation the driver agent is holding.  If the driver agent
-         * is not holding a reservation, the return value is undefined.
-         *
-         * @return the maximum late error for the driver agent's current
-         *         reservation
-         */
-        public double getLateError() {
-            return lateError;
-        }
-
-        /**
-         * Get the arrival velocity, in meters per second, of the reservation this
-         * driver agent is holding. If the driver agent is not holding a
-         * reservation, the return value is not defined.
-         *
-         * @return the arrival velocity of the reservation this driver agent is
-         *         holding
-         */
-        public double getArrivalVelocity() {
-            return arrivalVelocity;
-        }
-
-        /**
-         * Get the distance past the merge which is controlled by the
-         * Admission Control Zone after the merge for the reservation this
-         * driver agent is holding.
-         *
-         * @return the distance of the Admission Control Zone after the merge
-         *         for the reservation this driver agent is holding
-         */
-        public double getACZDistance() {
-            return aczDistance;
-        }
-
-        /**
-         * Get the list of acceleration/duration pairs that describe the required
-         * velocity profile of the driver agent's Vehicle as it crosses the
-         * merge in accordance with its current reservation.  If the driver
-         * agent is not holding a reservation, the return value is not defined.
-         *
-         * @return the acceleration profile of the reservation this driver agent
-         *         is currently holding
-         */
-        public Queue<double[]> getAccelerationProfile() {
-            return accelerationProfile;
-        }
-
-    }
-
     // PRIVATE FIELDS //
     // STATE
     /** The current state of the agent. */
@@ -322,9 +149,9 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
     private double nextAllowedSendingRequestTime;
 
     // CONSTRUCTOR //
-    public MergeCentralAutoCoordinator(MergeCentralAutoVehicleDriverModel vehicle,
-                                       MergeCentralAutoDriver driver,
-                                       MergeMap map) {
+    public MergeV2IAutoCoordinator(MergeCentralAutoVehicleDriverModel vehicle,
+                                   MergeV2IAutoDriver driver,
+                                   MergeMap map) {
         this.vehicle = vehicle;
         this.driver = driver;
         this.map = map;
@@ -561,22 +388,22 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
                 goBackToPlanningStateUponRejection(msg);
                 break;
             case BEFORE_NEXT_ALLOWED_COMM:
-                throw new RuntimeException("MergeCentralAutoCoordinator: Cannot send reqest "+
+                throw new RuntimeException("MergeV2IAutoCoordinator: Cannot send reqest "+
                         "message before the next allowed " +
                         "communication time");
             case ARRIVAL_TIME_TOO_LARGE:
                 System.err.printf("vin %d\n", vehicle.getVIN());
-                throw new RuntimeException("MergeCentralAutoCoordinator: cannot make reqest whose "+
+                throw new RuntimeException("MergeV2IAutoCoordinator: cannot make reqest whose "+
                         "arrival time is too far in the future");
             case ARRIVAL_TIME_TOO_LATE:
                 // This means that by the time our message got to IM, the arrival time
                 // had already passed.  It indicates an error in the proposal
                 // preparation in coordinator.
-                throw new RuntimeException("MergeCentralAutoCoordinator: Arrival time of request " +
+                throw new RuntimeException("MergeV2IAutoCoordinator: Arrival time of request " +
                         "has already passed.");
             default:
                 System.err.printf("%s\n", msg.getReason());
-                throw new RuntimeException("MergeCentralAutoCoordinator: Unknown reason for " +
+                throw new RuntimeException("MergeV2IAutoCoordinator: Unknown reason for " +
                         "rejection.");
         }
     }
@@ -1212,8 +1039,8 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
         return (MergeCentralAutoVehicleDriverModel) vehicle;
     }
 
-    private MergeCentralAutoDriver getDriver() {
-        assert driver instanceof MergeCentralAutoDriver;
-        return (MergeCentralAutoDriver) driver;
+    private MergeV2IAutoDriver getDriver() {
+        assert driver instanceof MergeV2IAutoDriver;
+        return (MergeV2IAutoDriver) driver;
     }
 }

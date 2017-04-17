@@ -1,7 +1,11 @@
-package aim4.im.merge.policy;
+package aim4.im.merge.policy.nogrid;
 
 import aim4.im.AczManager;
 import aim4.im.merge.V2IMergeManager;
+import aim4.im.merge.policy.BaseMergePolicyCallback;
+import aim4.im.merge.policy.MergePolicy;
+import aim4.im.merge.policy.MergeRequestHandler;
+import aim4.im.merge.policy.V2IMergeManagerCallback;
 import aim4.im.merge.reservation.ReservationMerge;
 import aim4.im.merge.reservation.ReservationMergeManager;
 import aim4.msg.merge.i2v.Confirm;

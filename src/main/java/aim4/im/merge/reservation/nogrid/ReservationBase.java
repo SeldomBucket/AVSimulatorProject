@@ -1,4 +1,4 @@
-package aim4.im.merge.reservation;
+package aim4.im.merge.reservation.nogrid;
 
 import java.util.*;
 

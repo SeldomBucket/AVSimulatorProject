@@ -1,8 +1,6 @@
-package aim4.im.merge.reservation;
+package aim4.im.merge.reservation.nogrid;
 
 import aim4.map.connections.MergeConnection;
-
-import java.awt.geom.Area;
 
 /**
  * Created by Callum on 13/04/2017.

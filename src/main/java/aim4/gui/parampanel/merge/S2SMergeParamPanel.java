@@ -13,7 +13,8 @@ import java.awt.*;
  */
 public class S2SMergeParamPanel extends MergeParamPanel {
     //COMBOBOX OPTIONS//
-    final static String AIM_PROTOCOL_TITLE = "AIM Protocol";
+    final static String AIM_GRID_PROTOCOL_TITLE = "AIM Grid Protocol";
+    final static String AIM_NO_GRID_PROTOCOL_TITLE = "AIM Gridless Protocol";
     final static String DECENTRALISED_PROTOCOL_TITLE = "Decnetralised Protocol";
     final static String TEST_MERGE_PROTOCOL_TITLE = "Test Merge Lane Only";
     final static String TEST_TARGET_PROTOCOL_TITLE = "Test Target Lane Only";
@@ -48,7 +49,8 @@ public class S2SMergeParamPanel extends MergeParamPanel {
 
         String comboBoxItems[] =
                 {
-                        AIM_PROTOCOL_TITLE,
+                        AIM_GRID_PROTOCOL_TITLE,
+                        AIM_NO_GRID_PROTOCOL_TITLE,
                         DECENTRALISED_PROTOCOL_TITLE,
                         TEST_MERGE_PROTOCOL_TITLE,
                         TEST_TARGET_PROTOCOL_TITLE
@@ -134,10 +136,11 @@ public class S2SMergeParamPanel extends MergeParamPanel {
 
     private ProtocolType getSelectedProtocol(){
         switch (protocolComboBox.getSelectedIndex()) {
-            case 0: return ProtocolType.AIM;
-            case 1: return ProtocolType.DECENTRALISED;
-            case 2: return ProtocolType.TEST_MERGE;
-            case 3: return ProtocolType.TEST_TARGET;
+            case 0: return ProtocolType.AIM_GRID;
+            case 1: return ProtocolType.AIM_NO_GRID;
+            case 2: return ProtocolType.DECENTRALISED;
+            case 3: return ProtocolType.TEST_MERGE;
+            case 4: return ProtocolType.TEST_TARGET;
             default: throw new RuntimeException("Protocol type combo box went out of range");
         }
     }

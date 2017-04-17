@@ -1,6 +1,7 @@
 package aim4.sim.simulator.merge;
 
 import aim4.im.merge.MergeManager;
+import aim4.im.merge.V2IEnabledMergeManager;
 import aim4.im.merge.V2IMergeManager;
 import aim4.map.merge.MergeMap;
 import aim4.msg.merge.i2v.I2VMergeMessage;
@@ -16,8 +17,8 @@ import java.util.Queue;
 /**
  * Created by Callum on 13/04/2017.
  */
-public class CentralManagementMergeSimulator extends CoreMergeSimulator {
-    public CentralManagementMergeSimulator(MergeMap map) {
+public class V2IMergeSimulator extends CoreMergeSimulator {
+    public V2IMergeSimulator(MergeMap map) {
         super(map);
     }
 
@@ -55,8 +56,8 @@ public class CentralManagementMergeSimulator extends CoreMergeSimulator {
                 Queue<V2IMergeMessage> v2iOutbox = sender.getV2IOutbox();
                 while(!v2iOutbox.isEmpty()) {
                     V2IMergeMessage msg = v2iOutbox.poll();
-                    V2IMergeManager receiver =
-                            (V2IMergeManager) getMap().getMMRegistry().get(msg.getMMID());
+                    V2IEnabledMergeManager receiver =
+                            (V2IEnabledMergeManager) getMap().getMMRegistry().get(msg.getMMID());
                     //Calculate distance message must travel
                     double txDistance =
                             sender.getPosition().distance(
