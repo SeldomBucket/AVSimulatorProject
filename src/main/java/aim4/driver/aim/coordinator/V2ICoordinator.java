@@ -1324,7 +1324,6 @@ public class V2ICoordinator implements Coordinator {
     }
   }
 
-
   /**
    * The state handler for the lane changing state.
    */
@@ -1834,7 +1833,6 @@ public class V2ICoordinator implements Coordinator {
     }
   }
 
-
   /**
    * The state handler for the traversing state.
    */
@@ -1863,7 +1861,6 @@ public class V2ICoordinator implements Coordinator {
       }
     }
   }
-
 
   /**
    * The state handler for the clearing state.

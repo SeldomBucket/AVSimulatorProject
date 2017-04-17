@@ -655,7 +655,7 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
         @Override
         public boolean perform() {
             pilot.followCurrentLane();
-            pilot.simpleThrottleAction();
+            pilot.simpleThrottleActionDontEnterMerge();
             setState(State.PLANNING);
             return false;
         }
@@ -882,14 +882,14 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
                             // controller
                             vehicle.removeAccelSchedule();
                             pilot.followCurrentLane();
-                            pilot.simpleThrottleAction();
+                            pilot.simpleThrottleActionDontEnterMerge();
                             return false;
                         }
                     }
                 } else {
                     // using the reactive controller
                     pilot.followCurrentLane();
-                    pilot.simpleThrottleAction();
+                    pilot.simpleThrottleActionDontEnterMerge();
                     return false;
                 }
             }
@@ -950,7 +950,7 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
                                     "incorrect.\n",
                             vehicle.gaugeTime(),
                             vehicle.getVIN());
-                    System.err.printf("The arrival time is time %.5f,\n",
+                    System.err.printf("The reservation arrival time is %.5f,\n",
                             rparameter.getArrivalTime());
                     System.err.printf("but the vehicle arrives at time %.5f\n",
                             vehicle.gaugeTime());
@@ -1039,12 +1039,12 @@ public class MergeCentralAutoCoordinator extends MergeCoordinator {
                 setState(State.TERMINAL_STATE);
 
                 pilot.followCurrentLane();    // the last act before termination
-                pilot.simpleThrottleAction();
+                pilot.simpleThrottleActionDontEnterMerge();
                 return false;
             } else {
                 // remain in the same state
                 pilot.followCurrentLane();
-                pilot.simpleThrottleAction();
+                pilot.simpleThrottleActionDontEnterMerge();
                 return false;
             }
         }

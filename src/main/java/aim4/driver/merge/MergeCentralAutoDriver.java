@@ -61,7 +61,7 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         return coordinator.getStateString();
     }
 
-    // IM
+    // MM
     /** Find the next MergeManager that the Vehicle will need to
     * interact with, in this Lane.
     * @return the nextMergeManager that the Vehicle will need

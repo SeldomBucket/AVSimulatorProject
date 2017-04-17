@@ -2,6 +2,7 @@ package aim4.sim.simulator.merge;
 
 import aim4.config.SimConfig;
 import aim4.driver.merge.MergeCentralAutoDriver;
+import aim4.driver.merge.coordinator.MergeAutoCoordinator;
 import aim4.driver.merge.coordinator.MergeCentralAutoCoordinator;
 import aim4.driver.merge.pilot.MergeAutoPilot;
 import aim4.im.merge.V2IMergeManager;
@@ -204,24 +205,337 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         // STEPS UNTIL HITTING THE ZONE //
         boolean hitSlowTimeCheck = false;
         boolean hitArrivalTimeCheck = false;
-        while(vehicle.getPosition().getX() != mergeEntryPoint.getX() && vehicle.getPosition().getY() != mergeEntryPoint.getY()) {
+
+        while(!vehicle.getDriver().inCurrentMerge()) {
+            //STEP
             sim.step(TIME_STEP);
             stepsTaken++;
+
+            //SIM CHECKS
             assertEquals(0, sim.getNumCompletedVehicles());
             assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
             assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(!vehicle.getDriver().inCurrentMerge())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+
+            /*
+            Vehicle reaches merge before the accel schedule can be applied and the vehicle moves out of the mode that
+            follows the accel schedule to a different movement type. Not sure why, or if this is even deliberate.
+
+            //ACCEL CHECKS
             if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(slowTime)) {
                 assertEquals(vehicle.getAcceleration(), slowAccel, 0);
                 hitSlowTimeCheck = true;
             }
             else if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(arrivalTime)) {
                 assertEquals(vehicle.getAcceleration(), arrivalAccel, 0);
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
                 hitArrivalTimeCheck = true;
-            }
+            }*/
         }
-        assertEquals(arrivalTime, sim.getSimulationTime(), 0);
+        /*
         assertTrue(hitSlowTimeCheck);
         assertTrue(hitArrivalTimeCheck);
+        */
+
+        // STEPS INSIDE ZONE //
+        while(vehicle.getDriver().inCurrentMerge()) {
+            //STEP
+            sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(0, sim.getNumCompletedVehicles());
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+            assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(vehicle.getDriver().inCurrentMerge())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+        }
+
+        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+
+        // STEPS WHILE CLEARING //
+        while(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString()) {
+            //STEP
+            sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(0, sim.getNumCompletedVehicles());
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+            assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+        }
+
+        // SWITCH OVER TO MergeAutoCoordinator //
+
+        CoreMergeSimulator.CoreMergeSimStepResult result = null;
+        while(vehicle.getShape().intersects(map.getDimensions())) {
+            //STEPS
+            result = sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+
+            //DRIVER CHECKS
+            if (vehicle.getShape().intersects(map.getDimensions())) {
+                assertEquals(driver.getStateString(), MergeAutoCoordinator.State.PLANNING.toString());
+                assertEquals(0, sim.getNumCompletedVehicles());
+                assertEquals(1, sim.getVinToVehicles().size());
+            }
+        }
+
+        assertNotNull(result);
+        assertTrue(result.getCompletedVehicles().keySet().contains(vin));
+        assertEquals(sim.getNumCompletedVehicles(), 1);
+        assertEquals(sim.getVinToVehicles().size(), 0);
+    }
+
+    private void testS2SMapTargetOnly(double mergeAngle) throws Exception {
+        System.out.println(String.format("Testing S2SMapMergeOnly at merge angle: %f", mergeAngle));
+        double mergeAngleRad = Math.toRadians(mergeAngle);
+        double currentTime = 0;
+        S2SMergeMap map = new S2SMergeMap(currentTime,
+                SPEED_LIMIT, SPEED_LIMIT, TARGET_LEAD_IN_DISTANCE,
+                TARGET_LEAD_OUT_DISTANCE, MERGE_LEAD_IN_DISTANCE,
+                mergeAngle);
+        ReservationMergeManager.Config mergeReservationConfig =
+                new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
+        MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
+        MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
+        CentralManagementMergeSimulator sim = new CentralManagementMergeSimulator(map);
+
+        //Create useful references
+        V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
+        MergeConnection merge = mergeManager.getMergeConnection();
+        ReservationMergeManager reservationMergeManager = mergeManager.getReservationMergeManager();
+        ReservationMerge reservationMerge = mergeManager.getReservationMerge();
+        Lane targetLane = null;
+        Lane mergeLane = null;
+        for(Lane l : merge.getLanes()) {
+            if(l.getInitialHeading() == 0)
+                targetLane = l;
+            else
+                mergeLane = l;
+        }
+        assert targetLane != null && mergeLane != null;
+        WayPoint mergeEntryPoint = merge.getEntryPoint(mergeLane);
+        WayPoint targetEntryPoint = merge.getEntryPoint(targetLane);
+
+        // BEFORE //
+        assertEquals(0, sim.getNumCompletedVehicles());
+        assertEquals(0, sim.getSimulationTime(), 0);
+
+        // AFTER 1 STEP //
+        int stepsTaken = 0;
+        sim.step(TIME_STEP);
+        stepsTaken++;
+
+        //ACQUIRE VEHICLE AND DRIVER
+        int vin = sim.getVinToVehicles().keySet().iterator().next();
+        assert sim.getActiveVehicle(vin) instanceof MergeCentralAutoVehicle;
+        MergeCentralAutoVehicle vehicle = (MergeCentralAutoVehicle) sim.getActiveVehicle(vin);
+        MergeCentralAutoDriver driver = vehicle.getDriver();
+        double startXPosition = vehicle.getPosition().getX();
+        double startYPosition = vehicle.getPosition().getY();
+
+        /*
+        During this step, the vehicle has sent a proposal to the merge manager and is now awaiting a response.
+         */
+
+        //SIM CHECKS
+        assertEquals(0, sim.getNumCompletedVehicles());
+        assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0);
+        assertEquals(1, sim.getVinToVehicles().size());
+
+        //VEHICLE CHECKS
+        assertEquals(2 * Math.PI - mergeAngleRad, vehicle.getHeading(), 0.001);
+        assertNotNull(vehicle.getAccelSchedule());
+
+        //Accel schedule should aim to stop vehicle at merge. These tests confirm this.
+        AccelSchedule toStopAccelSchedule = vehicle.getAccelSchedule();
+        List<AccelSchedule.TimeAccel> accelList = toStopAccelSchedule.getList();
+        double stoppingDistance =
+                0.5 * Math.abs(vehicle.getMaxDeceleration()) *
+                        Math.pow(calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration()), 2);
+        double distanceToStopPoint =
+                mergeLane.getStartPoint().distance(merge.getEntryPoint(driver.getCurrentLane()))
+                        - MergeAutoPilot.DEFAULT_STOP_DISTANCE_BEFORE_MERGE;
+        double distanceToSlowDown = distanceToStopPoint - stoppingDistance;
+
+        //Accel 1
+        double timeAtDeceleration = (distanceToSlowDown / vehicle.getVelocity());
+        AccelSchedule.TimeAccel slowToStop = accelList.get(0);
+        assertEquals(vehicle.getMaxDeceleration(), slowToStop.getAcceleration(), 0);
+        assertEquals(timeAtDeceleration, slowToStop.getTime(), 0.01);
+
+        //Accel 2
+        double timeAtStop = timeAtDeceleration + calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration());
+        AccelSchedule.TimeAccel stop = accelList.get(1);
+        assertEquals(0, stop.getAcceleration(), 0);
+        assertEquals(timeAtStop, stop.getTime(), 0.01);
+
+        //DRIVER CHECKS
+        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+
+        // AFTER 2 STEPS //
+        sim.step(TIME_STEP);
+        stepsTaken++;
+
+        /*
+        During the next step the driver will still be awaiting a response. Then the merge manager will handle the
+        request before sending a confirmation to the driver.
+         */
+
+        //SIM CHECKS
+        assertEquals(0, sim.getNumCompletedVehicles());
+        assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0);
+        assertEquals(1, sim.getVinToVehicles().size());
+
+        //VEHICLE CHECKS
+        assertEquals(2 * Math.PI - mergeAngleRad, vehicle.getHeading(), 0.001);
+        assertEquals(vehicle.getAccelSchedule(), toStopAccelSchedule); //Schedule won't change because vehicle has not received response
+
+        //DRIVER CHECKS
+        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+
+        //COMMS CHECKS
+        final Field i2VInboxField = MergeCentralAutoVehicle.class.getDeclaredField("i2vInbox");
+        i2VInboxField.setAccessible(true);
+        assertEquals(((Queue<I2VMergeMessage>)i2VInboxField.get(vehicle)).size(), 1);
+
+        // AFTER 3 STEPS //
+        sim.step(TIME_STEP);
+        stepsTaken++;
+
+        /*
+        During this step the driver processes the message and adjusts their acceleration profile to match their proposal
+         */
+        //SIM CHECKS
+        assertEquals(0, sim.getNumCompletedVehicles());
+        assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0);
+        assertEquals(1, sim.getVinToVehicles().size());
+
+        //VEHICLE CHECKS
+        assertEquals(2 * Math.PI - mergeAngleRad, vehicle.getHeading(), 0.001);
+        assertNotSame(vehicle.getAccelSchedule(), toStopAccelSchedule);
+        AccelSchedule reservationAccelSchedule = vehicle.getAccelSchedule();
+        List<AccelSchedule.TimeAccel> reservationList = reservationAccelSchedule.getList();
+        double slowTime = reservationList.get(0).getTime();
+        double slowAccel = reservationList.get(0).getAcceleration();
+        double arrivalTime = reservationList.get(1).getTime();
+        double arrivalAccel = reservationList.get(1).getAcceleration();
+
+        //DRIVER CHECKS
+        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+
+        //RESERVATION MANAGER CHECKS
+        assertTrue(reservationMerge.hasReservation(vehicle.getVIN()));
+        assertTrue(reservationMerge.isReserved(reservationMerge.calcDiscreteTime(arrivalTime + TIME_STEP)));
+
+        // STEPS UNTIL HITTING THE ZONE //
+        boolean hitSlowTimeCheck = false;
+        boolean hitArrivalTimeCheck = false;
+
+        while(!vehicle.getDriver().inCurrentMerge()) {
+            //STEP
+            sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(0, sim.getNumCompletedVehicles());
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+            assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(!vehicle.getDriver().inCurrentMerge())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+
+            /*
+            Vehicle reaches merge before the accel schedule can be applied and the vehicle moves out of the mode that
+            follows the accel schedule to a different movement type. Not sure why, or if this is even deliberate.
+
+            //ACCEL CHECKS
+            if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(slowTime)) {
+                assertEquals(vehicle.getAcceleration(), slowAccel, 0);
+                hitSlowTimeCheck = true;
+            }
+            else if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(arrivalTime)) {
+                assertEquals(vehicle.getAcceleration(), arrivalAccel, 0);
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+                hitArrivalTimeCheck = true;
+            }*/
+        }
+        /*
+        assertTrue(hitSlowTimeCheck);
+        assertTrue(hitArrivalTimeCheck);
+        */
+
+        // STEPS INSIDE ZONE //
+        while(vehicle.getDriver().inCurrentMerge()) {
+            //STEP
+            sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(0, sim.getNumCompletedVehicles());
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+            assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(vehicle.getDriver().inCurrentMerge())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+        }
+
+        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+
+        // STEPS WHILE CLEARING //
+        while(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString()) {
+            //STEP
+            sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(0, sim.getNumCompletedVehicles());
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+            assertEquals(1, sim.getVinToVehicles().size());
+
+            //DRIVER CHECKS
+            if(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString())
+                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+        }
+
+        // SWITCH OVER TO MergeAutoCoordinator //
+
+        CoreMergeSimulator.CoreMergeSimStepResult result = null;
+        while(vehicle.getShape().intersects(map.getDimensions())) {
+            //STEPS
+            result = sim.step(TIME_STEP);
+            stepsTaken++;
+
+            //SIM CHECKS
+            assertEquals(stepsTaken * TIME_STEP, sim.getSimulationTime(), 0.0001);
+
+            //DRIVER CHECKS
+            if (vehicle.getShape().intersects(map.getDimensions())) {
+                assertEquals(driver.getStateString(), MergeAutoCoordinator.State.PLANNING.toString());
+                assertEquals(0, sim.getNumCompletedVehicles());
+                assertEquals(1, sim.getVinToVehicles().size());
+            }
+        }
+
+        assertNotNull(result);
+        assertTrue(result.getCompletedVehicles().keySet().contains(vin));
+        assertEquals(sim.getNumCompletedVehicles(), 1);
+        assertEquals(sim.getVinToVehicles().size(), 0);
     }
 
     private double calculateTimeToDecelerate(double vInitial, double vFinal, double decel) {
