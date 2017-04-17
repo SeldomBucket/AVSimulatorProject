@@ -1,7 +1,6 @@
 package aim4.map.merge;
 
 import aim4.im.merge.MergeManager;
-import aim4.map.lane.AbstractLane;
 import aim4.map.lane.Lane;
 
 import java.awt.geom.Point2D;

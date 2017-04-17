@@ -30,12 +30,12 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.im.aim.v2i.policy;
 
-import java.util.List;
-
 import aim4.im.aim.TrackModel;
 import aim4.im.aim.v2i.policy.BasePolicy.ReserveParam;
 import aim4.msg.aim.i2v.Reject;
 import aim4.msg.aim.v2i.Request;
+
+import java.util.List;
 
 /**
  * The base policy's callback interface.
@@ -48,7 +48,7 @@ public interface BasePolicyCallback {
    * @param latestRequestId  the latest request id of the vehicle
    * @param reserveParam     the reservation parameter
    */
-  void sendComfirmMsg(int latestRequestId,
+  void sendConfirmMsg(int latestRequestId,
                       BasePolicy.ReserveParam reserveParam);
   /**
    * Send a reject message

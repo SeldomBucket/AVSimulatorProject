@@ -12,4 +12,10 @@ public interface MergeDriverSimModel extends DriverSimModel {
      * @param spawnPoint the spawn point that generated the driver.
      */
     void setSpawnPoint(MergeSpawnPoint spawnPoint);
+
+    /**
+     * Returns a String representing the state of the Driver.
+     * @return
+     */
+    String getStateString();
 }

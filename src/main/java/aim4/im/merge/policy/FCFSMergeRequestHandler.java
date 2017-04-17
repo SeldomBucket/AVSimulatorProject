@@ -64,7 +64,7 @@ public class FCFSMergeRequestHandler implements MergeRequestHandler {
         BaseMergePolicy.ReserveParam reserveParam =
                 basePolicy.findReserveParam(msg, filterResult.getProposals());
         if (reserveParam != null) {
-            basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+            basePolicy.sendConfirmMessage(msg.getRequestId(), reserveParam);
         } else {
             basePolicy.sendRejectMsg(vin, msg.getRequestId(),
                     Reject.Reason.NO_CLEAR_PATH);

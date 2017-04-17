@@ -17,8 +17,8 @@ public interface BaseMergePolicyCallback {
      * @param latestRequestId  the latest request id of the vehicle
      * @param reserveParam     the reservation parameter
      */
-    void sendComfirmMsg(int latestRequestId,
-                        BaseMergePolicy.ReserveParam reserveParam);
+    void sendConfirmMessage(int latestRequestId,
+                            BaseMergePolicy.ReserveParam reserveParam);
     /**
      * Send a reject message
      *

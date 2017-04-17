@@ -22,7 +22,7 @@ public class MergeCentralAutoVehicle extends MergeBasicAutoVehicle implements Me
      * The default distance the Vehicle can transmit messages.
      * {@value} meters.
      */
-    public static final double DEFAULT_TRANSMISSION_POWER = 250; // meters
+    public static final double DEFAULT_TRANSMISSION_POWER = Double.MAX_VALUE; // meters
 
     // PRIVATE FIELDS //
     /**
@@ -81,7 +81,6 @@ public class MergeCentralAutoVehicle extends MergeBasicAutoVehicle implements Me
     }
 
     // MESSAGING
-
     /**
      * Set the Vehicle's transmission power.
      *

@@ -106,7 +106,7 @@ public class FCFSRequestHandler implements RequestHandler {
     ReserveParam reserveParam =
       basePolicy.findReserveParam(msg, filterResult.getProposals());
     if (reserveParam != null) {
-      basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+      basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
     } else {
       basePolicy.sendRejectMsg(vin, msg.getRequestId(),
                                Reject.Reason.NO_CLEAR_PATH);

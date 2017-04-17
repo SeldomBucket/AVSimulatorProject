@@ -332,8 +332,10 @@ public class ReservationMergeManager implements
 
         // Create a dummy driver to steer it
         Driver dummy = new MergeAutoDriver(testVehicle, layout);
+        dummy.setCurrentLane(arrivalLane);
         // Assign driver to vehicle
         testVehicle.setDriver(dummy);
+        testVehicle.getIntervalometer().record(Double.MAX_VALUE); //No next vehicle
 
         //Keep track of times making up this reservation
         TimesSimulationResult timesSimResult =
@@ -359,13 +361,12 @@ public class ReservationMergeManager implements
         } else {
             return null;
         }
-
     }
 
     @Override
     public Integer accept(Plan plan) {
         boolean b = reservationMerge.reserve(plan.getVin(), plan.getWorkingList());
-        assert b;
+        assert b == true;
         return plan.getVin();
     }
 
@@ -491,11 +492,15 @@ public class ReservationMergeManager implements
         double currentDuration = reservationMerge.calcRemainingTime(arrivalTime);
 
         // drive the test vehicle until it leaves the merge
-        while(VehicleUtil.intersects(testVehicle, area)) {
+        while(VehicleUtil.intersectsHighPrecision(testVehicle, area)) {
             moveTestVehicle(testVehicle, dummy, currentDuration, accelerating);
             currentIntTime++;  // Record that we've moved forward one time step
-            workingList.add(reservationMerge.new TimeReservation(currentIntTime));
-            currentDuration = reservationMerge.getMergeTimeStep();
+            if(reservationMerge.isReserved(currentIntTime))
+                return null; //FAILED TO RESERVE
+            else {
+                workingList.add(reservationMerge.new TimeReservation(currentIntTime));
+                currentDuration = reservationMerge.getMergeTimeStep();
+            }
         }
 
         return new TimesSimulationResult(workingList,reservationMerge.calcTime(currentIntTime));

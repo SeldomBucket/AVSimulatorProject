@@ -67,8 +67,6 @@ public class S2SSimSetup implements MergeSimSetup {
                 targetLeadInDistance, targetLeadOutDistance,
                 mergeLeadInDistance, mergingAngle);
 
-
-
         switch(mergingProtocol){
             case AIM:
                 ReservationMergeManager.Config mergeReservationConfig =

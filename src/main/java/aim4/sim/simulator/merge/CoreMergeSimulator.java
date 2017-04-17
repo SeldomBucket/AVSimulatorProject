@@ -4,14 +4,12 @@ import aim4.map.DataCollectionLine;
 import aim4.map.merge.MergeMap;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
+import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by Callum on 08/03/2017.
@@ -61,6 +59,7 @@ public class CoreMergeSimulator implements MergeSimulator {
         sensorInputHelper.provideSensorInput();
         letDriversAct();
         moveVehicles(timeStep);
+        checkForCollisions();
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
         incrementCurrentTime(timeStep);
@@ -150,6 +149,23 @@ public class CoreMergeSimulator implements MergeSimulator {
         }
 
         return completedVehicles;
+    }
+
+    //CHECKS//
+    protected void checkForCollisions() {
+        Integer[] keys = vinToVehicles.keySet().toArray(new Integer[]{});
+        for(int i = 0; i < keys.length - 1; i++) { //-1 because we won't compare the last element with anything.
+            Integer[] keysToCompare = Arrays.copyOfRange(keys, i + 1, keys.length);
+            MergeVehicleSimModel vehicle1 = vinToVehicles.get(keys[i]);
+            for(int j = 0; j < keysToCompare.length; j++) {
+                MergeVehicleSimModel vehicle2 = vinToVehicles.get(keysToCompare[j]);
+                if(VehicleUtil.collision(vehicle1, vehicle2)) {
+                    throw new RuntimeException(String.format("There was a collision between vehicles %d and %d",
+                            vehicle1.getVIN(),
+                            vehicle2.getVIN()));
+                }
+            }
+        }
     }
 
 }

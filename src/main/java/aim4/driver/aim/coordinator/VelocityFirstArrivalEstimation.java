@@ -69,13 +69,13 @@ public class VelocityFirstArrivalEstimation {
    *         at the intersection; null if there is no solution
    * @throws if the algorithm returns no solution.
    */
-  public static ArrivalEstimationResult estimate(double time1,
-                                                 double v1,
-                                                 double dTotal,
-                                                 double vTop,
-                                                 double vEndMax,
-                                                 double accel,
-                                                 double decel)
+  public static ArrivalEstimationResult estimate(double time1, //Current Time
+                                                 double v1, //Vehicle Velocity
+                                                 double dTotal, //Distance to Arrival Target
+                                                 double vTop, //Maximum velocity of vehicle
+                                                 double vEndMax, //Maximum velocity of vehicle at target
+                                                 double accel, //Maximum acceleration of vehicle
+                                                 double decel) //Maximum deceleration of vehicle
                                            throws ArrivalEstimationException {
     assert 0.0 <= v1;  // this procedure will not handle v1 < 0
     assert 0.0 < accel && decel < 0.0;

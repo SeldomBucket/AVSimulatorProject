@@ -22,12 +22,12 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      * The maximum amount of time, in seconds, to let a vehicle arrive early.
      * {@value} seconds.
      */
-    private static final double EARLY_ERROR = 0.01;
+    private static final double EARLY_ERROR = 0.1;
     /**
      * The maximum amount of time, in seconds to let a vehicle arrive late.
      * {@value} seconds.
      */
-    private static final double LATE_ERROR = 0.01;
+    private static final double LATE_ERROR = 0.1;
 
     // NESTED CLASSES //
     /**
@@ -261,7 +261,6 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
     }
 
     // PRIVATE FIELDS //
-
     /**
      * The V2IMergeManager of which this MergePolicy is a part
      */
@@ -280,7 +279,6 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      */
     private Map<Integer,Integer> vinToReservationId =
             new HashMap<Integer,Integer>();
-
 
     // CONSTRUCTORS //
     public BaseMergePolicy(V2IMergeManagerCallback mm, MergeRequestHandler requestHandler) {
@@ -317,7 +315,6 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         requestHandler.setBaseMergePolicyCallback(this);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -345,19 +342,19 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      * {@inheritDoc}
      */
     @Override
-    public void sendComfirmMsg(int latestRequestId,
-                               BaseMergePolicy.ReserveParam reserveParam) {
+    public void sendConfirmMessage(int latestRequestId,
+                                   BaseMergePolicy.ReserveParam reserveParam) {
         int vin = reserveParam.getVin();
 
         // make sure that there is no other confirm message is in effect
         // when the request handler sends the confirm message.
         assert !vinToReservationId.containsKey(vin);
         // actually make the reservation
-        Integer gridTicket =
+        Integer mergeTicket =
                 mm.getReservationMergeManager().accept(reserveParam.getMergePlan());
         Integer aczTicket =
                 reserveParam.getAczManager().accept(reserveParam.getAczPlan());
-        assert gridTicket == vin;
+        assert mergeTicket == vin;
         assert aczTicket == vin;
 
         // send the confirm message
@@ -468,7 +465,6 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         }
     }
 
-
     /**
      * Submit an away message to the policy.
      *
@@ -509,7 +505,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         AczManager.Plan aczPlan = null;
 
         for(Request.Proposal proposal : proposals) {
-            ReservationMergeManager.Query gridQuery =
+            ReservationMergeManager.Query mergeQuery =
                     new ReservationMergeManager.Query(vin,
                             proposal.getArrivalTime(),
                             proposal.getArrivalVelocity(),
@@ -518,7 +514,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
                             msg.getSpec(),
                             proposal.getMaximumTurnVelocity(),
                             true);
-            mergePlan = mm.getReservationMergeManager().query(gridQuery);
+            mergePlan = mm.getReservationMergeManager().query(mergeQuery);
             if (mergePlan != null) {
                 double stopDist =
                         VehicleUtil.calcDistanceToStop(mergePlan.getExitVelocity(),

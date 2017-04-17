@@ -2,6 +2,7 @@ package aim4.driver.merge;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.merge.coordinator.MergeAutoCoordinator;
+import aim4.driver.merge.coordinator.MergeCoordinator;
 import aim4.map.connections.MergeConnection;
 import aim4.map.merge.MergeMap;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
@@ -12,12 +13,17 @@ import java.awt.geom.Area;
  * Created by Callum on 14/03/2017.
  */
 public class MergeAutoDriver extends MergeDriver implements AutoDriver {
+    /** Memoization cache for {@link #distanceToNextMerge()}. */
+    private transient Double memoDistanceToNextMerge;
+    /** Memoization cache for {@link #distanceFromPrevMerge()}. */
+    private transient Double memoDistanceFromPrevMerge;
+
     // PROTECTED FIELDS //
 
     /*The vehicle controlled by this MergeAutoDriver*/
     protected MergeAutoVehicleDriverModel vehicle;
     /*The sub-agent controlling vehicle co-ordination*/
-    protected MergeAutoCoordinator coordinator;
+    protected MergeCoordinator coordinator;
     /*The map navigated by this MergeAutoDriver*/
     protected MergeMap map;
 
@@ -44,6 +50,11 @@ public class MergeAutoDriver extends MergeDriver implements AutoDriver {
         return this.vehicle;
     }
 
+    @Override
+    public String getStateString() {
+        return this.coordinator.getStateString();
+    }
+
     public MergeConnection inMerge() {
         if(map.getMergeConnections() == null)
             return null;
@@ -68,5 +79,44 @@ public class MergeAutoDriver extends MergeDriver implements AutoDriver {
             vehicleArea.intersect(area);
             return !vehicleArea.isEmpty();
         }
+    }
+
+    /**
+     * Find the distance to the next merge in the Lane in which
+     * the Vehicle is, from the position at which the Vehicle is.
+     *
+     * @return the distance to the next merge given the current Lane
+     *         and position of the Vehicle.
+     */
+    public double distanceToNextMerge() {
+        if(memoDistanceToNextMerge == null) {
+            memoDistanceToNextMerge = getCurrentLane().getLaneMM().
+                    distanceToNextMerge(getVehicle().gaugePosition());
+        }
+        return memoDistanceToNextMerge;
+    }
+
+    /**
+     * Find the distance from the previous merge in the Lane in which
+     * the Vehicle is, from the position at which the Vehicle is.  This
+     * subtracts the length of the Vehicle from the distance from the front
+     * of the Vehicle.  It overrides the version in DriverAgent, but only to
+     * memoize it.
+     *
+     * @return the distance from the previous merge given the current
+     *         Lane and position of the Vehicle.
+     */
+    public double distanceFromPrevMerge() {
+        if(memoDistanceFromPrevMerge == null) {
+            double d = getCurrentLane().getLaneMM().
+                    distanceFromPrevMerge(getVehicle().gaugePosition());
+            memoDistanceFromPrevMerge = Math.max(0.0, d - getVehicle().getSpec().getLength());
+        }
+        return memoDistanceFromPrevMerge;
+    }
+
+    protected void clearMemoizationCaches() {
+        memoDistanceToNextMerge = null;
+        memoDistanceFromPrevMerge = null;
     }
 }

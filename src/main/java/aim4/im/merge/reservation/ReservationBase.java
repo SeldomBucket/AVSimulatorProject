@@ -40,7 +40,7 @@ public class ReservationBase {
     /**
      * A mapping from reservationIds to times
      */
-    private NavigableMap<Integer, Integer> ridToTime;
+    private NavigableMap<Integer, List<Integer>> ridToTime;
 
     //CONSTRUCTOR//
 
@@ -49,7 +49,7 @@ public class ReservationBase {
      */
     public ReservationBase() {
         timeToRID = new TreeMap<Integer, Integer>();
-        ridToTime = new TreeMap<Integer, Integer>();
+        ridToTime = new TreeMap<Integer, List<Integer>>();
     }
 
     //PUBLIC METHODS//
@@ -132,8 +132,10 @@ public class ReservationBase {
                 //Update timeToRID
                 timeToRID.put(dt, rid);
                 //Update ridToTime
-                ridToTime.put(rid, dt);
+                if(!ridToTime.containsKey(rid))
+                    ridToTime.put(rid, new ArrayList<Integer>());
             }
+            ridToTime.get(rid).add(dt);
         }
         return true;
     }
@@ -146,7 +148,9 @@ public class ReservationBase {
      */
     public boolean cancel(int rid) {
         if(ridToTime.containsKey(rid)) {
-            timeToRID.remove(ridToTime.remove(rid));
+            List<Integer> times = ridToTime.remove(rid);
+            for(Integer time : times)
+                timeToRID.remove(time);
             return true;
         } else {
             return false;
@@ -158,21 +162,24 @@ public class ReservationBase {
      * @param dt the discrete time before which the reservations will be removed
      */
     public void cleanUp(int dt) {
-        List<Integer> removeRID = new LinkedList<Integer>();
+        List<Integer> timesToRemove = new ArrayList<Integer>();
+        //Clean up timeToRID
+        try {
+            while (timeToRID.firstKey() < dt) {
+                timesToRemove.add(timeToRID.firstKey());
+                timeToRID.remove(timeToRID.firstKey());
+            }
+        } catch (NoSuchElementException e) {
+            //do nothing
+        }
+        //Clean to ridToTime
+        List<Integer> ridsToRemove = new ArrayList<Integer>();
         for(int rid : ridToTime.keySet()) {
-            try {
-                while (timeToRID.firstKey() < dt) {
-                    timeToRID.remove(timeToRID.firstKey());
-                }
-            } catch (NoSuchElementException e) {
-                //do nothing
-            }
-            if (timeToRID.isEmpty()) {
-                removeRID.add(rid);
-            }
+            ridToTime.get(rid).removeAll(timesToRemove);
+            if(ridToTime.get(rid).isEmpty())
+                ridsToRemove.add(rid);
         }
-        for(int rid : removeRID) {
+        for(int rid : ridsToRemove)
             ridToTime.remove(rid);
-        }
     }
 }

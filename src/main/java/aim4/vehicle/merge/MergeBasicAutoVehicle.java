@@ -44,11 +44,11 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
 
     @Override
     public double getMaxAcceleration() {
-        return 0;
+        return spec.getMaxAcceleration();
     }
 
     @Override
     public double getMaxDeceleration() {
-        return 0;
+        return spec.getMaxDeceleration();
     }
 }

@@ -30,14 +30,14 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.coordinator;
 
-import java.awt.geom.Line2D;
-import java.util.ArrayList;
-import java.util.List;
-
 import aim4.config.Constants;
 import aim4.util.Util;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.AccelSchedule.TimeAccel;
+
+import java.awt.geom.Line2D;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class provides functions to solve the validation problem.

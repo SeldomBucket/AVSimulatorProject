@@ -29,6 +29,7 @@ public class CentralManagementMergeSimulator extends CoreMergeSimulator {
         letMergeManagersAct(timeStep);
         communication();
         moveVehicles(timeStep);
+        checkForCollisions();
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
         incrementCurrentTime(timeStep);

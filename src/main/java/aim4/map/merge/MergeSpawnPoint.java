@@ -4,8 +4,8 @@ import aim4.map.SpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSpec;
 
+import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
@@ -25,7 +25,7 @@ public class MergeSpawnPoint extends SpawnPoint {
      * @param lane          the lane
      * @param noVehicleZone the no vehicle zone
      */
-    public MergeSpawnPoint(double currentTime, Point2D pos, double heading, double steeringAngle, double acceleration, Lane lane, Rectangle2D noVehicleZone) {
+    public MergeSpawnPoint(double currentTime, Point2D pos, double heading, double steeringAngle, double acceleration, Lane lane, Path2D noVehicleZone) {
         super(currentTime, pos, heading, steeringAngle, acceleration, lane, noVehicleZone);
     }
 

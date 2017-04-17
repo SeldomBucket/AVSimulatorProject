@@ -30,39 +30,31 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.sim.simulator.aim;
 
-import java.awt.Color;
-import java.awt.geom.Line2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
-import java.util.Queue;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.ProxyDriver;
 import aim4.im.aim.IntersectionManager;
 import aim4.im.aim.v2i.V2IManager;
-import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.msg.aim.i2v.I2VMessage;
 import aim4.msg.aim.v2i.V2IMessage;
-import aim4.vehicle.*;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VinRegistry;
 import aim4.vehicle.aim.*;
+
+import java.awt.*;
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
+import java.util.*;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * The autonomous drivers only simulator.
@@ -331,7 +323,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
    */
   private boolean canSpawnVehicle(AIMSpawnPoint spawnPoint) {
     // TODO: can be made much faster.
-    Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
+    assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
+    Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
     for(AIMVehicleSimModel vehicle : vinToVehicles.values()) {
       if (vehicle.getShape().intersects(noVehicleZone)) {
         return false;

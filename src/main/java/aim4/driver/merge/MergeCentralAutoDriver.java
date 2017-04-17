@@ -5,7 +5,7 @@ import aim4.driver.merge.coordinator.MergeCentralAutoCoordinator;
 import aim4.im.merge.MergeManager;
 import aim4.map.merge.MergeMap;
 import aim4.vehicle.AutoVehicleDriverModel;
-import aim4.vehicle.merge.MergeAutoVehicleSimModel;
+import aim4.vehicle.merge.MergeCentralAutoVehicleDriverModel;
 
 import java.awt.geom.Area;
 
@@ -17,10 +17,6 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
      * The MergeManager with which the driver is currently interfacing
      */
     private MergeManager currentMM;
-    /** Memoization cache for {@link #distanceToNextMerge()}. */
-    private transient Double memoDistanceToNextMerge;
-    /** Memoization cache for {@link #distanceFromPrevMerge()}. */
-    private transient Double memoDistanceFromPrevMerge;
     /** Memoization cache for {@link #nextMergeManager()}. */
     private transient MergeManager memoNextMergeManager;
     /** Memoization cache for {@link #inCurrentMerge()}. */
@@ -28,7 +24,7 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
 
     // PRIVATE FIELDS //
 
-    public MergeCentralAutoDriver(MergeAutoVehicleSimModel vehicle, MergeMap map) {
+    public MergeCentralAutoDriver(MergeCentralAutoVehicleDriverModel vehicle, MergeMap map) {
         super(vehicle, map);
         currentMM = null;
     }
@@ -41,8 +37,9 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         if (coordinator == null || coordinator.isTerminated()) {
             MergeManager mm = nextMergeManager();
             if (mm != null) {
+                assert(vehicle instanceof MergeCentralAutoVehicleDriverModel);
                 currentMM = mm;
-                coordinator = new MergeCentralAutoCoordinator(vehicle, this, map);
+                coordinator = new MergeCentralAutoCoordinator((MergeCentralAutoVehicleDriverModel) vehicle, this, map);
             } else {
                 currentMM = null;
                 coordinator = new MergeAutoCoordinator(vehicle, this, map);
@@ -59,6 +56,11 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         return currentMM;
     }
 
+    @Override
+    public String getStateString() {
+        return coordinator.getStateString();
+    }
+
     // IM
     /** Find the next MergeManager that the Vehicle will need to
     * interact with, in this Lane.
@@ -73,39 +75,7 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         return memoNextMergeManager;
     }
 
-    /**
-     * Find the distance to the next merge in the Lane in which
-     * the Vehicle is, from the position at which the Vehicle is.
-     *
-     * @return the distance to the next merge given the current Lane
-     *         and position of the Vehicle.
-     */
-    public double distanceToNextMerge() {
-        if(memoDistanceToNextMerge == null) {
-            memoDistanceToNextMerge = getCurrentLane().getLaneMM().
-                    distanceToNextMerge(getVehicle().gaugePosition());
-        }
-        return memoDistanceToNextMerge;
-    }
 
-    /**
-     * Find the distance from the previous merge in the Lane in which
-     * the Vehicle is, from the position at which the Vehicle is.  This
-     * subtracts the length of the Vehicle from the distance from the front
-     * of the Vehicle.  It overrides the version in DriverAgent, but only to
-     * memoize it.
-     *
-     * @return the distance from the previous merge given the current
-     *         Lane and position of the Vehicle.
-     */
-    public double distanceFromPrevMerge() {
-        if(memoDistanceFromPrevMerge == null) {
-            double d = getCurrentLane().getLaneMM().
-                    distanceFromPrevMerge(getVehicle().gaugePosition());
-            memoDistanceFromPrevMerge = Math.max(0.0, d - getVehicle().getSpec().getLength());
-        }
-        return memoDistanceFromPrevMerge;
-    }
 
     /**
      * Whether or not the Vehicle controlled by this driver agent
@@ -122,7 +92,7 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         return memoInCurrentMerge;
     }
 
-    // PRIVATE METHODS //
+    // PRIVATE AND PROTECTED METHODS //
     /**
      * Determine whether the given Vehicle is currently inside an area
      *
@@ -151,11 +121,10 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
     /**
      * Clear any caches we are using to memoize methods
      */
-    private void clearMemoizationCaches() {
+    protected void clearMemoizationCaches() {
+        super.clearMemoizationCaches();
         memoNextMergeManager = null;
         memoInCurrentMerge = null;
-        memoDistanceToNextMerge = null;
-        memoDistanceFromPrevMerge = null;
     }
 
 }

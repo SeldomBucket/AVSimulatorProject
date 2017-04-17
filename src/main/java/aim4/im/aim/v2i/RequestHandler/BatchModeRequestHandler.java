@@ -476,7 +476,7 @@ public class BatchModeRequestHandler implements RequestHandler {
       ReserveParam reserveParam =
         basePolicy.findReserveParam(msg, filterResult.getProposals());
       if (reserveParam != null) {
-        basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+        basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
       } else {
         basePolicy.sendRejectMsg(vin, msg.getRequestId(),
                                  Reject.Reason.NO_CLEAR_PATH);
@@ -548,7 +548,7 @@ public class BatchModeRequestHandler implements RequestHandler {
     Request msg = iProposal.getRequest();
     ReserveParam reserveParam = basePolicy.findReserveParam(msg, l);
     if (reserveParam != null) {
-      basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+      basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
       // Remove a set of indexed proposals (including the given one)
       // from the queue.
       for(IndexedProposal iProposal2 : iProposal.getProposalGroup()) {

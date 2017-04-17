@@ -35,7 +35,7 @@ public class V2IMergeManager extends MergeManager implements V2IMergeManagerCall
      * The default distance the MergeManager can transmit messages.
      * {@value} meters.
      */
-    private static final double DEFAULT_TRANSMISSION_POWER = 350.0; // meters
+    private static final double DEFAULT_TRANSMISSION_POWER = Double.MAX_VALUE; // meters
     /**
      * The default size (capacity) of an {@link AdmissionControlZone} for Lanes
      * exiting the intersection managed by this V2IManager, in meters. {@value}
@@ -137,18 +137,18 @@ public class V2IMergeManager extends MergeManager implements V2IMergeManagerCall
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     public ReservationMerge getReservationMerge() {
-        return null;
+        return reservationMerge;
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      */
     @Override
     public ReservationMergeManager getReservationMergeManager() {
-        return null;
+        return reservationManager;
     }
 
     /**

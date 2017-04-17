@@ -5,7 +5,6 @@ import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import javax.swing.*;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -23,7 +22,8 @@ public class ActiveVehicleList extends JPanel implements MergeStatScreenComponen
                 "VIN",
                 "Velocity",
                 "X Position",
-                "Y Position"
+                "Y Position",
+                "State"
         });
 
         this.table = new JTable(model);
@@ -41,7 +41,8 @@ public class ActiveVehicleList extends JPanel implements MergeStatScreenComponen
                     vin,
                     vehicle.getVelocity(),
                     vehicle.getPosition().getX(),
-                    vehicle.getPosition().getY()
+                    vehicle.getPosition().getY(),
+                    vehicle.getDriver().getStateString()
             });
         }
         for(CoreMergeSimulator.CoreMergeSimStepResult stepResult : results) {

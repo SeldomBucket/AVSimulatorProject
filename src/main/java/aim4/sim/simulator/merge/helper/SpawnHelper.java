@@ -7,12 +7,9 @@ import aim4.map.merge.MergeMap;
 import aim4.map.merge.MergeSpawnPoint;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
-import aim4.vehicle.merge.MergeAutoVehicleSimModel;
-import aim4.vehicle.merge.MergeBasicAutoVehicle;
-import aim4.vehicle.merge.MergeCentralAutoVehicle;
-import aim4.vehicle.merge.MergeVehicleSimModel;
+import aim4.vehicle.merge.*;
 
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Path2D;
 import java.util.List;
 import java.util.Map;
 
@@ -78,9 +75,10 @@ public class SpawnHelper {
      * @return
      */
     private boolean canSpawnVehicle(MergeSpawnPoint spawnPoint) {
-        Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
+        assert spawnPoint.getNoVehicleZone() instanceof Path2D;
+        Path2D noVehicleZone = (Path2D) spawnPoint.getNoVehicleZone();
         for(MergeVehicleSimModel vehicle : vinToVehicles.values()) {
-            if (vehicle.getShape().intersects(noVehicleZone)) {
+            if (noVehicleZone.intersects(vehicle.getShape().getBounds2D())) {
                 return false;
             }
         }
@@ -128,7 +126,7 @@ public class SpawnHelper {
         Lane lane = spawnPoint.getLane();
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
 
-        MergeAutoVehicleSimModel vehicle =
+        MergeCentralAutoVehicleSimModel vehicle =
                 new MergeCentralAutoVehicle(spec,
                         spawnPoint.getPosition(),
                         spawnPoint.getHeading(),

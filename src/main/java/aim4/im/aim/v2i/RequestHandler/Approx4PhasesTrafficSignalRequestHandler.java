@@ -165,7 +165,7 @@ public class Approx4PhasesTrafficSignalRequestHandler implements
     // try to see if reservation is possible for the remaining proposals.
     ReserveParam reserveParam = basePolicy.findReserveParam(msg, proposals);
     if (reserveParam != null) {
-      basePolicy.sendComfirmMsg(msg.getRequestId(), reserveParam);
+      basePolicy.sendConfirmMsg(msg.getRequestId(), reserveParam);
     } else {
       basePolicy.sendRejectMsg(vin, msg.getRequestId(),
                                Reject.Reason.NO_CLEAR_PATH);

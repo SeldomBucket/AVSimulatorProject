@@ -30,18 +30,18 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.pilot;
 
-import java.util.Iterator;
-import java.util.Queue;
-
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.BasicPilot;
-import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.DriverUtil;
+import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.coordinator.V2ICoordinator.ReservationParameter;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
+
+import java.util.Iterator;
+import java.util.Queue;
 
 /**
  * An agent that pilots a {@link AutoVehicleDriverModel} autonomously. This agent
@@ -132,7 +132,7 @@ public class V2IPilot extends BasicPilot {
   public void takeSteeringActionForTraversing(ReservationParameter rp) {
     // If we're not already in the departure lane
     if (driver.getCurrentLane() != rp.getDepartureLane()) {
-      // If we're changing to a different Road
+      // If we're changing to a different Roadf
       if (Debug.currentMap.getRoad(driver.getCurrentLane()) !=
         Debug.currentMap.getRoad(rp.getDepartureLane())) {
         // Find out how far from it we are
