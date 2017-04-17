@@ -1,4 +1,4 @@
-package aim4.im.merge.policy;
+package aim4.im.merge.policy.nogrid;
 
 import aim4.msg.merge.i2v.Reject;
 import aim4.msg.merge.v2i.Request;

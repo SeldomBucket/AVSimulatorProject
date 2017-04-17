@@ -1,29 +1,25 @@
 package aim4.im.merge;
 
-/**
- * Created by Callum on 13/04/2017.
- */
-
 import aim4.im.AczManager;
 import aim4.im.AdmissionControlZone;
-import aim4.im.merge.policy.nogrid.MergePolicy;
-import aim4.im.merge.policy.nogrid.V2IMergeManagerCallback;
-import aim4.im.merge.reservation.nogrid.ReservationMerge;
-import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
+import aim4.im.merge.policy.grid.MergeGridPolicy;
+import aim4.im.merge.policy.grid.V2IMergeGridManagerCallback;
+import aim4.im.merge.reservation.grid.ReservationMergeGrid;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.msg.merge.v2i.V2IMergeMessage;
 import aim4.util.Registry;
+import aim4.util.TiledArea;
 
 import java.util.*;
 
 /**
- * A merge manager that takes requests from vehicles and coordinates their traversals of the merge zone to ensure that
- * there are no collisions. The V2IMergeManager makes it's decisions using a merge control {@Link MergePolicy}
+ * Created by Callum on 17/04/2017.
  */
-public class V2IMergeManager extends BasicMergeManager implements V2IMergeManagerCallback, V2IEnabledMergeManager {
+public class V2IMergeGridManager extends BasicMergeManager implements V2IMergeGridManagerCallback, V2IEnabledMergeManager {
     //CONSTANTS//
     /**
      * The maximum amount of time, in seconds, in the future, for which the
@@ -32,7 +28,7 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
     public static final double MAXIMUM_FUTURE_RESERVATION_TIME = 10.0; // sec
 
     /**
-     * The default distance the MergeManager can transmit messages.
+     * The default distance the IMergeMaanger can transmit messages.
      * {@value} meters.
      */
     private static final double DEFAULT_TRANSMISSION_POWER = Double.MAX_VALUE; // meters
@@ -48,18 +44,14 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
      */
     private static final double ACZ_DISTANCE_SHAPE_LENGTH = 1; // meter
 
-
-    //PRIVATE FIELDS//
-
-    //POLICY
     /**
      * The merge control mergePolicy.
      */
-    private MergePolicy mergePolicy;
+    private MergeGridPolicy mergePolicy;
 
     //MESSAGING
     /**
-     * The maximum distance the MergeManager can transmit a message, in
+     * The maximum distance the IMergeMaanger can transmit a message, in
      * meters.
      */
     private double transmissionPower = DEFAULT_TRANSMISSION_POWER;
@@ -72,12 +64,17 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
     /**
      * The area in the merge.
      */
-    private ReservationMerge reservationMerge;
+    private ReservationMergeGrid reservationMergeGrid;
     /**
      * The reservation system
      */
-    private ReservationMergeManager reservationManager;
-    // aczs
+    private ReservationMergeGridManager reservationMergeGridManager;
+    /**
+     * The tiled area of the intersection
+     */
+    private TiledArea tiledArea;
+
+    // aczs //
 
     /**
      * A map from each outgoing lane's id to the admission control zone that
@@ -93,14 +90,15 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
             new LinkedHashMap<Integer,AczManager>();
 
     //CONSTRUCTORS//
-    public V2IMergeManager(MergeConnection merge,
-                           double currentTime,
-                           ReservationMergeManager.Config config,
-                           Registry<MergeManager> registry,
-                           MergeMap layout) {
+    public V2IMergeGridManager(MergeConnection merge,
+                               double currentTime,
+                               ReservationMergeGridManager.Config config,
+                               Registry<MergeManager> registry,
+                               MergeMap layout) {
         super(merge, currentTime, registry);
-        this.reservationMerge = new ReservationMerge(merge, config.getMergeTimeStep());
-        this.reservationManager = new ReservationMergeManager(config, merge, reservationMerge, layout);
+        this.tiledArea = new TiledArea(merge.getArea(), config.getGranularity());
+        this.reservationMergeGrid = new ReservationMergeGrid(tiledArea.getXNum(), tiledArea.getYNum(), config.getGridTimeStep());
+        this.reservationMergeGridManager = new ReservationMergeGridManager(config, merge, tiledArea, reservationMergeGrid, layout);
         //Setup AdmissionControlZones
         for(Lane l : getMergeConnection().getExitLanes()){
             AdmissionControlZone acz = new AdmissionControlZone(DEFAULT_ACZ_SIZE);
@@ -114,7 +112,7 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
     /**
      * Get the mergePolicy.
      */
-    public MergePolicy getMergePolicy() {
+    public MergeGridPolicy getMergePolicy() {
         return mergePolicy;
     }
 
@@ -123,7 +121,7 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
      *
      * @param mergePolicy  the mergePolicy
      */
-    public void setMergePolicy(MergePolicy mergePolicy) {
+    public void setMergePolicy(MergeGridPolicy mergePolicy) {
         this.mergePolicy = mergePolicy;
     }
 
@@ -139,16 +137,16 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
     /**
      * @inheritDoc
      */
-    public ReservationMerge getReservationMerge() {
-        return reservationMerge;
+    public ReservationMergeGrid getReservationMergeGrid() {
+        return reservationMergeGrid;
     }
 
     /**
      * @inheritDoc
      */
     @Override
-    public ReservationMergeManager getReservationMergeManager() {
-        return reservationManager;
+    public ReservationMergeGridManager getReservationMergeGridManager() {
+        return reservationMergeGridManager;
     }
 
     /**
@@ -170,7 +168,6 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
         return aczManagers.get(laneId);
     }
 
-
     //ACTION
     /**
      * Give the V2IMergeManager a chance to respond to messages from vehicles, change
@@ -190,7 +187,7 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
         // Second, allow the mergePolicy to act, and send outgoing messages.
         mergePolicy.act(timeStep);
         // Third, allow the reservation grid manager to act
-        reservationManager.act(timeStep);
+        reservationMergeGridManager.act(timeStep);
         // Advance current time.
         super.act(timeStep);
     }
@@ -255,4 +252,5 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
     public void sendI2VMessage(I2VMergeMessage msg) {
         outbox.add(msg);
     }
+
 }

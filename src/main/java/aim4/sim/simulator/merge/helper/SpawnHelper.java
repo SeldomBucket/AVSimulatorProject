@@ -1,7 +1,7 @@
 package aim4.sim.simulator.merge.helper;
 
 import aim4.driver.merge.MergeAutoDriver;
-import aim4.driver.merge.MergeCentralAutoDriver;
+import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.map.merge.MergeSpawnPoint;
@@ -126,8 +126,8 @@ public class SpawnHelper {
         Lane lane = spawnPoint.getLane();
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
 
-        MergeCentralAutoVehicleSimModel vehicle =
-                new MergeCentralAutoVehicle(spec,
+        MergeV2IAutoVehicleSimModel vehicle =
+                new MergeV2IAutoVehicle(spec,
                         spawnPoint.getPosition(),
                         spawnPoint.getHeading(),
                         initVelocity,
@@ -136,7 +136,7 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
 
-        MergeCentralAutoDriver driver = new MergeCentralAutoDriver(vehicle, map);
+        MergeV2IAutoDriver driver = new MergeV2IAutoDriver(vehicle, map);
         driver.setCurrentLane(lane);
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);

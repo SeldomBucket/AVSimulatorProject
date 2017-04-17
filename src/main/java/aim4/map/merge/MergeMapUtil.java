@@ -1,10 +1,14 @@
 package aim4.map.merge;
 
 import aim4.config.SimConfig;
+import aim4.im.merge.V2IMergeGridManager;
 import aim4.im.merge.V2IMergeManager;
-import aim4.im.merge.policy.BaseMergePolicy;
-import aim4.im.merge.policy.FCFSMergeRequestHandler;
-import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.im.merge.policy.grid.BaseMergeGridPolicy;
+import aim4.im.merge.policy.grid.FCFSMergeGridRequestHandler;
+import aim4.im.merge.policy.nogrid.BaseMergePolicy;
+import aim4.im.merge.policy.nogrid.FCFSMergeRequestHandler;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
+import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpec;
 import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpecGenerator;
@@ -32,6 +36,21 @@ public class MergeMapUtil {
                     layout
             );
             mm.setMergePolicy(new BaseMergePolicy(mm, new FCFSMergeRequestHandler()));
+            layout.addMergeManager(mm);
+        }
+    }
+
+    public static void setFCFSGridMergeManagers(MergeMap layout, double currentTime, ReservationMergeGridManager.Config mergeReservationConfig) {
+        layout.removeAllMergeManagers();
+        for(MergeConnection merge : layout.getMergeConnections()) {
+            V2IMergeGridManager mm = new V2IMergeGridManager(
+                    merge,
+                    currentTime,
+                    mergeReservationConfig,
+                    layout.getMMRegistry(),
+                    layout
+            );
+            mm.setMergePolicy(new BaseMergeGridPolicy(mm, new FCFSMergeGridRequestHandler()));
             layout.addMergeManager(mm);
         }
     }

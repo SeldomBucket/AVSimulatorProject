@@ -1,21 +1,17 @@
-package aim4.im.merge.policy;
-
-/**
- * Created by Callum on 13/04/2017.
- */
+package aim4.im.merge.policy.grid;
 
 import aim4.msg.merge.v2i.Request;
 
 /**
- * The merge request handler.
+ * Created by Callum on 17/04/2017.
  */
-public interface MergeRequestHandler {
+public interface MergeGridRequestHandler {
     /**
      * Set the base policy call-back.
      *
      * @param basePolicy  the base policy's call-back
      */
-    void setBaseMergePolicyCallback(BaseMergePolicyCallback basePolicy);
+    void setBaseMergeGridPolicyCallback(BaseMergeGridPolicyCallback basePolicy);
 
     /**
      * Let the request handler to act for a given time period.

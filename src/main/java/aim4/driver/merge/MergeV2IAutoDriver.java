@@ -1,18 +1,18 @@
 package aim4.driver.merge;
 
 import aim4.driver.merge.coordinator.MergeAutoCoordinator;
-import aim4.driver.merge.coordinator.MergeCentralAutoCoordinator;
+import aim4.driver.merge.coordinator.MergeV2IAutoCoordinator;
 import aim4.im.merge.MergeManager;
 import aim4.map.merge.MergeMap;
 import aim4.vehicle.AutoVehicleDriverModel;
-import aim4.vehicle.merge.MergeCentralAutoVehicleDriverModel;
+import aim4.vehicle.merge.MergeV2IAutoVehicleDriverModel;
 
 import java.awt.geom.Area;
 
 /**
  * Created by Callum on 13/04/2017.
  */
-public class MergeCentralAutoDriver extends MergeAutoDriver {
+public class MergeV2IAutoDriver extends MergeAutoDriver {
     /**
      * The MergeManager with which the driver is currently interfacing
      */
@@ -24,7 +24,7 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
 
     // PRIVATE FIELDS //
 
-    public MergeCentralAutoDriver(MergeCentralAutoVehicleDriverModel vehicle, MergeMap map) {
+    public MergeV2IAutoDriver(MergeV2IAutoVehicleDriverModel vehicle, MergeMap map) {
         super(vehicle, map);
         currentMM = null;
     }
@@ -37,9 +37,9 @@ public class MergeCentralAutoDriver extends MergeAutoDriver {
         if (coordinator == null || coordinator.isTerminated()) {
             MergeManager mm = nextMergeManager();
             if (mm != null) {
-                assert(vehicle instanceof MergeCentralAutoVehicleDriverModel);
+                assert(vehicle instanceof MergeV2IAutoVehicleDriverModel);
                 currentMM = mm;
-                coordinator = new MergeCentralAutoCoordinator((MergeCentralAutoVehicleDriverModel) vehicle, this, map);
+                coordinator = new MergeV2IAutoCoordinator((MergeV2IAutoVehicleDriverModel) vehicle, this, map);
             } else {
                 currentMM = null;
                 coordinator = new MergeAutoCoordinator(vehicle, this, map);

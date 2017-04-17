@@ -1,12 +1,12 @@
 package aim4.sim.simulator.merge;
 
 import aim4.im.merge.MergeManager;
-import aim4.im.merge.V2IMergeManager;
+import aim4.im.merge.V2IEnabledMergeManager;
 import aim4.map.merge.MergeMap;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.msg.merge.v2i.V2IMergeMessage;
 import aim4.vehicle.VinRegistry;
-import aim4.vehicle.merge.MergeCentralAutoVehicleSimModel;
+import aim4.vehicle.merge.MergeV2IAutoVehicleSimModel;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import java.util.Iterator;
@@ -16,8 +16,8 @@ import java.util.Queue;
 /**
  * Created by Callum on 13/04/2017.
  */
-public class CentralManagementMergeSimulator extends CoreMergeSimulator {
-    public CentralManagementMergeSimulator(MergeMap map) {
+public class V2IMergeSimulator extends CoreMergeSimulator {
+    public V2IMergeSimulator(MergeMap map) {
         super(map);
     }
 
@@ -50,13 +50,13 @@ public class CentralManagementMergeSimulator extends CoreMergeSimulator {
     private void deliverV2IMessages() {
         //Loop each vehicle and deliver messages
         for(MergeVehicleSimModel vehicle : getVinToVehicles().values()){
-            if(vehicle instanceof MergeCentralAutoVehicleSimModel) {
-                MergeCentralAutoVehicleSimModel sender = (MergeCentralAutoVehicleSimModel) vehicle;
+            if(vehicle instanceof MergeV2IAutoVehicleSimModel) {
+                MergeV2IAutoVehicleSimModel sender = (MergeV2IAutoVehicleSimModel) vehicle;
                 Queue<V2IMergeMessage> v2iOutbox = sender.getV2IOutbox();
                 while(!v2iOutbox.isEmpty()) {
                     V2IMergeMessage msg = v2iOutbox.poll();
-                    V2IMergeManager receiver =
-                            (V2IMergeManager) getMap().getMMRegistry().get(msg.getMMID());
+                    V2IEnabledMergeManager receiver =
+                            (V2IEnabledMergeManager) getMap().getMMRegistry().get(msg.getMMID());
                     //Calculate distance message must travel
                     double txDistance =
                             sender.getPosition().distance(
@@ -76,12 +76,12 @@ public class CentralManagementMergeSimulator extends CoreMergeSimulator {
     private void deliverI2VMessages() {
         // Now deliver all the I2V messages
         for(MergeManager im : getMap().getMergeManagers()) {
-            V2IMergeManager senderMM = (V2IMergeManager)im;
+            V2IEnabledMergeManager senderMM = (V2IEnabledMergeManager)im;
             for(Iterator<I2VMergeMessage> i2vIter = senderMM.outboxIterator();
                 i2vIter.hasNext();) {
                 I2VMergeMessage msg = i2vIter.next();
-                MergeCentralAutoVehicleSimModel vehicle =
-                        (MergeCentralAutoVehicleSimModel) VinRegistry.getVehicleFromVIN(
+                MergeV2IAutoVehicleSimModel vehicle =
+                        (MergeV2IAutoVehicleSimModel) VinRegistry.getVehicleFromVIN(
                                 msg.getVin());
                 // Calculate the distance the message must travel
                 double txDistance =

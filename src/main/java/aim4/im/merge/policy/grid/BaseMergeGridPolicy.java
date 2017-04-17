@@ -1,9 +1,9 @@
-package aim4.im.merge.policy;
+package aim4.im.merge.policy.grid;
 
 import aim4.im.AczManager;
 import aim4.im.merge.V2IMergeManager;
-import aim4.im.merge.reservation.ReservationMerge;
-import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.im.merge.reservation.grid.ReservationMergeGrid;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
 import aim4.msg.merge.i2v.Confirm;
 import aim4.msg.merge.i2v.Reject;
 import aim4.msg.merge.v2i.*;
@@ -16,7 +16,7 @@ import java.util.*;
 /**
  * Created by Callum on 13/04/2017.
  */
-public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
+public class BaseMergeGridPolicy implements MergeGridPolicy, BaseMergeGridPolicyCallback {
     // CONSTANTS //
     /**
      * The maximum amount of time, in seconds, to let a vehicle arrive early.
@@ -77,7 +77,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         /** The successful proposal */
         private Request.Proposal successfulProposal;
         /** The reservation plan */
-        private ReservationMergeManager.Plan mergePlan;
+        private ReservationMergeGridManager.Plan mergePlan;
         /** The ACZ manager */
         private AczManager aczManager;
         /** The ACZ plan */
@@ -92,7 +92,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
          * @param aczManager          the ACZ manager
          * @param aczPlan             the ACZ plan
          */
-        public ReserveParam(int vin, Request.Proposal successfulProposal, ReservationMergeManager.Plan mergePlan,
+        public ReserveParam(int vin, Request.Proposal successfulProposal, ReservationMergeGridManager.Plan mergePlan,
                             AczManager aczManager, AczManager.Plan aczPlan) {
             this.vin = vin;
             this.successfulProposal = successfulProposal;
@@ -112,7 +112,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         }
 
         /** Get the reservation plan */
-        public ReservationMergeManager.Plan getMergePlan() {
+        public ReservationMergeGridManager.Plan getMergePlan() {
             return mergePlan;
         }
 
@@ -204,13 +204,13 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
 
         // Remove proposals whose arrival time is smaller than or equal to the
         // the current time.
-        BaseMergePolicy.removeProposalWithLateArrivalTime(myProposals, currentTime);
+        BaseMergeGridPolicy.removeProposalWithLateArrivalTime(myProposals, currentTime);
         if (myProposals.isEmpty()) {
             return new ProposalFilterResult(Reject.Reason.ARRIVAL_TIME_TOO_LATE);
         }
         // Check to see if not all of the arrival times in this reservation
         // request are too far in the future
-        BaseMergePolicy.removeProposalWithLargeArrivalTime(
+        BaseMergeGridPolicy.removeProposalWithLargeArrivalTime(
                 myProposals, currentTime + V2IMergeManager.MAXIMUM_FUTURE_RESERVATION_TIME);
         if (myProposals.isEmpty()) {
             return new ProposalFilterResult(Reject.Reason.ARRIVAL_TIME_TOO_LARGE);
@@ -264,11 +264,11 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
     /**
      * The V2IMergeManager of which this MergePolicy is a part
      */
-    protected V2IMergeManagerCallback mm;
+    protected V2IMergeGridManagerCallback mm;
     /**
      * The proposal handler
      */
-    private MergeRequestHandler requestHandler;
+    private MergeGridRequestHandler requestHandler;
     /**
      * The confirm message registry
      */
@@ -281,7 +281,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
             new HashMap<Integer,Integer>();
 
     // CONSTRUCTORS //
-    public BaseMergePolicy(V2IMergeManagerCallback mm, MergeRequestHandler requestHandler) {
+    public BaseMergeGridPolicy(V2IMergeGridManagerCallback mm, MergeGridRequestHandler requestHandler) {
         this.mm = mm;
         setRequestHandler(requestHandler);
     }
@@ -292,7 +292,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      * {@inheritDoc}
      */
     @Override
-    public void setV2IMergeManagerCallback(V2IMergeManagerCallback mm) {
+    public void setV2IMergeManagerGridCallback(V2IMergeGridManagerCallback mm) {
         this.mm = mm;
     }
 
@@ -301,7 +301,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      *
      * @return the request handler.
      */
-    public MergeRequestHandler getRequestHandler() {
+    public MergeGridRequestHandler getRequestHandler() {
         return requestHandler;
     }
 
@@ -310,9 +310,9 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      *
      * @param RequestHandler  the request handler.
      */
-    public void setRequestHandler(MergeRequestHandler RequestHandler) {
+    public void setRequestHandler(MergeGridRequestHandler RequestHandler) {
         this.requestHandler = RequestHandler;
-        requestHandler.setBaseMergePolicyCallback(this);
+        requestHandler.setBaseMergeGridPolicyCallback(this);
     }
 
     /**
@@ -327,8 +327,8 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      * {@inheritDoc}
      */
     @Override
-    public ReservationMerge getReservationMerge() {
-        return mm.getReservationMerge();
+    public ReservationMergeGrid getReservationMergeGrid() {
+        return mm.getReservationMergeGrid();
     }
 
     // ACTION
@@ -343,7 +343,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
      */
     @Override
     public void sendConfirmMessage(int latestRequestId,
-                                   BaseMergePolicy.ReserveParam reserveParam) {
+                                   BaseMergeGridPolicy.ReserveParam reserveParam) {
         int vin = reserveParam.getVin();
 
         // make sure that there is no other confirm message is in effect
@@ -351,7 +351,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
         assert !vinToReservationId.containsKey(vin);
         // actually make the reservation
         Integer mergeTicket =
-                mm.getReservationMergeManager().accept(reserveParam.getMergePlan());
+                mm.getReservationMergeGridManager().accept(reserveParam.getMergePlan());
         Integer aczTicket =
                 reserveParam.getAczManager().accept(reserveParam.getAczPlan());
         assert mergeTicket == vin;
@@ -432,7 +432,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
                         "on the record.\n");
             }
             // release the resources
-            mm.getReservationMergeManager().cancel(vin);
+            mm.getReservationMergeGridManager().cancel(vin);
             mm.getAczManager(r.getAczLaneId()).cancel(vin);
             // remove the reservation record
             reservationRecordRegistry.setNull(msg.getReservationID());
@@ -500,13 +500,13 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
 
         // Okay, now let's actually try some of these proposals
         Request.Proposal successfulProposal = null;
-        ReservationMergeManager.Plan mergePlan = null;
+        ReservationMergeGridManager.Plan mergePlan = null;
         AczManager aczManager = null;
         AczManager.Plan aczPlan = null;
 
         for(Request.Proposal proposal : proposals) {
-            ReservationMergeManager.Query mergeQuery =
-                    new ReservationMergeManager.Query(vin,
+            ReservationMergeGridManager.Query mergeQuery =
+                    new ReservationMergeGridManager.Query(vin,
                             proposal.getArrivalTime(),
                             proposal.getArrivalVelocity(),
                             proposal.getArrivalLaneID(),
@@ -514,7 +514,7 @@ public class BaseMergePolicy implements MergePolicy, BaseMergePolicyCallback {
                             msg.getSpec(),
                             proposal.getMaximumTurnVelocity(),
                             true);
-            mergePlan = mm.getReservationMergeManager().query(mergeQuery);
+            mergePlan = mm.getReservationMergeGridManager().query(mergeQuery);
             if (mergePlan != null) {
                 double stopDist =
                         VehicleUtil.calcDistanceToStop(mergePlan.getExitVelocity(),

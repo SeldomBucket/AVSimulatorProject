@@ -4,8 +4,8 @@ import aim4.config.SimConfig;
 import aim4.driver.BasicPilot;
 import aim4.driver.DriverUtil;
 import aim4.driver.merge.MergeAutoDriver;
-import aim4.driver.merge.MergeCentralAutoDriver;
-import aim4.driver.merge.coordinator.MergeCentralAutoCoordinator;
+import aim4.driver.merge.MergeV2IAutoDriver;
+import aim4.driver.merge.coordinator.ReservationParameter;
 import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
@@ -143,7 +143,7 @@ public class MergeAutoPilot extends BasicPilot {
      *
      * TODO: do not modify the acceleration profile
      */
-    public void followAccelerationProfile(MergeCentralAutoCoordinator.ReservationParameter rp, MergeMap map) {
+    public void followAccelerationProfile(ReservationParameter rp, MergeMap map) {
         Queue<double[]> accelProf = rp.getAccelerationProfile();
         // If we have no profile or we have finished with it, then just do our
         // best to maintain a cruising speed
@@ -213,12 +213,12 @@ public class MergeAutoPilot extends BasicPilot {
         }
     }
 
-    private double calculateMergeVelocity(MergeCentralAutoCoordinator.ReservationParameter rp, MergeMap map) {
-        assert getDriver() instanceof MergeCentralAutoDriver;
+    private double calculateMergeVelocity(ReservationParameter rp, MergeMap map) {
+        assert getDriver() instanceof MergeV2IAutoDriver;
         return VehicleUtil.maxTurnVelocity(vehicle.getSpec(),
                 rp.getArrivalLane(),
                 rp.getDepartureLane(),
-                ((MergeCentralAutoDriver) getDriver()).getCurrentMM(),
+                ((MergeV2IAutoDriver) getDriver()).getCurrentMM(),
                 map);
     }
 

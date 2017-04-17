@@ -1,13 +1,13 @@
 package aim4.sim.simulator.merge;
 
 import aim4.config.SimConfig;
-import aim4.driver.merge.MergeCentralAutoDriver;
+import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.driver.merge.coordinator.MergeAutoCoordinator;
-import aim4.driver.merge.coordinator.MergeCentralAutoCoordinator;
+import aim4.driver.merge.coordinator.MergeV2IAutoCoordinator;
 import aim4.driver.merge.pilot.MergeAutoPilot;
 import aim4.im.merge.V2IMergeManager;
-import aim4.im.merge.reservation.ReservationMerge;
-import aim4.im.merge.reservation.ReservationMergeManager;
+import aim4.im.merge.reservation.nogrid.ReservationMerge;
+import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMapUtil;
@@ -16,7 +16,7 @@ import aim4.map.track.WayPoint;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.merge.MergeCentralAutoVehicle;
+import aim4.vehicle.merge.MergeV2IAutoVehicle;
 import org.junit.Test;
 
 import java.lang.reflect.Field;
@@ -29,7 +29,7 @@ import static org.junit.Assert.*;
 /**
  * Created by Callum on 15/04/2017.
  */
-public class CentralManagementMergeSimulatorIntergrationTest {
+public class V2IMergeSimulatorIntergrationTest {
     private final static double SPEED_LIMIT = 60.0;
     private final static double TIME_STEP = SimConfig.TIME_STEP;
 
@@ -72,7 +72,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        CentralManagementMergeSimulator sim = new CentralManagementMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
@@ -102,9 +102,9 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
         //ACQUIRE VEHICLE AND DRIVER
         int vin = sim.getVinToVehicles().keySet().iterator().next();
-        assert sim.getActiveVehicle(vin) instanceof MergeCentralAutoVehicle;
-        MergeCentralAutoVehicle vehicle = (MergeCentralAutoVehicle) sim.getActiveVehicle(vin);
-        MergeCentralAutoDriver driver = vehicle.getDriver();
+        assert sim.getActiveVehicle(vin) instanceof MergeV2IAutoVehicle;
+        MergeV2IAutoVehicle vehicle = (MergeV2IAutoVehicle) sim.getActiveVehicle(vin);
+        MergeV2IAutoDriver driver = vehicle.getDriver();
         double startXPosition = vehicle.getPosition().getX();
         double startYPosition = vehicle.getPosition().getY();
 
@@ -145,7 +145,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         assertEquals(timeAtStop, stop.getTime(), 0.01);
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         // AFTER 2 STEPS //
         sim.step(TIME_STEP);
@@ -166,10 +166,10 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         assertEquals(vehicle.getAccelSchedule(), toStopAccelSchedule); //Schedule won't change because vehicle has not received response
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         //COMMS CHECKS
-        final Field i2VInboxField = MergeCentralAutoVehicle.class.getDeclaredField("i2vInbox");
+        final Field i2VInboxField = MergeV2IAutoVehicle.class.getDeclaredField("i2vInbox");
         i2VInboxField.setAccessible(true);
         assertEquals(((Queue<I2VMergeMessage>)i2VInboxField.get(vehicle)).size(), 1);
 
@@ -196,7 +196,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         double arrivalAccel = reservationList.get(1).getAcceleration();
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
 
         //RESERVATION MANAGER CHECKS
         assertTrue(reservationMerge.hasReservation(vehicle.getVIN()));
@@ -218,7 +218,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
             //DRIVER CHECKS
             if(!vehicle.getDriver().inCurrentMerge())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
 
             /*
             Vehicle reaches merge before the accel schedule can be applied and the vehicle moves out of the mode that
@@ -231,7 +231,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
             }
             else if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(arrivalTime)) {
                 assertEquals(vehicle.getAcceleration(), arrivalAccel, 0);
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.TRAVERSING.toString());
                 hitArrivalTimeCheck = true;
             }*/
         }
@@ -253,13 +253,13 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
             //DRIVER CHECKS
             if(vehicle.getDriver().inCurrentMerge())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.TRAVERSING.toString());
         }
 
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.CLEARING.toString());
 
         // STEPS WHILE CLEARING //
-        while(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString()) {
+        while(driver.getStateString() != MergeV2IAutoCoordinator.State.TERMINAL_STATE.toString()) {
             //STEP
             sim.step(TIME_STEP);
             stepsTaken++;
@@ -270,8 +270,8 @@ public class CentralManagementMergeSimulatorIntergrationTest {
             assertEquals(1, sim.getVinToVehicles().size());
 
             //DRIVER CHECKS
-            if(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+            if(driver.getStateString() != MergeV2IAutoCoordinator.State.TERMINAL_STATE.toString())
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.CLEARING.toString());
         }
 
         // SWITCH OVER TO MergeAutoCoordinator //
@@ -311,7 +311,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        CentralManagementMergeSimulator sim = new CentralManagementMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
@@ -341,9 +341,9 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
         //ACQUIRE VEHICLE AND DRIVER
         int vin = sim.getVinToVehicles().keySet().iterator().next();
-        assert sim.getActiveVehicle(vin) instanceof MergeCentralAutoVehicle;
-        MergeCentralAutoVehicle vehicle = (MergeCentralAutoVehicle) sim.getActiveVehicle(vin);
-        MergeCentralAutoDriver driver = vehicle.getDriver();
+        assert sim.getActiveVehicle(vin) instanceof MergeV2IAutoVehicle;
+        MergeV2IAutoVehicle vehicle = (MergeV2IAutoVehicle) sim.getActiveVehicle(vin);
+        MergeV2IAutoDriver driver = vehicle.getDriver();
         double startXPosition = vehicle.getPosition().getX();
         double startYPosition = vehicle.getPosition().getY();
 
@@ -384,7 +384,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         assertEquals(timeAtStop, stop.getTime(), 0.01);
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         // AFTER 2 STEPS //
         sim.step(TIME_STEP);
@@ -405,10 +405,10 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         assertEquals(vehicle.getAccelSchedule(), toStopAccelSchedule); //Schedule won't change because vehicle has not received response
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.AWAITING_RESPONSE.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.AWAITING_RESPONSE.toString());
 
         //COMMS CHECKS
-        final Field i2VInboxField = MergeCentralAutoVehicle.class.getDeclaredField("i2vInbox");
+        final Field i2VInboxField = MergeV2IAutoVehicle.class.getDeclaredField("i2vInbox");
         i2VInboxField.setAccessible(true);
         assertEquals(((Queue<I2VMergeMessage>)i2VInboxField.get(vehicle)).size(), 1);
 
@@ -435,7 +435,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
         double arrivalAccel = reservationList.get(1).getAcceleration();
 
         //DRIVER CHECKS
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
 
         //RESERVATION MANAGER CHECKS
         assertTrue(reservationMerge.hasReservation(vehicle.getVIN()));
@@ -457,7 +457,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
             //DRIVER CHECKS
             if(!vehicle.getDriver().inCurrentMerge())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.MAINTAINING_RESERVATION.toString());
 
             /*
             Vehicle reaches merge before the accel schedule can be applied and the vehicle moves out of the mode that
@@ -470,7 +470,7 @@ public class CentralManagementMergeSimulatorIntergrationTest {
             }
             else if(reservationMerge.calcDiscreteTime(sim.getSimulationTime()) == reservationMerge.calcDiscreteTime(arrivalTime)) {
                 assertEquals(vehicle.getAcceleration(), arrivalAccel, 0);
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.TRAVERSING.toString());
                 hitArrivalTimeCheck = true;
             }*/
         }
@@ -492,13 +492,13 @@ public class CentralManagementMergeSimulatorIntergrationTest {
 
             //DRIVER CHECKS
             if(vehicle.getDriver().inCurrentMerge())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.TRAVERSING.toString());
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.TRAVERSING.toString());
         }
 
-        assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+        assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.CLEARING.toString());
 
         // STEPS WHILE CLEARING //
-        while(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString()) {
+        while(driver.getStateString() != MergeV2IAutoCoordinator.State.TERMINAL_STATE.toString()) {
             //STEP
             sim.step(TIME_STEP);
             stepsTaken++;
@@ -509,8 +509,8 @@ public class CentralManagementMergeSimulatorIntergrationTest {
             assertEquals(1, sim.getVinToVehicles().size());
 
             //DRIVER CHECKS
-            if(driver.getStateString() != MergeCentralAutoCoordinator.State.TERMINAL_STATE.toString())
-                assertEquals(driver.getStateString(), MergeCentralAutoCoordinator.State.CLEARING.toString());
+            if(driver.getStateString() != MergeV2IAutoCoordinator.State.TERMINAL_STATE.toString())
+                assertEquals(driver.getStateString(), MergeV2IAutoCoordinator.State.CLEARING.toString());
         }
 
         // SWITCH OVER TO MergeAutoCoordinator //
