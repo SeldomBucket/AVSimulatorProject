@@ -40,6 +40,11 @@ public class CPMStatScreen extends StatScreen {
     }
 
     @Override
+    public void printData() {
+        System.out.println("Printing CPM statscreen data");
+    }
+
+    @Override
     public synchronized void update() {
         Simulator generalSim = simViewer.getSimulator();
         assert(generalSim instanceof CPMAutoDriverSimulator);

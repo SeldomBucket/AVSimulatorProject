@@ -129,6 +129,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private JMenuItem resetMenuItem;
     /** Menu item "Dump Data Collection Lines' Data" */
     private JMenuItem dumpDataMenuItem;
+    /** Menu item "Dump Statistics Screen Data" */
+    private JMenuItem dumpStatScreenMenuItem;
     /** Menu item for activating recording. */
     private JMenuItem startRecordingMenuItem;
     /** Menu item for deactivating recording. */
@@ -277,6 +279,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         dumpDataMenuItem = new JMenuItem("Dump Data Collection Lines' Data");
         dumpDataMenuItem.addActionListener(this);
         menu.add(dumpDataMenuItem);
+        // Data->Dump Statistics Screen Data
+        dumpStatScreenMenuItem = new JMenuItem("Dump Statistics Screen Data");
+        dumpStatScreenMenuItem.addActionListener(this);
+        menu.add(dumpStatScreenMenuItem);
 
         // Recording
         menu = new JMenu("Recording");
@@ -441,6 +447,12 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         dumpDataMenuItem.setEnabled(true);
         startUdpListenerMenuItem.setEnabled(true);
         clearDebugPointsMenuItem.setEnabled(true);
+
+        if (selectedViewer.hasStatScreen()) {
+            dumpStatScreenMenuItem.setEnabled(true);
+        } else {
+            dumpStatScreenMenuItem.setEnabled(false);
+        }
     }
 
     /**
@@ -470,6 +482,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         stepMenuItem.setEnabled(false);
         resetMenuItem.setEnabled(false);
         dumpDataMenuItem.setEnabled(false);
+        dumpStatScreenMenuItem.setEnabled(false);
         startUdpListenerMenuItem.setEnabled(false);
         clearDebugPointsMenuItem.setEnabled(false);
     }
@@ -649,6 +662,23 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                 }
                 if (isDumpData) {
                     selectedViewer.printDataCollectionLinesData(outFileName);
+                }
+            }
+        } else if (e.getSource() == dumpStatScreenMenuItem) {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileSelectionMode(JFileChooser.SAVE_DIALOG);
+            int returnVal = chooser.showDialog(this, "Save");
+            if (returnVal == JFileChooser.APPROVE_OPTION) {
+                boolean isDumpData = false;
+                String outFileName = null;
+                try {
+                    outFileName = chooser.getSelectedFile().getCanonicalPath();
+                    isDumpData = true;
+                } catch (IOException ioe) {
+                    // nothing
+                }
+                if (isDumpData) {
+                    selectedViewer.printStatScreenData(outFileName);
                 }
             }
         } else if (e.getSource() == startRecordingMenuItem) {
