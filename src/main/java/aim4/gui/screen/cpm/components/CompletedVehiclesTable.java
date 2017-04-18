@@ -12,7 +12,7 @@ import java.util.List;
  * A table displaying information for the vehicles that have completed the simulation.
  */
 public class CompletedVehiclesTable extends JPanel implements CPMStatScreenComponent {
-    private MapKeyTableModel model; // TODO CPM Move this class out of merge
+    private MapKeyTableModel model; // TODO CPM Move this class out of merge package
     private JTable table;
     private JScrollPane scrollPane;
 
@@ -53,10 +53,17 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
         }
     }
 
+    @Override
+    public List<String> getAllLabelsText() {
+        return null;
+    }
+
     private double calculateRetrievalTime(CPMBasicAutoVehicle vehicle) {
         double timeRetrieved = vehicle.getEntryTime() + vehicle.getParkingTime();
         double timeTakenToRetrieve = vehicle.getExitTime() - timeRetrieved;
         return timeTakenToRetrieve;
     }
+
+    public JTable getTable() { return table; }
 
 }

@@ -8,10 +8,13 @@ import aim4.gui.viewer.CPMSimViewer;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
+import com.csvreader.CsvWriter;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
+import javax.swing.table.TableModel;
 import java.awt.*;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +28,12 @@ public class CPMStatScreen extends StatScreen {
     CPMSimViewer simViewer;
     List<CPMStatScreenComponent> componentsToUpdate;
     List<CPMAutoDriverSimStepResult> resultsToProcess;
+
+    // Components
+    GeneralInfo generalInfo;
+    SimConfigSummary simConfigSummary;
+    CarParkStats carParkStats;
+    CompletedVehiclesTable completedVehiclesTable;
 
     public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer, CPMSimSetupPanel setupPanel) {
         this.viewer = viewer;
@@ -41,8 +50,71 @@ public class CPMStatScreen extends StatScreen {
 
     @Override
     public void printData(String outFileName) {
-        System.out.println("Printing CPM statscreen data");
+
+        // before we open the file check to see if it already exists
+        // boolean alreadyExists = new File(outFileName).exists();
+        // if the file didn't already exist then we need to write out the header line
+        // TODO CPM shouldn't be an assertion.
+        // assert !alreadyExists;
+
+        printComponentOfLabels(carParkStats, outFileName);
+        printComponentOfLabels(simConfigSummary, outFileName);
+        printCompletedVehiclesTable(outFileName);
+
     }
+
+    private void printCompletedVehiclesTable(String outFileName){
+        try {
+            // use FileWriter constructor that specifies open for appending
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outFileName, true), ',');
+
+            TableModel tableModel = completedVehiclesTable.getTable().getModel();
+            int colCount = completedVehiclesTable.getTable().getModel().getColumnCount();
+            int rowCount = completedVehiclesTable.getTable().getModel().getRowCount();
+
+            // Print the headers
+            for (int colIndex = 0 ; colIndex < colCount ; colIndex ++){
+                csvOutput.write(tableModel.getColumnName(colIndex));
+            }
+            csvOutput.endRecord();
+
+            // Print the values
+            for (int rowIndex = 0 ; rowIndex < rowCount ; rowIndex ++){
+                for (int colIndex = 0 ; colIndex < colCount ; colIndex ++){
+                    // output the value in that cell
+                    csvOutput.write(tableModel.getValueAt(rowIndex, colIndex).toString());
+                    // if its the last cell in that row, end the record
+                    if (colIndex + 1 == colCount){
+                        csvOutput.endRecord();
+                    }
+                }
+            }
+
+            csvOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void printComponentOfLabels(CPMStatScreenComponent component, String outFileName){
+        try {
+            // use FileWriter constructor that specifies open for appending
+            CsvWriter csvOutput = new CsvWriter(new FileWriter(outFileName, true), ',');
+
+            List<String> allLabelsText = component.getAllLabelsText();
+            for (int i = 0 ; i < allLabelsText.size() ; i++){
+                String[] labelSplit = allLabelsText.get(i).split(":");
+                csvOutput.write(labelSplit [0]);
+                csvOutput.write(labelSplit [1]);
+                csvOutput.endRecord();
+            }
+
+            csvOutput.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public synchronized void update() {
@@ -70,16 +142,16 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        GeneralInfo generalInfo = new GeneralInfo();
+        generalInfo = new GeneralInfo();
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        SimConfigSummary simConfigSummary = new SimConfigSummary(setupPanel);
+        simConfigSummary = new SimConfigSummary(setupPanel);
         simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        CarParkStats carParkStats = new CarParkStats();
+        carParkStats = new CarParkStats();
         carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
+        completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
 
 

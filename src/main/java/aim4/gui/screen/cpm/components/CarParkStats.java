@@ -9,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.font.TextAttribute;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -69,5 +70,15 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         String[] labelSplit = labelText.split(":");
         String labelOnly = labelSplit [0];
         label.setText(labelOnly + ": " + newValue);
+    }
+
+    @Override
+    public List<String> getAllLabelsText(){
+        List<String> labelsText = new ArrayList<String>();
+        labelsText.add(numberOfCarsDeniedEntryLabel.getText());
+        labelsText.add(maxVehiclesInCarParkLabel.getText());
+        labelsText.add(numOfVehiclesInCarParkLabel.getText());
+        labelsText.add(carParkAreaLabel.getText());
+        return labelsText;
     }
 }

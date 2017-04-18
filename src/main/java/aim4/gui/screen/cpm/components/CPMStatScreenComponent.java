@@ -10,4 +10,5 @@ import java.util.List;
  */
 public interface CPMStatScreenComponent {
     public void update(CPMAutoDriverSimulator sim, List<CPMAutoDriverSimStepResult> resultToProcess);
+    public List<String> getAllLabelsText();
 }

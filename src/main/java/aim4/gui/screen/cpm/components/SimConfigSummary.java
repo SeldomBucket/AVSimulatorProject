@@ -10,11 +10,21 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.util.*;
+import java.util.List;
 
 /**
  * Display a summary of the configuration chosen for this simulation.
  */
 public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
+
+    BasicCPMSimSetup setup;
+
+    // Labels
+    JLabel laneWidthLabel;
+    JLabel numberOfParkingLanesLabel;
+    JLabel lengthOfParkingLabel;
+    JLabel useCvsLabel;
+    JLabel trafficLevelLabel;
 
     public SimConfigSummary(CPMSimSetupPanel setupPanel) {
         JLabel title = new JLabel("Config Summary");
@@ -23,21 +33,21 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         title.setFont(font.deriveFont(attributes));
 
-        BasicCPMSimSetup setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
+        setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
-        JLabel laneWidthLabel = new JLabel("Lane width: " + setup.getLaneWidth());
+        laneWidthLabel = new JLabel("Lane width: " + setup.getLaneWidth());
         laneWidthLabel.setOpaque(true);
 
-        JLabel numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + setup.getNumberOfParkingLanes());
+        numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + setup.getNumberOfParkingLanes());
         numberOfParkingLanesLabel.setOpaque(true);
 
-        JLabel lengthOfParkingLabel = new JLabel("Parking length: " + setup.getParkingLength());
+        lengthOfParkingLabel = new JLabel("Parking length: " + setup.getParkingLength());
         lengthOfParkingLabel.setOpaque(true);
 
-        JLabel useCvsLabel = new JLabel("Using CSV file: " + setup.getUseCSVFile().getKey());
+        useCvsLabel = new JLabel("Using CSV file: " + setup.getUseCSVFile().getKey());
         useCvsLabel.setOpaque(true);
 
-        JLabel trafficLevelLabel = new JLabel("Traffic level: " + (setup.getTrafficLevel()*3600));
+        trafficLevelLabel = new JLabel("Traffic level: " + (setup.getTrafficLevel()*3600));
         useCvsLabel.setOpaque(true);
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
@@ -55,5 +65,18 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
     @Override
     public void update(CPMAutoDriverSimulator sim, java.util.List<CPMAutoDriverSimulator.CPMAutoDriverSimStepResult> resultToProcess) {
 
+    }
+
+    @Override
+    public List<String> getAllLabelsText(){
+        List<String> labelsText = new ArrayList<String>();
+        labelsText.add(laneWidthLabel.getText());
+        labelsText.add(numberOfParkingLanesLabel.getText());
+        labelsText.add(lengthOfParkingLabel.getText());
+        labelsText.add(useCvsLabel.getText());
+        if (!setup.getUseCSVFile().getKey()) {
+            labelsText.add(trafficLevelLabel.getText());
+        }
+        return labelsText;
     }
 }

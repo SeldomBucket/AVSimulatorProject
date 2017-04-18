@@ -41,6 +41,11 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         updateLabel(0, remainingVehiclesToSpawnLabel);
     }
 
+    @Override
+    public List<String> getAllLabelsText() {
+        return null;
+    }
+
     // TODO CPM do we want this?
     /*private String convertSecondsToTimeString(double timeInSeconds) {
         double hours = timeInSeconds / 3600;
