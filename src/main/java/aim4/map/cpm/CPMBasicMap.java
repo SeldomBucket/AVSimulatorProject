@@ -6,6 +6,7 @@ import aim4.map.SpawnPoint;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -109,6 +110,22 @@ public abstract class CPMBasicMap implements CPMMap{
                 y2,
                 laneWidth,
                 speedLimit);
+        registerLane(lane);
+        // Add lane to road
+        road.addTheRightMostLane(lane);
+        laneToRoad.put(lane, road);
+
+        return road;
+    }
+
+    protected Road createRoadWithOneParkingLane(String roadName, double x1,
+                                         double y1, double x2, double y2,
+                                         double accessLength, double overlappingRoadWidth,
+                                         double laneWidth, double speedLimit){
+        // Create the road
+        Road road = new Road(roadName, this);
+        // Add a lane to the road
+        ParkingLane lane = new ParkingLane(x1, y1, x2, y2, laneWidth, accessLength, overlappingRoadWidth, speedLimit, road);
         registerLane(lane);
         // Add lane to road
         road.addTheRightMostLane(lane);

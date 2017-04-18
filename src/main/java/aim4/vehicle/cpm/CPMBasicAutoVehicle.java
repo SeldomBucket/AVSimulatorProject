@@ -75,6 +75,22 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
      */
     protected boolean hasEntered;
 
+    /**
+     * The time that the vehicle entered the car park.
+     */
+    protected double entryTime;
+
+    /**
+     * The time that the vehicle exited the car park.
+     */
+    protected double exitTime;
+
+    /**
+     * The time it too for the vehicle to exit the car
+     * park once its parking time had elapsed.
+     */
+    protected double retrievalTime;
+
     // messaging
 
     /**
@@ -181,6 +197,22 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
 
     public void increaseNumberOfReEntries() {
         this.numberOfReEntries++;
+    }
+
+    public double getExitTime() {
+        return exitTime;
+    }
+
+    public void setExitTime(double exitTime) {
+        this.exitTime = exitTime;
+    }
+
+    public double getEntryTime() {
+        return entryTime;
+    }
+
+    public void setEntryTime(double entryTime) {
+        this.entryTime = entryTime;
     }
 
     /**

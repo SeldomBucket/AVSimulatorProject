@@ -4,8 +4,12 @@ import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.screen.cpm.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
+import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.map.cpm.CPMMapUtil.*;
+import aim4.sim.Simulator;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import aim4.sim.setup.cpm.CPMAutoDriverSimSetup;
+import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import javafx.util.Pair;
 
 import java.awt.event.MouseEvent;
@@ -22,11 +26,11 @@ public class CPMSimViewer extends SimViewer {
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
         super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
-                2.25, // speedLimit - approx. 5mph
+                5.0, // speedLimit - approx. 10mph
                 0.28, // trafficLevel
                 2.0, // laneWidth
                 1, // numberOfParkingLanes
-                20.0, // parkingLength
+                50.0, // parkingLength
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
                 new Pair<Boolean, String>(false, "")
@@ -35,7 +39,23 @@ public class CPMSimViewer extends SimViewer {
 
     @Override
     protected void createStatScreen(Viewer viewer) {
-        this.statScreen = new CPMStatScreen();
+        SimSetupPanel generalSetupPanel = getSimSetupPanel();
+        assert generalSetupPanel instanceof CPMSimSetupPanel;
+        CPMSimSetupPanel setupPanel = (CPMSimSetupPanel) generalSetupPanel;
+
+        this.statScreen = new CPMStatScreen(viewer, this, setupPanel);
+    }
+
+    @Override
+    protected Simulator.SimStepResult runSimulationStep() {
+        Simulator.SimStepResult stepResult = super.runSimulationStep();
+
+        assert stepResult instanceof CPMAutoDriverSimulator.CPMAutoDriverSimStepResult;
+        CPMAutoDriverSimulator.CPMAutoDriverSimStepResult cpmStepResult =
+                (CPMAutoDriverSimulator.CPMAutoDriverSimStepResult) stepResult;
+        ((CPMStatScreen) this.statScreen).addResultToProcess(cpmStepResult);
+
+        return stepResult;
     }
 
     @Override

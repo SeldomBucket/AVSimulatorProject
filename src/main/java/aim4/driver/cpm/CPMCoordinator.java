@@ -136,13 +136,13 @@ public class CPMCoordinator implements Coordinator {
      * The current driving state of the agent.
      * This is part of how the two sub-agents communicate.
      */
-    private DrivingState drivingState;
+    protected DrivingState drivingState;
 
     /**
      * The current parking status of the agent.
      * This is part of how the two sub-agents communicate.
      */
-    private ParkingStatus parkingStatus;
+    protected ParkingStatus parkingStatus;
 
     /**
      * The most recent time at which the driving state was changed.
