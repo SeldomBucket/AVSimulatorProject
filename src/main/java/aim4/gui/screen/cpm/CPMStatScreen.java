@@ -3,7 +3,8 @@ package aim4.gui.screen.cpm;
 import aim4.gui.Viewer;
 import aim4.gui.screen.StatScreen;
 import aim4.gui.screen.cpm.components.CPMStatScreenComponent;
-import aim4.gui.screen.cpm.components.CPMTopBar;
+import aim4.gui.screen.cpm.components.GeneralInfo;
+import aim4.gui.screen.cpm.components.CarParkStats;
 import aim4.gui.screen.cpm.components.CompletedVehiclesTable;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.gui.viewer.CPMSimViewer;
@@ -66,19 +67,20 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        CPMTopBar topBar = new CPMTopBar();
+        GeneralInfo topBar = new GeneralInfo();
+        CarParkStats carParkStats = new CarParkStats();
         CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
-        /*CompletedVehicleList completedVehicles = new CompletedVehicleList();*/
+        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
 
-        setLayout(new BorderLayout());
-        add(topBar, BorderLayout.PAGE_START);
-        add(completedVehiclesTable, BorderLayout.CENTER);
-        /*add(activeVehicles, BorderLayout.CENTER);
-        add(completedVehicles, BorderLayout.LINE_END);*/
+
+        setLayout(new FlowLayout());
+        add(topBar);
+        add(carParkStats);
+        add(completedVehiclesTable);
+
 
         componentsToUpdate.add(topBar);
+        componentsToUpdate.add(carParkStats);
         componentsToUpdate.add(completedVehiclesTable);
-        /*componentsToUpdate.add(activeVehicles);
-        componentsToUpdate.add(completedVehicles);*/
     }
 }
