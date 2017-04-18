@@ -10,6 +10,7 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,14 @@ public class CPMStatScreen extends StatScreen {
 
     private void setupScreen(){
         GeneralInfo generalInfo = new GeneralInfo();
+        generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
+
         SimConfigSummary simConfigSummary = new SimConfigSummary(setupPanel);
+        simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
+
         CarParkStats carParkStats = new CarParkStats();
+        carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+
         CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
 
