@@ -72,6 +72,7 @@ public class FindBugTest {
                 simThread.run();
             }
 
+        // TODO CPM Temperamental, message thrown is null.
         } catch(RuntimeException e) {
             e.printStackTrace();
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());

@@ -60,7 +60,7 @@ public class MergeStatScreen extends StatScreen {
     }
 
     @Override
-    public void printData() {
+    public void printData(String outFileName) {
         System.out.println("Printing MERGE statscreen data");
     }
 

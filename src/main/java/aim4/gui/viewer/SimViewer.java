@@ -672,7 +672,7 @@ public abstract class SimViewer extends JPanel implements
      *
      */
     public void printStatScreenData(String outFileName) {
-        statScreen.printData();
+        statScreen.printData(outFileName);
     }
 
     /**
