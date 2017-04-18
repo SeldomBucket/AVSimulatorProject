@@ -213,11 +213,13 @@ public class CPMMapUtil {
                     Double parking;
                     try {
                         entry = Double.parseDouble(entryString);
-                        parking = Double.parseDouble(parkingString);
                     } catch (NumberFormatException e) {
                         entry = convertTimeToSeconds(entryString);
+                    }
+                    try {
+                        parking = Double.parseDouble(parkingString);
+                    } catch (NumberFormatException e) {
                         parking = convertTimeToSeconds(parkingString);
-
                     }
 
                     Pair<Double, Double> pair = new Pair<Double, Double>(entry, parking);

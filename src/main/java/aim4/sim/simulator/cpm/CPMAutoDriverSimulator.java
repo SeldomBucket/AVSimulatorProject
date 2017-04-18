@@ -5,16 +5,14 @@ import aim4.config.DebugPoint;
 import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.cpm.CPMSpawnPoint;
+import aim4.map.cpm.*;
 import aim4.map.cpm.CPMSpawnPoint.*;
-import aim4.map.cpm.CPMMap;
-import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
-import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
+import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -42,24 +40,24 @@ public class CPMAutoDriverSimulator implements Simulator {
     public static class CPMAutoDriverSimStepResult implements SimStepResult {
 
         /** The VIN of the completed vehicles in this time step */
-        List<Integer> completedVINs;
+        List<CPMBasicAutoVehicle> completedVehicles;
 
         /**
          * Create a result of a simulation step
          *
-         * @param completedVINs  the VINs of completed vehicles.
+         * @param completedVehicles  the completed vehicles.
          */
-        public CPMAutoDriverSimStepResult(List<Integer> completedVINs) {
-            this.completedVINs = completedVINs;
+        public CPMAutoDriverSimStepResult(List<CPMBasicAutoVehicle> completedVehicles) {
+            this.completedVehicles = completedVehicles;
         }
 
         /**
-         * Get the list of VINs of completed vehicles.
+         * Get the list of completed vehicles.
          *
-         * @return the list of VINs of completed vehicles.
+         * @return the list of completed vehicles.
          */
-        public List<Integer> getCompletedVINs() {
-            return completedVINs;
+        public List<CPMBasicAutoVehicle> getCompletedVehicles() {
+            return completedVehicles;
         }
     }
 
@@ -71,21 +69,21 @@ public class CPMAutoDriverSimulator implements Simulator {
     /////////////////////////////////
 
     /** The map */
-    private CPMMap map;
+    protected CPMBasicMap map;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
-    private Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
+    protected Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
-    private double currentTime;
+    protected double currentTime;
     /** The number of completed vehicles */
-    private int numOfCompletedVehicles;
+    protected int numOfCompletedVehicles;
     /** A list of parked vehicles */
-    private List<CPMBasicAutoVehicle> parkedVehicles;
+    protected List<CPMBasicAutoVehicle> parkedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
     private int totalBitsTransmittedByCompletedVehicles;
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
 
-    public CPMAutoDriverSimulator(CPMMap map){
+    public CPMAutoDriverSimulator(CPMBasicMap map){
         this.map = map;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
         this.parkedVehicles = new ArrayList<CPMBasicAutoVehicle>();
@@ -107,9 +105,9 @@ public class CPMAutoDriverSimulator implements Simulator {
         moveVehicles(timeStep);
         observeParkedVehicles();
         observeNumberOfVehiclesInCarPark();
-        List<Integer> completedVINs = cleanUpCompletedVehicles();
+        List<CPMBasicAutoVehicle> completedVehicles = cleanUpCompletedVehicles();
         currentTime += timeStep;
-        return new CPMAutoDriverSimStepResult(completedVINs);
+        return new CPMAutoDriverSimStepResult(completedVehicles);
     }
 
     /////////////////////////////////
@@ -121,7 +119,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      *
      * @param timeStep  the time step
      */
-    private void spawnVehicles(double timeStep) {
+    protected void spawnVehicles(double timeStep) {
         for(CPMSpawnPoint spawnPoint : map.getSpawnPoints()) {
             if (canSpawnVehicle(spawnPoint)) {
                 List<CPMSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
@@ -155,7 +153,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param spawnPoint  the spawn point
      * @return Whether the spawn point can spawn a vehicle
      */
-    private boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
+    protected boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
         // TODO: can be made much faster.
         assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
         Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
@@ -174,7 +172,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * @param spawnSpec   the spawn specification
      * @return the vehicle
      */
-    private CPMBasicAutoVehicle makeVehicle(CPMSpawnPoint spawnPoint,
+    protected CPMBasicAutoVehicle makeVehicle(CPMSpawnPoint spawnPoint,
                                            CPMSpawnSpec spawnSpec) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
@@ -218,7 +216,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * that feed into one another.  Then, for each vehicle, depending on the
      * state of its sensors, we provide it with the appropriate sensor input.
      */
-    private void provideSensorInput() {
+    protected void provideSensorInput() {
         Map<Lane,SortedMap<Double,CPMBasicAutoVehicle>> vehicleLists =
                 computeVehicleLists();
         Map<CPMBasicAutoVehicle, CPMBasicAutoVehicle> nextVehicle =
@@ -472,7 +470,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      * Ideally, would like to use sensors, but lack of time and
      * current understanding of LRF means we need a workaround.
      */
-    private void findNextVehicles() {
+    protected void findNextVehicles() {
         for (CPMBasicAutoVehicle vehicle : map.getVehicles()){
             vehicle.setVehicleInFront(getVehicleInFront(vehicle, map));
         }
@@ -523,7 +521,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     /**
      * Allow each driver to act.
      */
-    private void letDriversAct() {
+    protected void letDriversAct() {
         for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
             vehicle.getDriver().act();
         }
@@ -538,7 +536,7 @@ public class CPMAutoDriverSimulator implements Simulator {
      *
      * @param timeStep  the time step
      */
-    private void moveVehicles(double timeStep) {
+    protected void moveVehicles(double timeStep) {
         for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
@@ -559,6 +557,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                      StatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
                          System.out.println("Vehicle is entering.");
+                         vehicle.setEntryTime(currentTime);
                          statusMonitor.vehicleOnEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.REENTRY) {
@@ -567,6 +566,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.EXIT) {
                          System.out.println("Vehicle is exiting.");
+                         vehicle.setExitTime(currentTime);
                          statusMonitor.vehicleOnExit(vehicle);
                      }
                  }
@@ -587,7 +587,7 @@ public class CPMAutoDriverSimulator implements Simulator {
     // STEP 6
     /////////////////////////////////
 
-    private void observeParkedVehicles() {
+    protected void observeParkedVehicles() {
         parkedVehicles.clear();
         List<CPMBasicAutoVehicle> vehicles = map.getVehicles();
         for (CPMBasicAutoVehicle vehicle : vehicles) {
@@ -604,8 +604,10 @@ public class CPMAutoDriverSimulator implements Simulator {
     // STEP 7
     /////////////////////////////////
 
-    private void observeNumberOfVehiclesInCarPark() {
-        map.getStatusMonitor().updateMostNumberOfVehicles();
+    protected void observeNumberOfVehiclesInCarPark() {
+        if (map.getStatusMonitor() != null) {
+            map.getStatusMonitor().updateMostNumberOfVehicles();
+        }
     }
 
     /////////////////////////////////
@@ -617,8 +619,8 @@ public class CPMAutoDriverSimulator implements Simulator {
      *
      * @return the VINs of the completed vehicles
      */
-    private List<Integer> cleanUpCompletedVehicles() {
-        List<Integer> completedVINs = new LinkedList<Integer>();
+    protected List<CPMBasicAutoVehicle> cleanUpCompletedVehicles() {
+        List<CPMBasicAutoVehicle> completedVehicles = new LinkedList<CPMBasicAutoVehicle>();
         Rectangle2D mapBoundary = map.getDimensions();
         List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
         for(int vin : vinToVehicles.keySet()) {
@@ -627,18 +629,17 @@ public class CPMAutoDriverSimulator implements Simulator {
             if(!vehicle.getShape().intersects(mapBoundary)) {
                 // Process anything we need to from this vehicle
                 // TODO CPM Do we need to get anything? Maybe distance travelled
-                assert map instanceof CPMCarParkWithStatus;
-                ((CPMCarParkWithStatus)map).removeCompletedVehicle(vehicle);
+                map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
             }
         }
         // Remove the marked vehicles
         for(int vin : removedVINs) {
+            completedVehicles.add(vinToVehicles.get(vin));
             vinToVehicles.remove(vin);
-            completedVINs.add(vin);
             numOfCompletedVehicles++;
         }
-        return completedVINs;
+        return completedVehicles;
     }
 
 

@@ -60,6 +60,11 @@ public class MergeStatScreen extends StatScreen {
     }
 
     @Override
+    public void printData(String outFileName) {
+        System.out.println("Printing MERGE statscreen data");
+    }
+
+    @Override
     public synchronized void update() {
         Simulator generalSim = simViewer.getSimulator();
         assert(generalSim instanceof MergeSimulator);

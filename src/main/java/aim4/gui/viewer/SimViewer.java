@@ -669,6 +669,13 @@ public abstract class SimViewer extends JPanel implements
     }
 
     /**
+     *
+     */
+    public void printStatScreenData(String outFileName) {
+        statScreen.printData(outFileName);
+    }
+
+    /**
      * Start the simulation process.
      */
     public void startSimProcess() {
@@ -818,6 +825,14 @@ public abstract class SimViewer extends JPanel implements
             }
         }
     }
+
+    public boolean hasStatScreen() {
+        if (statScreen != null) {
+            return true;
+        }
+        return false;
+    }
+
 
     /////////////////////////////////
     // DEBUG
