@@ -273,9 +273,9 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
             // TODO CPM should DCL deal with this?
             lastConnection = currentConnection;
         }
-        else if (currentConnection == lastConnection){
+        /*else if (currentConnection == lastConnection){
             throw new RuntimeException("The vehicle has just entered the same connection.");
-        }
+        }*/
 
         // The the centre points of the 2 connections we are using
         Point2D centreOfCurrentConnection = currentConnection.getCentroid();

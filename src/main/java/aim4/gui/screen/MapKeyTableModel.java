@@ -1,4 +1,4 @@
-package aim4.gui.screen.merge.components;
+package aim4.gui.screen;
 
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableModel;

@@ -71,8 +71,6 @@ public class CPMNavigator {
                         }
                     }
                 }
-            } else if (parkingStatus == ParkingStatus.WAITING) {
-                // TODO Make cars wait
             }
         } else {
             throw new RuntimeException("Behaviour of navigator is not defined for this connection.");

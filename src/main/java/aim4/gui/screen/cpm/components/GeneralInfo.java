@@ -1,5 +1,7 @@
 package aim4.gui.screen.cpm.components;
 
+import aim4.map.cpm.CPMMapUtil;
+import aim4.map.cpm.CPMSpawnPoint;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 
@@ -37,8 +39,8 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         int completedVehicles = sim.getNumCompletedVehicles();
         updateSimTimeLabel(simTime);
         updateLabel(completedVehicles, completedVehiclesLabel);
-        // TODO CPM find this
-        updateLabel(0, remainingVehiclesToSpawnLabel);
+        CPMSpawnPoint.CPMSpawnSpecGenerator spawnSpecGenerator = sim.getMap().getSpawnPoints().get(0).getVehicleSpecChooser();
+        updateLabel(spawnSpecGenerator.getNumberOfVehiclesLeftToSpawn(), remainingVehiclesToSpawnLabel);
     }
 
     @Override
@@ -61,7 +63,11 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         // Split the text so we can remove the old value and reuse the label
         String[] labelSplit = labelText.split(":");
         String labelOnly = labelSplit [0];
-        label.setText(labelOnly + ": " + newValue);
+        if (newValue == -1) {
+            label.setText(labelOnly + ": " + "N/A");
+        } else {
+            label.setText(labelOnly + ": " + newValue);
+        }
     }
 
     private void updateSimTimeLabel(double simTime){

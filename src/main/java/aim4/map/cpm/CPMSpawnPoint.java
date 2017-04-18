@@ -41,6 +41,7 @@ public class CPMSpawnPoint extends SpawnPoint {
      */
     public static interface CPMSpawnSpecGenerator {
         List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timestep);
+        int getNumberOfVehiclesLeftToSpawn();
         double generateParkingTime();
     }
 
@@ -124,4 +125,6 @@ public class CPMSpawnPoint extends SpawnPoint {
     public void setVehicleSpecChooser(CPMSpawnSpecGenerator vehicleSpecChooser) {
         this.vehicleSpecChooser = vehicleSpecChooser;
     }
+
+    public CPMSpawnSpecGenerator getVehicleSpecChooser() { return vehicleSpecChooser; }
 }

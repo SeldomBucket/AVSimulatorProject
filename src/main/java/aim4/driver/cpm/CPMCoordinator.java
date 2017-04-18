@@ -397,8 +397,6 @@ public class CPMCoordinator implements Coordinator {
                 }
                 // do nothing, keep going around the corner
                 pilot.takeSteeringActionForTraversing(corner, parkingStatus);
-                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                // pilot.followAccelerationProfile(rparameter);
             }
             return false;
         }
@@ -433,8 +431,6 @@ public class CPMCoordinator implements Coordinator {
                 }
                 // do nothing, keep going through the junction
                 pilot.takeSteeringActionForTraversing(junction, parkingStatus);
-                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                // pilot.followAccelerationProfile(rparameter);
             }
             return false;
         }
@@ -461,8 +457,6 @@ public class CPMCoordinator implements Coordinator {
             } else {
                 // do nothing keep going through the intersection
                 pilot.takeSteeringActionForTraversing(intersection, parkingStatus);
-                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                // pilot.followAccelerationProfile(rparameter);
             }
             return false;
         }

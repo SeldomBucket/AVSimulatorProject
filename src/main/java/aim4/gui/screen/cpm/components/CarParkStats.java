@@ -1,12 +1,10 @@
 package aim4.gui.screen.cpm.components;
 
-import aim4.gui.screen.merge.components.MapKeyTableModel;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.font.TextAttribute;
 import java.util.ArrayList;

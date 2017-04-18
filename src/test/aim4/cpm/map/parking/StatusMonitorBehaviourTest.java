@@ -4,6 +4,7 @@ import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import javafx.util.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -47,6 +48,8 @@ public class StatusMonitorBehaviourTest {
                 2, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
+        Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\firstParksLongerThanSecond.csv");
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(mapTwoLanes, useCsvPair);
         CPMMapUtil.setUpFiniteSingleSpecSpawnPoint(mapTwoLanes, 2, 0.28);
         this.simForTwoLanes = new CPMAutoDriverSimulator(mapTwoLanes);
         this.simThreadForTwoLanes = new TestSimThread(simForTwoLanes);
@@ -76,7 +79,6 @@ public class StatusMonitorBehaviourTest {
 
     @Test
     public void testCorrectLaneAllocated() throws Exception {
-        // TODO CPM This test is temperamental, if the first vehicle exits before the second has parked, condition never met
         // Run the simulation until 2 vehicles are parked.
         try {
             simThreadForTwoLanes.start();

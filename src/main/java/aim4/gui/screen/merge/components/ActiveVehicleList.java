@@ -1,5 +1,6 @@
 package aim4.gui.screen.merge.components;
 
+import aim4.gui.screen.MapKeyTableModel;
 import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.vehicle.merge.MergeVehicleSimModel;

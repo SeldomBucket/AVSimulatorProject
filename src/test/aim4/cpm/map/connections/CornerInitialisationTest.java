@@ -67,17 +67,6 @@ public class CornerInitialisationTest {
     }
 
     @Test
-    public void testGetCentroid() throws Exception {
-        /*double expectedCentroidX = 472;
-        double expectedCentroidY = 472;
-        Point2D centroid = testCorner.getCentroid();
-        assertEquals(expectedCentroidX, centroid.getX(), 0.01);
-        assertEquals(expectedCentroidY, centroid.getY(), 0.01);*/
-
-        // TODO CPM WHAT IS THIS DOING
-    }
-
-    @Test
     public void testGetEntryRoads() throws Exception {
         List<Road> roads = testCorner.getEntryRoads();
 

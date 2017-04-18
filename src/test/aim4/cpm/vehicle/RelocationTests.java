@@ -4,6 +4,7 @@ import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import javafx.util.Pair;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,8 @@ public class RelocationTests {
                 1, // numberOfParkingLanes
                 20, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpSimpleRelocateSpawnPoint(map, 0.28);
+        Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\firstParksLongerThanSecond.csv");
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);
     }

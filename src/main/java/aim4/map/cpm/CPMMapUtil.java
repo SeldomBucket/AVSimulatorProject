@@ -90,6 +90,11 @@ public class CPMMapUtil {
             return result;
         }
 
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return numberOfVehiclesToSpawn - numberOfSpawnedVehicles;
+        }
+
         public double generateParkingTime(){
             return 20000.0;
         }
@@ -130,6 +135,11 @@ public class CPMMapUtil {
                 }
             }
             return result;
+        }
+
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return -1;
         }
 
         @Override
@@ -270,6 +280,11 @@ public class CPMMapUtil {
         }
 
         @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return spawnTimes.size();
+        }
+
+        @Override
         public double generateParkingTime() {
             // Returns a random double
             double rangeMin = 2000.0;
@@ -345,6 +360,11 @@ public class CPMMapUtil {
             return result;
         }
 
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return numberOfVehiclesToSpawn - numberOfSpawnedVehicles;
+        }
+
         public double generateParkingTime(){
             return 20000.0;
         }
@@ -397,6 +417,11 @@ public class CPMMapUtil {
             }
 
             return result;
+        }
+
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return -1;
         }
 
         @Override
@@ -543,76 +568,17 @@ public class CPMMapUtil {
         }
 
         @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return spawnTimes.size();
+        }
+
+        @Override
         public double generateParkingTime() {
             // Returns a random double
             double rangeMin = 2000.0;
             double rangeMax = 20000.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-        }
-    }
-
-    /**
-     * The spec generator that creates scenario where relocation is required.
-     * 2 vehicles of the same spec are spawned, where the 2nd will need to
-     * exit the car park before the first. This will require the first vehicle
-     * to relocate.
-     */
-    public static class SimpleRelocateSpawnSpecGenerator implements CPMSpawnSpecGenerator {
-        /** The vehicle specification */
-        private VehicleSpec vehicleSpec;
-        /** The probability of generating a vehicle in each spawn time step */
-        private double spawnProbability;
-        /** Number of vehicles to be spawned. */
-        private int numberOfVehiclesToSpawn;
-        /** Number vehicles that have been spawned so far. */
-        private int numberOfSpawnedVehicles;
-        /** Whether the spec has been generated */
-        private boolean isDone;
-
-        /**
-         * Create a spec generator that creates a simple relocate scenario.
-         */
-        public SimpleRelocateSpawnSpecGenerator(double trafficLevel) {
-            this.numberOfVehiclesToSpawn = 2;
-            this.numberOfSpawnedVehicles = 0;
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP; // TODO CPM should get trafficLevel from somewhere
-            // Cannot generate more than one vehicle in each spawn time step
-            assert spawnProbability <= 1.0;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
-            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
-            if (numberOfSpawnedVehicles == numberOfVehiclesToSpawn) {
-                isDone = true;
-            }
-            if (!isDone) {
-                double initTime = spawnPoint.getCurrentTime();
-                for(double time = initTime; time < initTime + timeStep;
-                    time += SimConfig.SPAWN_TIME_STEP) {
-                    if (Util.random.nextDouble() < spawnProbability) {
-                        double parkingTime = generateParkingTime();
-                        result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                        System.out.println("Vehicle spawned!");
-                        numberOfSpawnedVehicles += 1;
-                    }
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public double generateParkingTime() {
-            if (numberOfSpawnedVehicles == 0) {
-                return 20000.0;
-            } else {
-                return 10000.0;
-            }
         }
     }
 
@@ -665,14 +631,6 @@ public class CPMMapUtil {
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new InfiniteSpawnRandomSpecGenerator(trafficLevel));
-        }
-    }
-
-    public static void setUpSimpleRelocateSpawnPoint(CPMMap simpleMap, double trafficLevel){
-        // The spawn point will spawn 2 vehicles which will trigger a relocation scenario.
-        for(CPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
-            sp.setVehicleSpecChooser(
-                    new SimpleRelocateSpawnSpecGenerator(trafficLevel));
         }
     }
 
