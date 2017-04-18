@@ -39,7 +39,7 @@ import java.util.Map;
 import java.util.PriorityQueue;
 
 import aim4.config.Debug;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.Road;
 import aim4.util.Util;

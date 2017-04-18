@@ -30,34 +30,21 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.map.aim;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.config.TrafficSignalPhase;
-import aim4.im.RoadBasedIntersection;
-import aim4.im.RoadBasedTrackModel;
-import aim4.im.v2i.RequestHandler.ApproxSimpleTrafficSignalRequestHandler;
-import aim4.im.v2i.V2IManager;
-import aim4.im.v2i.RequestHandler.ApproxStopSignRequestHandler;
-import aim4.im.v2i.RequestHandler.Approx4PhasesTrafficSignalRequestHandler;
-import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler;
-import aim4.im.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.CyclicSignalController;
-import aim4.im.v2i.RequestHandler.BatchModeRequestHandler;
-import aim4.im.v2i.RequestHandler.FCFSRequestHandler;
-import aim4.im.v2i.RequestHandler.RequestHandler;
-import aim4.im.v2i.batch.RoadBasedReordering;
-import aim4.im.v2i.policy.BasePolicy;
-import aim4.im.v2i.reservation.ReservationGridManager;
+import aim4.im.aim.RoadBasedIntersection;
+import aim4.im.aim.RoadBasedTrackModel;
+import aim4.im.aim.v2i.RequestHandler.*;
+import aim4.im.aim.v2i.RequestHandler.ApproxNPhasesTrafficSignalRequestHandler.CyclicSignalController;
+import aim4.im.aim.v2i.V2IManager;
+import aim4.im.aim.v2i.batch.RoadBasedReordering;
+import aim4.im.aim.v2i.policy.BasePolicy;
+import aim4.im.aim.v2i.reservation.ReservationGridManager;
 import aim4.map.BasicMap;
 import aim4.map.Road;
-import aim4.map.aim.AIMSpawnPoint;
-import aim4.map.aim.AIMSpawnPoint.*;
-import aim4.map.aim.BasicIntersectionMap;
-import aim4.map.aim.GridIntersectionMap;
-import aim4.map.aim.TrafficVolume;
+import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpec;
+import aim4.map.aim.AIMSpawnPoint.AIMSpawnSpecGenerator;
 import aim4.map.aim.destination.DestinationSelector;
 import aim4.map.aim.destination.RandomDestinationSelector;
 import aim4.map.aim.destination.RatioDestinationSelector;
@@ -66,6 +53,10 @@ import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * The utility class for GridIntersectionMap.
@@ -136,7 +127,6 @@ public class GridMapUtil {
             destinationSelector.selectDestination(spawnPoint.getLane());
 
           // maybe spawnPoint.getCurrentTime() is incorrect
-
           result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(),
                                    vehicleSpec,
                                    destinationRoad));
@@ -536,12 +526,35 @@ public class GridMapUtil {
    * @param map           the map
    * @param trafficLevel  the traffic level
    */
-  public static void setUniformRandomSpawnPoints(GridIntersectionMap map,
+  public static void setUniformRandomSpawnPoints(final GridIntersectionMap map, //TODO: Remove finality
                                                  double trafficLevel) {
     for(AIMSpawnPoint sp : map.getSpawnPoints()) {
-      sp.setVehicleSpecChooser(
-        new UniformSpawnSpecGenerator(trafficLevel,
-                                      new RandomDestinationSelector(map)));
+      //TODO: Remove
+      if(sp.getHeading() == 0 || sp.getHeading() == Math.PI/2) {
+        sp.setVehicleSpecChooser(
+                new UniformSpawnSpecGenerator(trafficLevel,
+                        //TODO: Remove
+                        new DestinationSelector() {
+                          @Override
+                          public Road selectDestination(Lane currentLane) {
+                            for (Road r : map.getDestinationRoads()) {
+                              if (r.getIndexLane().getInitialHeading() != 0 && currentLane.getInitialHeading() == Math.PI)
+                                return r;
+                              if (r.getIndexLane().getInitialHeading() == 0 && currentLane.getInitialHeading() != Math.PI)
+                                return r;
+                            }
+                            return null;
+                          }
+                        }));
+        //new RandomDestinationSelector(map)));
+      } else {
+        sp.setVehicleSpecChooser(new AIMSpawnSpecGenerator() {
+          @Override
+          public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timeStep) {
+            return new ArrayList<AIMSpawnSpec>();
+          }
+        });
+      }
     }
   }
 

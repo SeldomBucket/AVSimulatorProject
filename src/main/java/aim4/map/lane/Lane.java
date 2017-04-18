@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.map.lane;
 
 import aim4.map.aim.lane.LaneIM;
+import aim4.map.merge.LaneMM;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -76,6 +77,13 @@ public interface Lane {
    * @return the LaneIM object
    */
   LaneIM getLaneIM();
+
+  /**
+   * Get the LaneMM object that helps located the merge managers on a lane.
+   *
+   * @retrun the LaneMM object
+   */
+  LaneMM getLaneMM();
 
 
   /////////////////////////////////

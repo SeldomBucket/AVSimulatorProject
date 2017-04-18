@@ -30,25 +30,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.driver.aim.coordinator;
 
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.List;
-import java.util.Queue;
-
+import aim4.config.Constants.TurnDirection;
 import aim4.config.Debug;
 import aim4.config.SimConfig;
-import aim4.config.Constants.TurnDirection;
 import aim4.driver.Coordinator;
+import aim4.driver.DriverUtil;
 import aim4.driver.aim.AIMAutoDriver;
 import aim4.driver.aim.AutoDriverCoordinatorView;
-import aim4.driver.DriverUtil;
 import aim4.driver.aim.navigator.BasicNavigator;
 import aim4.driver.aim.navigator.Navigator;
 import aim4.driver.aim.pilot.V2IPilot;
-import aim4.im.IntersectionManager;
-import aim4.im.v2i.V2IManager;
-import aim4.map.aim.BasicIntersectionMap;
+import aim4.im.aim.IntersectionManager;
+import aim4.im.aim.v2i.V2IManager;
 import aim4.map.Road;
+import aim4.map.aim.BasicIntersectionMap;
 import aim4.map.lane.Lane;
 import aim4.msg.aim.i2v.Confirm;
 import aim4.msg.aim.i2v.I2VMessage;
@@ -62,6 +57,11 @@ import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.aim.AIMAutoVehicleDriverModel;
+
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * An agent that autonomously controls the coordination of a
@@ -1324,7 +1324,6 @@ public class V2ICoordinator implements Coordinator {
     }
   }
 
-
   /**
    * The state handler for the lane changing state.
    */
@@ -1353,7 +1352,6 @@ public class V2ICoordinator implements Coordinator {
       }
     }
   }
-
 
   /**
    * The state handler for the default driving behavior state.
@@ -1835,7 +1833,6 @@ public class V2ICoordinator implements Coordinator {
     }
   }
 
-
   /**
    * The state handler for the traversing state.
    */
@@ -1865,7 +1862,6 @@ public class V2ICoordinator implements Coordinator {
     }
   }
 
-
   /**
    * The state handler for the clearing state.
    */
@@ -1894,7 +1890,6 @@ public class V2ICoordinator implements Coordinator {
       }
     }
   }
-
 
   /////////////////////////////////
   // PRIVATE METHODS

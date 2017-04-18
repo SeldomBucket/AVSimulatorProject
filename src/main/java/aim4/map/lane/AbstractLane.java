@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.map.lane;
 
 import aim4.map.aim.lane.LaneIM;
+import aim4.map.merge.LaneMM;
 
 import java.awt.Shape;
 import java.awt.geom.Line2D;
@@ -70,6 +71,9 @@ public abstract class AbstractLane implements Lane {
   /** The LaneIM object that helps to locate the intersection managers. */
   private LaneIM laneIM;
 
+  /** The LaneMM object that helps to locate the merge managers. */
+  private LaneMM laneMM;
+
   /////////////////////////////////
   // CONSTRUCTORS
   /////////////////////////////////
@@ -80,6 +84,7 @@ public abstract class AbstractLane implements Lane {
   public AbstractLane(double speedLimit) {
     this.speedLimit = speedLimit;
     this.laneIM = new LaneIM(this);
+    this.laneMM = new LaneMM(this);
   }
 
 
@@ -118,6 +123,15 @@ public abstract class AbstractLane implements Lane {
   public LaneIM getLaneIM() {
     return laneIM;
   }
+
+  /**
+   * {@inheritDoc}
+   */
+  @Override
+  public LaneMM getLaneMM() {
+    return laneMM;
+  }
+
 
   /////////////////////////////////
   // PUBLIC METHODS

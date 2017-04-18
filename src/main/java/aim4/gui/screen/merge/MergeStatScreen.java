@@ -47,10 +47,14 @@ public class MergeStatScreen extends StatScreen {
             case SINGLE: setupSingleLaneScreen(); break;
             case S2S:
                 switch(protocolType) {
-                    case AIM: setupS2SAimScreen(); break;
+                    case AIM_GRID: setupS2SAimScreen(); break;
+                    case AIM_NO_GRID: setupS2SAimScreen(); break;
                     case DECENTRALISED: setupS2SDecentralisedScreen(); break;
+                    case TEST_MERGE: setupS2STestMergeScreen(); break;
+                    case TEST_TARGET: setupS2STestTargetScreen(); break;
                     default: throw new RuntimeException("Unexpected protocol type for S2S map: " + protocolType.toString());
                 }
+                break;
             default: throw new RuntimeException("Unexpected map type: " + mapType.toString());
         }
     }
@@ -98,10 +102,62 @@ public class MergeStatScreen extends StatScreen {
 
     //S2S//
     private void setupS2SAimScreen(){
+        TopBar topBar = new TopBar();
+        ActiveVehicleList activeVehicles = new ActiveVehicleList();
+        CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        setLayout(new BorderLayout());
+        add(topBar, BorderLayout.PAGE_START);
+        add(activeVehicles, BorderLayout.CENTER);
+        add(completedVehicles, BorderLayout.LINE_END);
+
+        componentsToUpdate.add(topBar);
+        componentsToUpdate.add(activeVehicles);
+        componentsToUpdate.add(completedVehicles);
     }
 
     private void setupS2SDecentralisedScreen(){
+        TopBar topBar = new TopBar();
+        ActiveVehicleList activeVehicles = new ActiveVehicleList();
+        CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        setLayout(new BorderLayout());
+        add(topBar, BorderLayout.PAGE_START);
+        add(activeVehicles, BorderLayout.CENTER);
+        add(completedVehicles, BorderLayout.LINE_END);
+
+        componentsToUpdate.add(topBar);
+        componentsToUpdate.add(activeVehicles);
+        componentsToUpdate.add(completedVehicles);
     }
+
+    private void setupS2STestTargetScreen() {
+        TopBar topBar = new TopBar();
+        ActiveVehicleList activeVehicles = new ActiveVehicleList();
+        CompletedVehicleList completedVehicles = new CompletedVehicleList();
+
+        setLayout(new BorderLayout());
+        add(topBar, BorderLayout.PAGE_START);
+        add(activeVehicles, BorderLayout.CENTER);
+        add(completedVehicles, BorderLayout.LINE_END);
+
+        componentsToUpdate.add(topBar);
+        componentsToUpdate.add(activeVehicles);
+        componentsToUpdate.add(completedVehicles);
+    }
+
+    private void setupS2STestMergeScreen() {
+        TopBar topBar = new TopBar();
+        ActiveVehicleList activeVehicles = new ActiveVehicleList();
+        CompletedVehicleList completedVehicles = new CompletedVehicleList();
+
+        setLayout(new BorderLayout());
+        add(topBar, BorderLayout.PAGE_START);
+        add(activeVehicles, BorderLayout.CENTER);
+        add(completedVehicles, BorderLayout.LINE_END);
+
+        componentsToUpdate.add(topBar);
+        componentsToUpdate.add(activeVehicles);
+        componentsToUpdate.add(completedVehicles);    }
+
 }

@@ -43,7 +43,7 @@ import aim4.msg.aim.udp.Real2ProxyRequest;
 import aim4.msg.aim.i2v.Confirm;
 import aim4.msg.aim.i2v.I2VMessage;
 import aim4.msg.aim.i2v.Reject;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.lane.Lane;
 import aim4.msg.aim.v2i.Request;
 import aim4.msg.aim.v2i.Cancel;

@@ -1,29 +1,25 @@
 package aim4.sim.simulator.merge;
 
 import aim4.config.SimConfig;
-import aim4.driver.Driver;
+import aim4.driver.merge.MergeDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.merge.MergeMap;
-import aim4.map.merge.MergeSpawnPoint;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
 import aim4.vehicle.merge.MergeVehicleSimModel;
-import com.sun.scenario.effect.Merge;
 import org.junit.Before;
 import org.junit.Test;
-import org.w3c.dom.css.Rect;
 
-import javax.xml.crypto.Data;
 import java.awt.*;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.*;
 
 /**
@@ -36,9 +32,9 @@ public class CoreMergeSimulatorTest {
     private SensorInputHelper mockSensorInputHelper;
     private Map<Integer, MergeVehicleSimModel> mockVinToVehicles;
 
-    private Driver mockDriver1;
-    private Driver mockDriver2;
-    private Driver mockDriver3;
+    private MergeDriver mockDriver1;
+    private MergeDriver mockDriver2;
+    private MergeDriver mockDriver3;
     private MergeVehicleSimModel mockVehicle1;
     private MergeVehicleSimModel mockVehicle2;
     private MergeVehicleSimModel mockVehicle3;
@@ -100,9 +96,9 @@ public class CoreMergeSimulatorTest {
         Point2D pos2 = new Point2D.Double(2,2);
         Point2D pos3 = new Point2D.Double(3,3);
 
-        mockDriver1 = mock(Driver.class);
-        mockDriver2 = mock(Driver.class);
-        mockDriver3 = mock(Driver.class);
+        mockDriver1 = mock(MergeDriver.class);
+        mockDriver2 = mock(MergeDriver.class);
+        mockDriver3 = mock(MergeDriver.class);
         doNothing().when(mockDriver1).act();
         doNothing().when(mockDriver2).act();
         doNothing().when(mockDriver3).act();

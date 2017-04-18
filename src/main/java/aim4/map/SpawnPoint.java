@@ -3,8 +3,8 @@ package aim4.map;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VehicleSpec;
 
+import java.awt.*;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
@@ -77,7 +77,7 @@ public abstract class SpawnPoint {
      * The area in which there should not have any other vehicle when the
      * vehicle is spawned.
      */
-    protected Rectangle2D noVehicleZone;
+    protected Shape noVehicleZone;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -100,7 +100,7 @@ public abstract class SpawnPoint {
                          double steeringAngle,
                          double acceleration,
                          Lane lane,
-                         Rectangle2D noVehicleZone) {
+                         Shape noVehicleZone) {
         this.currentTime = currentTime;
         this.pos = pos;
         this.heading = heading;
@@ -183,7 +183,7 @@ public abstract class SpawnPoint {
      *
      * @return the no vehicle zone
      */
-    public Rectangle2D getNoVehicleZone() {
+    public Shape getNoVehicleZone() {
         return noVehicleZone;
     }
 }

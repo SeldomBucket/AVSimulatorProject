@@ -6,7 +6,7 @@ import aim4.gui.StatusPanelContainer;
 import aim4.gui.Viewer;
 import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.setuppanel.AIMSimSetupPanel;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.sim.simulator.aim.AutoDriverOnlySimulator;

@@ -1,13 +1,14 @@
 package aim4.sim.setup.merge;
 
+import aim4.config.SimConfig;
+import aim4.im.merge.reservation.grid.ReservationMergeGridManager;
+import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
-import aim4.sim.Simulator;
+import aim4.sim.setup.merge.enums.ProtocolType;
+import aim4.sim.simulator.merge.V2IMergeSimulator;
+import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
-import aim4.sim.simulator.merge.MergingProtocol;
-import com.sun.scenario.effect.Merge;
-
-import static aim4.map.merge.MergeMapUtil.setUniformSpawnSpecGenerator;
 
 /**
  * Created by Callum on 02/03/2017.
@@ -29,7 +30,7 @@ public class S2SSimSetup implements MergeSimSetup {
     public final static double DEFAULT_MERGING_ANGLE = 45.0;
 
     /**The merging protocol for the simulation**/
-    MergingProtocol mergingProtocol;
+    ProtocolType mergingProtocol;
     /**The traffic level **/
     double trafficLevel;
     /**The speed limit of the target lane**/
@@ -45,7 +46,7 @@ public class S2SSimSetup implements MergeSimSetup {
     /**The angle of aproach for the merging road**/
     double mergingAngle;
 
-    public S2SSimSetup(MergingProtocol protocol, double trafficLevel,
+    public S2SSimSetup(ProtocolType protocol, double trafficLevel,
                        double targetLaneSpeedLimit, double mergingLaneSpeedLimit,
                        double targetLeadInDistance, double targetLeadOutDistance,
                        double mergeLeadInDistance, double mergingAngle) {
@@ -66,9 +67,38 @@ public class S2SSimSetup implements MergeSimSetup {
                 targetLaneSpeedLimit, mergingLaneSpeedLimit,
                 targetLeadInDistance, targetLeadOutDistance,
                 mergeLeadInDistance, mergingAngle);
-        MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
 
-        return null;
+        switch(mergingProtocol){
+            case AIM_GRID:
+                ReservationMergeGridManager.Config mergeGridReservationConfig =
+                        new ReservationMergeGridManager.Config(
+                                SimConfig.TIME_STEP,
+                                SimConfig.GRID_TIME_STEP,
+                                0.1,
+                                0.15,
+                                0.15,
+                                true,
+                                1.0);
+                MergeMapUtil.setFCFSGridMergeManagers(layout, currentTime, mergeGridReservationConfig);
+                MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
+                return new V2IMergeSimulator(layout);
+            case AIM_NO_GRID:
+                ReservationMergeManager.Config mergeReservationConfig =
+                        new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
+                MergeMapUtil.setFCFSMergeManagers(layout, currentTime, mergeReservationConfig);
+                MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
+                return new V2IMergeSimulator(layout);
+            case DECENTRALISED:
+                MergeMapUtil.setUniformSpawnSpecGenerator(layout, trafficLevel);
+                return null;
+            case TEST_MERGE:
+                MergeMapUtil.setUniformSpawnSpecGeneratorMergeLaneOnly(layout, trafficLevel);
+                return new CoreMergeSimulator(layout);
+            case TEST_TARGET:
+                MergeMapUtil.setUniformSpawnSpecGeneratorTargetLaneOnly(layout, trafficLevel);
+                return new CoreMergeSimulator(layout);
+            default: throw new IllegalArgumentException("Unexpected Protocol Type: " + mergingProtocol.toString());
+        }
     }
 
     public double getTrafficLevel() {

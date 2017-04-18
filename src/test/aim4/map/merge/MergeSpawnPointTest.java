@@ -2,17 +2,18 @@ package aim4.map.merge;
 
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
-import aim4.vehicle.VehicleSpec;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.awt.*;
+import java.awt.geom.GeneralPath;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 /**
@@ -31,7 +32,7 @@ public class MergeSpawnPointTest {
     private Point2D laneStart;
     private Point2D laneEnd;
     private Lane lane;
-    private Rectangle2D noVehicleZone;
+    private GeneralPath noVehicleZone;
     private MergeSpawnPoint spawnPoint;
 
     //Vehicle Spec Properties
@@ -58,10 +59,12 @@ public class MergeSpawnPointTest {
         heading = lane.getInitialHeading();
         steeringAngle = 12.0;
         acceleration = 5.0;
-        noVehicleZone = lane.getShape(
-                normalisedStartDistance,
-                lane.normalizedDistance(startDistance + noVehicleZoneLength)
-        ).getBounds2D();
+        noVehicleZone = new GeneralPath(
+                lane.getShape(
+                        normalisedStartDistance,
+                        lane.normalizedDistance(startDistance + noVehicleZoneLength)
+                ).getBounds2D()
+        );
 
         //Create Spawn Point
         spawnPoint = new MergeSpawnPoint(
@@ -209,7 +212,7 @@ public class MergeSpawnPointTest {
         Rectangle2D testValue = mock(Rectangle2D.class);
         field.set(spawnPoint, testValue);
 
-        final Rectangle2D result = spawnPoint.getNoVehicleZone();
+        final Shape result = spawnPoint.getNoVehicleZone();
         assertEquals("noVehicleZone not returned correctly", result, testValue);
     }
 }
