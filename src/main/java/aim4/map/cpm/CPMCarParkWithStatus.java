@@ -44,6 +44,10 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
                          int numberOfParkingLanes, double parkingLength,
                          double accessLength) {
         super(laneWidth, speedLimit, initTime);
+
+        if(numberOfParkingLanes == 0) {
+            throw new RuntimeException("There must be at least 1 parking lane!");
+        }
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
@@ -313,13 +317,6 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
                         );
             }
         }
-        // TODO CPM move this to statscreen
-        outfile.print("Number of denied entries: " + statusMonitor.getNumberOfDeniedEntries() + "%n");
-        outfile.print("Number of allowed entries: " + statusMonitor.getNumberOfAllowedEntries() + "%n");
-        outfile.print("Most number of vehicles in car park: " + statusMonitor.getMostNumberOfVehicles() + "%n");
-        outfile.print("Total area of car park: " + getTotalCarParkArea() + "%n");
-
-
         outfile.close();
     }
 

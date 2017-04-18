@@ -43,9 +43,9 @@ public class CPMAutoDriverParamPanel extends JPanel {
         add(laneWidthSlider);
 
         numberOfParkingLanesSlider =
-                new LabeledSlider(1, 10,
+                new LabeledSlider(0, 50,
                         simSetup.getNumberOfParkingLanes(),
-                        1.0, 1.0,
+                        10.0, 1.0,
                         "Number of Parking Lanes: %.0f",
                         "%.0f");
         add(numberOfParkingLanesSlider);

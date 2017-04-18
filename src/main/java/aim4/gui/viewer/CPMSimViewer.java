@@ -29,7 +29,7 @@ public class CPMSimViewer extends SimViewer {
                 5.0, // speedLimit - approx. 10mph
                 0.28, // trafficLevel
                 2.0, // laneWidth
-                1, // numberOfParkingLanes
+                10, // numberOfParkingLanes
                 50.0, // parkingLength
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
