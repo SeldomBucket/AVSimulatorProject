@@ -21,7 +21,6 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
     private JLabel maxVehiclesInCarParkLabel;
     private JLabel numOfVehiclesInCarParkLabel;
     private JLabel carParkAreaLabel;
-    private JLabel remainingVehiclesToSpawnLabel;
 
     public CarParkStats() {
         JLabel title = new JLabel("Car Park Stats");
@@ -42,8 +41,7 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         carParkAreaLabel = new JLabel("Car park area (square metres): ");
         carParkAreaLabel.setOpaque(true);
 
-        remainingVehiclesToSpawnLabel = new JLabel("Number of vehicles left to spawn: ");
-        remainingVehiclesToSpawnLabel.setOpaque(true);
+
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(title);
@@ -51,9 +49,6 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         this.add(maxVehiclesInCarParkLabel);
         this.add(numOfVehiclesInCarParkLabel);
         this.add(carParkAreaLabel);
-        this.add(remainingVehiclesToSpawnLabel);
-        // this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-
     }
 
     @Override

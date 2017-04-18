@@ -13,6 +13,7 @@ import java.util.List;
 public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
     private JLabel simTimeLabel;
     private JLabel completedVehiclesLabel;
+    private JLabel remainingVehiclesToSpawnLabel;
 
     public GeneralInfo() {
         simTimeLabel = new JLabel("Simulation Time: ");
@@ -21,9 +22,13 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         completedVehiclesLabel = new JLabel("Completed Vehicles: ");
         completedVehiclesLabel.setOpaque(true);
 
+        remainingVehiclesToSpawnLabel = new JLabel("Number of vehicles left to spawn: ");
+        remainingVehiclesToSpawnLabel.setOpaque(true);
+
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(simTimeLabel);
         this.add(completedVehiclesLabel);
+        this.add(remainingVehiclesToSpawnLabel);
         this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
     }
 
@@ -31,7 +36,9 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         double simTime = sim.getSimulationTime();
         int completedVehicles = sim.getNumCompletedVehicles();
         updateSimTimeLabel(simTime);
-        updateCompletedVehiclesLabel(completedVehicles);
+        updateLabel(completedVehicles, completedVehiclesLabel);
+        // TODO CPM find this
+        updateLabel(0, remainingVehiclesToSpawnLabel);
     }
 
     // TODO CPM do we want this?
@@ -44,11 +51,15 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         return timeString;
     }*/
 
-    private void updateSimTimeLabel(double simTime){
-        simTimeLabel.setText("Simulation Time: " + String.format("%.2fs", simTime));
+    private void updateLabel(int newValue, JLabel label){
+        String labelText = label.getText();
+        // Split the text so we can remove the old value and reuse the label
+        String[] labelSplit = labelText.split(":");
+        String labelOnly = labelSplit [0];
+        label.setText(labelOnly + ": " + newValue);
     }
 
-    private void updateCompletedVehiclesLabel(int completedVehicles){
-        completedVehiclesLabel.setText("Completed Vehicles: " + completedVehicles);
+    private void updateSimTimeLabel(double simTime){
+        simTimeLabel.setText("Simulation Time: " + String.format("%.2fs", simTime));
     }
 }

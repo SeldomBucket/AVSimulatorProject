@@ -2,10 +2,7 @@ package aim4.gui.screen.cpm;
 
 import aim4.gui.Viewer;
 import aim4.gui.screen.StatScreen;
-import aim4.gui.screen.cpm.components.CPMStatScreenComponent;
-import aim4.gui.screen.cpm.components.GeneralInfo;
-import aim4.gui.screen.cpm.components.CarParkStats;
-import aim4.gui.screen.cpm.components.CompletedVehiclesTable;
+import aim4.gui.screen.cpm.components.*;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.gui.viewer.CPMSimViewer;
 import aim4.sim.Simulator;
@@ -67,19 +64,22 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        GeneralInfo topBar = new GeneralInfo();
+        GeneralInfo generalInfo = new GeneralInfo();
+        SimConfigSummary simConfigSummary = new SimConfigSummary(setupPanel);
         CarParkStats carParkStats = new CarParkStats();
         CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
 
 
         setLayout(new FlowLayout());
-        add(topBar);
+        add(generalInfo);
+        add(simConfigSummary);
         add(carParkStats);
         add(completedVehiclesTable);
 
 
-        componentsToUpdate.add(topBar);
+        componentsToUpdate.add(generalInfo);
+        componentsToUpdate.add(simConfigSummary);
         componentsToUpdate.add(carParkStats);
         componentsToUpdate.add(completedVehiclesTable);
     }
