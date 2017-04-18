@@ -32,10 +32,9 @@ package aim4.map.aim;
 
 import java.util.List;
 
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.BasicMap;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
 import aim4.util.Registry;
 
 /**

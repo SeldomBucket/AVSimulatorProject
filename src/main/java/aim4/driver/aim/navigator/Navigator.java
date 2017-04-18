@@ -31,7 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.driver.aim.navigator;
 
 import aim4.driver.aim.AIMAutoDriver;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.Road;
 
 /**

@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
-import aim4.im.LightState;
+import aim4.im.aim.LightState;
 import aim4.noise.DoubleGauge;
 import aim4.vehicle.VehicleDriverModel;
 

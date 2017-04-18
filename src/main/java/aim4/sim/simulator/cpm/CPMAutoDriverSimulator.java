@@ -155,7 +155,8 @@ public class CPMAutoDriverSimulator implements Simulator {
      */
     protected boolean canSpawnVehicle(CPMSpawnPoint spawnPoint) {
         // TODO: can be made much faster.
-        Rectangle2D noVehicleZone = spawnPoint.getNoVehicleZone();
+        assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
+        Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
         for(CPMBasicAutoVehicle vehicle : vinToVehicles.values()) {
             if (vehicle.getShape().intersects(noVehicleZone)) {
                 return false;

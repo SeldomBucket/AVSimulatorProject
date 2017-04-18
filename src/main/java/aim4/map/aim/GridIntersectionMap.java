@@ -41,7 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import aim4.config.Debug;
-import aim4.im.IntersectionManager;
+import aim4.im.aim.IntersectionManager;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.lane.Lane;

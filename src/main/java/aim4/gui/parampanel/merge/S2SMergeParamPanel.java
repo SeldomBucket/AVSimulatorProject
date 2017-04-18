@@ -4,7 +4,6 @@ import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.merge.MergeSimSetup;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.setup.merge.S2SSimSetup;
-import aim4.sim.simulator.merge.MergingProtocol;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,7 +13,11 @@ import java.awt.*;
  */
 public class S2SMergeParamPanel extends MergeParamPanel {
     //COMBOBOX OPTIONS//
-    final static String AIM_PROTOCOL_TITLE = "AIM Protocol";
+    final static String AIM_GRID_PROTOCOL_TITLE = "AIM Grid Protocol";
+    final static String AIM_NO_GRID_PROTOCOL_TITLE = "AIM Gridless Protocol";
+    final static String DECENTRALISED_PROTOCOL_TITLE = "Decnetralised Protocol";
+    final static String TEST_MERGE_PROTOCOL_TITLE = "Test Merge Lane Only";
+    final static String TEST_TARGET_PROTOCOL_TITLE = "Test Target Lane Only";
 
     //SIM SETUP//
     private S2SSimSetup simSetup;
@@ -46,7 +49,11 @@ public class S2SMergeParamPanel extends MergeParamPanel {
 
         String comboBoxItems[] =
                 {
-                        AIM_PROTOCOL_TITLE
+                        AIM_GRID_PROTOCOL_TITLE,
+                        AIM_NO_GRID_PROTOCOL_TITLE,
+                        DECENTRALISED_PROTOCOL_TITLE,
+                        TEST_MERGE_PROTOCOL_TITLE,
+                        TEST_TARGET_PROTOCOL_TITLE
                 };
         protocolComboBox = new JComboBox(comboBoxItems);
         protocolComboBox.setEditable(false);
@@ -124,16 +131,16 @@ public class S2SMergeParamPanel extends MergeParamPanel {
     }
 
     public ProtocolType getProtocolType() {
-        switch(protocolComboBox.getSelectedIndex()){
-            case 0: return ProtocolType.AIM;
-            default: throw new RuntimeException("Protocol type combo box went out of range");
-
-        }
+        return getSelectedProtocol();
     }
 
-    private MergingProtocol getSelectedProtocol(){
+    private ProtocolType getSelectedProtocol(){
         switch (protocolComboBox.getSelectedIndex()) {
-            case 0: return MergingProtocol.AIM;
+            case 0: return ProtocolType.AIM_GRID;
+            case 1: return ProtocolType.AIM_NO_GRID;
+            case 2: return ProtocolType.DECENTRALISED;
+            case 3: return ProtocolType.TEST_MERGE;
+            case 4: return ProtocolType.TEST_TARGET;
             default: throw new RuntimeException("Protocol type combo box went out of range");
         }
     }

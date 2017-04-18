@@ -1,11 +1,12 @@
 package aim4.driver.merge.coordinator;
 
-import aim4.driver.Coordinator;
 import aim4.driver.merge.MergeAutoDriver;
-import aim4.driver.merge.navigator.MergeAutoNavigator;
 import aim4.driver.merge.pilot.MergeAutoPilot;
+import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
+import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
+import aim4.map.merge.RoadNames;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
 
 import java.util.EnumMap;
@@ -13,72 +14,70 @@ import java.util.EnumMap;
 /**
  * Created by Callum on 25/03/2017.
  */
-public class MergeAutoCoordinator implements Coordinator {
-
-    ////NESTED CLASSES////
-
-    //STATE HANDLING//
-    private static interface StateHandler {
-        boolean perform();
-    }
-
-    private static StateHandler terminalStateHandler =
-            new StateHandler() {
-                @Override
-                public boolean perform() {
-                    return false; //do nothing
-                }
-            };
-
-    public enum MergeDrivingState {
+public class MergeAutoCoordinator extends MergeCoordinator {
+    // STATES //
+    public enum State {
+        /**
+         * Agent is planning what to do next
+         */
         PLANNING,
+        /**
+         * The agent follows the current lane and does not enter the intersection
+         */
         DEFAULT_DRIVING_BEHAVIOUR,
+        /**
+         * The agent is crossing the merge.
+         */
         TRAVERSING_MERGE,
+        /**
+         * Signals the end of the simulation for the vehicle.
+         */
         TERMINAL_STATE
     }
 
     //PRIVATE FIELDS//
-    //Vehicle and Driver
-    private MergeAutoVehicleDriverModel vehicle;
-    private MergeAutoDriver driver;
-    private MergeAutoNavigator navigator;
-    private MergeAutoPilot pilot;
-    private MergeMap map;
-
-    //MergeDrivingState
-    private MergeDrivingState state;
+    //VEHICLE AND DRIVER
+    //STATE
+    /** The current state of the agent. */
+    private State state;
+    /** The most recent time at which the state was changed */
     private double lastStateChangeTime = 0.0;
-    private EnumMap<MergeDrivingState, StateHandler> stateHandlers;
+    /** The state handlers */
+    private EnumMap<State, StateHandler> stateHandlers;
 
     //CONSTRUCTOR//
     public MergeAutoCoordinator(MergeAutoVehicleDriverModel vehicle, MergeAutoDriver driver, MergeMap map) {
         this.vehicle = vehicle;
         this.driver = driver;
+        this.map = map;
         this.pilot = new MergeAutoPilot(vehicle, driver);
-        this.navigator = new MergeAutoNavigator(vehicle.getSpec(), map);
 
         initStateHandlers();
 
-        setState(MergeDrivingState.PLANNING);
+        setState(State.PLANNING);
     }
 
     //STATE CONTROLLERS//
-    public MergeDrivingState getState() {
+    public State getState() {
         return state;
     }
 
-    private void setState(MergeDrivingState state) {
+    public String getStateString() {
+        return getState().toString();
+    }
+
+    private void setState(State state) {
         this.state = state;
         lastStateChangeTime = vehicle.gaugeTime();
     }
 
     private void initStateHandlers() {
-        stateHandlers = new EnumMap<MergeDrivingState, StateHandler>(MergeDrivingState.class);
+        stateHandlers = new EnumMap<State, StateHandler>(State.class);
 
-        stateHandlers.put(MergeDrivingState.PLANNING, new PlanningStateHandler());
-        stateHandlers.put(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR, new DefaultDrivingBehaviourHandler());
-        stateHandlers.put(MergeDrivingState.TRAVERSING_MERGE, new TraversingMergeStateHandler());
-        stateHandlers.put(MergeDrivingState.TERMINAL_STATE, terminalStateHandler);
+        stateHandlers.put(State.PLANNING, new PlanningStateHandler());
+        stateHandlers.put(State.DEFAULT_DRIVING_BEHAVIOUR, new DefaultDrivingBehaviourHandler());
+        stateHandlers.put(State.TRAVERSING_MERGE, new TraversingMergeStateHandler());
+        stateHandlers.put(State.TERMINAL_STATE, terminalStateHandler);
     }
 
     private void callStateHandlers() {
@@ -97,9 +96,9 @@ public class MergeAutoCoordinator implements Coordinator {
         @Override
         public boolean perform() {
             if(driver.inMerge() != null) {
-                setState(MergeDrivingState.TRAVERSING_MERGE);
+                setState(State.TRAVERSING_MERGE);
             } else {
-                setState(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
             }
             return true;
         }
@@ -110,7 +109,7 @@ public class MergeAutoCoordinator implements Coordinator {
         public boolean perform() {
             pilot.followCurrentLane();
             pilot.simpleThrottleAction();
-            setState(MergeDrivingState.PLANNING);
+            setState(State.PLANNING);
             return false;
         }
     }
@@ -121,11 +120,17 @@ public class MergeAutoCoordinator implements Coordinator {
             MergeConnection mergeConnection = driver.inMerge();
             if(mergeConnection == null){
                 //Vehicle cleared connection. Return to normal driving
-                setState(MergeDrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                Lane target = null;
+                for(Road r : map.getRoads())
+                    if(r.getName().equals(RoadNames.TARGET_ROAD.toString()))
+                        target = r.getOnlyLane();
+                assert target != null;
+                driver.setCurrentLane(target);
+                pilot.followCurrentLane();
             } else {
                 pilot.steerThroughMergeConnection(mergeConnection);
             }
-            pilot.followCurrentLane();
             pilot.simpleThrottleAction();
             return false;
         }
@@ -140,6 +145,6 @@ public class MergeAutoCoordinator implements Coordinator {
     //GETTERS
     @Override
     public boolean isTerminated() {
-        return state == MergeDrivingState.TERMINAL_STATE;
+        return state == State.TERMINAL_STATE;
     }
 }
