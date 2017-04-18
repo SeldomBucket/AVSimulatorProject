@@ -79,7 +79,6 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     public SimSetup getSimSetup() {
         if (comboBox.getSelectedIndex() == 0) {
             CPMAutoDriverSimSetup newSimSetup = new CPMAutoDriverSimSetup(simSetup);
-            newSimSetup.setSpeedLimit(autoDriverOnlySetupPanel.getSpeedLimit());
             newSimSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
             newSimSetup.setLaneWidth(autoDriverOnlySetupPanel.getLaneWidth());
             newSimSetup.setNumberOfParkingLanes(autoDriverOnlySetupPanel.getNumberOfParkingLanes());

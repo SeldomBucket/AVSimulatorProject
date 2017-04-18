@@ -15,7 +15,6 @@ import javax.swing.*;
 public class CPMAutoDriverParamPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
-    LabeledSlider speedLimitSlider;
     LabeledSlider laneWidthSlider;
     LabeledSlider numberOfParkingLanesSlider;
     LabeledSlider parkingLengthSlider;
@@ -34,14 +33,6 @@ public class CPMAutoDriverParamPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         // create the components
-
-        speedLimitSlider =
-                new LabeledSlider(1.0, 10.0,
-                        simSetup.getSpeedLimit(),
-                        1.0, 0.25,
-                        "Speed Limit: %.2f meters/second",
-                        "%.2f");
-        add(speedLimitSlider);
 
         laneWidthSlider =
                 new LabeledSlider(1.0, 5.0,
@@ -90,11 +81,6 @@ public class CPMAutoDriverParamPanel extends JPanel {
         useCSVFileRadioButtons = new CPMUseCSVFileRadioButtons();
         add(useCSVFileRadioButtons);
 
-    }
-
-
-    public double getSpeedLimit() {
-        return speedLimitSlider.getValue();
     }
 
     public double getLaneWidth() {
