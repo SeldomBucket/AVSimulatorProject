@@ -40,7 +40,7 @@ public class CPMStatScreen extends StatScreen {
     }
 
     @Override
-    public void printData() {
+    public void printData(String outFileName) {
         System.out.println("Printing CPM statscreen data");
     }
 
