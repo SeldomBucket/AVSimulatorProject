@@ -40,6 +40,7 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class provides helper methods that are used throughout the code.
@@ -365,9 +366,17 @@ public class Util {
   }
 
   public static String convertSecondsToTimeString(double timeInSeconds) {
-    Date date = new Date((long)(timeInSeconds*1000));
-    String formattedDate = new SimpleDateFormat("HH:mm:ss").format(date);
-    return formattedDate;
+    long hours = TimeUnit.SECONDS
+            .toHours((long)timeInSeconds);
+    timeInSeconds -= TimeUnit.HOURS.toSeconds(hours);
+
+    long minutes = TimeUnit.SECONDS
+            .toMinutes((long) timeInSeconds);
+    timeInSeconds -= TimeUnit.MINUTES.toSeconds(minutes);
+
+    long seconds = TimeUnit.SECONDS
+            .toSeconds((long)timeInSeconds);
+    return String.format("%02d:%02d:%02d", hours, minutes, seconds);
   }
 
   /////////////////////////////////
