@@ -30,9 +30,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.util;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 import aim4.config.Condor;
 import aim4.config.Constants;
@@ -41,8 +40,6 @@ import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.LinkedList;
 
 /**
  * This class provides helper methods that are used throughout the code.
@@ -365,6 +362,12 @@ public class Util {
     }
     in.close();
     return new ArrayList<String>(result);
+  }
+
+  public static String convertSecondsToTimeString(double timeInSeconds) {
+    Date date = new Date((long)(timeInSeconds*1000));
+    String formattedDate = new SimpleDateFormat("HH:mm:ss").format(date);
+    return formattedDate;
   }
 
   /////////////////////////////////

@@ -240,27 +240,6 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
 
     private void calculateAreaOfCarPark() {
         double totalArea = 0;
-        /*// Add the area of each parking lane
-        for (ParkingLane parkingLane : parkingArea.getParkingLanes()) {
-            totalArea += parkingLane.getLength() * parkingLane.getWidth();
-        }
-        // Add the vertical roads
-        for (Road road : verticalRoads){
-            totalArea += road.getOnlyLane().getLength() * road.getOnlyLane().getWidth();
-        }
-
-        // Add the West road, but only up to the
-        // length of the parking area
-        totalArea += getRoadByName("Westbound Avenue").getOnlyLane().getWidth() * parkingArea.getTotalLength();
-
-        // Minus the area of all connections
-        // Don't want to double count where roads overlap.
-        for (BasicConnection corner : corners) {
-            assert GeomMath.polygonalShapeAreas(corner.getArea()).size() == 1;
-            totalArea =- GeomMath.polygonalShapeAreas(corner.getArea()).get(0);
-        }
-
-        totalCarParkArea = totalArea;*/
 
         // Add the area of the parking area (w*h)
         totalArea += parkingArea.getTotalLength()*(parkingArea.getNumberOfParkingLanes()*parkingArea.getParkingLaneWidth());

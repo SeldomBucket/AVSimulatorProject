@@ -3,6 +3,7 @@ package aim4.gui.screen.cpm.components;
 import aim4.gui.screen.MapKeyTableModel;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
+import aim4.util.Util;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import javax.swing.*;
@@ -20,12 +21,15 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
         this.model = new MapKeyTableModel( new String[]{
                 "VIN",
                 "Spec",
-                "Entry time",
-                "Parking time",
-                "Exit time",
-                "Retrieval time",
+                "Entry time (s)",
+                "Parking time (s)",
+                "Exit time (s)",
+                "Retrieval time (s)",
                 "Number of re-entries",
-                "Distance travelled"
+                "Distance travelled (m)",
+                "Entry Time",
+                "Parking Time",
+                "Exit Time"
         });
 
         this.table = new JTable(model);
@@ -47,7 +51,10 @@ public class CompletedVehiclesTable extends JPanel implements CPMStatScreenCompo
                         vehicle.getExitTime(),
                         calculateRetrievalTime(vehicle),
                         vehicle.getNumberOfReEntries(),
-                        vehicle.getEstimatedDistanceTravelled()
+                        vehicle.getEstimatedDistanceTravelled(),
+                        Util.convertSecondsToTimeString(vehicle.getEntryTime()),
+                        Util.convertSecondsToTimeString(vehicle.getParkingTime()),
+                        Util.convertSecondsToTimeString(vehicle.getExitTime())
                 });
             }
         }

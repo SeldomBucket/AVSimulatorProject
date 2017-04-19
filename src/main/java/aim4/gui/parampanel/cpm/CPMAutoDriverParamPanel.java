@@ -22,6 +22,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider trafficRateSlider;
     CPMSpawnSpecRadioButtons spawnSpecRadioButtons;
     CPMUseCSVFileRadioButtons useCSVFileRadioButtons;
+    private CPMMapAreaLabel mapAreaLabel;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -33,46 +34,54 @@ public class CPMAutoDriverParamPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         // create the components
+        mapAreaLabel = new CPMMapAreaLabel("Total area of car park: ", simSetup);
+        mapAreaLabel.setOpaque(true);
+        add(mapAreaLabel);
 
         laneWidthSlider =
-                new LabeledSlider(1.0, 5.0,
+                new CPMLabeledSlider(1.0, 5.0,
                         simSetup.getLaneWidth(),
                         1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.1f meters",
-                        "%.1f");
+                        "%.1f",
+                        this);
         add(laneWidthSlider);
 
         numberOfParkingLanesSlider =
-                new LabeledSlider(0, 50,
+                new CPMLabeledSlider(0, 50,
                         simSetup.getNumberOfParkingLanes(),
                         10.0, 1.0,
                         "Number of Parking Lanes: %.0f",
-                        "%.0f");
+                        "%.0f",
+                        this);
         add(numberOfParkingLanesSlider);
 
         parkingLengthSlider =
-                new LabeledSlider(0.0, 100.0,
+                new CPMLabeledSlider(0.0, 100.0,
                         simSetup.getParkingLength(),
                         10.0, 5.0,
                         "Length of Parking: %.0f meters",
-                        "%.0f");
+                        "%.0f",
+                        this);
         add(parkingLengthSlider);
 
         // TODO CPM What is minimum length for this?
         accessLengthSlider =
-                new LabeledSlider(0.0, 5.0,
+                new CPMLabeledSlider(0.0, 5.0,
                         simSetup.getAccessLength(),
                         1.0, 1.0,
                         "Length of Parking Lane Access: %.0f meters",
-                        "%.0f");
+                        "%.0f",
+                        this);
         add(accessLengthSlider);
 
         trafficRateSlider =
-                new LabeledSlider(0.0, 2500.0,
+                new CPMLabeledSlider(0.0, 2500.0,
                         simSetup.getTrafficLevel() * 3600.0,
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
-                        "%.0f");
+                        "%.0f",
+                        this);
         add(trafficRateSlider);
 
         spawnSpecRadioButtons = new CPMSpawnSpecRadioButtons();
@@ -102,6 +111,8 @@ public class CPMAutoDriverParamPanel extends JPanel {
     public double getTrafficRate() {
         return trafficRateSlider.getValue()/ 3600.0;
     }
+
+    public CPMMapAreaLabel getMapAreaLabel() { return mapAreaLabel; }
 
     public SpawnSpecType getSpawnSpecType() {
         return SpawnSpecType.valueOf(spawnSpecRadioButtons.getSelected().getActionCommand());

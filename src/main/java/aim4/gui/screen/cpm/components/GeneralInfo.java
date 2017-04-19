@@ -3,11 +3,10 @@ package aim4.gui.screen.cpm.components;
 import aim4.map.cpm.CPMSpawnPoint;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
+import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -49,12 +48,6 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         return null;
     }
 
-    private String convertSecondsToTimeString(double timeInSeconds) {
-        Date date = new Date((long)(timeInSeconds*1000));
-        String formattedDate = new SimpleDateFormat("HH:mm:ss").format(date);
-        return formattedDate;
-    }
-
     private void updateLabel(int newValue, JLabel label){
         String labelText = label.getText();
         // Split the text so we can remove the old value and reuse the label
@@ -69,6 +62,6 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
 
     private void updateSimTimeLabel(double simTime){
         simTimeLabel.setText("Simulation Time: " + String.format("%.2fs", simTime) + "/"
-        + convertSecondsToTimeString(simTime));
+        + Util.convertSecondsToTimeString(simTime));
     }
 }

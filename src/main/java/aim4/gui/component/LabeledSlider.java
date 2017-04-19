@@ -53,25 +53,25 @@ public class LabeledSlider extends JPanel implements ChangeListener {
   private static final long serialVersionUID = 1L;
 
   /** The minimum value */
-  private double minValue;
+  protected double minValue;
   /** The maximum value */
-  private double maxValue;
+  protected double maxValue;
   /** The default value */
-  private double defaultValue;
+  protected double defaultValue;
   /** The major tick */
-  private double majorTick;
+  protected double majorTick;
   /** The minor tick */
-  private double minorTick;
+  protected double minorTick;
   /** The lable format */
-  private String labelFormat;
+  protected String labelFormat;
   /** The tick label format */
-  private String tickLabelFormat;
+  protected String tickLabelFormat;
   /** Special tick label table */
-  private Map<Integer, String> specialTickLabelTable;
+  protected Map<Integer, String> specialTickLabelTable;
   /** Special tick label format table */
-  private Map<Integer, String> specialTickLabelFormatTable;
+  protected Map<Integer, String> specialTickLabelFormatTable;
   /** The change listener */
-  private ChangeListener changeListener;
+  protected ChangeListener changeListener;
   /** The label of the slider */
   JLabel label;
   /** The slider */
@@ -215,7 +215,7 @@ public class LabeledSlider extends JPanel implements ChangeListener {
    *
    * @param vid the value
    */
-  private void setLabel(int vid) {
+  protected void setLabel(int vid) {
     double value = vid * minorTick;
     if (specialTickLabelFormatTable.containsKey(vid)) {
       label.setText(String
