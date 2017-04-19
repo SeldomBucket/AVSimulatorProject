@@ -111,7 +111,9 @@ public class CPMSpawnPoint extends SpawnPoint {
      * @return The list of spawn spec generated in this time step
      */
     public List<CPMSpawnSpec> act(double timeStep) {
-        assert vehicleSpecChooser != null;
+        if (vehicleSpecChooser == null) {
+            throw new RuntimeException("The spawn point on the map doesn't have a SpawnSpecGenerator.");
+        }
         List<CPMSpawnSpec> spawnSpecs = vehicleSpecChooser.act(this, timeStep);
         currentTime += timeStep;
         return spawnSpecs;

@@ -35,7 +35,6 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                 parkingLength,
                 accessLength);
 
-        if (spawnSpecType == CPMMapUtil.SpawnSpecType.SINGLE)
         // Set up the correct spawn point
         switch(spawnSpecType) {
             case SINGLE:

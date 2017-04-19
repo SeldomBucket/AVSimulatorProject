@@ -61,8 +61,7 @@ public class CPMAutoDriverSimulator implements Simulator {
         }
     }
 
-    // TODO CPM find this value, must be defined somewhere
-    public static final double MIN_DISTANCE_BETWEEN_PARKED_VEHICLES = 0.2;
+    public static final double MIN_DISTANCE_BETWEEN_PARKED_VEHICLES = 0.1;
 
     /////////////////////////////////
     // PRIVATE FIELDS
