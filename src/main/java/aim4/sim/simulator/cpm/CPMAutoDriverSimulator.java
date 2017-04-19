@@ -74,6 +74,9 @@ public class CPMAutoDriverSimulator implements Simulator {
     protected double currentTime;
     /** The number of completed vehicles */
     protected int numOfCompletedVehicles;
+    /** The number of vehicles which tried to enter, but car park does not cater
+    for them (e.g. lanes too narrow) */
+    protected int numberOfVehiclesNotCateredFor;
     /** A list of parked vehicles */
     protected List<CPMBasicAutoVehicle> parkedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
@@ -88,6 +91,7 @@ public class CPMAutoDriverSimulator implements Simulator {
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
+        numberOfVehiclesNotCateredFor = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
 
@@ -126,6 +130,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                     double vehicleWidth = spawnSpec.getVehicleSpec().getWidth();
                     double parkingLaneWidth = map.getParkingArea().getParkingLaneWidth();
                     if (parkingLaneWidth < (vehicleWidth+MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
+                        numberOfVehiclesNotCateredFor++;
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
                         // Only create the vehicle if there is room in the car park
@@ -655,6 +660,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     public int getNumCompletedVehicles() {
         return numOfCompletedVehicles;
     }
+
+    public int getNumberOfVehiclesNotCateredFor() { return numberOfVehiclesNotCateredFor; }
 
     public List<CPMBasicAutoVehicle> getParkedVehicles() { return parkedVehicles; }
 

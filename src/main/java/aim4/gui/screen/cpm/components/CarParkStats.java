@@ -17,6 +17,7 @@ import java.util.Map;
 public class CarParkStats extends JPanel implements CPMStatScreenComponent{
 
     private JLabel numberOfCarsDeniedEntryLabel;
+    private JLabel numberOfCarsNotCateredForLabel;
     private JLabel maxVehiclesInCarParkLabel;
     private JLabel numOfVehiclesInCarParkLabel;
     private JLabel carParkAreaLabel;
@@ -30,6 +31,9 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
 
         numberOfCarsDeniedEntryLabel = new JLabel("Vehicles denied entry: ");
         numberOfCarsDeniedEntryLabel.setOpaque(true);
+
+        numberOfCarsNotCateredForLabel = new JLabel("Vehicles not catered for: ");
+        numberOfCarsNotCateredForLabel.setOpaque(true);
 
         maxVehiclesInCarParkLabel = new JLabel("Max vehicles been in car park: ");
         maxVehiclesInCarParkLabel.setOpaque(true);
@@ -45,6 +49,7 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(title);
         this.add(numberOfCarsDeniedEntryLabel);
+        this.add(numberOfCarsNotCateredForLabel);
         this.add(maxVehiclesInCarParkLabel);
         this.add(numOfVehiclesInCarParkLabel);
         this.add(carParkAreaLabel);
@@ -53,10 +58,12 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
     @Override
     public void update(CPMAutoDriverSimulator sim, List<CPMAutoDriverSimStepResult> resultToProcess) {
         int numberOfDeniedEntries = sim.getMap().getStatusMonitor().getNumberOfDeniedEntries();
+        int numberOfCarsNotCateredFor = sim.getNumberOfVehiclesNotCateredFor();
         int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
         int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
         int carParkArea = (int)Math.ceil(((CPMCarParkWithStatus)sim.getMap()).getTotalCarParkArea());
         updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
+        updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
         updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);
         updateLabel(numOfVehiclesInCarPark, numOfVehiclesInCarParkLabel);
         updateLabel(carParkArea, carParkAreaLabel);
@@ -74,6 +81,7 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
     public List<String> getAllLabelsText(){
         List<String> labelsText = new ArrayList<String>();
         labelsText.add(numberOfCarsDeniedEntryLabel.getText());
+        labelsText.add(numberOfCarsNotCateredForLabel.getText());
         labelsText.add(maxVehiclesInCarParkLabel.getText());
         labelsText.add(numOfVehiclesInCarParkLabel.getText());
         labelsText.add(carParkAreaLabel.getText());
