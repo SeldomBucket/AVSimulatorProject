@@ -12,17 +12,8 @@ public class CPMSpawnSpecRadioButtons extends JPanel implements ChangeListener {
 
     /** The group for the radio buttons. */
     ButtonGroup group;
-    /** The label of the group. */
-    JLabel label;
 
     public CPMSpawnSpecRadioButtons(){
-
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
-        label = new JLabel();
-        label.setText("Choose vehicle specification spawn type:");
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(label);
 
         JRadioButton singleSpecButton = new JRadioButton("Single", false);
         singleSpecButton.setActionCommand("SINGLE");

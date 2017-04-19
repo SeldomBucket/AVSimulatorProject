@@ -26,13 +26,6 @@ public class CPMUseCSVFileRadioButtons extends JPanel implements ChangeListener 
 
     public CPMUseCSVFileRadioButtons(){
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
-        label = new JLabel();
-        label.setText("Use a CSV file to specify spawn times and parking times:");
-        label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        add(label);
-
         JRadioButton randomSpecButton = new JRadioButton("Do not use CSV file", false);
         randomSpecButton.setActionCommand("FALSE");
         randomSpecButton.setSelected(true);

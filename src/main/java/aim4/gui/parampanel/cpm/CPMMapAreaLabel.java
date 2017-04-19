@@ -3,6 +3,7 @@ package aim4.gui.parampanel.cpm;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * A label which shows an updated value for the area of the car park.
@@ -18,6 +19,7 @@ public class CPMMapAreaLabel extends JLabel {
         super(prefix);
         this.prefix = prefix;
         this.value = calculateArea(simSetup);
+        this.setAlignmentX(Component.CENTER_ALIGNMENT);
         setText(prefix + value);
     }
 

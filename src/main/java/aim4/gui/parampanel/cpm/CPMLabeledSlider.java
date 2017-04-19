@@ -7,7 +7,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 /**
- * Created by Becci on 19-Apr-17.
+ * A labeled slider that updates the area of the car park when the value of the slider is changed.
  */
 public class CPMLabeledSlider extends LabeledSlider {
 

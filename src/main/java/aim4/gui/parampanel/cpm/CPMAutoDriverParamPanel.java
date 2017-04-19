@@ -8,6 +8,8 @@ import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import javafx.util.Pair;
 
 import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 /**
  * The autonomous driver only simulation parameter panel for CPM.
@@ -34,8 +36,9 @@ public class CPMAutoDriverParamPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         // create the components
-        mapAreaLabel = new CPMMapAreaLabel("Total area of car park: ", simSetup);
+        mapAreaLabel = new CPMMapAreaLabel("Total area of car park (square metres): ", simSetup);
         mapAreaLabel.setOpaque(true);
+        mapAreaLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(mapAreaLabel);
 
         laneWidthSlider =
@@ -54,6 +57,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "Number of Parking Lanes: %.0f",
                         "%.0f",
                         this);
+        numberOfParkingLanesSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(numberOfParkingLanesSlider);
 
         parkingLengthSlider =
@@ -63,6 +67,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "Length of Parking: %.0f meters",
                         "%.0f",
                         this);
+        parkingLengthSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(parkingLengthSlider);
 
         // TODO CPM What is minimum length for this?
@@ -73,6 +78,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "Length of Parking Lane Access: %.0f meters",
                         "%.0f",
                         this);
+        accessLengthSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(accessLengthSlider);
 
         trafficRateSlider =
@@ -82,12 +88,21 @@ public class CPMAutoDriverParamPanel extends JPanel {
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f",
                         this);
+        trafficRateSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
         add(trafficRateSlider);
 
+        JLabel spawnSpecLabel = new JLabel("Choose vehicle specification spawn type:");
+        spawnSpecLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(spawnSpecLabel);
         spawnSpecRadioButtons = new CPMSpawnSpecRadioButtons();
+        spawnSpecRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
         add(spawnSpecRadioButtons);
 
+        JLabel useCsvLabel = new JLabel("Use a CSV file to specify spawn times and parking times:");
+        useCsvLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(useCsvLabel);
         useCSVFileRadioButtons = new CPMUseCSVFileRadioButtons();
+        useCSVFileRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
         add(useCSVFileRadioButtons);
 
     }
