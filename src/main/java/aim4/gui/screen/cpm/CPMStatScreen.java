@@ -152,7 +152,7 @@ public class CPMStatScreen extends StatScreen {
         carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         completedVehiclesTable = new CompletedVehiclesTable();
-        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
+        completedVehiclesTable.setMaximumSize(new Dimension(150, 60));
 
 
         setLayout(new FlowLayout());

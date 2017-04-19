@@ -63,7 +63,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
         parkingLengthSlider =
                 new CPMLabeledSlider(0.0, 100.0,
                         simSetup.getParkingLength(),
-                        10.0, 5.0,
+                        10.0, 1.0,
                         "Length of Parking: %.0f meters",
                         "%.0f",
                         this);
