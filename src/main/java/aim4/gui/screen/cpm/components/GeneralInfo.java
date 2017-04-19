@@ -1,6 +1,5 @@
 package aim4.gui.screen.cpm.components;
 
-import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMSpawnPoint;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;

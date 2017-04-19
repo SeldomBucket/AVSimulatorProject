@@ -12,7 +12,6 @@ import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
-import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;

@@ -1,7 +1,6 @@
 package aim4.sim.setup.cpm;
 
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;

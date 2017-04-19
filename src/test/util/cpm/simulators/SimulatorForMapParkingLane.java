@@ -1,31 +1,19 @@
 package util.cpm.simulators;
 
-import aim4.config.Debug;
-import aim4.config.DebugPoint;
 import aim4.driver.cpm.CPMCoordinator;
-import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
-import aim4.map.Road;
 import aim4.map.cpm.*;
 import aim4.map.cpm.parking.ParkingLane;
-import aim4.map.cpm.parking.SensoredLine;
-import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.testmaps.CPMMapParkingLane;
 import aim4.map.lane.Lane;
-import aim4.sim.Simulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import util.cpm.MockCPMBasicAutoVehicle;
 import util.cpm.MockCPMDriver;
 
-import java.awt.*;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
-import java.util.*;
 import java.util.List;
 
 /**
