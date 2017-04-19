@@ -7,6 +7,8 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -48,15 +50,11 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         return null;
     }
 
-    // TODO CPM do we want this?
-    /*private String convertSecondsToTimeString(double timeInSeconds) {
-        double hours = timeInSeconds / 3600;
-        double minutes = (timeInSeconds % 3600) / 60;
-        double seconds = timeInSeconds % 60;
-
-        String timeString = String.format("%02d:%02d:%02d", hours, minutes, seconds);
-        return timeString;
-    }*/
+    private String convertSecondsToTimeString(double timeInSeconds) {
+        Date date = new Date((long)(timeInSeconds*1000));
+        String formattedDate = new SimpleDateFormat("HH:mm:ss").format(date);
+        return formattedDate;
+    }
 
     private void updateLabel(int newValue, JLabel label){
         String labelText = label.getText();
@@ -71,6 +69,7 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
     }
 
     private void updateSimTimeLabel(double simTime){
-        simTimeLabel.setText("Simulation Time: " + String.format("%.2fs", simTime));
+        simTimeLabel.setText("Simulation Time: " + String.format("%.2fs", simTime) + "/"
+        + convertSecondsToTimeString(simTime));
     }
 }
