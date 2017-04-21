@@ -20,7 +20,7 @@ public class CPMMapAreaLabel extends JLabel {
         this.prefix = prefix;
         this.value = calculateArea(simSetup);
         this.setAlignmentX(Component.CENTER_ALIGNMENT);
-        setText(prefix + value);
+        setText(prefix + String.format("%.2f", value));
     }
 
     private double calculateArea(BasicCPMSimSetup simSetup){
@@ -44,6 +44,6 @@ public class CPMMapAreaLabel extends JLabel {
 
         // Add the West road, but only up to the
         // length of the parking area
-        setText(prefix + totalArea);
+        setText(prefix + String.format("%.2f", totalArea));
     }
 }

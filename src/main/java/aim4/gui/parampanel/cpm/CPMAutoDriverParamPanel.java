@@ -42,11 +42,11 @@ public class CPMAutoDriverParamPanel extends JPanel {
         add(mapAreaLabel);
 
         laneWidthSlider =
-                new CPMLabeledSlider(1.0, 5.0,
+                new CPMLabeledSlider(1.0, 3.0,
                         simSetup.getLaneWidth(),
-                        1.0, 0.5,
-                        "Width of Lanes (parking lanes and roads): %.1f meters",
-                        "%.1f",
+                        1.0, 0.05,
+                        "Width of Lanes (parking lanes and roads): %.2f meters",
+                        "%.0f",
                         this);
         add(laneWidthSlider);
 
@@ -61,10 +61,10 @@ public class CPMAutoDriverParamPanel extends JPanel {
         add(numberOfParkingLanesSlider);
 
         parkingLengthSlider =
-                new CPMLabeledSlider(0.0, 100.0,
+                new CPMLabeledSlider(0.0, 60.0,
                         simSetup.getParkingLength(),
-                        10.0, 1.0,
-                        "Length of Parking: %.0f meters",
+                        5.0, 0.5,
+                        "Length of Parking: %.1f meters",
                         "%.0f",
                         this);
         parkingLengthSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
