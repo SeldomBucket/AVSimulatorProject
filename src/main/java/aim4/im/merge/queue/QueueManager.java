@@ -31,9 +31,23 @@ public class QueueManager {
      */
     private V2IQueueMergeManagerCallback callback;
 
+    /**
+     * Boolean indicating whether the merge is free
+     */
+    private boolean mergeFree;
+
     public QueueManager(V2IQueueMergeManagerCallback callback) {
         this.vinQueue = new LinkedList<Integer>();
         this.callback = callback;
+        this.mergeFree = true;
+    }
+
+    // ACTION //
+    public void act() {
+        if(mergeFree && !vinQueue.isEmpty()) {
+            mergeFree = false;
+            sendGo(vinQueue.poll());
+        }
     }
 
     // COMMUNICATION //
@@ -49,22 +63,21 @@ public class QueueManager {
     }
 
     public void processDone(QDone done) {
-        vinQueue.add(done.getVin());
-        sendGo(vinQueue.poll());
+        mergeFree = true;
     }
 
     public void sendConfirm(int vin) {
-        QConfirm confirm = new QConfirm(vin, callback.getId());
+        QConfirm confirm = new QConfirm(callback.getId(), vin);
         callback.sendI2VMessage(confirm);
     }
 
     public void sendReject(int vin, QReject.Reason reason) {
-        QReject reject = new QReject(vin, callback.getId(), reason);
+        QReject reject = new QReject(callback.getId(), vin, reason);
         callback.sendI2VMessage(reject);
     }
 
     public void sendGo(int vin) {
-        QGo go = new QGo(vin, callback.getId());
+        QGo go = new QGo(callback.getId(), vin);
         callback.sendI2VMessage(go);
     }
 

@@ -152,7 +152,7 @@ public class MergeQueueCoordinator extends MergeCoordinator {
         /** {@inheritDoc} */
         @Override
         public boolean perform() {
-            if(vehicle.gaugeHeading() >= nextAllowedSendingRequestTime) {
+            if(vehicle.gaugeTime() >= nextAllowedSendingRequestTime) {
                 setState(State.PREPARING_REQUEST);
                 return true;
             } else {
