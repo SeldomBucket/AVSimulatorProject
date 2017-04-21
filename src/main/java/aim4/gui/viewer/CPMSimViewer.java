@@ -13,6 +13,7 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import javafx.util.Pair;
 
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 
 /**
  * A Viewer for CPM.
@@ -35,7 +36,8 @@ public class CPMSimViewer extends SimViewer {
                 SpawnSpecType.SINGLE, // spawn spec type
                 new Pair<Boolean, String>(false, ""), // useCsvFile
                 new Pair<Boolean, Double>(false, -1.0), // useSpecificSimTime
-                "COUPE"
+                "COUPE",
+                new ArrayList<Double>()
         )), false);
     }
 

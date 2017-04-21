@@ -3,6 +3,7 @@ package aim4.gui.screen.cpm.components;
 import aim4.map.cpm.CPMCarParkWithStatus;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -62,19 +63,11 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
         int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
         int carParkArea = (int)Math.ceil(((CPMCarParkWithStatus)sim.getMap()).getTotalCarParkArea());
-        updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
-        updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
-        updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);
-        updateLabel(numOfVehiclesInCarPark, numOfVehiclesInCarParkLabel);
-        updateLabel(carParkArea, carParkAreaLabel);
-    }
-
-    private void updateLabel(int newValue, JLabel label){
-        String labelText = label.getText();
-        // Split the text so we can remove the old value and reuse the label
-        String[] labelSplit = labelText.split(":");
-        String labelOnly = labelSplit [0];
-        label.setText(labelOnly + ": " + newValue);
+        Util.updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
+        Util.updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
+        Util.updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);
+        Util.updateLabel(numOfVehiclesInCarPark, numOfVehiclesInCarParkLabel);
+        Util.updateLabel(carParkArea, carParkAreaLabel);
     }
 
     @Override

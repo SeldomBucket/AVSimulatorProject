@@ -4,6 +4,8 @@ import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.Simulator;
 import javafx.util.Pair;
 
+import java.util.List;
+
 /**
  * The basic simulation setup for CPM. Common for all CPM simulation types.
  */
@@ -24,6 +26,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     protected double accessLength;
     /** The type of spawn specification. */
     protected SpawnSpecType spawnSpecType;
+    /** The distribution for a mixed spawn spec. */
+    protected List<Double> mixedSpawnDistribution;
     /** The name of vehicle spec for single spec spawn, e.g. COUPE */
     protected String singleSpawnSpecName;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
@@ -44,6 +48,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.parkingLength = basicSimSetup.parkingLength;
         this.accessLength = basicSimSetup.accessLength;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
+        this.mixedSpawnDistribution = basicSimSetup.mixedSpawnDistribution;
         this.singleSpawnSpecName = basicSimSetup.singleSpawnSpecName;
         this.useCSVFile = basicSimSetup.useCSVFile;
         this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
@@ -60,7 +65,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             SpawnSpecType spawnSpecType,
                             Pair<Boolean, String> useCSVFile,
                             Pair<Boolean, Double> useSpecificSimTime,
-                            String singleSpawnSpecName) {
+                            String singleSpawnSpecName,
+                            List<Double> mixedSpawnDistribution) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
@@ -71,6 +77,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useCSVFile = useCSVFile;
         this.useSpecificSimTime = useSpecificSimTime;
         this.singleSpawnSpecName = singleSpawnSpecName;
+        this.mixedSpawnDistribution = mixedSpawnDistribution;
     }
 
     @Override
@@ -130,6 +137,14 @@ public class BasicCPMSimSetup implements CPMSimSetup {
 
     public String getSingleSpawnSpecName() {
         return singleSpawnSpecName;
+    }
+
+    public List<Double> getMixedSpawnDistribution() {
+        return mixedSpawnDistribution;
+    }
+
+    public void setMixedSpawnDistribution(List<Double> mixedSpawnDistribution) {
+        this.mixedSpawnDistribution = mixedSpawnDistribution;
     }
 
     public void setSingleSpawnSpecName(String singleSpawnSpecName) {

@@ -3,7 +3,7 @@ package aim4.gui.parampanel.cpm;
 import aim4.gui.component.CPMSimTimeRadioButtons;
 import aim4.gui.component.CPMUseCSVFileRadioButtons;
 import aim4.gui.component.LabeledSlider;
-import aim4.gui.component.CPMSpawnSpecRadioButtons;
+import aim4.gui.component.CPMSpawnSpecConfig;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.util.Util;
@@ -12,6 +12,8 @@ import javafx.util.Pair;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.util.*;
+import java.util.List;
 
 /**
  * The autonomous driver only simulation parameter panel for CPM.
@@ -24,7 +26,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider parkingLengthSlider;
     LabeledSlider accessLengthSlider;
     LabeledSlider trafficRateSlider;
-    CPMSpawnSpecRadioButtons spawnSpecRadioButtons;
+    CPMSpawnSpecConfig spawnSpecRadioButtons;
     CPMUseCSVFileRadioButtons useCSVFileRadioButtons;
     CPMSimTimeRadioButtons useSpecificSimTimeRadioButtons;
     private CPMMapAreaLabel mapAreaLabel;
@@ -97,7 +99,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
         JLabel spawnSpecLabel = new JLabel("Choose vehicle specification spawn type:");
         spawnSpecLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(spawnSpecLabel);
-        spawnSpecRadioButtons = new CPMSpawnSpecRadioButtons();
+        spawnSpecRadioButtons = new CPMSpawnSpecConfig();
         spawnSpecRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
         add(spawnSpecRadioButtons);
 
@@ -136,6 +138,8 @@ public class CPMAutoDriverParamPanel extends JPanel {
     public double getTrafficRate() {
         return trafficRateSlider.getValue()/ 3600.0;
     }
+
+    public List<Double> getMixedSpawnDistribution(){ return spawnSpecRadioButtons.getVehicleSpecDistribution(); }
 
     public CPMMapAreaLabel getMapAreaLabel() { return mapAreaLabel; }
 

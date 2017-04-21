@@ -35,6 +35,8 @@ import java.util.*;
 
 import aim4.config.Condor;
 import aim4.config.Constants;
+
+import javax.swing.*;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.IOException;
@@ -386,6 +388,24 @@ public class Util {
     double seconds = Double.parseDouble(data[2]);
     double totalSeconds = (3600*hours) + (60*minutes) + seconds;
     return totalSeconds;
+  }
+
+  public static void updateLabel(int newIntValue, JLabel label){
+    // Assumes label text is of type "prefix: value"
+    String labelText = label.getText();
+    // Split the text so we can remove the old value and reuse the label
+    String[] labelSplit = labelText.split(":");
+    String labelOnly = labelSplit [0];
+    label.setText(labelOnly + ": " + newIntValue);
+  }
+
+  public static void updateLabel(String newStringValue, JLabel label){
+    // Assumes label text is of type "prefix: value"
+    String labelText = label.getText();
+    // Split the text so we can remove the old value and reuse the label
+    String[] labelSplit = labelText.split(":");
+    String labelOnly = labelSplit [0];
+    label.setText(labelOnly + ": " + newStringValue);
   }
 
   /////////////////////////////////

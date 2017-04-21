@@ -29,8 +29,8 @@ public class CPMMapUtil {
     public enum SpawnSpecType {
         /** Single - all vehicles spawned will have the same specification */
         SINGLE,
-        /** Random - all vehicles spawned will have a randomly selected specification */
-        RANDOM
+        /** Random - vehicles will be spawned according to a given distribution */
+        MIXED
     }
 
     /////////////////////////////////
