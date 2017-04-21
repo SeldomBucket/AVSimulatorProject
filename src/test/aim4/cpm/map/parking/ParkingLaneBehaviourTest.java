@@ -44,7 +44,7 @@ public class ParkingLaneBehaviourTest {
                 2); // parkingLaneWidth
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapParkingLane(map);
         this.simThread = new TestSimThread(sim);
 
@@ -79,7 +79,7 @@ public class ParkingLaneBehaviourTest {
                 2); // parkingLaneWidth
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapParkingLane(map);
         this.simThread = new TestSimThread(sim);
 
@@ -122,7 +122,7 @@ public class ParkingLaneBehaviourTest {
                 2); // parkingLaneWidth
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\secondParksLongerThanFirst.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapParkingLane(map);
         this.simThread = new TestSimThread(sim);
 

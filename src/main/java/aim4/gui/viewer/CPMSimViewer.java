@@ -34,7 +34,8 @@ public class CPMSimViewer extends SimViewer {
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
                 new Pair<Boolean, String>(false, ""), // useCsvFile
-                new Pair<Boolean, Double>(false, -1.0) // useSpecificSimTime
+                new Pair<Boolean, Double>(false, -1.0), // useSpecificSimTime
+                "COUPE"
         )), false);
     }
 

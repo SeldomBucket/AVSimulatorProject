@@ -56,8 +56,8 @@ public class CPMMapUtil {
          * Create a spec generator that generates the specified number
          * of vehicles. This only spawns one VehicleSpec.
          */
-        public FiniteSpawnSingleSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+        public FiniteSpawnSingleSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel, String vehicleSpecName) {
+            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(vehicleSpecName);
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
             this.numberOfSpawnedVehicles = 0;
             isDone = false;
@@ -112,8 +112,8 @@ public class CPMMapUtil {
         /**
          * Create a spec generator that infinitely generates vehicles of the same spec.
          */
-        public InfiniteSpawnSingleSpecGenerator(double trafficLevel) {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+        public InfiniteSpawnSingleSpecGenerator(double trafficLevel, String vehicleSpecName) {
+            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(vehicleSpecName);
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
@@ -168,8 +168,8 @@ public class CPMMapUtil {
         /**
          * Create a spec generator that infinitely generates vehicles of the same spec.
          */
-        public SpecificSpawnSingleSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
+        public SpecificSpawnSingleSpecGenerator(Pair<Boolean, String> useCSVFilePair, String vehicleSpecName) {
+            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(vehicleSpecName);
             processCSV(useCSVFilePair);
         }
 
@@ -575,31 +575,37 @@ public class CPMMapUtil {
 
     public static void setUpFiniteSingleSpecSpawnPoint(CPMMap map,
                                                        int numberOfVehiclesToSpawn,
-                                                       double trafficLevel){
+                                                       double trafficLevel,
+                                                       String vehicleSpecName){
         // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
+                    new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel, vehicleSpecName));
         }
     }
 
-    public static void setUpInfiniteSingleSpecVehicleSpawnPoint(CPMMap map, double trafficLevel){
+    public static void setUpInfiniteSingleSpecVehicleSpawnPoint(CPMMap map,
+                                                                double trafficLevel,
+                                                                String vehicleSpecName){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnSingleSpecGenerator(trafficLevel));
+                    new InfiniteSpawnSingleSpecGenerator(trafficLevel, vehicleSpecName));
         }
     }
 
-    public static void setUpSpecificSingleSpecVehicleSpawnPoint(CPMMap map, Pair<Boolean, String> useCSVPair){
+    public static void setUpSpecificSingleSpecVehicleSpawnPoint(CPMMap map,
+                                                                Pair<Boolean, String> useCSVPair,
+                                                                String vehicleSpecName){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new SpecificSpawnSingleSpecGenerator(useCSVPair));
+                    new SpecificSpawnSingleSpecGenerator(useCSVPair, vehicleSpecName));
         }
     }
 
-    public static void setUpSpecificRandomSpecVehicleSpawnPoint(CPMMap map, Pair<Boolean, String> useCSVPair){
+    public static void setUpSpecificRandomSpecVehicleSpawnPoint(CPMMap map,
+                                                                Pair<Boolean, String> useCSVPair){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
@@ -617,7 +623,8 @@ public class CPMMapUtil {
         }
     }
 
-    public static void setUpInfiniteRandomSpecVehicleSpawnPoint(CPMMap map, double trafficLevel){
+    public static void setUpInfiniteRandomSpecVehicleSpawnPoint(CPMMap map,
+                                                                double trafficLevel){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(

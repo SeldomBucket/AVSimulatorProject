@@ -143,6 +143,8 @@ public class CPMAutoDriverParamPanel extends JPanel {
         return SpawnSpecType.valueOf(spawnSpecRadioButtons.getSelected().getActionCommand());
     }
 
+    public String getSingleSpawnSpecName() { return spawnSpecRadioButtons.getSelectedSingleSpec(); }
+
     /**
      * Get the details for using a CSV file for spawn times and parking times.
      * @return a pair (boolean, string), where the boolean is true if a CSV file is

@@ -33,7 +33,7 @@ public class CornerBehaviourTest {
                 0.0); // initTime
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.WAITING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
 
@@ -80,7 +80,7 @@ public class CornerBehaviourTest {
                 0.0); // initTime
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.PARKING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
 
@@ -127,7 +127,7 @@ public class CornerBehaviourTest {
                 0.0); // initTime
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.RELOCATING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
 
@@ -174,7 +174,7 @@ public class CornerBehaviourTest {
                 0.0); // initTime
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.EXIT, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
 

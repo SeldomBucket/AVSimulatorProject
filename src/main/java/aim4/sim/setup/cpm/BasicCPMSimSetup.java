@@ -24,6 +24,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     protected double accessLength;
     /** The type of spawn specification. */
     protected SpawnSpecType spawnSpecType;
+    /** The name of vehicle spec for single spec spawn, e.g. COUPE */
+    protected String singleSpawnSpecName;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
     /** Whether to run the simulation for a specific period of time */
@@ -42,6 +44,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.parkingLength = basicSimSetup.parkingLength;
         this.accessLength = basicSimSetup.accessLength;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
+        this.singleSpawnSpecName = basicSimSetup.singleSpawnSpecName;
         this.useCSVFile = basicSimSetup.useCSVFile;
         this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
     }
@@ -56,7 +59,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             double parkingLength, double accessLength,
                             SpawnSpecType spawnSpecType,
                             Pair<Boolean, String> useCSVFile,
-                            Pair<Boolean, Double> useSpecificSimTime) {
+                            Pair<Boolean, Double> useSpecificSimTime,
+                            String singleSpawnSpecName) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
@@ -66,6 +70,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.spawnSpecType = spawnSpecType;
         this.useCSVFile = useCSVFile;
         this.useSpecificSimTime = useSpecificSimTime;
+        this.singleSpawnSpecName = singleSpawnSpecName;
     }
 
     @Override
@@ -122,6 +127,14 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     public SpawnSpecType getSpawnSpecType() { return spawnSpecType; }
 
     public void setSpawnSpecType(SpawnSpecType spawnSpecType) { this.spawnSpecType = spawnSpecType; }
+
+    public String getSingleSpawnSpecName() {
+        return singleSpawnSpecName;
+    }
+
+    public void setSingleSpawnSpecName(String singleSpawnSpecName) {
+        this.singleSpawnSpecName = singleSpawnSpecName;
+    }
 
     public Pair<Boolean, String> getUseCSVFile() {
         return useCSVFile;

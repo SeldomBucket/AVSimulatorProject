@@ -53,7 +53,7 @@ public class SpawnTests {
                 1, // numberOfParkingLanes
                 1, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
+        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28, "COUPE");
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
@@ -93,7 +93,7 @@ public class SpawnTests {
                 1, // numberOfParkingLanes
                 1, // parkingLength
                 5); // access length
-        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28);
+        CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(map, 0.28, "COUPE");
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
@@ -135,7 +135,7 @@ public class SpawnTests {
                 5, // parkingLength
                 5); // access length
         Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\2vehicles1spawn.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
@@ -169,7 +169,7 @@ public class SpawnTests {
                 5); // access length
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\validSeconds.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
@@ -218,7 +218,7 @@ public class SpawnTests {
                 5); // access length
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\validTimes.csv");
-        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair, "COUPE");
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
