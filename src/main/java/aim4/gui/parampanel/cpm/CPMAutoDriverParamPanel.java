@@ -44,7 +44,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
         laneWidthSlider =
                 new CPMLabeledSlider(1.0, 3.0,
                         simSetup.getLaneWidth(),
-                        1.0, 0.05,
+                        1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.2f meters",
                         "%.0f",
                         this);
