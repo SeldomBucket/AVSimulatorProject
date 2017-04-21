@@ -25,7 +25,7 @@ import java.util.List;
 public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
 
     public SimulatorForMapParkingLane(CPMMapParkingLane map){
-        super(map);
+        super(map, -1.0);
     }
 
     @Override

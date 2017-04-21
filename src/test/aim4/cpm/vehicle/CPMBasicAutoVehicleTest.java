@@ -32,7 +32,7 @@ public class CPMBasicAutoVehicleTest {
                 20, // parkingLength
                 5); // access length
         CPMMapUtil.setUpFiniteSingleSpecSpawnPoint(map, 2, 0.28);
-        this.sim = new CPMAutoDriverSimulator(map);
+        this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
     }
 

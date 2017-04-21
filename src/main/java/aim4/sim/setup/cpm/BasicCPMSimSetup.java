@@ -26,6 +26,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     protected SpawnSpecType spawnSpecType;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
+    /** Whether to run the simulation for a specific period of time */
+    protected Pair<Boolean, Double> useSpecificSimTime;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -41,6 +43,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.accessLength = basicSimSetup.accessLength;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
         this.useCSVFile = basicSimSetup.useCSVFile;
+        this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
     }
 
     /**
@@ -51,7 +54,9 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     public BasicCPMSimSetup(double speedLimit, double trafficLevel,
                             double laneWidth, int numberOfParkingLanes,
                             double parkingLength, double accessLength,
-                            SpawnSpecType spawnSpecType, Pair<Boolean, String> useCSVFile) {
+                            SpawnSpecType spawnSpecType,
+                            Pair<Boolean, String> useCSVFile,
+                            Pair<Boolean, Double> useSpecificSimTime) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
@@ -60,6 +65,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.accessLength = accessLength;
         this.spawnSpecType = spawnSpecType;
         this.useCSVFile = useCSVFile;
+        this.useSpecificSimTime = useSpecificSimTime;
     }
 
     @Override
@@ -124,4 +130,10 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     public void setUseCSVFile(Pair<Boolean, String> useCSVFile) {
         this.useCSVFile = useCSVFile;
     }
+
+    public Pair<Boolean, Double> getUseSpecificSimTime() { return useSpecificSimTime; }
+
+    public void setUseSpecificSimTime(Pair<Boolean, Double> useSpecificSimTime) { this.useSpecificSimTime = useSpecificSimTime; }
+
+
 }

@@ -379,6 +379,15 @@ public class Util {
     return String.format("%02d:%02d:%02d", hours, minutes, seconds);
   }
 
+  public static Double convertTimeStringToSeconds(String timeString){
+    String[] data = timeString.split(":");
+    double hours = Double.parseDouble(data[0]);
+    double minutes = Double.parseDouble(data[1]);
+    double seconds = Double.parseDouble(data[2]);
+    double totalSeconds = (3600*hours) + (60*minutes) + seconds;
+    return totalSeconds;
+  }
+
   /////////////////////////////////
   // CLASS CONSTRUCTORS
   /////////////////////////////////

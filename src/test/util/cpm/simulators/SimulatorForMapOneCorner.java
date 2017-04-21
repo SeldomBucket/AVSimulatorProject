@@ -26,7 +26,7 @@ public class SimulatorForMapOneCorner extends CPMAutoDriverSimulator {
 
     public SimulatorForMapOneCorner(CPMBasicMap map, ParkingStatus parkingStatus,
                                     DrivingState drivingState) {
-        super(map);
+        super(map, -1.0);
         this.initialDrivingStateForSpawnedVehicles = drivingState;
         this.initialParkingStatusForSpawnedVehicles = parkingStatus;
     }

@@ -39,7 +39,7 @@ public class RelocationTests {
                 5); // access length
         Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\firstParksLongerThanSecond.csv");
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
-        this.sim = new CPMAutoDriverSimulator(map);
+        this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
     }
 

@@ -16,7 +16,7 @@ import util.cpm.MockCPMDriver;
 public class SimulatorForCarParkWithStatus extends CPMAutoDriverSimulator {
 
     public SimulatorForCarParkWithStatus(CPMBasicMap map) {
-        super(map);
+        super(map, -1.0);
     }
 
     /**

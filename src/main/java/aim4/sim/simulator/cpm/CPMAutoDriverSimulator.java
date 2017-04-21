@@ -68,6 +68,10 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     /** The map */
     protected CPMBasicMap map;
+    /** The length of time to run the simulation for. If -1.0, then no specific time set.*/
+    protected Double totalSimTime;
+    /** Whether the total simulation time has elapsed. */
+    protected boolean simTimeElapsed;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
     protected Map<Integer,CPMBasicAutoVehicle> vinToVehicles;
     /** The current time */
@@ -84,13 +88,19 @@ public class CPMAutoDriverSimulator implements Simulator {
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
 
-    public CPMAutoDriverSimulator(CPMBasicMap map){
+    /**
+     * Create a simulator (without the total simulation time specified, so will run forever).
+     * @param map The map used for this simulation
+     */
+    public CPMAutoDriverSimulator(CPMBasicMap map, Double simTime){
         this.map = map;
+        this.totalSimTime = simTime;
         this.vinToVehicles = new HashMap<Integer,CPMBasicAutoVehicle>();
         this.parkedVehicles = new ArrayList<CPMBasicAutoVehicle>();
 
-        currentTime = 0.0;
+        simTimeElapsed = false;
         numOfCompletedVehicles = 0;
+        currentTime = 0.0;
         numberOfVehiclesNotCateredFor = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
@@ -100,6 +110,9 @@ public class CPMAutoDriverSimulator implements Simulator {
 
     @Override
     public SimStepResult step(double timeStep) {
+        if (totalSimTime != -1.0) {
+            checkSimTimeHasElapsed();
+        }
         spawnVehicles(timeStep);
         provideSensorInput();
         findNextVehicles();
@@ -110,6 +123,13 @@ public class CPMAutoDriverSimulator implements Simulator {
         List<CPMBasicAutoVehicle> completedVehicles = cleanUpCompletedVehicles();
         currentTime += timeStep;
         return new CPMAutoDriverSimStepResult(completedVehicles);
+    }
+
+    private void checkSimTimeHasElapsed() {
+        if (currentTime >= totalSimTime) {
+            System.out.println("The simulation should STOP!");
+            simTimeElapsed = true;
+        }
     }
 
     /////////////////////////////////
@@ -655,6 +675,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     public double getSimulationTime() {
         return currentTime;
     }
+
+    public boolean hasSimTimeElapsed() { return simTimeElapsed; }
 
     @Override
     public int getNumCompletedVehicles() {

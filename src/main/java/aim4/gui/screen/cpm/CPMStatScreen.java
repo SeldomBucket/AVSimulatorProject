@@ -142,7 +142,7 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        generalInfo = new GeneralInfo();
+        generalInfo = new GeneralInfo(setupPanel);
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         simConfigSummary = new SimConfigSummary(setupPanel);
@@ -166,5 +166,9 @@ public class CPMStatScreen extends StatScreen {
         componentsToUpdate.add(simConfigSummary);
         componentsToUpdate.add(carParkStats);
         componentsToUpdate.add(completedVehiclesTable);
+    }
+
+    public void updateSimulationStatus(boolean simComplete) {
+        generalInfo.updateSimStatusLabel(simComplete);
     }
 }

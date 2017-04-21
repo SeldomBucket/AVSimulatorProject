@@ -35,7 +35,7 @@ public class StatusMonitorBehaviourTest {
                 0, // parkingLength
                 5); // access length
         CPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(mapNoParkingSpace, 0.28);
-        this.simForNoParkingSpace = new CPMAutoDriverSimulator(mapNoParkingSpace);
+        this.simForNoParkingSpace = new CPMAutoDriverSimulator(mapNoParkingSpace, -1.0);
         this.simThreadForNoParkingSpace = new TestSimThread(simForNoParkingSpace);
 
         /**
@@ -51,7 +51,7 @@ public class StatusMonitorBehaviourTest {
         Pair<Boolean, String> useCsvPair = new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\firstParksLongerThanSecond.csv");
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(mapTwoLanes, useCsvPair);
         CPMMapUtil.setUpFiniteSingleSpecSpawnPoint(mapTwoLanes, 2, 0.28);
-        this.simForTwoLanes = new CPMAutoDriverSimulator(mapTwoLanes);
+        this.simForTwoLanes = new CPMAutoDriverSimulator(mapTwoLanes, -1.0);
         this.simThreadForTwoLanes = new TestSimThread(simForTwoLanes);
     }
 

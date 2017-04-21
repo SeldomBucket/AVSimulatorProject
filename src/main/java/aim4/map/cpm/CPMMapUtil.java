@@ -513,8 +513,8 @@ public class CPMMapUtil {
                         entry = Double.parseDouble(entryString);
                         parking = Double.parseDouble(parkingString);
                     } catch (NumberFormatException e) {
-                        entry = convertTimeToSeconds(entryString);
-                        parking = convertTimeToSeconds(parkingString);
+                        entry = Util.convertTimeStringToSeconds(entryString);
+                        parking = Util.convertTimeStringToSeconds(parkingString);
 
                     }
 
@@ -530,15 +530,6 @@ public class CPMMapUtil {
                 e.printStackTrace();
             }
 
-        }
-
-        private Double convertTimeToSeconds(String timeString){
-            String[] data = timeString.split(":");
-            double hours = Double.parseDouble(data[0]);
-            double minutes = Double.parseDouble(data[1]);
-            double seconds = Double.parseDouble(data[2]);
-            double totalSeconds = (3600*hours) + (60*minutes) + seconds;
-            return totalSeconds;
         }
 
         /**

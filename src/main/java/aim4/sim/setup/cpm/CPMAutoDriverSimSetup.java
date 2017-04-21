@@ -52,6 +52,6 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
                 break;
         }
 
-        return new CPMAutoDriverSimulator(layout);
+        return new CPMAutoDriverSimulator(layout, useSpecificSimTime.getValue());
     }
 }

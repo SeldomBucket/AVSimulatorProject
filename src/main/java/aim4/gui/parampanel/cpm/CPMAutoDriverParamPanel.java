@@ -1,10 +1,12 @@
 package aim4.gui.parampanel.cpm;
 
+import aim4.gui.component.CPMSimTimeRadioButtons;
 import aim4.gui.component.CPMUseCSVFileRadioButtons;
 import aim4.gui.component.LabeledSlider;
 import aim4.gui.component.CPMSpawnSpecRadioButtons;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import aim4.util.Util;
 import javafx.util.Pair;
 
 import javax.swing.*;
@@ -24,6 +26,7 @@ public class CPMAutoDriverParamPanel extends JPanel {
     LabeledSlider trafficRateSlider;
     CPMSpawnSpecRadioButtons spawnSpecRadioButtons;
     CPMUseCSVFileRadioButtons useCSVFileRadioButtons;
+    CPMSimTimeRadioButtons useSpecificSimTimeRadioButtons;
     private CPMMapAreaLabel mapAreaLabel;
 
     /**
@@ -105,6 +108,13 @@ public class CPMAutoDriverParamPanel extends JPanel {
         useCSVFileRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
         add(useCSVFileRadioButtons);
 
+        JLabel simTimeLabel = new JLabel("Run the simulation for:");
+        simTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(simTimeLabel);
+        useSpecificSimTimeRadioButtons = new CPMSimTimeRadioButtons();
+        useSpecificSimTimeRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
+        add(useSpecificSimTimeRadioButtons);
+
     }
 
     public double getLaneWidth() {
@@ -149,5 +159,20 @@ public class CPMAutoDriverParamPanel extends JPanel {
         }
         Pair<Boolean, String> useCSVFilePair = new Pair<Boolean, String>(useCSV, fileLocation);
         return useCSVFilePair;
+    }
+
+    public Pair<Boolean, Double> getUseSpecificSimTimeDetails() {
+        String selectedButtonValue = useSpecificSimTimeRadioButtons.getSelected().getActionCommand();
+        boolean useSpecificSimTime = false;
+        Double simTime = -1.0;
+        if (selectedButtonValue == "TRUE") {
+            useSpecificSimTime = true;
+            String simTimeString = useSpecificSimTimeRadioButtons.getHours() + ":" +
+                    useSpecificSimTimeRadioButtons.getMinutes() + ":" +
+                    useSpecificSimTimeRadioButtons.getSeconds();
+            simTime = Util.convertTimeStringToSeconds(simTimeString);
+        }
+        Pair<Boolean, Double> useSpecificSimTimePair = new Pair<Boolean, Double>(useSpecificSimTime, simTime);
+        return useSpecificSimTimePair;
     }
 }

@@ -33,7 +33,8 @@ public class CPMSimViewer extends SimViewer {
                 50.0, // parkingLength
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
-                new Pair<Boolean, String>(false, "")
+                new Pair<Boolean, String>(false, ""), // useCsvFile
+                new Pair<Boolean, Double>(false, -1.0) // useSpecificSimTime
         )), false);
     }
 
@@ -48,6 +49,13 @@ public class CPMSimViewer extends SimViewer {
 
     @Override
     protected Simulator.SimStepResult runSimulationStep() {
+        if (sim instanceof CPMAutoDriverSimulator && statScreen instanceof CPMStatScreen) {
+            // check if the simulation should continue to run.
+            if (((CPMAutoDriverSimulator) sim).hasSimTimeElapsed()){
+                pauseSimProcess();
+                ((CPMStatScreen) statScreen).updateSimulationStatus(true);
+            }
+        }
         Simulator.SimStepResult stepResult = super.runSimulationStep();
 
         assert stepResult instanceof CPMAutoDriverSimulator.CPMAutoDriverSimStepResult;
