@@ -18,12 +18,14 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
     public CompletedVehicleList() {
         this.model = new MapKeyTableModel(new String[]{
                 "VIN",
+                "Spec Type",
+                "Finish Time",
+                "Delay",
                 "Final Velocity",
+                "Max Velocity",
+                "Min Velocity",
                 "Final X Position",
-                "Final Y Position",
-                "Max Acceleration",
-                "Max Deceleration",
-                "Delay"
+                "Final Y Position"
         });
         this.table = new JTable(model);
         scrollPane = new JScrollPane(table);
@@ -37,13 +39,15 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
             for (int vin : stepResult.getCompletedVehicles().keySet()) {
                 MergeVehicleSimModel vehicle = stepResult.getCompletedVehicles().get(vin);
                 model.addOrUpdateRow(vin, new Object[]{
-                        vehicle.getVIN(),
-                        vehicle.getVelocity(),
-                        vehicle.getPosition().getX(),
-                        vehicle.getPosition().getY(),
-                        vehicle.getMaxAcceleration(),
-                        vehicle.getMaxDeceleration(),
-                        sim.calculateDelay(vehicle)
+                        vin,
+                        vehicle.getSpec().getName(),
+                        vehicle.getFinishTime(),
+                        vehicle.getDelay(),
+                        vehicle.getFinalVelocity(),
+                        vehicle.getMaxVelocity(),
+                        vehicle.getMinVelocity(),
+                        vehicle.getFinalXPos(),
+                        vehicle.getFinalYPos()
                 });
             }
         }

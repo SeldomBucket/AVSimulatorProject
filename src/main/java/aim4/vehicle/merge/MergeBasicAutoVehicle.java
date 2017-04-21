@@ -12,6 +12,14 @@ import java.awt.geom.Point2D;
  */
 public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAutoVehicleSimModel {
     protected MergeAutoDriver driver;
+    //Result properties
+    private double finishTime;
+    private double delayTime;
+    private double finalVelocity;
+    private double maxVelocity;
+    private double minVelocity;
+    private double finalXPos;
+    private double finalYPos;
 
     /**
      * Construct a vehicle
@@ -31,6 +39,8 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
         super(spec, pos, heading, velocity, steeringAngle, acceleration, targetVelocity, currentTime);
     }
 
+    //ACCESSORS
+    //Driver
     @Override
     public MergeAutoDriver getDriver() {
         return driver;
@@ -42,13 +52,74 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
         this.driver = (MergeAutoDriver) driver;
     }
 
+    //Result accessors
     @Override
-    public double getMaxAcceleration() {
-        return spec.getMaxAcceleration();
+    public double getFinishTime() {
+        return finishTime;
     }
 
     @Override
-    public double getMaxDeceleration() {
-        return spec.getMaxDeceleration();
+    public void setFinishTime(double finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    @Override
+    public double getDelay() {
+        return delayTime;
+    }
+
+    @Override
+    public void setDelay(double delayTime) {
+        this.delayTime = delayTime;
+    }
+
+    @Override
+    public double getFinalVelocity() {
+        return finalVelocity;
+    }
+
+    @Override
+    public void setFinalVelocity(double finalVelocity) {
+        this.finalVelocity = finalVelocity;
+    }
+
+    @Override
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
+    @Override
+    public void setMaxVelocity(double maxVelocity) {
+        this.maxVelocity = maxVelocity;
+    }
+
+    @Override
+    public double getMinVelocity() {
+        return minVelocity;
+    }
+
+    @Override
+    public void setMinVelocity(double minVelocity) {
+        this.minVelocity = minVelocity;
+    }
+
+    @Override
+    public double getFinalXPos() {
+        return finalXPos;
+    }
+
+    @Override
+    public void setFinalXPos(double finalXPos) {
+        this.finalXPos = finalXPos;
+    }
+
+    @Override
+    public double getFinalYPos() {
+        return finalYPos;
+    }
+
+    @Override
+    public void setFinalYPos(double finalYPos) {
+        this.finalYPos = finalYPos;
     }
 }

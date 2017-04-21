@@ -113,6 +113,7 @@ public class SpawnHelper {
                         spawnPoint.getAcceleration(),
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
+        vehicle.setStartTime(spawnPoint.getCurrentTime());
 
         MergeAutoDriver driver = new MergeAutoDriver(vehicle, map);
         driver.setCurrentLane(lane);
@@ -137,6 +138,7 @@ public class SpawnHelper {
                         spawnPoint.getAcceleration(),
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
+        vehicle.setStartTime(spawnPoint.getCurrentTime());
 
         MergeV2IAutoDriver driver = new MergeV2IAutoDriver(vehicle, map, protocolType);
         driver.setCurrentLane(lane);

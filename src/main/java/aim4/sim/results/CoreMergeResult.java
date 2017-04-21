@@ -10,20 +10,26 @@ public class CoreMergeResult {
     public static class CoreMergeVehicleResult {
         private int vin;
         private String specType;
+        private double startTime;
         private double finishTime;
         private double delayTime;
         private double finalVelocity;
         private double maxVelocity;
         private double minVelocity;
+        private double finalXPos;
+        private double finalYPos;
 
-        public CoreMergeVehicleResult(int vin, String specType, double finishTime, double delayTime, double finalVelocity, double maxVelocity, double minVelocity) {
+        public CoreMergeVehicleResult(int vin, String specType, double startTime, double finishTime, double delayTime, double finalVelocity, double maxVelocity, double minVelocity, double finalXPos, double finalYPos) {
             this.vin = vin;
             this.specType = specType;
+            this.startTime = startTime;
             this.finishTime = finishTime;
             this.delayTime = delayTime;
             this.finalVelocity = finalVelocity;
             this.maxVelocity = maxVelocity;
             this.minVelocity = minVelocity;
+            this.finalXPos = finalXPos;
+            this.finalYPos = finalYPos;
         }
 
         public int getVin() {
@@ -32,6 +38,10 @@ public class CoreMergeResult {
 
         public String specType() {
             return specType;
+        }
+
+        public double getStartTime() {
+            return startTime;
         }
 
         public double getFinishTime() {
@@ -52,6 +62,14 @@ public class CoreMergeResult {
 
         public double getMinVelocity() {
             return minVelocity;
+        }
+
+        public double getFinalXPos() {
+            return finalXPos;
+        }
+
+        public double getFinalYPos() {
+            return finalYPos;
         }
     }
 

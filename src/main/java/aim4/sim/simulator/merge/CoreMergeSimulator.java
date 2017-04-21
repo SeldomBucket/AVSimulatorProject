@@ -6,6 +6,7 @@ import aim4.sim.results.CoreMergeResult;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
+import aim4.vehicle.ResultsEnabledVehicle;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
@@ -70,7 +71,8 @@ public class CoreMergeSimulator implements MergeSimulator {
         checkForCollisions();
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
-//        recordCompletedVehicles(completedVehicles);
+        provideCompletedVehiclesWithResultsInfo(completedVehicles);
+        recordCompletedVehicles(completedVehicles);
         incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);
@@ -109,11 +111,6 @@ public class CoreMergeSimulator implements MergeSimulator {
     @Override
     public Map<Integer, MergeVehicleSimModel> getVinToVehicles() {
         return this.vinToVehicles;
-    }
-
-    @Override
-    public double calculateDelay(MergeVehicleSimModel vehicle) {
-        return 0;
     }
 
     protected void incrementCurrentTime(double timeStep) {
@@ -178,7 +175,7 @@ public class CoreMergeSimulator implements MergeSimulator {
     }
 
     // RESULTS PRODUCTION //
-    /*public void saveResults() {
+    public void saveResults() {
 
     }
 
@@ -190,19 +187,35 @@ public class CoreMergeSimulator implements MergeSimulator {
 
     }
 
+    protected void provideCompletedVehiclesWithResultsInfo(Map<Integer, MergeVehicleSimModel> completedVehicles) {
+        for(int vin : completedVehicles.keySet()) {
+            MergeVehicleSimModel vehicle = completedVehicles.get(vin);
+            vehicle.setFinishTime(currentTime);
+            vehicle.setDelay(calculateDelay(vehicle));
+            vehicle.setFinalVelocity(vehicle.getVelocity());
+        }
+    }
+
+    private double calculateDelay(ResultsEnabledVehicle vehicle) {
+
+    }
+
     protected void recordCompletedVehicles(Map<Integer, MergeVehicleSimModel> completedVehicles) {
         for(int vin : completedVehicles.keySet()) {
             MergeVehicleSimModel vehicle = completedVehicles.get(vin);
             vehiclesRecord.add(new CoreMergeResult.CoreMergeVehicleResult(
                     vin,
                     vehicle.getSpec().getName(),
+                    vehicle.getStartTime(),
                     vehicle.getFinishTime(),
                     vehicle.getDelay(),
                     vehicle.getFinalVelocity(),
                     vehicle.getMaxVelocity(),
-                    vehicle.getMinVelocity()
-            ))
+                    vehicle.getMinVelocity(),
+                    vehicle.getFinalXPos(),
+                    vehicle.getFinalYPos()
+            ));
         }
-    }*/
+    }
 
 }
