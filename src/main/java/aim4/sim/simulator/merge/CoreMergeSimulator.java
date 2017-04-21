@@ -2,6 +2,7 @@ package aim4.sim.simulator.merge;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.merge.MergeMap;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
 import aim4.vehicle.VehicleUtil;
@@ -35,6 +36,8 @@ public class CoreMergeSimulator implements MergeSimulator {
     private double currentTime;
     /* The number of vehicles that passed through the merge zone */
     private int numberOfCompletedVehicles;
+    /* The protocol type */
+    protected ProtocolType protocolType;
 
     //HELPERS//
     SpawnHelper spawnHelper;
@@ -42,8 +45,9 @@ public class CoreMergeSimulator implements MergeSimulator {
 
 
     //PUBLIC METHODS//
-    public CoreMergeSimulator(MergeMap map){
+    public CoreMergeSimulator(MergeMap map, ProtocolType protocolType){
         this.map = map;
+        this.protocolType = protocolType;
         this.vinToVehicles = new HashMap<Integer, MergeVehicleSimModel>();
 
         currentTime = 0.0;
@@ -55,7 +59,7 @@ public class CoreMergeSimulator implements MergeSimulator {
 
     @Override
     public synchronized CoreMergeSimStepResult step(double timeStep) {
-        spawnHelper.spawnVehicles(timeStep);
+        spawnHelper.spawnVehicles(timeStep, protocolType);
         sensorInputHelper.provideSensorInput();
         letDriversAct();
         moveVehicles(timeStep);

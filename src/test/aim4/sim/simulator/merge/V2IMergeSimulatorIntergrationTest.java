@@ -14,6 +14,7 @@ import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.map.track.WayPoint;
 import aim4.msg.merge.i2v.I2VMergeMessage;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.merge.MergeV2IAutoVehicle;
@@ -72,7 +73,7 @@ public class V2IMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        V2IMergeSimulator sim = new V2IMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.TEST_MERGE);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
@@ -311,7 +312,7 @@ public class V2IMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        V2IMergeSimulator sim = new V2IMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.TEST_TARGET);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);

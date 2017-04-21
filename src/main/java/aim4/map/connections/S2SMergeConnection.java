@@ -4,14 +4,11 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.merge.RoadNames;
-import aim4.map.track.WayPoint;
-import aim4.util.GeomMath;
 
-import java.awt.geom.*;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.awt.geom.Area;
+import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Callum on 10/04/2017.
@@ -29,13 +26,13 @@ public class S2SMergeConnection extends MergeConnection {
      */
     public S2SMergeConnection(List<Road> roads, Point2D targetEntryPoint, Point2D mergeEntryPoint, Point2D exitPoint) {
         super(roads);
-        /*this.areaOfConnection = new Area(new Rectangle2D.Double(
+        this.areaOfConnection = new Area(new Rectangle2D.Double(
                 targetEntryPoint.getX(), // Upper left corner X of merge zone
                 mergeEntryPoint.getY(),  // Upper left corner Y of merge zone
                 Point2D.distance(targetEntryPoint.getX(), targetEntryPoint.getY(),
                         exitPoint.getX(), exitPoint.getY()), //Width of merge zone
                 2 * Point2D.distance(mergeEntryPoint.getX(), mergeEntryPoint.getY(),
-                        mergeEntryPoint.getX(), mergeEntryPoint.getY()))); //Height of merge zone*/
+                        mergeEntryPoint.getX(), mergeEntryPoint.getY()))); //Height of merge zone
         validate(roads);
         this.targetEntryPoint = targetEntryPoint;
         this.mergeEntryPoint = mergeEntryPoint;

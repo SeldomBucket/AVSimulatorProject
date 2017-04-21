@@ -475,8 +475,16 @@ public abstract class SimViewer extends JPanel implements
         String stackTraceMessage = "";
         for(StackTraceElement line : e.getStackTrace())
             stackTraceMessage += line.toString() + "\n";
-        JOptionPane.showMessageDialog(this, "An error was thrown!\nMessage:" + e.getLocalizedMessage() + "\nStack Trace:\n" + stackTraceMessage);
-        e.printStackTrace();
+        JOptionPane.showMessageDialog(
+                this,
+                String.format(
+                        "An error was thrown!\nMessage: %s\nStack Trace:\n%s",
+                        e.getLocalizedMessage(),
+                        stackTraceMessage
+                ),
+                "Ooops...",
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 
     // //////////////////////////////////////////////////

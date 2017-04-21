@@ -4,6 +4,7 @@ import aim4.config.SimConfig;
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.map.merge.SingleLaneOnlyMap;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 import org.junit.Test;
@@ -35,7 +36,7 @@ public class CoreMergeSimulatorIntegrationTest {
         //Create Sim
         SingleLaneOnlyMap map = new SingleLaneOnlyMap(0, SPEED_LIMIT, SINGLE_LANE_MAP_LANE_LENGTH);
         MergeMapUtil.setSingleSpawnPoints(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        CoreMergeSimulator sim = new CoreMergeSimulator(map);
+        CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.NONE);
 
         //Useful Variables
         double centreOfLaneY = map.getSpawnPoints().get(0).getPosition().getY();
@@ -119,7 +120,7 @@ public class CoreMergeSimulatorIntegrationTest {
                     TARGET_LEAD_OUT_DISTANCE, MERGE_LEAD_IN_DISTANCE,
                     mergeAngle);
             MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-            CoreMergeSimulator sim = new CoreMergeSimulator(map);
+            CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.TEST_MERGE);
 
             //Before
             assertEquals(sim.getNumCompletedVehicles(), 0);
@@ -236,7 +237,7 @@ public class CoreMergeSimulatorIntegrationTest {
                 TARGET_LEAD_OUT_DISTANCE, MERGE_LEAD_IN_DISTANCE,
                 45.0);
         MergeMapUtil.setSingleSpawnPointS2STargetOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        CoreMergeSimulator sim = new CoreMergeSimulator(map);
+        CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.TEST_TARGET);
 
         //Useful Variables
         double centreOfTargetLaneY = map.getTargetSpawnPoint().getPosition().getY();

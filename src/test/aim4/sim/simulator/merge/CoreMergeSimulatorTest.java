@@ -4,6 +4,7 @@ import aim4.config.SimConfig;
 import aim4.driver.merge.MergeDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.merge.MergeMap;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
 import aim4.vehicle.merge.MergeVehicleSimModel;
@@ -69,12 +70,12 @@ public class CoreMergeSimulatorTest {
         when(mockMap.getDimensions()).thenReturn(mapBoundary);
 
         //Create Sim
-        sim = new CoreMergeSimulator(mockMap);
+        sim = new CoreMergeSimulator(mockMap, ProtocolType.NONE);
 
         //Replace Helpers
         mockSpawnHelper = mock(SpawnHelper.class);
         mockSensorInputHelper = mock(SensorInputHelper.class);
-        doNothing().when(mockSpawnHelper).spawnVehicles(anyDouble());
+        doNothing().when(mockSpawnHelper).spawnVehicles(anyDouble(), any(ProtocolType.class));
         doNothing().when(mockSensorInputHelper).provideSensorInput();
 
         final Field spawnHelperField = CoreMergeSimulator.class.getDeclaredField("spawnHelper");
@@ -145,7 +146,7 @@ public class CoreMergeSimulatorTest {
         assertEquals(sim.getNumCompletedVehicles(), 1); //Vehicle 2 completes
         assertEquals(result.getCompletedVehicles().keySet().size(), 1);
         assertTrue(result.getCompletedVehicles().keySet().contains(mockVehicle2.getVIN()));
-        verify(mockSpawnHelper, times(1)).spawnVehicles(timeStep);
+        verify(mockSpawnHelper, times(1)).spawnVehicles(timeStep, any(ProtocolType.class));
         verify(mockSensorInputHelper, times(1)).provideSensorInput();
         verify(mockDriver1, times(1)).act();
         verify(mockDriver2, times(1)).act();

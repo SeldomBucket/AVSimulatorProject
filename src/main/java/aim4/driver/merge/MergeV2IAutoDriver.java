@@ -1,9 +1,11 @@
 package aim4.driver.merge;
 
 import aim4.driver.merge.coordinator.MergeAutoCoordinator;
+import aim4.driver.merge.coordinator.MergeQueueCoordinator;
 import aim4.driver.merge.coordinator.MergeV2IAutoCoordinator;
 import aim4.im.merge.MergeManager;
 import aim4.map.merge.MergeMap;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.merge.MergeV2IAutoVehicleDriverModel;
 
@@ -13,6 +15,7 @@ import java.awt.geom.Area;
  * Created by Callum on 13/04/2017.
  */
 public class MergeV2IAutoDriver extends MergeAutoDriver {
+    // PRIVATE FIELDS //
     /**
      * The MergeManager with which the driver is currently interfacing
      */
@@ -22,11 +25,12 @@ public class MergeV2IAutoDriver extends MergeAutoDriver {
     /** Memoization cache for {@link #inCurrentMerge()}. */
     private transient Boolean memoInCurrentMerge;
 
-    // PRIVATE FIELDS //
+    private ProtocolType protocolType;
 
-    public MergeV2IAutoDriver(MergeV2IAutoVehicleDriverModel vehicle, MergeMap map) {
+    public MergeV2IAutoDriver(MergeV2IAutoVehicleDriverModel vehicle, MergeMap map, ProtocolType protocolType) {
         super(vehicle, map);
-        currentMM = null;
+        this.currentMM = null;
+        this.protocolType = protocolType;
     }
 
     // PUBLIC METHODS //
@@ -39,7 +43,12 @@ public class MergeV2IAutoDriver extends MergeAutoDriver {
             if (mm != null) {
                 assert(vehicle instanceof MergeV2IAutoVehicleDriverModel);
                 currentMM = mm;
-                coordinator = new MergeV2IAutoCoordinator((MergeV2IAutoVehicleDriverModel) vehicle, this, map);
+                if(protocolType == ProtocolType.AIM_GRID || protocolType == ProtocolType.AIM_NO_GRID)
+                    coordinator = new MergeV2IAutoCoordinator((MergeV2IAutoVehicleDriverModel) vehicle, this, map);
+                else if(protocolType == ProtocolType.QUEUE)
+                    coordinator = new MergeQueueCoordinator((MergeV2IAutoVehicleDriverModel) vehicle, this, map);
+                else
+                    coordinator = new MergeAutoCoordinator(vehicle, this, map);
             } else {
                 currentMM = null;
                 coordinator = new MergeAutoCoordinator(vehicle, this, map);

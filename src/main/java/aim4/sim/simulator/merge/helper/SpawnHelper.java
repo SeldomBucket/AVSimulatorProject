@@ -5,6 +5,7 @@ import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.map.merge.MergeSpawnPoint;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.merge.*;
@@ -30,35 +31,13 @@ public class SpawnHelper {
      *
      * @param timeStep
      */
-    public void spawnVehicles(double timeStep) {
+    public void spawnVehicles(double timeStep, ProtocolType protocolType) {
         for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<MergeSpawnPoint.MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if(!spawnSpecs.isEmpty()){
                 if(canSpawnVehicle(spawnPoint)) {
                     for(MergeSpawnPoint.MergeSpawnSpec spawnSpec : spawnSpecs) {
-                        MergeVehicleSimModel vehicle = makeVehicle(spawnPoint, spawnSpec);
-                        VinRegistry.registerVehicle(vehicle);
-                        vinToVehicles.put(vehicle.getVIN(), vehicle);
-                        if(!canSpawnVehicle(spawnPoint))
-                            break;
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Spawn vehicles
-     *
-     * @param timeStep
-     */
-    public void spawnCentralVehicles(double timeStep) {
-        for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
-            List<MergeSpawnPoint.MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
-            if(!spawnSpecs.isEmpty()){
-                if(canSpawnVehicle(spawnPoint)) {
-                    for(MergeSpawnPoint.MergeSpawnSpec spawnSpec : spawnSpecs) {
-                        MergeVehicleSimModel vehicle = makeCentralVehicle(spawnPoint, spawnSpec);
+                        MergeVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec, protocolType);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
                         if(!canSpawnVehicle(spawnPoint))
@@ -91,11 +70,40 @@ public class SpawnHelper {
      * @param spawnSpec
      * @return
      */
-    private MergeVehicleSimModel makeVehicle(MergeSpawnPoint spawnPoint, MergeSpawnPoint.MergeSpawnSpec spawnSpec) {
+    private MergeVehicleSimModel setupVehicle(
+            MergeSpawnPoint spawnPoint,
+            MergeSpawnPoint.MergeSpawnSpec spawnSpec,
+            ProtocolType protocolType) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
         double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
 
+        switch(protocolType){
+            case AIM_GRID:
+                return makeV2IVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec,protocolType);
+            case AIM_NO_GRID:
+                return makeV2IVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec,protocolType);
+            case QUEUE:
+                return makeV2IVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec,protocolType);
+            case TEST_MERGE:
+                return makeAutoVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec);
+            case TEST_TARGET:
+                return makeAutoVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec);
+            case NONE:
+                return makeAutoVehicle(spawnPoint,initVelocity,lane,spec,spawnSpec);
+            default:
+                throw new UnsupportedOperationException(String.format(
+                        "ProtocolType %s not supported",
+                        protocolType.toString())
+                );
+        }
+    }
+
+    private MergeVehicleSimModel  makeAutoVehicle(
+            MergeSpawnPoint spawnPoint,
+            double initVelocity, Lane lane,
+            VehicleSpec spec,
+            MergeSpawnPoint.MergeSpawnSpec spawnSpec) {
         MergeAutoVehicleSimModel vehicle =
                 new MergeBasicAutoVehicle(spec,
                         spawnPoint.getPosition(),
@@ -114,18 +122,12 @@ public class SpawnHelper {
         return vehicle;
     }
 
-    /**
-     * Creates a vehicle at the spawn point. This vehicle is for CentralManagementMergeSimulations
-     * @param spawnPoint
-     * @param spawnSpec
-     * @return
-     */
-    private MergeVehicleSimModel makeCentralVehicle(
-            MergeSpawnPoint spawnPoint, MergeSpawnPoint.MergeSpawnSpec spawnSpec) {
-        VehicleSpec spec = spawnSpec.getVehicleSpec();
-        Lane lane = spawnPoint.getLane();
-        double initVelocity = Math.min(spec.getMaxVelocity(), lane.getSpeedLimit());
-
+    private MergeVehicleSimModel makeV2IVehicle(
+            MergeSpawnPoint spawnPoint,
+            double initVelocity, Lane lane,
+            VehicleSpec spec,
+            MergeSpawnPoint.MergeSpawnSpec spawnSpec,
+            ProtocolType protocolType) {
         MergeV2IAutoVehicleSimModel vehicle =
                 new MergeV2IAutoVehicle(spec,
                         spawnPoint.getPosition(),
@@ -136,7 +138,7 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
 
-        MergeV2IAutoDriver driver = new MergeV2IAutoDriver(vehicle, map);
+        MergeV2IAutoDriver driver = new MergeV2IAutoDriver(vehicle, map, protocolType);
         driver.setCurrentLane(lane);
         driver.setSpawnPoint(spawnPoint);
         vehicle.setDriver(driver);

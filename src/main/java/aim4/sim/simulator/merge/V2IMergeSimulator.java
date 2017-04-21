@@ -5,6 +5,7 @@ import aim4.im.merge.V2IEnabledMergeManager;
 import aim4.map.merge.MergeMap;
 import aim4.msg.merge.i2v.I2VMergeMessage;
 import aim4.msg.merge.v2i.V2IMergeMessage;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.merge.MergeV2IAutoVehicleSimModel;
 import aim4.vehicle.merge.MergeVehicleSimModel;
@@ -17,13 +18,13 @@ import java.util.Queue;
  * Created by Callum on 13/04/2017.
  */
 public class V2IMergeSimulator extends CoreMergeSimulator {
-    public V2IMergeSimulator(MergeMap map) {
-        super(map);
+    public V2IMergeSimulator(MergeMap map, ProtocolType protocolType) {
+        super(map, protocolType);
     }
 
     @Override
     public synchronized CoreMergeSimStepResult step(double timeStep) {
-        spawnHelper.spawnCentralVehicles(timeStep);
+        spawnHelper.spawnVehicles(timeStep, protocolType);
         sensorInputHelper.provideSensorInput();
         letDriversAct();
         letMergeManagersAct(timeStep);

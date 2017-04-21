@@ -49,7 +49,7 @@ public class MergeStatScreen extends StatScreen {
                 switch(protocolType) {
                     case AIM_GRID: setupS2SAimScreen(); break;
                     case AIM_NO_GRID: setupS2SAimScreen(); break;
-                    case DECENTRALISED: setupS2SDecentralisedScreen(); break;
+                    case QUEUE: setupS2SAimScreen(); break;
                     case TEST_MERGE: setupS2STestMergeScreen(); break;
                     case TEST_TARGET: setupS2STestTargetScreen(); break;
                     default: throw new RuntimeException("Unexpected protocol type for S2S map: " + protocolType.toString());

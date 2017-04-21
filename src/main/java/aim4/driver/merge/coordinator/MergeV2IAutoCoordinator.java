@@ -462,8 +462,7 @@ public class MergeV2IAutoCoordinator extends MergeCoordinator {
             //Clean up
             removeReservationParameter();
             if (vehicle.gaugeTime() >= nextAllowedSendingRequestTime) {
-                if (!SimConfig.MUST_STOP_BEFORE_INTERSECTION ||
-                        getDriver().distanceToNextMerge() <= MergeAutoPilot.DEFAULT_STOP_DISTANCE_BEFORE_MERGE +
+                if (getDriver().distanceToNextMerge() <= MergeAutoPilot.DEFAULT_STOP_DISTANCE_BEFORE_MERGE +
                                 SimConfig.ADDITIONAL_STOP_DIST_BEFORE_INTERSECTION) {
                     //prepare reservation
                     setState(State.PREPARING_RESERVATION);

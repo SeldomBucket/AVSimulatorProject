@@ -6,7 +6,7 @@ package aim4.sim.setup.merge.enums;
 public enum ProtocolType {
     AIM_GRID,
     AIM_NO_GRID,
-    DECENTRALISED,
+    QUEUE,
     TEST_MERGE,
     TEST_TARGET,
     NONE
