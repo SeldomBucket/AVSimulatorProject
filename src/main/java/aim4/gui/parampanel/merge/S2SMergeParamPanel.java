@@ -163,7 +163,6 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
         JButton targetScheduleSelectButton = new JButton("Browse...");
         JButton targetScheduleClearButton = new JButton("Clear");
 
-
         //Set up buttons
         mergeScheduleSelectButton.addActionListener(this);
         mergeScheduleSelectButton.setActionCommand(ButtonActionCommands.MERGE_SELECT.toString());

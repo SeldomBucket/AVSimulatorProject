@@ -2,6 +2,7 @@ package aim4.sim.simulator.merge;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.merge.MergeMap;
+import aim4.sim.results.CoreMergeResult;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
@@ -39,16 +40,19 @@ public class CoreMergeSimulator implements MergeSimulator {
     /* The protocol type */
     protected ProtocolType protocolType;
 
+    //RESULTS//
+    protected List<CoreMergeResult.CoreMergeVehicleResult> vehiclesRecord;
+
     //HELPERS//
     SpawnHelper spawnHelper;
     SensorInputHelper sensorInputHelper;
-
 
     //PUBLIC METHODS//
     public CoreMergeSimulator(MergeMap map, ProtocolType protocolType){
         this.map = map;
         this.protocolType = protocolType;
         this.vinToVehicles = new HashMap<Integer, MergeVehicleSimModel>();
+        this.vehiclesRecord = new ArrayList<CoreMergeResult.CoreMergeVehicleResult>();
 
         currentTime = 0.0;
         numberOfCompletedVehicles = 0;
@@ -66,6 +70,7 @@ public class CoreMergeSimulator implements MergeSimulator {
         checkForCollisions();
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
+//        recordCompletedVehicles(completedVehicles);
         incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);
@@ -171,5 +176,33 @@ public class CoreMergeSimulator implements MergeSimulator {
             }
         }
     }
+
+    // RESULTS PRODUCTION //
+    /*public void saveResults() {
+
+    }
+
+    protected CoreMergeResult produceResult() {
+
+    }
+
+    protected String resultsToCSV() {
+
+    }
+
+    protected void recordCompletedVehicles(Map<Integer, MergeVehicleSimModel> completedVehicles) {
+        for(int vin : completedVehicles.keySet()) {
+            MergeVehicleSimModel vehicle = completedVehicles.get(vin);
+            vehiclesRecord.add(new CoreMergeResult.CoreMergeVehicleResult(
+                    vin,
+                    vehicle.getSpec().getName(),
+                    vehicle.getFinishTime(),
+                    vehicle.getDelay(),
+                    vehicle.getFinalVelocity(),
+                    vehicle.getMaxVelocity(),
+                    vehicle.getMinVelocity()
+            ))
+        }
+    }*/
 
 }
