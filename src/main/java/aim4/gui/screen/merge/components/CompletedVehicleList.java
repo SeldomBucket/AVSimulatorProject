@@ -5,6 +5,7 @@ import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -18,7 +19,9 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
     public CompletedVehicleList() {
         this.model = new MapKeyTableModel(new String[]{
                 "VIN",
-                "Spec Type",
+                "Starting Road",
+                "Spec",
+                "Start Time",
                 "Finish Time",
                 "Delay",
                 "Final Velocity",
@@ -30,6 +33,8 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
         this.table = new JTable(model);
         scrollPane = new JScrollPane(table);
         scrollPane.setVisible(true);
+
+        this.setLayout(new GridLayout(0, 1));
         this.add(scrollPane);
     }
 
@@ -40,7 +45,9 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
                 MergeVehicleSimModel vehicle = stepResult.getCompletedVehicles().get(vin);
                 model.addOrUpdateRow(vin, new Object[]{
                         vin,
+                        vehicle.getStartingRoad().toString(),
                         vehicle.getSpec().getName(),
+                        vehicle.getStartTime(),
                         vehicle.getFinishTime(),
                         vehicle.getDelay(),
                         vehicle.getFinalVelocity(),

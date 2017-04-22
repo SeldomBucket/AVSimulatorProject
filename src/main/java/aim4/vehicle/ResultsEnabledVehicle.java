@@ -1,5 +1,7 @@
 package aim4.vehicle;
 
+import aim4.map.merge.RoadNames;
+
 /**
  * Created by Callum on 21/04/2017.
  */
@@ -20,6 +22,8 @@ public interface ResultsEnabledVehicle {
 
     double getStartTime();
 
+    RoadNames getStartingRoad();
+
     void setFinishTime(double finishTime);
 
     void setDelay(double delay);
@@ -35,4 +39,6 @@ public interface ResultsEnabledVehicle {
     void setFinalYPos(double yPos);
 
     void setStartTime(double startTime);
+
+    void setStartingRoad(RoadNames roadName);
 }

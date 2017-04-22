@@ -30,25 +30,25 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.io.IOException;
-
-import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
-
 import aim4.config.Debug;
 import aim4.gui.viewer.AIMSimViewer;
 import aim4.gui.viewer.CPMSimViewer;
 import aim4.gui.viewer.MergeSimViewer;
 import aim4.gui.viewer.SimViewer;
 import aim4.sim.Simulator;
+
+import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.*;
 
 /**
  * The viewer is a Graphical User Interface (GUI) that allows a user to run the
@@ -131,6 +131,8 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private JMenuItem dumpDataMenuItem;
     /** Menu item "Dump Statistics Screen Data" */
     private JMenuItem dumpStatScreenMenuItem;
+    /** Saves the results data using the Sim's produceResultsCSV method */
+    private JMenuItem saveResultsMenuItem;
     /** Menu item for activating recording. */
     private JMenuItem startRecordingMenuItem;
     /** Menu item for deactivating recording. */
@@ -283,6 +285,11 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         dumpStatScreenMenuItem = new JMenuItem("Dump Statistics Screen Data");
         dumpStatScreenMenuItem.addActionListener(this);
         menu.add(dumpStatScreenMenuItem);
+        // Create CSV Results
+        saveResultsMenuItem = new JMenuItem("Save Simulator Results");
+        saveResultsMenuItem.addActionListener(this);
+        menu.add(saveResultsMenuItem);
+
 
         // Recording
         menu = new JMenu("Recording");
@@ -445,6 +452,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         stepMenuItem.setEnabled(false);
         resetMenuItem.setEnabled(true);
         dumpDataMenuItem.setEnabled(true);
+        saveResultsMenuItem.setEnabled(true);
         startUdpListenerMenuItem.setEnabled(true);
         clearDebugPointsMenuItem.setEnabled(true);
 
@@ -483,6 +491,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         resetMenuItem.setEnabled(false);
         dumpDataMenuItem.setEnabled(false);
         dumpStatScreenMenuItem.setEnabled(false);
+        saveResultsMenuItem.setEnabled(false);
         startUdpListenerMenuItem.setEnabled(false);
         clearDebugPointsMenuItem.setEnabled(false);
     }
@@ -520,6 +529,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
             stepMenuItem.setEnabled(false);
             resetMenuItem.setEnabled(false);
             dumpDataMenuItem.setEnabled(false);
+            saveResultsMenuItem.setEnabled(false);
             startUdpListenerMenuItem.setEnabled(false);
             clearDebugPointsMenuItem.setEnabled(false);
         }
@@ -681,7 +691,25 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                     selectedViewer.printStatScreenData(outFileName);
                 }
             }
-        } else if (e.getSource() == startRecordingMenuItem) {
+        } else if (e.getSource() == saveResultsMenuItem) {
+            String csv = getSelectedSimulator().produceResultsCSV();
+            java.util.List<String> csvResultAsList = new ArrayList<String>();
+            csvResultAsList.add(csv);
+            //Save
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files","csv");
+            final JFileChooser fc = new JFileChooser();
+            fc.setFileFilter(filter);
+            int returnVal = fc.showSaveDialog(this);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                try {
+                    Files.write(Paths.get(file.getAbsolutePath()), csvResultAsList, Charset.forName("UTF-8"));
+                } catch (IOException e1) {
+                    //nothing
+                }
+            }
+        }
+        else if (e.getSource() == startRecordingMenuItem) {
             if (!selectedViewer.isRecording()) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);

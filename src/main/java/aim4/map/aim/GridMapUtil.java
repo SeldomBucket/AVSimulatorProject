@@ -319,6 +319,130 @@ public class GridMapUtil {
         }
     }
 
+    /**
+     * The uniform distributed spawn spec generator.
+     */
+    public static class JsonScheduleSpawnSpecGenerator implements AIMSpawnSpecGenerator {
+        // NESTED CLASSES //
+        public static class ScheduledSpawn {
+            private String specName;
+            private Double spawnTime;
+
+            public ScheduledSpawn(String specName, Double spawnTime) {
+                this.specName = specName;
+                this.spawnTime = spawnTime;
+            }
+
+            public String getSpecName() {
+                return specName;
+            }
+
+            public double getSpawnTime() {
+                return spawnTime;
+            }
+        }
+
+        // PRIVATE FIELDS //
+        Queue<ScheduledSpawn> schedule;
+        Road destinationRoad;
+
+        // CONSTRUCTOR //
+        public JsonScheduleSpawnSpecGenerator(File jsonFile, Road destinationRoad) throws IOException, ParseException {
+            this.schedule = processJson(jsonFile);
+            this.destinationRoad = destinationRoad;
+        }
+
+        private Queue<ScheduledSpawn> processJson(File jsonFile) throws IOException, ParseException {
+            JSONParser parser = new JSONParser();
+
+            Object array = parser.parse(new FileReader(jsonFile));
+            JSONArray jsonSchedule = (JSONArray) array;
+
+            Queue<ScheduledSpawn> schedule = new LinkedList<ScheduledSpawn>();
+            for(Object spawnObj : jsonSchedule) {
+                JSONObject jsonSpawn = (JSONObject) spawnObj;
+                String specName = (String) jsonSpawn.get("specName");
+                Double spawnTime = (Double) jsonSpawn.get("spawnTime");
+
+                schedule.add(new ScheduledSpawn(specName, spawnTime));
+            }
+            return schedule;
+        }
+
+        // ACTION //
+        @Override
+        public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timestep) {
+            double initTime = spawnPoint.getCurrentTime();
+            List<AIMSpawnSpec> specs = new ArrayList<AIMSpawnSpec>();
+            for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
+                if (time == schedule.peek().getSpawnTime()) {
+                    specs.add(new AIMSpawnSpec(
+                            spawnPoint.getCurrentTime(),
+                            VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
+                            destinationRoad
+                    ));
+                }
+            }
+            return specs;
+        }
+    }
+
+    public static class SingleSpawnSpecGenerator implements AIMSpawnSpecGenerator {
+        private List<Double> proportion;
+        private Road destination;
+        private VehicleSpec spec;
+        private List<AIMSpawnPoint> spawnPointAlreadySpawned;
+
+        /**
+         * Call to spawn random vehicle spec during act.
+         */
+        public SingleSpawnSpecGenerator(Road destination) {
+            int n = VehicleSpecDatabase.getNumOfSpec();
+            proportion = new ArrayList<Double>(n);
+            double p = 1.0 / n;
+            for(int i=0; i<n; i++) {
+                proportion.add(p);
+            }
+
+            this.destination = destination;
+            spawnPointAlreadySpawned = new ArrayList<AIMSpawnPoint>();
+        }
+
+        /**
+         * Call to spawn specific vehicle spec during act.
+         * @param spec The vehicle spec to spawn
+         */
+        public SingleSpawnSpecGenerator(Road destination, VehicleSpec spec) {
+            this.spec = spec;
+            this.destination = destination;
+            spawnPointAlreadySpawned = new ArrayList<AIMSpawnPoint>();
+        }
+
+        /**
+         * Creates single SpawnSpec for a given spawnPoint. Will never Spawn more than once for a given SpawnPoint.
+         * @param spawnPoint
+         * @param timestep
+         * @return
+         */
+        @Override
+        public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timestep) {
+            List<AIMSpawnSpec> result = new LinkedList<AIMSpawnSpec>();
+
+            if(!spawnPointAlreadySpawned.contains(spawnPoint)) {
+                spawnPointAlreadySpawned.add(spawnPoint);
+                double initTime = spawnPoint.getCurrentTime();
+                if (this.spec == null) {
+                    int i = Util.randomIndex(proportion);
+                    this.spec = VehicleSpecDatabase.getVehicleSpecById(i);
+                }
+
+                result.add(new AIMSpawnSpec(spawnPoint.getCurrentTime(), spec, destination));
+            }
+
+            return result;
+        }
+    }
+
 
     /////////////////////////////////
     // PUBLIC STATIC METHODS
@@ -670,73 +794,4 @@ public class GridMapUtil {
             }
         }
     }
-
-    /**
-     * The uniform distributed spawn spec generator.
-     */
-    public static class JsonScheduleSpawnSpecGenerator implements AIMSpawnSpecGenerator {
-        // NESTED CLASSES //
-        public static class ScheduledSpawn {
-            private String specName;
-            private Double spawnTime;
-
-            public ScheduledSpawn(String specName, Double spawnTime) {
-                this.specName = specName;
-                this.spawnTime = spawnTime;
-            }
-
-            public String getSpecName() {
-                return specName;
-            }
-
-            public double getSpawnTime() {
-                return spawnTime;
-            }
-        }
-
-        // PRIVATE FIELDS //
-        Queue<ScheduledSpawn> schedule;
-        Road destinationRoad;
-
-        // CONSTRUCTOR //
-        public JsonScheduleSpawnSpecGenerator(File jsonFile, Road destinationRoad) throws IOException, ParseException {
-            this.schedule = processJson(jsonFile);
-            this.destinationRoad = destinationRoad;
-        }
-
-        private Queue<ScheduledSpawn> processJson(File jsonFile) throws IOException, ParseException {
-            JSONParser parser = new JSONParser();
-
-            Object array = parser.parse(new FileReader(jsonFile));
-            JSONArray jsonSchedule = (JSONArray) array;
-
-            Queue<ScheduledSpawn> schedule = new LinkedList<ScheduledSpawn>();
-            for(Object spawnObj : jsonSchedule) {
-                JSONObject jsonSpawn = (JSONObject) spawnObj;
-                String specName = (String) jsonSpawn.get("specName");
-                Double spawnTime = (Double) jsonSpawn.get("spawnTime");
-
-                schedule.add(new ScheduledSpawn(specName, spawnTime));
-            }
-            return schedule;
-        }
-
-        // ACTION //
-        @Override
-        public List<AIMSpawnSpec> act(AIMSpawnPoint spawnPoint, double timestep) {
-            double initTime = spawnPoint.getCurrentTime();
-            List<AIMSpawnSpec> specs = new ArrayList<AIMSpawnSpec>();
-            for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
-                if (time == schedule.peek().getSpawnTime()) {
-                    specs.add(new AIMSpawnSpec(
-                            spawnPoint.getCurrentTime(),
-                            VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
-                            destinationRoad
-                    ));
-                }
-            }
-            return specs;
-        }
-    }
-
 }

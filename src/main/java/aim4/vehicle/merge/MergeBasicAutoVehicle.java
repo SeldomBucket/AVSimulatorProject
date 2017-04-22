@@ -2,6 +2,7 @@ package aim4.vehicle.merge;
 
 import aim4.driver.Driver;
 import aim4.driver.merge.MergeAutoDriver;
+import aim4.map.merge.RoadNames;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -13,6 +14,8 @@ import java.awt.geom.Point2D;
 public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAutoVehicleSimModel {
     protected MergeAutoDriver driver;
     //Result properties
+    private RoadNames startingRoad;
+    private double startTime;
     private double finishTime;
     private double delayTime;
     private double finalVelocity;
@@ -53,6 +56,18 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
     }
 
     //Result accessors
+
+
+    @Override
+    public RoadNames getStartingRoad() {
+        return startingRoad;
+    }
+
+    @Override
+    public void setStartingRoad(RoadNames startingRoad) {
+        this.startingRoad = startingRoad;
+    }
+
     @Override
     public double getFinishTime() {
         return finishTime;
@@ -121,5 +136,15 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
     @Override
     public void setFinalYPos(double finalYPos) {
         this.finalYPos = finalYPos;
+    }
+
+    @Override
+    public double getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setStartTime(double startTime) {
+        this.startTime = startTime;
     }
 }

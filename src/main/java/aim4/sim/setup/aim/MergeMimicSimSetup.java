@@ -4,19 +4,27 @@ import aim4.config.Debug;
 import aim4.config.SimConfig;
 import aim4.driver.aim.pilot.V2IPilot;
 import aim4.im.aim.v2i.reservation.ReservationGridManager;
+import aim4.map.Road;
+import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.GridMapUtil;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.aim.AIMVehicleSimModel;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Callum on 21/04/2017.
  */
 public class MergeMimicSimSetup implements AIMSimSetup {
     // Settings from AutoDriverOnlySimSetup //
-        /** The static buffer size */
+    /** The static buffer size */
     private double staticBufferSize = 0.25;
     /** The time buffer for internal tiles */
     private double internalTileTimeBufferSize = 0.1;
@@ -26,10 +34,10 @@ public class MergeMimicSimSetup implements AIMSimSetup {
     private boolean isEdgeTileTimeBufferEnabled = true;
     /** The granularity of the reservation grid */
     private double granularity = 1.0;
-    /** The stopping distance before intersection */
-    protected double stopDistBeforeIntersection;
 
     private static final double LANE_WIDTH = 4;
+    private static final double DISTANCE_BETWEEN = 150;
+    private static final double MEDIAN_SIZE = 1;
 
     private File mergeSchedule;
     private File targetSchedule;
@@ -59,8 +67,8 @@ public class MergeMimicSimSetup implements AIMSimSetup {
                 LANE_WIDTH, //Lane width
                 speedLimit, //Speed limit
                 1, //Lanes per road
-                1, //Width between roads on same side
-                150 //Distance between intersections
+                MEDIAN_SIZE, //Width between roads on same side
+                DISTANCE_BETWEEN //Distance between intersections
         );
         ReservationGridManager.Config gridConfig =
                 new ReservationGridManager.Config(SimConfig.TIME_STEP,
@@ -80,6 +88,77 @@ public class MergeMimicSimSetup implements AIMSimSetup {
         GridMapUtil.setFCFSManagers(layout, currentTime, gridConfig);
 
         V2IPilot.DEFAULT_STOP_DISTANCE_BEFORE_INTERSECTION = 1.0;
-        return new AutoDriverOnlySimulator(layout);
+
+        Map<String, Double> specToExpectedTimeMergeLane = simulateExpectedMergeLaneTimes(layout);
+        Map<String, Double> specToExpectedTimeTargetLane = simulateExpectedTargetLaneTimes(layout);
+        Debug.currentMap = layout;
+
+        return new AutoDriverOnlySimulator(layout, true, specToExpectedTimeMergeLane,specToExpectedTimeTargetLane);
+    }
+
+    private Map<String, Double> simulateExpectedMergeLaneTimes(GridIntersectionMap mapOriginal) {
+        Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
+        for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
+            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DISTANCE_BETWEEN);
+            VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
+            Road destination = null;
+            for(Road r : map.getDestinationRoads())
+                if(r.getIndexLane().getInitialHeading() == 0 || r.getIndexLane().getInitialHeading() == 2*Math.PI) {
+                    destination = r;
+                    break;
+                }
+            for(AIMSpawnPoint spawn : map.getSpawnPoints()) {
+                if(spawn.getHeading() == Math.PI/2)
+                    spawn.setVehicleSpecChooser(new GridMapUtil.SingleSpawnSpecGenerator(destination, spec));
+                else
+                    spawn.setVehicleSpecChooser(GridMapUtil.nullSpawnSpecGenerator);
+            }
+            AutoDriverOnlySimulator sim = new AutoDriverOnlySimulator(map, true);
+            AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult =
+                    new AutoDriverOnlySimulator.AutoDriverOnlySimStepResult(new ArrayList<Integer>());
+            AIMVehicleSimModel vehicle = null;
+            while(simStepResult.getCompletedVINs().size() < 1) {
+                simStepResult = sim.step(SimConfig.TIME_STEP);
+                if(vehicle == null && sim.getActiveVehicles().size() > 0)
+                    for(AIMVehicleSimModel v : sim.getActiveVehicles())
+                        vehicle = v;
+            }
+            assert vehicle != null;
+            specToExpectedTime.put(spec.getName(),vehicle.getFinishTime() - vehicle.getStartTime());
+        }
+        return specToExpectedTime;
+    }
+
+    private Map<String, Double> simulateExpectedTargetLaneTimes(GridIntersectionMap mapOriginal) {
+        Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
+        for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
+            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DISTANCE_BETWEEN);
+            VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
+            Road destination = null;
+            for(Road r : map.getDestinationRoads())
+                if(r.getIndexLane().getInitialHeading() == 0 || r.getIndexLane().getInitialHeading() == 2*Math.PI) {
+                    destination = r;
+                    break;
+                }
+            for(AIMSpawnPoint spawn : map.getSpawnPoints()) {
+                if(spawn.getHeading() == 0)
+                    spawn.setVehicleSpecChooser(new GridMapUtil.SingleSpawnSpecGenerator(destination, spec));
+                else
+                    spawn.setVehicleSpecChooser(GridMapUtil.nullSpawnSpecGenerator);
+            }
+            AutoDriverOnlySimulator sim = new AutoDriverOnlySimulator(map, true);
+            AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult =
+                    new AutoDriverOnlySimulator.AutoDriverOnlySimStepResult(new ArrayList<Integer>());
+            AIMVehicleSimModel vehicle = null;
+            while(simStepResult.getCompletedVINs().size() < 1) {
+                simStepResult = sim.step(SimConfig.TIME_STEP);
+                if(vehicle == null && sim.getActiveVehicles().size() > 0)
+                    for(AIMVehicleSimModel v : sim.getActiveVehicles())
+                        vehicle = v;
+            }
+            assert vehicle != null;
+            specToExpectedTime.put(spec.getName(),vehicle.getFinishTime() - vehicle.getStartTime());
+        }
+        return specToExpectedTime;
     }
 }

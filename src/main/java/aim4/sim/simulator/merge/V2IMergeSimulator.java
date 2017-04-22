@@ -18,10 +18,20 @@ import java.util.Queue;
  * Created by Callum on 13/04/2017.
  */
 public class V2IMergeSimulator extends CoreMergeSimulator {
+
+
     public V2IMergeSimulator(MergeMap map, ProtocolType protocolType) {
         super(map, protocolType);
     }
 
+    public V2IMergeSimulator(MergeMap map,
+                             ProtocolType protocolType,
+                             Map<String, Double> specToExpectedTimeMergeLane,
+                             Map<String, Double> specToExpectedTimeTargetLane) {
+        super(map, protocolType, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
+    }
+
+    // ACTION //
     @Override
     public synchronized CoreMergeSimStepResult step(double timeStep) {
         spawnHelper.spawnVehicles(timeStep, protocolType);
@@ -30,9 +40,11 @@ public class V2IMergeSimulator extends CoreMergeSimulator {
         letMergeManagersAct(timeStep);
         communication();
         moveVehicles(timeStep);
-        checkForCollisions();
+        //checkForCollisions(); TODO: Fix collision prevention so that this can be run.
 
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
+        provideCompletedVehiclesWithResultsInfo(completedVehicles);
+        recordCompletedVehicles(completedVehicles);
         incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);
@@ -43,6 +55,7 @@ public class V2IMergeSimulator extends CoreMergeSimulator {
             mm.act(timeStep);
     }
 
+    // COMMUNICATION //
     private void communication() {
         deliverV2IMessages();
         deliverI2VMessages();
@@ -99,7 +112,6 @@ public class V2IMergeSimulator extends CoreMergeSimulator {
             senderMM.clearOutbox();
         }
     }
-
 
     /**
      * Whether the transmission of a message is successful

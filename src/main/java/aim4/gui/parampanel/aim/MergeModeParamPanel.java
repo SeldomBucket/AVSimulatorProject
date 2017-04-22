@@ -5,6 +5,7 @@ import aim4.sim.setup.aim.AIMSimSetup;
 import aim4.sim.setup.aim.MergeMimicSimSetup;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -134,7 +135,9 @@ public class MergeModeParamPanel extends JPanel implements ActionListener {
     }
 
     private File getFileFromUser() {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
         final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(filter);
         int returnVal = fc.showOpenDialog(this);
 
         if(returnVal == JFileChooser.APPROVE_OPTION)

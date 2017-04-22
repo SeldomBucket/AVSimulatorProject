@@ -9,8 +9,13 @@ import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.sim.simulator.merge.V2IMergeSimulator;
+import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Callum on 02/03/2017.
@@ -90,6 +95,9 @@ public class S2SSimSetup implements MergeSimSetup {
                 targetLeadInDistance, targetLeadOutDistance,
                 mergeLeadInDistance, mergingAngle);
 
+        Map<String, Double> specToExpectedTimeMergeLane = simulateExpectedMergeLaneTimes(layout);
+        Map<String, Double> specToExpectedTimeTargetLane = simulateExpectedTargetLaneTimes(layout);
+
         switch(mergingProtocol){
             case AIM_GRID:
                 ReservationMergeGridManager.Config mergeGridReservationConfig =
@@ -103,25 +111,70 @@ public class S2SSimSetup implements MergeSimSetup {
                                 1.0);
                 MergeMapUtil.setFCFSGridMergeManagers(layout, currentTime, mergeGridReservationConfig);
                 setSpawnSpecs(layout);
-                return new V2IMergeSimulator(layout, mergingProtocol);
+                return new V2IMergeSimulator(layout, mergingProtocol, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
             case AIM_NO_GRID:
                 ReservationMergeManager.Config mergeReservationConfig =
                         new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
                 MergeMapUtil.setFCFSMergeManagers(layout, currentTime, mergeReservationConfig);
                 setSpawnSpecs(layout);
-                return new V2IMergeSimulator(layout, mergingProtocol);
+                return new V2IMergeSimulator(layout, mergingProtocol, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
             case QUEUE:
                 MergeMapUtil.setQueueMergeManagers(layout, currentTime);
                 setSpawnSpecs(layout);
-                return new V2IMergeSimulator(layout, mergingProtocol);
+                return new V2IMergeSimulator(layout, mergingProtocol, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
             case TEST_MERGE:
                 MergeMapUtil.setUniformSpawnSpecGeneratorMergeLaneOnly(layout, trafficLevel);
-                return new CoreMergeSimulator(layout, mergingProtocol);
+                return new CoreMergeSimulator(layout, mergingProtocol, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
             case TEST_TARGET:
                 MergeMapUtil.setUniformSpawnSpecGeneratorTargetLaneOnly(layout, trafficLevel);
-                return new CoreMergeSimulator(layout, mergingProtocol);
+                return new CoreMergeSimulator(layout, mergingProtocol, specToExpectedTimeMergeLane, specToExpectedTimeTargetLane);
             default: throw new IllegalArgumentException("Unexpected Protocol Type: " + mergingProtocol.toString());
         }
+    }
+
+
+    private Map<String, Double> simulateExpectedMergeLaneTimes(S2SMergeMap mapOriginal) {
+        Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
+        for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
+            S2SMergeMap map = new S2SMergeMap(mapOriginal);
+            VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
+            map.getMergeSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.SingleSpawnSpecGenerator(spec));
+            map.getTargetSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.NoSpawnSpecGenerator());
+            CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.NONE);
+            CoreMergeSimulator.CoreMergeSimStepResult simStepResult =
+                    new CoreMergeSimulator.CoreMergeSimStepResult(new HashMap<Integer, MergeVehicleSimModel>());
+            while(simStepResult.getCompletedVehicles().size() < 1) {
+                simStepResult = sim.step(SimConfig.TIME_STEP);
+            }
+            MergeVehicleSimModel vehicle = null;
+            for(int key : simStepResult.getCompletedVehicles().keySet())
+                vehicle = simStepResult.getCompletedVehicles().get(key);
+            assert vehicle != null;
+            specToExpectedTime.put(spec.getName(),vehicle.getFinishTime() - vehicle.getStartTime());
+        }
+        return specToExpectedTime;
+    }
+
+    private Map<String, Double> simulateExpectedTargetLaneTimes(S2SMergeMap mapOriginal) {
+        Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
+        for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
+            S2SMergeMap map = new S2SMergeMap(mapOriginal);
+            VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
+            map.getTargetSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.SingleSpawnSpecGenerator(spec));
+            map.getMergeSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.NoSpawnSpecGenerator());
+            CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.NONE);
+            CoreMergeSimulator.CoreMergeSimStepResult simStepResult =
+                    new CoreMergeSimulator.CoreMergeSimStepResult(new HashMap<Integer, MergeVehicleSimModel>());
+            while(simStepResult.getCompletedVehicles().size() < 1) {
+                simStepResult = sim.step(SimConfig.TIME_STEP);
+            }
+            MergeVehicleSimModel vehicle = null;
+            for(int key : simStepResult.getCompletedVehicles().keySet())
+                vehicle = simStepResult.getCompletedVehicles().get(key);
+            assert vehicle != null;
+            specToExpectedTime.put(spec.getName(),vehicle.getFinishTime() - vehicle.getStartTime());
+        }
+        return specToExpectedTime;
     }
 
     private void setSpawnSpecs(S2SMergeMap layout) {

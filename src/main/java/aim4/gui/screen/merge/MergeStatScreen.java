@@ -15,7 +15,7 @@ import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 
 import javax.swing.*;
-import java.awt.BorderLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +83,9 @@ public class MergeStatScreen extends StatScreen {
             this.remove((JComponent) comp);
         }
         componentsToUpdate.clear();
+        this.removeAll();
+        this.revalidate();
+        this.repaint();
     }
 
     public void addResultToProcess(CoreMergeSimulator.CoreMergeSimStepResult simStepResult) {
@@ -111,10 +114,11 @@ public class MergeStatScreen extends StatScreen {
         ActiveVehicleList activeVehicles = new ActiveVehicleList();
         CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, activeVehicles, completedVehicles);
+
         setLayout(new BorderLayout());
         add(topBar, BorderLayout.PAGE_START);
-        add(activeVehicles, BorderLayout.CENTER);
-        add(completedVehicles, BorderLayout.LINE_END);
+        add(splitPane, BorderLayout.CENTER);
 
         componentsToUpdate.add(topBar);
         componentsToUpdate.add(activeVehicles);
@@ -126,10 +130,11 @@ public class MergeStatScreen extends StatScreen {
         ActiveVehicleList activeVehicles = new ActiveVehicleList();
         CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, activeVehicles, completedVehicles);
+
         setLayout(new BorderLayout());
         add(topBar, BorderLayout.PAGE_START);
-        add(activeVehicles, BorderLayout.CENTER);
-        add(completedVehicles, BorderLayout.LINE_END);
+        add(splitPane, BorderLayout.CENTER);
 
         componentsToUpdate.add(topBar);
         componentsToUpdate.add(activeVehicles);
@@ -141,10 +146,11 @@ public class MergeStatScreen extends StatScreen {
         ActiveVehicleList activeVehicles = new ActiveVehicleList();
         CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, activeVehicles, completedVehicles);
+
         setLayout(new BorderLayout());
         add(topBar, BorderLayout.PAGE_START);
-        add(activeVehicles, BorderLayout.CENTER);
-        add(completedVehicles, BorderLayout.LINE_END);
+        add(splitPane, BorderLayout.CENTER);
 
         componentsToUpdate.add(topBar);
         componentsToUpdate.add(activeVehicles);
@@ -156,13 +162,15 @@ public class MergeStatScreen extends StatScreen {
         ActiveVehicleList activeVehicles = new ActiveVehicleList();
         CompletedVehicleList completedVehicles = new CompletedVehicleList();
 
+        JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, activeVehicles, completedVehicles);
+
         setLayout(new BorderLayout());
         add(topBar, BorderLayout.PAGE_START);
-        add(activeVehicles, BorderLayout.CENTER);
-        add(completedVehicles, BorderLayout.LINE_END);
+        add(splitPane, BorderLayout.CENTER);
 
         componentsToUpdate.add(topBar);
         componentsToUpdate.add(activeVehicles);
-        componentsToUpdate.add(completedVehicles);    }
+        componentsToUpdate.add(completedVehicles);
+    }
 
 }

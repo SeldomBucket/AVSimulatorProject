@@ -5,6 +5,7 @@ import aim4.driver.merge.MergeV2IAutoDriver;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.map.merge.MergeSpawnPoint;
+import aim4.map.merge.RoadNames;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -114,6 +115,10 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
         vehicle.setStartTime(spawnPoint.getCurrentTime());
+        if(spawnPoint.getHeading() == 0)
+            vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
+        else
+            vehicle.setStartingRoad(RoadNames.MERGING_ROAD);
 
         MergeAutoDriver driver = new MergeAutoDriver(vehicle, map);
         driver.setCurrentLane(lane);
@@ -139,6 +144,10 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
         vehicle.setStartTime(spawnPoint.getCurrentTime());
+        if(spawnPoint.getHeading() == 0)
+            vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
+        else
+            vehicle.setStartingRoad(RoadNames.MERGING_ROAD);
 
         MergeV2IAutoDriver driver = new MergeV2IAutoDriver(vehicle, map, protocolType);
         driver.setCurrentLane(lane);

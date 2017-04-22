@@ -93,4 +93,10 @@ public interface Simulator {
      * @return the active vehicle
      */
     VehicleSimModel getActiveVehicle(int vin);
+
+    /**
+     * Produces a results CSV String for this simulator
+     * @return String A CSV String representing the results of this simulator.
+     */
+    String produceResultsCSV();
 }

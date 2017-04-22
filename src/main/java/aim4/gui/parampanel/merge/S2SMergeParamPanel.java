@@ -8,6 +8,7 @@ import aim4.sim.setup.merge.enums.ProtocolType;
 import org.json.simple.JSONArray;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -329,7 +330,9 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
     }
 
     private File getFileFromUser() {
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
         final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(filter);
         int returnVal = fc.showOpenDialog(this);
 
         if(returnVal == JFileChooser.APPROVE_OPTION)
@@ -342,7 +345,9 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
         String jsonString = json.toJSONString();
         List<String> jsonList = new ArrayList<String>();
         jsonList.add(jsonString);
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
         final JFileChooser fc = new JFileChooser();
+        fc.setFileFilter(filter);
         int returnVal = fc.showSaveDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
             File file = fc.getSelectedFile();

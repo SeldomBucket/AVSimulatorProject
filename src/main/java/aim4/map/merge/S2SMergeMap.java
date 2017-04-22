@@ -1,7 +1,6 @@
 package aim4.map.merge;
 
 import aim4.map.Road;
-import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.connections.S2SMergeConnection;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
@@ -17,6 +16,13 @@ public class S2SMergeMap extends MergeMap {
     private MergeSpawnPoint mergeSpawnPoint;
     private MergeSpawnPoint targetSpawnPoint;
 
+    private double targetLaneSpeedLimit;
+    private double mergeLaneSpeedLimit;
+    private double targetLeadInDistance;
+    private double targetLeadOutDistance;
+    private double mergeLeadInDistance;
+    private double mergeAngle;
+
     /**
      * Creates the map for a Single-to-Single lane merge.
      * @param initTime The starting time for the map.
@@ -31,6 +37,12 @@ public class S2SMergeMap extends MergeMap {
                        double targetLaneSpeedLimit, double mergeLaneSpeedLimit,
                        double targetLeadInDistance, double targetLeadOutDistance,
                        double mergeLeadInDistance, double mergeAngle){
+        this.targetLaneSpeedLimit = targetLaneSpeedLimit;
+        this.mergeLaneSpeedLimit = mergeLaneSpeedLimit;
+        this.targetLeadInDistance = targetLeadInDistance;
+        this.targetLeadOutDistance = targetLeadOutDistance;
+        this.mergeLeadInDistance = mergeLeadInDistance;
+        this.mergeAngle = mergeAngle;
         //PRELIMINARY CALCULATIONS//
         /*
         We need to determine the length of the merging zone, as the lane comes in at an angle.
@@ -214,11 +226,47 @@ public class S2SMergeMap extends MergeMap {
         addMergeConnection(mergeConnection);
     }
 
+    public S2SMergeMap(S2SMergeMap map) {
+        this(
+                0,
+                map.getTargetLaneSpeedLimit(),
+                map.getMergeLaneSpeedLimit(),
+                map.getTargetLeadInDistance(),
+                map.getTargetLeadOutDistance(),
+                map.getMergeLeadInDistance(),
+                map.getMergeAngle()
+        );
+    }
+
     public MergeSpawnPoint getMergeSpawnPoint() {
         return mergeSpawnPoint;
     }
 
     public MergeSpawnPoint getTargetSpawnPoint() {
         return targetSpawnPoint;
+    }
+
+    public double getTargetLaneSpeedLimit() {
+        return targetLaneSpeedLimit;
+    }
+
+    public double getMergeLaneSpeedLimit() {
+        return mergeLaneSpeedLimit;
+    }
+
+    public double getTargetLeadInDistance() {
+        return targetLeadInDistance;
+    }
+
+    public double getTargetLeadOutDistance() {
+        return targetLeadOutDistance;
+    }
+
+    public double getMergeLeadInDistance() {
+        return mergeLeadInDistance;
+    }
+
+    public double getMergeAngle() {
+        return mergeAngle;
     }
 }

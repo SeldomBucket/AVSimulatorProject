@@ -5,18 +5,18 @@ import java.util.List;
 /**
  * Created by Callum on 21/04/2017.
  */
-public class CoreMergeResult {
-    private List<CoreMergeVehicleResult> vehicleResults;
+public class AIMResult {
+    private List<AIMVehicleResult> vehicleResults;
     private double throughput;
     private double maxDelay;
     private double minDelay;
 
-    public CoreMergeResult(List<CoreMergeVehicleResult> vehicleResults, double throughput) {
+    public AIMResult(List<AIMVehicleResult> vehicleResults, double throughput) {
         this.vehicleResults = vehicleResults;
         this.throughput = throughput;
         this.maxDelay = Double.MIN_VALUE;
         this.minDelay = Double.MAX_VALUE;
-        for(CoreMergeVehicleResult result : vehicleResults) {
+        for(AIMVehicleResult result : vehicleResults) {
             if(maxDelay < result.getDelayTime())
                 maxDelay = result.getDelayTime();
             if(minDelay > result.getDelayTime())
@@ -24,7 +24,7 @@ public class CoreMergeResult {
         }
     }
 
-    public List<CoreMergeVehicleResult> getVehicleResults() {
+    public List<AIMVehicleResult> getVehicleResults() {
         return vehicleResults;
     }
 

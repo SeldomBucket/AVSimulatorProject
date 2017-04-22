@@ -485,6 +485,7 @@ public abstract class SimViewer extends JPanel implements
                 "Ooops...",
                 JOptionPane.ERROR_MESSAGE
         );
+        throw new RuntimeException(e);
     }
 
     // //////////////////////////////////////////////////
