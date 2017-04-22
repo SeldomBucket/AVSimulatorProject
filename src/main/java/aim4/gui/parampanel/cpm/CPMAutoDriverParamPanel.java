@@ -1,9 +1,6 @@
 package aim4.gui.parampanel.cpm;
 
-import aim4.gui.component.CPMSimTimeRadioButtons;
-import aim4.gui.component.CPMUseCSVFileRadioButtons;
 import aim4.gui.component.LabeledSlider;
-import aim4.gui.component.CPMSpawnSpecConfig;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.util.Util;
@@ -12,7 +9,6 @@ import javafx.util.Pair;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.util.*;
 import java.util.List;
 
 /**
