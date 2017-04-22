@@ -1,6 +1,7 @@
 package aim4.gui.parampanel.cpm.components;
 
-import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
+import aim4.gui.parampanel.cpm.CPMBasicParamPanel;
+import aim4.gui.parampanel.cpm.CPMSingleWidthParamPanel;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import javax.swing.*;
@@ -36,12 +37,9 @@ public class CPMMapAreaLabel extends JLabel {
         return totalArea;
     }
 
-    public void updateAreaValue(CPMAutoDriverParamPanel paramPanel) {
-        double parkingAreaLength = (2*paramPanel.getAccessLength()) +
-                (2*paramPanel.getLaneWidth()) + paramPanel.getParkingLength();
+    public void updateAreaValue(CPMBasicParamPanel paramPanel) {
 
-        // Add the area of the parking area (w*h) (+1 to account for the top WEST road)
-        double totalArea = parkingAreaLength*((paramPanel.getNumberOfParkingLanes()+1)*paramPanel.getLaneWidth());
+        double totalArea = paramPanel.calculateCarParkArea();
 
         // Add the West road, but only up to the
         // length of the parking area

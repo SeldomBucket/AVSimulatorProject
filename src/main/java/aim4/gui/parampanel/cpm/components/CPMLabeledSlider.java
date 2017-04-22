@@ -1,7 +1,8 @@
 package aim4.gui.parampanel.cpm.components;
 
 import aim4.gui.component.LabeledSlider;
-import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
+import aim4.gui.parampanel.cpm.CPMBasicParamPanel;
+import aim4.gui.parampanel.cpm.CPMSingleWidthParamPanel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -13,12 +14,12 @@ import javax.swing.event.ChangeListener;
 public class CPMLabeledSlider extends LabeledSlider {
 
     /** The param panel this slider belongs to. */
-    private CPMAutoDriverParamPanel paramPanel;
+    private CPMBasicParamPanel paramPanel;
 
     public CPMLabeledSlider(double minValue, double maxValue, double defaultValue,
                             double majorTick, double minorTick, String labelFormat,
                             String tickLabelFormat, ChangeListener changeListener,
-                            CPMAutoDriverParamPanel paramPanel) {
+                            CPMBasicParamPanel paramPanel) {
         super(minValue, maxValue, defaultValue, majorTick, minorTick, labelFormat,
                 tickLabelFormat, changeListener);
         this.paramPanel = paramPanel;
@@ -26,7 +27,7 @@ public class CPMLabeledSlider extends LabeledSlider {
 
     public CPMLabeledSlider(double minValue, double maxValue, double defaultValue,
                             double majorTick, double minorTick, String labelFormat,
-                            String tickLabelFormat, CPMAutoDriverParamPanel paramPanel) {
+                            String tickLabelFormat, CPMBasicParamPanel paramPanel) {
         super(minValue, maxValue, defaultValue, majorTick, minorTick, labelFormat, tickLabelFormat);
         this.paramPanel = paramPanel;
     }

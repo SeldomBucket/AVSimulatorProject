@@ -3,6 +3,7 @@ package aim4.gui.parampanel.cpm.components;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 
 /**
  * Create radio buttons where the user can either run the simulation infinitely,
@@ -22,6 +23,10 @@ public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
     JTextField secondsField;
 
     public CPMSimTimeRadioButtons(){
+
+        JLabel simTimeLabel = new JLabel("Run the simulation for:");
+        simTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(simTimeLabel);
 
         JRadioButton foreverButton = new JRadioButton("Run forever", false);
         foreverButton.setActionCommand("FALSE");

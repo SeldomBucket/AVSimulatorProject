@@ -4,6 +4,7 @@ import aim4.util.Util;
 import aim4.vehicle.VehicleSpecDatabase;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
@@ -24,6 +25,10 @@ public class CPMSpawnSpecConfig extends JPanel {
 
     public CPMSpawnSpecConfig(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        JLabel spawnSpecLabel = new JLabel("Choose vehicle specification spawn type:");
+        spawnSpecLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(spawnSpecLabel);
 
         JPanel singleSpecPanel = new JPanel();
         JPanel mixedSpecPanel = new JPanel();

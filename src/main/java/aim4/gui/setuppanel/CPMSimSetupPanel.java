@@ -1,6 +1,6 @@
 package aim4.gui.setuppanel;
 
-import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
+import aim4.gui.parampanel.cpm.CPMSingleWidthParamPanel;
 import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.setup.cpm.CPMAutoDriverSimSetup;
@@ -26,7 +26,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     /** The card layout */
     private CardLayout cardLayout;
     /** the auto driver only simulation setup panel */
-    private CPMAutoDriverParamPanel autoDriverOnlySetupPanel;
+    private CPMSingleWidthParamPanel autoDriverOnlySetupPanel;
     /** The simulation setup panel */
     private BasicCPMSimSetup simSetup;
 
@@ -56,7 +56,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
 
         // add the parameter panels
         autoDriverOnlySetupPanel =
-                new CPMAutoDriverParamPanel(simSetup);
+                new CPMSingleWidthParamPanel(simSetup);
         addParamPanel(autoDriverOnlySetupPanel, CPM_SINGLE_WIDTH_SETUP_PANEL);
 
 
