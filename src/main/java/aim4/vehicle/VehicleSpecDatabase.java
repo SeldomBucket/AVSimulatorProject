@@ -40,197 +40,205 @@ import java.util.Map;
  */
 public class VehicleSpecDatabase {
 
-  /////////////////////////////////
-  // PRIVATE FIELDS
-  /////////////////////////////////
+    /////////////////////////////////
+    // PRIVATE FIELDS
+    /////////////////////////////////
 
-  /**
-   * A list of VehicleSpecs
-   */
-  private static List<VehicleSpec> vehicleSpecs =
-    new ArrayList<VehicleSpec>();
+    /**
+     * A list of VehicleSpecs
+     */
+    private static List<VehicleSpec> vehicleSpecs =
+            new ArrayList<VehicleSpec>();
 
-  /**
-   * A map from VehicleSpecs' name to VehicleSpecs' id.
-   */
-  private static Map<String, Integer> nameToId =
-    new HashMap<String,Integer>();
+    /**
+     * A map from VehicleSpecs' name to VehicleSpecs' id.
+     */
+    private static Map<String, Integer> nameToId =
+            new HashMap<String, Integer>();
 
 
-  /////////////////////////////////
-  // PUBLIC METHODS
-  /////////////////////////////////
+    /////////////////////////////////
+    // PUBLIC METHODS
+    /////////////////////////////////
 
-  /**
-   * Get the total number of vehicle specifications in the database
-   *
-   * @return the total number of vehicle specifications.
-   */
-  public static int getNumOfSpec() {
-    return vehicleSpecs.size();
-  }
-
-  /**
-   * Register a vehicle specification.  It requires that the name of the
-   * given vehicle specification is not the same as the name of any
-   * registered vehicle specifications.
-   *
-   * @param spec  the vehicle specification
-   */
-  public static void registerSpec(VehicleSpec spec) {
-    assert !nameToId.containsKey(spec.getName());
-    int id = vehicleSpecs.size();
-    nameToId.put(spec.getName(), id);
-    vehicleSpecs.add(spec);
-  }
-
-  /**
-   * Place an registered vehicle spec with a new one.
-   *
-   * @param spec  the new spec
-   * @return true if there exists a spec whose name is the same
-   *         as the new one; false if otherwise.
-   */
-  public static boolean replaceSpec(VehicleSpec spec) {
-    if (nameToId.containsKey(spec.getName())) {
-      int id = nameToId.get(spec.getName());
-      VehicleSpec oldSpec = vehicleSpecs.get(id);
-      oldSpec.assign(spec);
-      return true;
-    } else {
-      return false;
+    /**
+     * Get the total number of vehicle specifications in the database
+     *
+     * @return the total number of vehicle specifications.
+     */
+    public static int getNumOfSpec() {
+        return vehicleSpecs.size();
     }
-  }
+
+    public static List<String> getSpecNames() {
+        List<String> specNames = new ArrayList<String>(vehicleSpecs.size());
+        for (VehicleSpec spec : vehicleSpecs) {
+            specNames.add(spec.getName());
+        }
+        return specNames;
+    }
+
+    /**
+     * Register a vehicle specification.  It requires that the name of the
+     * given vehicle specification is not the same as the name of any
+     * registered vehicle specifications.
+     *
+     * @param spec the vehicle specification
+     */
+    public static void registerSpec(VehicleSpec spec) {
+        assert !nameToId.containsKey(spec.getName());
+        int id = vehicleSpecs.size();
+        nameToId.put(spec.getName(), id);
+        vehicleSpecs.add(spec);
+    }
+
+    /**
+     * Place an registered vehicle spec with a new one.
+     *
+     * @param spec the new spec
+     * @return true if there exists a spec whose name is the same
+     * as the new one; false if otherwise.
+     */
+    public static boolean replaceSpec(VehicleSpec spec) {
+        if (nameToId.containsKey(spec.getName())) {
+            int id = nameToId.get(spec.getName());
+            VehicleSpec oldSpec = vehicleSpecs.get(id);
+            oldSpec.assign(spec);
+            return true;
+        } else {
+            return false;
+        }
+    }
 
 
-  /**
-   * Get the id of the vehicle specification.  It returns < 0 if the
-   * vehicle specification has not been registered.
-   *
-   * @param spec  the vehicle specification
-   * @return      the id of vehicle specification; -1 if the vehicle
-   *              specification has not been registered.
-   */
-  public static int getIdOfVehicleSpec(VehicleSpec spec) {
-    Integer id = nameToId.get(spec.getName());
-    return (id!=null)?id:(-1);
-  }
+    /**
+     * Get the id of the vehicle specification.  It returns < 0 if the
+     * vehicle specification has not been registered.
+     *
+     * @param spec the vehicle specification
+     * @return the id of vehicle specification; -1 if the vehicle
+     * specification has not been registered.
+     */
+    public static int getIdOfVehicleSpec(VehicleSpec spec) {
+        Integer id = nameToId.get(spec.getName());
+        return (id != null) ? id : (-1);
+    }
 
-  /**
-   * Get the id of the vehicle specification.  It returns < 0 if the
-   * vehicle specification has not been registered.
-   *
-   * @param name  the name of the vehicle specification
-   * @return      the id of vehicle specification; -1 if the vehicle
-   *              specification has not been registered.
-   */
-  public static int getIdByName(String name) {
-    Integer id = nameToId.get(name);
-    return (id!=null)?id:(-1);
-  }
+    /**
+     * Get the id of the vehicle specification.  It returns < 0 if the
+     * vehicle specification has not been registered.
+     *
+     * @param name the name of the vehicle specification
+     * @return the id of vehicle specification; -1 if the vehicle
+     * specification has not been registered.
+     */
+    public static int getIdByName(String name) {
+        Integer id = nameToId.get(name);
+        return (id != null) ? id : (-1);
+    }
 
-  /**
-   * Get the vehicle specification. It returns null if the vehicle
-   * specification id does not exist.
-   *
-   * @param id  the id of the vehicle specification
-   * @return    the vehicle specification; null if the vehicle specification
-   *            id does not exist.
-   */
-  public static VehicleSpec getVehicleSpecById(int id) {
-    return vehicleSpecs.get(id);
-  }
+    /**
+     * Get the vehicle specification. It returns null if the vehicle
+     * specification id does not exist.
+     *
+     * @param id the id of the vehicle specification
+     * @return the vehicle specification; null if the vehicle specification
+     * id does not exist.
+     */
+    public static VehicleSpec getVehicleSpecById(int id) {
+        return vehicleSpecs.get(id);
+    }
 
-  /**
-   * Get the vehicle specification. It returns null if the vehicle
-   * specification id does not exist.
-   *
-   * @param name  the name of the vehicle specification
-   * @return the vehicle specification; null if the vehicle specification
-   *         id does not exist.
-   */
-  public static VehicleSpec getVehicleSpecByName(String name) {
-    Integer id = nameToId.get(name);
-    return (id != null)?vehicleSpecs.get(id):null;
-  }
+    /**
+     * Get the vehicle specification. It returns null if the vehicle
+     * specification id does not exist.
+     *
+     * @param name the name of the vehicle specification
+     * @return the vehicle specification; null if the vehicle specification
+     * id does not exist.
+     */
+    public static VehicleSpec getVehicleSpecByName(String name) {
+        Integer id = nameToId.get(name);
+        return (id != null) ? vehicleSpecs.get(id) : null;
+    }
 
-  /////////////////////////////////
-  // STATIC CONSTRUCTORS
-  /////////////////////////////////
+    /////////////////////////////////
+    // STATIC CONSTRUCTORS
+    /////////////////////////////////
 
-  /**
-   * Create predefined vehicle specification.
-   */
-  static {
-    /** A small vehicle with short wheelbase and good performance. */
-    registerSpec(new VehicleSpec("COUPE",
-                                 4.5,       // maxAcceleration (m/s/s)
-                               -45.0,       // maxDeceleration (m/s/s)
-                               //-15.0,       // maxDeceleration (m/s/s)
-                                60.0,       // maxVelocity (m/s)
-                               -17.0,       // minVelocity (m/s)
-                                 4.0,       // length (meters)
-                                 1.75,      // width (meters)
-                                 1.0,       // frontAxleDisplacement (meters)
-                                 3.5,       // rearAxleDisplacement (meters)
-                               (1.75-0.25)/2, // wheelSpan (meters)
-                                 0.3,       // wheelRadius (meters)
-                                 0.25,      // wheelWidth (meters)
-                               Math.PI/3,   // maxSteeringAngle (radian)
-                               Math.PI/2)); // maxTurnPerSecond (radian)
+    /**
+     * Create predefined vehicle specification.
+     */
+    static {
+        /** A small vehicle with short wheelbase and good performance. */
+        registerSpec(new VehicleSpec("COUPE",
+                4.5,       // maxAcceleration (m/s/s)
+                -45.0,       // maxDeceleration (m/s/s)
+                //-15.0,       // maxDeceleration (m/s/s)
+                60.0,       // maxVelocity (m/s)
+                -17.0,       // minVelocity (m/s)
+                4.0,       // length (meters)
+                1.75,      // width (meters)
+                1.0,       // frontAxleDisplacement (meters)
+                3.5,       // rearAxleDisplacement (meters)
+                (1.75 - 0.25) / 2, // wheelSpan (meters)
+                0.3,       // wheelRadius (meters)
+                0.25,      // wheelWidth (meters)
+                Math.PI / 3,   // maxSteeringAngle (radian)
+                Math.PI / 2)); // maxTurnPerSecond (radian)
 
-    /** A medium vehicle with medium wheelbase and moderate performance. */
-    registerSpec(new VehicleSpec("SEDAN",
-                                 3.25,      // maxAcceleration (m/s/s)
-                               -39.0,       // maxDeceleration (m/s/s)
-                               //-13.0,       // maxDeceleration (m/s/s)
-                                55.0,       // maxVelocity (m/s)
-                               -15.0,       // minVelocity (m/s)
-                                 5.0,       // length (meters)
-                                 1.85,      // width (meters)
-                                 1.2,       // frontAxleDisplacement (meters)
-                                 4.0,       // rearAxleDisplacement (meters)
-                               (1.85-0.25)/2, // wheelSpan (meters)
-                                 0.33,      // wheelRadius (meters)
-                                 0.25,      // wheelWidth (meters)
-                               Math.PI/3,   // maxSteeringAngle (radian)
-                               Math.PI/3)); // maxTurnPerSecond (radian)
+        /** A medium vehicle with medium wheelbase and moderate performance. */
+        registerSpec(new VehicleSpec("SEDAN",
+                3.25,      // maxAcceleration (m/s/s)
+                -39.0,       // maxDeceleration (m/s/s)
+                //-13.0,       // maxDeceleration (m/s/s)
+                55.0,       // maxVelocity (m/s)
+                -15.0,       // minVelocity (m/s)
+                5.0,       // length (meters)
+                1.85,      // width (meters)
+                1.2,       // frontAxleDisplacement (meters)
+                4.0,       // rearAxleDisplacement (meters)
+                (1.85 - 0.25) / 2, // wheelSpan (meters)
+                0.33,      // wheelRadius (meters)
+                0.25,      // wheelWidth (meters)
+                Math.PI / 3,   // maxSteeringAngle (radian)
+                Math.PI / 3)); // maxTurnPerSecond (radian)
 
-    /** A large vehicle with medium wheelbase and moderate performance. */
-    registerSpec(new VehicleSpec("SUV",
-                                 3.83,      // maxAcceleration (m/s/s)
-                               -39.0,       // maxDeceleration (m/s/s)
-                               //-13.0,       // maxDeceleration (m/s/s)
-                                52.0,       // maxVelocity (m/s)
-                               -13.0,       // minVelocity (m/s)
-                                 5.131,     // length (meters)
-                                 2.007,     // width (meters)
-                                 1.18,      // frontAxleDisplacement (meters)
-                                 4.126,     // rearAxleDisplacement (meters)
-                               (2.007-0.33)/2, // wheelSpan (meters)
-                                 0.375,     // wheelRadius (meters)
-                                 0.33,      // wheelWidth (meters)
-                               Math.PI/3,   // maxSteeringAngle (radian)
-                               Math.PI/3)); // maxTurnPerSecond (radian)
+        /** A large vehicle with medium wheelbase and moderate performance. */
+        registerSpec(new VehicleSpec("SUV",
+                3.83,      // maxAcceleration (m/s/s)
+                -39.0,       // maxDeceleration (m/s/s)
+                //-13.0,       // maxDeceleration (m/s/s)
+                52.0,       // maxVelocity (m/s)
+                -13.0,       // minVelocity (m/s)
+                5.131,     // length (meters)
+                2.007,     // width (meters)
+                1.18,      // frontAxleDisplacement (meters)
+                4.126,     // rearAxleDisplacement (meters)
+                (2.007 - 0.33) / 2, // wheelSpan (meters)
+                0.375,     // wheelRadius (meters)
+                0.33,      // wheelWidth (meters)
+                Math.PI / 3,   // maxSteeringAngle (radian)
+                Math.PI / 3)); // maxTurnPerSecond (radian)
 
-    /** A large vehicle with long wheelbase and poor performance. */
-    registerSpec(new VehicleSpec("VAN",
-                                 3.08,      // maxAcceleration (m/s/s)
-                               -30.0,       // maxDeceleration (m/s/s)
-                               //-10.0,       // maxDeceleration (m/s/s)
-                                45.0,       // maxVelocity (m/s)
-                               -10.0,       // minVelocity (m/s)
-                                 5.385,     // length (meters)
-                                 2.014,     // width (meters)
-                                 0.58,      // frontAxleDisplacement (meters)
-                                 4.085,     // rearAxleDisplacement (meters)
-                               (2.014-0.33)/2, // wheelSpan (meters)
-                                 0.375,     // wheelRadius (meters)
-                                 0.33,      // wheelWidth (meters)
-                               Math.PI/3,   // maxSteeringAngle (radian)
-                               Math.PI/3)); // maxTurnPerSecond (radian)
+        /** A large vehicle with long wheelbase and poor performance. */
+        registerSpec(new VehicleSpec("VAN",
+                3.08,      // maxAcceleration (m/s/s)
+                -30.0,       // maxDeceleration (m/s/s)
+                //-10.0,       // maxDeceleration (m/s/s)
+                45.0,       // maxVelocity (m/s)
+                -10.0,       // minVelocity (m/s)
+                5.385,     // length (meters)
+                2.014,     // width (meters)
+                0.58,      // frontAxleDisplacement (meters)
+                4.085,     // rearAxleDisplacement (meters)
+                (2.014 - 0.33) / 2, // wheelSpan (meters)
+                0.375,     // wheelRadius (meters)
+                0.33,      // wheelWidth (meters)
+                Math.PI / 3,   // maxSteeringAngle (radian)
+                Math.PI / 3)); // maxTurnPerSecond (radian)
 
-    /** MARVIN */
+        /** MARVIN */
 //    registerSpec(new VehicleSpec("MARVIN",
 //                                 1.01,        // maxAcceleration (m/s/s)
 //                               -13.0,        // maxDeceleration (m/s/s)
@@ -245,7 +253,6 @@ public class VehicleSpecDatabase {
 //                                 0.33,       // wheelWidth (meters)
 //                               Math.PI/3,    // maxSteeringAngle (radian)
 //                               Math.PI/3));  // maxTurnPerSecond (radian)
-
 
 
 //    registerSpec(new VehicleSpec("MARVIN",
@@ -263,7 +270,7 @@ public class VehicleSpecDatabase {
 //                               Math.PI/3,    // maxSteeringAngle (radian)
 //                               Math.PI/3));  // maxTurnPerSecond (radian)
 
-    /** A very large vehicle with long wheelbase and very poor performance. */
+        /** A very large vehicle with long wheelbase and very poor performance. */
 //    registerSpec(new VehicleSpec("BUS",
 //                                 1.3,       // maxAcceleration (m/s/s)
 //                                -8.0,       // maxDeceleration (m/s/s)
@@ -278,16 +285,19 @@ public class VehicleSpecDatabase {
 //                                 0.4,       // wheelWidth (meters)
 //                               Math.PI/4,   // maxSteeringAngle (radian)
 //                               Math.PI/3)); // maxTurnPerSecond (radian)
-  }
+    }
 
 
-  /////////////////////////////////
-  // CONSTRUCTORS
-  /////////////////////////////////
+    /////////////////////////////////
+    // CONSTRUCTORS
+    /////////////////////////////////
 
-  /**
-   * This class should never be instantiated.
-   */
-  private VehicleSpecDatabase(){};
+    /**
+     * This class should never be instantiated.
+     */
+    private VehicleSpecDatabase() {
+    }
+
+    ;
 
 }

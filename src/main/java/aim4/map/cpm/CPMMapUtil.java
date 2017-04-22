@@ -29,8 +29,10 @@ public class CPMMapUtil {
     public enum SpawnSpecType {
         /** Single - all vehicles spawned will have the same specification */
         SINGLE,
-        /** Random - vehicles will be spawned according to a given distribution */
-        MIXED
+        /** Mixed - vehicles will be spawned according to a given distribution for the available specs */
+        MIXED,
+        /** Random - vehicles will be spawned with a randomly selected spec */
+        RANDOM
     }
 
     /////////////////////////////////
@@ -101,7 +103,7 @@ public class CPMMapUtil {
     }
 
     /**
-     * The spec generator that continuously generates vehicles of the same spec.
+     * The spec generator that infinitely generates vehicles of the same spec.
      */
     public static class InfiniteSpawnSingleSpecGenerator implements CPMSpawnSpecGenerator {
         /** The vehicle specification */
@@ -131,7 +133,7 @@ public class CPMMapUtil {
                 if (Util.random.nextDouble() < spawnProbability) {
                     double parkingTime = generateParkingTime();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                    System.out.println("Vehicle spawned!");
+                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                 }
             }
             return result;
@@ -166,7 +168,7 @@ public class CPMMapUtil {
 
 
         /**
-         * Create a spec generator that infinitely generates vehicles of the same spec.
+         * Create a spec generator that generates vehicles according to the CSV file, all of the same spec.
          */
         public SpecificSpawnSingleSpecGenerator(Pair<Boolean, String> useCSVFilePair, String vehicleSpecName) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(vehicleSpecName);
@@ -203,6 +205,7 @@ public class CPMMapUtil {
          * @param filepath for the CSV file
          * @throws FileNotFoundException
          */
+        // TODO Should add some validation for this somewhere
         private void readCSV(String filepath) throws FileNotFoundException {
             try {
 
@@ -224,12 +227,12 @@ public class CPMMapUtil {
                     try {
                         entry = Double.parseDouble(entryString);
                     } catch (NumberFormatException e) {
-                        entry = convertTimeToSeconds(entryString);
+                        entry = Util.convertTimeStringToSeconds(entryString);
                     }
                     try {
                         parking = Double.parseDouble(parkingString);
                     } catch (NumberFormatException e) {
-                        parking = convertTimeToSeconds(parkingString);
+                        parking = Util.convertTimeStringToSeconds(parkingString);
                     }
 
                     Pair<Double, Double> pair = new Pair<Double, Double>(entry, parking);
@@ -244,15 +247,6 @@ public class CPMMapUtil {
                 e.printStackTrace();
             }
 
-        }
-
-        private Double convertTimeToSeconds(String timeString){
-            String[] data = timeString.split(":");
-            double hours = Double.parseDouble(data[0]);
-            double minutes = Double.parseDouble(data[1]);
-            double seconds = Double.parseDouble(data[2]);
-            double totalSeconds = (3600*hours) + (60*minutes) + seconds;
-            return totalSeconds;
         }
 
         /**
@@ -296,7 +290,7 @@ public class CPMMapUtil {
 
     /**
      * The spec generator that generates a finite number of vehicles,
-     * randomly selecting the spec of each one.
+     * randomly and uniformly selecting the spec of each one.
      */
     public static class FiniteSpawnRandomSpecGenerator implements CPMSpawnSpecGenerator {
         /** The proportion of each spec */
@@ -312,7 +306,7 @@ public class CPMMapUtil {
 
         /**
          * Create a spec generator that generates the specified number
-         * of vehicles. The vehicle spec is chosen at random.
+         * of vehicles. The vehicle spec is chosen with a uniform random probability.
          */
         public FiniteSpawnRandomSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
@@ -371,7 +365,7 @@ public class CPMMapUtil {
     }
 
     /**
-     * The spec generator that infinitely generates vehicles with a random spec.
+     * The spec generator that infinitely generates vehicles with a uniform random spec.
      */
     public static class InfiniteSpawnRandomSpecGenerator implements CPMSpawnSpecGenerator {
         /** The proportion of each spec */
@@ -381,7 +375,7 @@ public class CPMMapUtil {
 
         /**
          * Create a spec generator that infinitely generates vehicles.
-         * The vehicle spec is chosen at random.
+         * The vehicle spec is chosen with a uniform random probability.
          */
         public InfiniteSpawnRandomSpecGenerator(double trafficLevel) {
             int n = VehicleSpecDatabase.getNumOfSpec();
@@ -435,7 +429,7 @@ public class CPMMapUtil {
     }
 
     /**
-     * The spec generator that generates vehicles of the a random spec, using a CSV file to
+     * The spec generator that generates vehicles with a uniform random spec, using a CSV file to
      * specify the spawn times and parking times.
      */
     public static class SpecificSpawnRandomSpecGenerator implements CPMSpawnSpecGenerator {
@@ -448,7 +442,8 @@ public class CPMMapUtil {
 
 
         /**
-         * Create a spec generator that infinitely generates vehicles of the same spec.
+         * Create a spec generator that spawns vehicles with a uniform random spec, at times according to
+         * the given CSV file.
          */
         public SpecificSpawnRandomSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
             processCSV(useCSVFilePair);
@@ -459,6 +454,200 @@ public class CPMMapUtil {
             for(int i=0; i<n; i++) {
                 proportion.add(p);
             }
+        }
+
+        private void processCSV(Pair<Boolean, String> useCSVFilePair){
+            // Ensure we are meant to be using a file
+            boolean useCSV = useCSVFilePair.getKey();
+            assert useCSV;
+
+            // Ensure the given location is valid
+            // TODO CPM this check should be done way before now so user can try again.
+            String filepath = useCSVFilePair.getValue();
+            File file = new File(filepath);
+            if (!file.exists()){
+                throw new RuntimeException("This file doesn't exist.");
+            }
+            if (!file.canRead()) {
+                throw new RuntimeException("This file cannot be read.");
+            }
+
+            try {
+                readCSV(filepath);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+        /**
+         * Read the CSV file, adding the entry time and parking time as a pair to spawnTimes.
+         * The CSV file should either give the times in seconds, or in the format hh:mm:ss.
+         * The CSV file should be ordered by increasing entry time.
+         * @param filepath for the CSV file
+         * @throws FileNotFoundException
+         */
+        private void readCSV(String filepath) throws FileNotFoundException {
+            try {
+
+                CsvReader csvFile = new CsvReader(filepath);
+
+                try {
+                    csvFile.readHeaders();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                while (csvFile.readRecord())
+                {
+                    String entryString = csvFile.get("Entry");
+                    String parkingString = csvFile.get("Parking");
+
+                    Double entry;
+                    Double parking;
+                    try {
+                        entry = Double.parseDouble(entryString);
+                        parking = Double.parseDouble(parkingString);
+                    } catch (NumberFormatException e) {
+                        entry = Util.convertTimeStringToSeconds(entryString);
+                        parking = Util.convertTimeStringToSeconds(parkingString);
+
+                    }
+
+                    Pair<Double, Double> pair = new Pair<Double, Double>(entry, parking);
+                    spawnTimes.add(pair);
+                }
+
+                csvFile.close();
+
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
+
+            if (spawnTimes.isEmpty()) {
+                isDone = true;
+            }
+
+            double initTime = spawnPoint.getCurrentTime();
+            if (!isDone) {
+                if (spawnTimes.get(0).getKey() < initTime) {
+                    int i = Util.randomIndex(proportion);
+                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                    double parkingTime = spawnTimes.get(0).getValue();
+                    result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
+                    spawnTimes.remove(0);
+                    System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return spawnTimes.size();
+        }
+
+        @Override
+        public double generateParkingTime() {
+            // Returns a random double
+            double rangeMin = 2000.0;
+            double rangeMax = 20000.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        }
+    }
+
+    /**
+     * The spec generator that infinitely generates vehicles with specs according to the given distribution.
+     */
+    public static class InfiniteSpawnMixedSpecGenerator implements CPMSpawnSpecGenerator {
+        /** The proportion of each spec */
+        private List<Double> proportion;
+        /** The probability of generating a vehicle in each spawn time step */
+        private double spawnProbability;
+
+        /**
+         * Create a spec generator that infinitely generates vehicles.
+         * The vehicle spec is chosen according to the given distribution.
+         */
+        public InfiniteSpawnMixedSpecGenerator(double trafficLevel, List<Double> distribution) {
+            proportion = distribution;
+            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
+            // Cannot generate more than one vehicle in each spawn time step
+            assert spawnProbability <= 1.0;
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public List<CPMSpawnSpec> act(CPMSpawnPoint spawnPoint, double timeStep) {
+            List<CPMSpawnSpec> result = new ArrayList<CPMSpawnSpec>(1);
+
+            double initTime = spawnPoint.getCurrentTime();
+            for(double time = initTime; time < initTime + timeStep;
+                time += SimConfig.SPAWN_TIME_STEP) {
+                if (Util.random.nextDouble() < spawnProbability) {
+                    int i = Util.randomIndex(proportion);
+                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                    double parkingTime = generateParkingTime();
+                    result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
+                            vehicleSpec,
+                            parkingTime));
+                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                }
+            }
+
+            return result;
+        }
+
+        @Override
+        public int getNumberOfVehiclesLeftToSpawn() {
+            return -1;
+        }
+
+        @Override
+        public double generateParkingTime() {
+            // Returns a random double
+            double rangeMin = 2000.0;
+            double rangeMax = 20000.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        }
+    }
+
+    /**
+     * The spec generator that infinitely generates vehicles with specs according to the given distribution,
+     * using a CSV file to specify the spawn times and parking times.
+     */
+    public static class SpecificSpawnMixedSpecGenerator implements CPMSpawnSpecGenerator {
+        /** A list of entry time and parking time pairs */
+        private List<Pair<Double, Double>> spawnTimes = new ArrayList<Pair<Double, Double>>();
+        /** Whether the spawn point has finished spawning vehicles */
+        private boolean isDone = false;
+        /** The proportion of each spec */
+        private List<Double> proportion;
+
+
+        /**
+         * Create a spec generator that infinitely generates vehicles.
+         * The vehicle spec is chosen according to the given distribution.
+         * The spawn time and parking time is specified by the CSV file.
+         */
+        public SpecificSpawnMixedSpecGenerator(Pair<Boolean, String> useCSVFilePair, List<Double> distribution) {
+            processCSV(useCSVFilePair);
+            proportion = distribution;
         }
 
         private void processCSV(Pair<Boolean, String> useCSVFilePair){
@@ -631,6 +820,27 @@ public class CPMMapUtil {
                     new InfiniteSpawnRandomSpecGenerator(trafficLevel));
         }
     }
+
+    public static void setUpSpecificMixedSpecVehicleSpawnPoint(CPMMap map,
+                                                                Pair<Boolean, String> useCSVPair,
+                                                                List<Double> distribution){
+        // The spawn point will infinitely spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new SpecificSpawnMixedSpecGenerator(useCSVPair, distribution));
+        }
+    }
+
+    public static void setUpInfiniteMixedSpecVehicleSpawnPoint(CPMMap map,
+                                                                double trafficLevel,
+                                                                List<Double> distribution){
+        // The spawn point will infinitely spawn vehicles of the same spec.
+        for(CPMSpawnPoint sp : map.getSpawnPoints()) {
+            sp.setVehicleSpecChooser(
+                    new InfiniteSpawnMixedSpecGenerator(trafficLevel, distribution));
+        }
+    }
+
 
     /**
      * Check that the vehicle is still on the map when it should be.

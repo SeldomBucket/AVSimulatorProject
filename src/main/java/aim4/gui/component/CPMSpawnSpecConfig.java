@@ -27,7 +27,10 @@ public class CPMSpawnSpecConfig extends JPanel {
 
         JPanel singleSpecPanel = new JPanel();
         JPanel mixedSpecPanel = new JPanel();
+        JPanel randomSpecPanel = new JPanel();
         // mixedSpecPanel.setLayout(new BoxLayout(mixedSpecPanel, BoxLayout.PAGE_AXIS));
+
+        List<String> specNames = VehicleSpecDatabase.getSpecNames();
 
         // SINGLE SPEC
         JRadioButton singleSpecButton = new JRadioButton("Single:", false);
@@ -35,9 +38,7 @@ public class CPMSpawnSpecConfig extends JPanel {
         singleSpecButton.setSelected(true);
         singleSpecPanel.add(singleSpecButton);
 
-        String[] specNames = {"COUPE", "SEDAN", "SUV", "VAN"};
-
-        specList = new JComboBox(specNames);
+        specList = new JComboBox(specNames.toArray());
         specList.setSelectedIndex(0);
         specList.addActionListener (new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -49,7 +50,7 @@ public class CPMSpawnSpecConfig extends JPanel {
         specSizeLabel = new JLabel("size: " + getSelectedVehicleSpecSizeString());
         singleSpecPanel.add(specSizeLabel);
 
-        // RANDOM SPEC
+        // MIXED SPEC
         JRadioButton mixedSpecButton = new JRadioButton("Mixed:", false);
         mixedSpecButton.setActionCommand("MIXED");
         mixedSpecPanel.add(mixedSpecButton);
@@ -68,16 +69,23 @@ public class CPMSpawnSpecConfig extends JPanel {
             specDistributionFields.add(distributionField);
         }
 
+        // RANDOM SPEC
+        JRadioButton randomSpecButton = new JRadioButton("Random", false);
+        randomSpecButton.setActionCommand("RANDOM");
+        randomSpecButton.setSelected(true);
+        randomSpecPanel.add(randomSpecButton);
+
 
         group = new ButtonGroup();
         group.add(singleSpecButton);
         group.add(mixedSpecButton);
+        group.add(randomSpecButton);
 
         this.add(singleSpecPanel);
         this.add(mixedSpecPanel);
+        this.add(randomSpecPanel);
 
         this.setVisible(true);
-
     }
 
     public ButtonModel getSelected(){

@@ -139,7 +139,12 @@ public class CPMAutoDriverParamPanel extends JPanel {
         return trafficRateSlider.getValue()/ 3600.0;
     }
 
-    public List<Double> getMixedSpawnDistribution(){ return spawnSpecRadioButtons.getVehicleSpecDistribution(); }
+    public List<Double> getMixedSpawnDistribution(){
+        if (!spawnSpecRadioButtons.getSelected().getActionCommand().equals("MIXED")) {
+            return null;
+        }
+        return spawnSpecRadioButtons.getVehicleSpecDistribution();
+    }
 
     public CPMMapAreaLabel getMapAreaLabel() { return mapAreaLabel; }
 
