@@ -1,6 +1,7 @@
 package aim4.gui.parampanel.cpm;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.parampanel.cpm.components.*;
 import aim4.map.cpm.CPMMapUtil.*;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.util.Util;

@@ -1,5 +1,6 @@
-package aim4.gui.parampanel.cpm;
+package aim4.gui.parampanel.cpm.components;
 
+import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 
 import javax.swing.*;

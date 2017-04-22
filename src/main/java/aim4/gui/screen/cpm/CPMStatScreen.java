@@ -32,6 +32,7 @@ public class CPMStatScreen extends StatScreen {
     // Components
     GeneralInfo generalInfo;
     SimConfigSummary simConfigSummary;
+    SpawnConfigSummary spawnConfigSummary;
     CarParkStats carParkStats;
     CompletedVehiclesTable completedVehiclesTable;
 
@@ -151,6 +152,9 @@ public class CPMStatScreen extends StatScreen {
         carParkStats = new CarParkStats();
         carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        spawnConfigSummary = new SpawnConfigSummary(setupPanel);
+        spawnConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
+
         completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(150, 60));
 
@@ -158,6 +162,7 @@ public class CPMStatScreen extends StatScreen {
         setLayout(new FlowLayout());
         add(generalInfo);
         add(simConfigSummary);
+        add(spawnConfigSummary);
         add(carParkStats);
         add(completedVehiclesTable);
 
@@ -166,6 +171,7 @@ public class CPMStatScreen extends StatScreen {
         componentsToUpdate.add(simConfigSummary);
         componentsToUpdate.add(carParkStats);
         componentsToUpdate.add(completedVehiclesTable);
+        componentsToUpdate.add(spawnConfigSummary);
     }
 
     public void updateSimulationStatus(boolean simComplete) {

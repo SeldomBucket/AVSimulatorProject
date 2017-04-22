@@ -1,4 +1,4 @@
-package aim4.gui.parampanel.cpm;
+package aim4.gui.parampanel.cpm.components;
 
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpecDatabase;

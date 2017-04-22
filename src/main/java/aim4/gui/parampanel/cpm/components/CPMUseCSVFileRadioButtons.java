@@ -1,4 +1,4 @@
-package aim4.gui.parampanel.cpm;
+package aim4.gui.parampanel.cpm.components;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;

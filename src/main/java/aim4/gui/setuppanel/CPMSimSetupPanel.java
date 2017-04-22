@@ -16,7 +16,8 @@ import java.awt.event.ItemListener;
 public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     private static final long serialVersionUID = 1L;
 
-    final static String CPM_AUTO_DRIVER_SETUP_PANEL = "CPM Protocol";
+    final static String CPM_SINGLE_WIDTH_SETUP_PANEL = "CPM - Single Parking Lane Width";
+    final static String CPM_MULTI_WIDTH_SETUP_PANEL = "CPM - Multi Parking Lane Width";
 
     /** The combox box */
     private JComboBox comboBox;
@@ -42,7 +43,8 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
         comboBoxPane.setBackground(Color.WHITE);
 
         String comboBoxItems[] =
-                { CPM_AUTO_DRIVER_SETUP_PANEL };
+                { CPM_SINGLE_WIDTH_SETUP_PANEL,
+                CPM_MULTI_WIDTH_SETUP_PANEL};
         comboBox = new JComboBox(comboBoxItems);
         comboBox.setEditable(false);
         comboBox.addItemListener(this);
@@ -55,7 +57,9 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
         // add the parameter panels
         autoDriverOnlySetupPanel =
                 new CPMAutoDriverParamPanel(simSetup);
-        addParamPanel(autoDriverOnlySetupPanel, CPM_AUTO_DRIVER_SETUP_PANEL);
+        addParamPanel(autoDriverOnlySetupPanel, CPM_SINGLE_WIDTH_SETUP_PANEL);
+
+
 
         // add the combo box pane and cards pane
         setLayout(new BorderLayout());

@@ -1,6 +1,7 @@
-package aim4.gui.parampanel.cpm;
+package aim4.gui.parampanel.cpm.components;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.parampanel.cpm.CPMAutoDriverParamPanel;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
