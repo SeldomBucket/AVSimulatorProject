@@ -13,8 +13,6 @@ public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
 
     /** The group for the radio buttons. */
     ButtonGroup group;
-    /** The label of the group. */
-    JLabel label;
     /** A text field for the user to input number of hours.*/
     JTextField hoursField;
     /** A text field for the user to input number of minutes.*/

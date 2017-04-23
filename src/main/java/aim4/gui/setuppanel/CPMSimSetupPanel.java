@@ -1,5 +1,6 @@
 package aim4.gui.setuppanel;
 
+import aim4.gui.parampanel.cpm.CPMMultiWidthParamPanel;
 import aim4.gui.parampanel.cpm.CPMSingleWidthParamPanel;
 import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
@@ -26,7 +27,9 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     /** The card layout */
     private CardLayout cardLayout;
     /** the auto driver only simulation setup panel */
-    private CPMSingleWidthParamPanel autoDriverOnlySetupPanel;
+    private CPMSingleWidthParamPanel singleWidthParamPanel;
+    /** the auto driver only simulation setup panel */
+    private CPMMultiWidthParamPanel multiWidthParamPanel;
     /** The simulation setup panel */
     private BasicCPMSimSetup simSetup;
 
@@ -55,9 +58,13 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
         cards = new JPanel(cardLayout);
 
         // add the parameter panels
-        autoDriverOnlySetupPanel =
+        singleWidthParamPanel =
                 new CPMSingleWidthParamPanel(simSetup);
-        addParamPanel(autoDriverOnlySetupPanel, CPM_SINGLE_WIDTH_SETUP_PANEL);
+        addParamPanel(singleWidthParamPanel, CPM_SINGLE_WIDTH_SETUP_PANEL);
+
+        multiWidthParamPanel =
+                new CPMMultiWidthParamPanel(simSetup);
+        cards.add(multiWidthParamPanel, CPM_MULTI_WIDTH_SETUP_PANEL);
 
 
 
@@ -83,16 +90,16 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     public SimSetup getSimSetup() {
         if (comboBox.getSelectedIndex() == 0) {
             CPMAutoDriverSimSetup newSimSetup = new CPMAutoDriverSimSetup(simSetup);
-            newSimSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
-            newSimSetup.setLaneWidth(autoDriverOnlySetupPanel.getLaneWidth());
-            newSimSetup.setNumberOfParkingLanes(autoDriverOnlySetupPanel.getNumberOfParkingLanes());
-            newSimSetup.setParkingLength(autoDriverOnlySetupPanel.getParkingLength());
-            newSimSetup.setAccessLength(autoDriverOnlySetupPanel.getAccessLength());
-            newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
-            newSimSetup.setSingleSpawnSpecName(autoDriverOnlySetupPanel.getSingleSpawnSpecName());
-            newSimSetup.setMixedSpawnDistribution(autoDriverOnlySetupPanel.getMixedSpawnDistribution());
-            newSimSetup.setUseCSVFile(autoDriverOnlySetupPanel.getUseCSVFileDetails());
-            newSimSetup.setUseSpecificSimTime(autoDriverOnlySetupPanel.getUseSpecificSimTimeDetails());
+            newSimSetup.setTrafficLevel(singleWidthParamPanel.getTrafficRate());
+            newSimSetup.setLaneWidth(singleWidthParamPanel.getLaneWidth());
+            newSimSetup.setNumberOfParkingLanes(singleWidthParamPanel.getNumberOfParkingLanes());
+            newSimSetup.setParkingLength(singleWidthParamPanel.getParkingLength());
+            newSimSetup.setAccessLength(singleWidthParamPanel.getAccessLength());
+            newSimSetup.setSpawnSpecType(singleWidthParamPanel.getSpawnSpecType());
+            newSimSetup.setSingleSpawnSpecName(singleWidthParamPanel.getSingleSpawnSpecName());
+            newSimSetup.setMixedSpawnDistribution(singleWidthParamPanel.getMixedSpawnDistribution());
+            newSimSetup.setUseCSVFile(singleWidthParamPanel.getUseCSVFileDetails());
+            newSimSetup.setUseSpecificSimTime(singleWidthParamPanel.getUseSpecificSimTimeDetails());
             return newSimSetup;
         } else {
             throw new RuntimeException(
@@ -103,6 +110,6 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
 
     @Override
     public void itemStateChanged(ItemEvent e) {
-
+        cardLayout.show(cards, (String)e.getItem());
     }
 }

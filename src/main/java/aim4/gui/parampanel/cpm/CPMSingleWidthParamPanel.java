@@ -7,7 +7,7 @@ import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import javax.swing.border.EmptyBorder;
 
 /**
- * The autonomous driver only simulation parameter panel for CPM.
+ * The parameter panel for CPM simulations where all lanes in the car park have the same width.
  */
 public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
 
