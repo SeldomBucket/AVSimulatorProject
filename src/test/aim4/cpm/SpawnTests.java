@@ -1,27 +1,16 @@
 package aim4.cpm;
 
-import aim4.config.SimConfig;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import javafx.util.Pair;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
 import util.sim.TestSimThread;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
-
-import com.csvreader.CsvWriter;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -32,7 +21,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class SpawnTests {
 
-    CPMCarParkWithStatus map;
+    CPMCarParkSingleLaneWidth map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
 
@@ -47,7 +36,7 @@ public class SpawnTests {
          * Set up a map where there is no room to park.
          * */
 
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -69,7 +58,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 0 vehicles registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 0);
@@ -87,7 +76,7 @@ public class SpawnTests {
          * Set up a map where the lanes are not wide enough for any vehicle.
          * */
 
-        this.map = new CPMCarParkWithStatus(1, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(1, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -109,7 +98,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 0 vehicles registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 0);
@@ -128,7 +117,7 @@ public class SpawnTests {
          * Set up a map where there room for one vehicle to park.
          * */
 
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -161,7 +150,7 @@ public class SpawnTests {
     @Test
     public void testSpawnWithValidSecondsStringCsvSingleSpec() throws Exception {
         // Set up a map with space for 2 vehicles and with spawn points to use the csv file
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 5.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -183,7 +172,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
         assertTrue(map.getVehicles().size() == 2);
 
         for (CPMBasicAutoVehicle vehicle : map.getVehicles()) {
@@ -210,7 +199,7 @@ public class SpawnTests {
     @Test
     public void testSpawnWithValidTimesStringCsvSingleSpec() throws Exception {
         // Set up a map with space for 3 vehicles and with spawn points to use the csv file
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 5.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -232,7 +221,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
         assertTrue(map.getVehicles().size() == 3);
 
         for (CPMBasicAutoVehicle vehicle : map.getVehicles()) {
@@ -272,7 +261,7 @@ public class SpawnTests {
     @Test
     public void testSpawnWithValidSecondsStringCsvRandomSpec() throws Exception {
         // Set up a map with space for 2 vehicles and with spawn points to use the csv file
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 5.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -294,7 +283,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
         assertTrue(map.getVehicles().size() == 2);
 
         for (CPMBasicAutoVehicle vehicle : map.getVehicles()) {
@@ -321,7 +310,7 @@ public class SpawnTests {
     @Test
     public void testSpawnWithValidTimesStringCsvRandomSpec() throws Exception {
         // Set up a map with space for 3 vehicles and with spawn points to use the csv file
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 5.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -343,7 +332,7 @@ public class SpawnTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
         assertTrue(map.getVehicles().size() == 3);
 
         for (CPMBasicAutoVehicle vehicle : map.getVehicles()) {

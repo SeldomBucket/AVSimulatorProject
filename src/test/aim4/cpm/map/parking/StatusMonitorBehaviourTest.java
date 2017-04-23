@@ -2,7 +2,7 @@ package aim4.cpm.map.parking;
 
 import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.parking.ParkingLane;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import javafx.util.Pair;
 import org.junit.After;
@@ -18,7 +18,7 @@ import static org.junit.Assert.*;
  * TEST SUITE PURPOSE: Ensure that the behaviour of the Status Monitor is correct.
  */
 public class StatusMonitorBehaviourTest {
-    CPMCarParkWithStatus mapNoParkingSpace, mapTwoLanes;
+    CPMCarParkSingleLaneWidth mapNoParkingSpace, mapTwoLanes;
     TestSimThread simThreadForNoParkingSpace, simThreadForTwoLanes;
     CPMAutoDriverSimulator simForNoParkingSpace, simForTwoLanes;
 
@@ -28,7 +28,7 @@ public class StatusMonitorBehaviourTest {
          * Set up a map where there is no room for vehicles
          * to park. No vehicle should be spawned.
          * */
-        this.mapNoParkingSpace = new CPMCarParkWithStatus(4, // laneWidth
+        this.mapNoParkingSpace = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -42,7 +42,7 @@ public class StatusMonitorBehaviourTest {
          * Set up a map where there are 2 parking lanes and
          * 2 vehicles are spawned.
          * */
-        this.mapTwoLanes = new CPMCarParkWithStatus(4, // laneWidth
+        this.mapTwoLanes = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 2, // numberOfParkingLanes
@@ -70,7 +70,7 @@ public class StatusMonitorBehaviourTest {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(simForNoParkingSpace.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(simForNoParkingSpace.getMap() instanceof CPMCarParkSingleLaneWidth);
         // There should be no vehicles on the map.
         assertTrue(mapNoParkingSpace.getVehicles().size() == 0);
         // There should be no vehicles registered with the status monitor
@@ -89,7 +89,7 @@ public class StatusMonitorBehaviourTest {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(simForTwoLanes.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(simForTwoLanes.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 2 vehicles registered with the status monitor.
         assertTrue(simForTwoLanes.getMap().getStatusMonitor().getVehicles().size() == 2);

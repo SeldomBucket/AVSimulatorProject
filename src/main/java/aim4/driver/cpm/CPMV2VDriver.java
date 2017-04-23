@@ -7,7 +7,7 @@ import aim4.map.SpawnPoint;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
 import aim4.map.cpm.CPMMap;
-import aim4.map.cpm.CPMSpawnPoint;
+import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;

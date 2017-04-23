@@ -11,16 +11,24 @@ import java.awt.*;
  */
 public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
 
-    /** The group for the radio buttons. */
+    /**
+     * The group for the radio buttons.
+     */
     ButtonGroup group;
-    /** A text field for the user to input number of hours.*/
+    /**
+     * A text field for the user to input number of hours.
+     */
     JTextField hoursField;
-    /** A text field for the user to input number of minutes.*/
+    /**
+     * A text field for the user to input number of minutes.
+     */
     JTextField minutesField;
-    /** A text field for the user to input number of seconds.*/
+    /**
+     * A text field for the user to input number of seconds.
+     */
     JTextField secondsField;
 
-    public CPMSimTimeRadioButtons(){
+    public CPMSimTimeRadioButtons() {
         // setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         JLabel simTimeLabel = new JLabel("Run the simulation for:");
@@ -59,7 +67,7 @@ public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
 
     }
 
-    public ButtonModel getSelected(){
+    public ButtonModel getSelected() {
         return group.getSelection();
     }
 

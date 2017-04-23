@@ -13,18 +13,24 @@ import java.awt.*;
  * randomly generated.
  */
 // TODO CPM would be good to separate into 2 groups, one for entry times and one for parking times,
-    // so could do one or the other rather than both.
+// so could do one or the other rather than both.
 
 public class CPMUseCSVFileRadioButtons extends JPanel implements ChangeListener {
 
-    /** The group for the radio buttons. */
+    /**
+     * The group for the radio buttons.
+     */
     ButtonGroup group;
-    /** The label of the group. */
+    /**
+     * The label of the group.
+     */
     JLabel label;
-    /** A text field for the user to input the location of the csv file.*/
+    /**
+     * A text field for the user to input the location of the csv file.
+     */
     JTextField fileLocationField;
 
-    public CPMUseCSVFileRadioButtons(){
+    public CPMUseCSVFileRadioButtons() {
         // setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         JLabel useCsvLabel = new JLabel("Specify spawn times and parking times:");
@@ -50,7 +56,7 @@ public class CPMUseCSVFileRadioButtons extends JPanel implements ChangeListener 
 
     }
 
-    public ButtonModel getSelected(){
+    public ButtonModel getSelected() {
         return group.getSelection();
     }
 

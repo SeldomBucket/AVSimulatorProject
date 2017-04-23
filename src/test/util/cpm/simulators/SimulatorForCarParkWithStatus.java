@@ -2,7 +2,7 @@ package util.cpm.simulators;
 
 import aim4.driver.cpm.CPMCoordinator.*;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.CPMSpawnPoint;
+import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.lane.Lane;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.VehicleSpec;

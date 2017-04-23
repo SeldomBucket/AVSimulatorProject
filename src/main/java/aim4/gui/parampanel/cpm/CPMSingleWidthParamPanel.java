@@ -66,11 +66,11 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
 
     @Override
     public double calculateCarParkArea() {
-        double parkingAreaLength = (2*accessLengthSlider.getValue()) +
-                (2*laneWidthSlider.getValue()) + parkingLengthSlider.getValue();
+        double parkingAreaLength = (2 * accessLengthSlider.getValue()) +
+                (2 * laneWidthSlider.getValue()) + parkingLengthSlider.getValue();
 
         // Add the area of the parking area (w*h) (+1 to account for the top WEST road)
-        double totalArea = parkingAreaLength*((numberOfParkingLanesSlider.getValue()+1)*laneWidthSlider.getValue());
+        double totalArea = parkingAreaLength * ((numberOfParkingLanesSlider.getValue() + 1) * laneWidthSlider.getValue());
         return totalArea;
     }
 }

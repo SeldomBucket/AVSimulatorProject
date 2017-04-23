@@ -4,6 +4,7 @@ import aim4.map.BasicMap;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingArea;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;

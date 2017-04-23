@@ -6,7 +6,8 @@ import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.*;
-import aim4.map.cpm.CPMSpawnPoint.*;
+import aim4.map.cpm.components.CPMSpawnPoint;
+import aim4.map.cpm.components.CPMSpawnPoint.*;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
@@ -574,8 +575,8 @@ public class CPMAutoDriverSimulator implements Simulator {
 
             // Check if we've gone through a sensored line
             // TODO CPM try remove the need for this assertion
-            assert map instanceof CPMCarParkWithStatus;
-            for (SensoredLine line : ((CPMCarParkWithStatus) map).getSensoredLines()) {
+            assert map instanceof CPMCarParkSingleLaneWidth;
+            for (SensoredLine line : ((CPMCarParkSingleLaneWidth) map).getSensoredLines()) {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
                      StatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {

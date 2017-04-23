@@ -1,11 +1,10 @@
 package aim4.gui.screen.cpm.components;
 
 import aim4.gui.setuppanel.CPMSimSetupPanel;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.util.Util;
 import aim4.vehicle.VehicleSpecDatabase;
 
 import javax.swing.*;
@@ -68,7 +67,7 @@ public class SpawnConfigSummary extends JPanel implements CPMStatScreenComponent
         int numberOfCarsNotCateredFor = sim.getNumberOfVehiclesNotCateredFor();
         int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
         int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
-        int carParkArea = (int)Math.ceil(((CPMCarParkWithStatus)sim.getMap()).getTotalCarParkArea());
+        int carParkArea = (int)Math.ceil(((CPMCarParkSingleLaneWidth)sim.getMap()).getTotalCarParkArea());
         /*Util.updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
         Util.updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
         Util.updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);

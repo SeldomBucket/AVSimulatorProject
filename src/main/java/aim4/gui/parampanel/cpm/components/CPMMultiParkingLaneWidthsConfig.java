@@ -1,6 +1,5 @@
 package aim4.gui.parampanel.cpm.components;
 
-import aim4.gui.component.LabeledSlider;
 import aim4.gui.parampanel.cpm.CPMMultiWidthParamPanel;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import javafx.util.Pair;
@@ -14,24 +13,28 @@ import java.util.List;
 /**
  * A section where the widths of lanes in the car park are configured.
  */
-public class CPMMultiParkingLaneWidthsConfig extends JPanel{
-    /** The param panel this slider belongs to. */
+public class CPMMultiParkingLaneWidthsConfig extends JPanel {
+    /**
+     * The param panel this slider belongs to.
+     */
     private CPMMultiWidthParamPanel paramPanel;
-    /** A slider for the number of parking lanes */
-    LabeledSlider numberOfParkingLanesSlider;
-    /** A label for the number of parking lanes */
-    JLabel numberOfParkingLanesLabel;
-    /** A text field for the number of parking lanes */
-    JTextField numberOfParkingLanesField;
-    /** A panel to hold the labels and text fields for each parking lane */
+    /**
+     * A panel to hold the labels and text fields for each parking lane
+     */
     JPanel parkingLanesSetPanel;
-    /** A list of the text fields which hold the number of parking lanes in the set
+    /**
+     * A list of the text fields which hold the number of parking lanes in the set
      * and the width of each parking lane in that set
-     * */
+     */
     List<Pair<JTextField, JTextField>> parkingLaneSetFields = new ArrayList<Pair<JTextField, JTextField>>();
+    /**
+     * A button to add a new set of parking lanes.
+     */
     JButton addParkingLaneSetButton;
+    /**
+     * A button to remove a set of parking lanes.
+     */
     JButton removeParkingLaneSetButton;
-
 
     public CPMMultiParkingLaneWidthsConfig(BasicCPMSimSetup simSetup,
                                            CPMMultiWidthParamPanel paramPanel) {
@@ -95,7 +98,7 @@ public class CPMMultiParkingLaneWidthsConfig extends JPanel{
     }
 
     public void removeParkingLaneSet() {
-        if (parkingLaneSetFields.size() == 1){
+        if (parkingLaneSetFields.size() == 1) {
             throw new RuntimeException("There must be at least one set of lanes in the car park.");
         }
 

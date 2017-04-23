@@ -1,8 +1,6 @@
 package aim4.gui.screen.cpm.components;
 
 import aim4.gui.setuppanel.CPMSimSetupPanel;
-import aim4.map.cpm.CPMCarParkWithStatus;
-import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 

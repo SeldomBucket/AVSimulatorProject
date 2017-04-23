@@ -1,6 +1,6 @@
 package aim4.cpm.vehicle;
 
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import org.junit.After;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  * Created by Becci on 04-Apr-17.
  */
 public class DistanceTravelledTests {
-    CPMCarParkWithStatus map;
+    CPMCarParkSingleLaneWidth map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
 
@@ -25,7 +25,7 @@ public class DistanceTravelledTests {
          * park with one parking lane.
          * */
 
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -50,7 +50,7 @@ public class DistanceTravelledTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
 
     }

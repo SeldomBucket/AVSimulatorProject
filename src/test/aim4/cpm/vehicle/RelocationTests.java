@@ -1,7 +1,7 @@
 package aim4.cpm.vehicle;
 
 import aim4.map.cpm.CPMMapUtil;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import javafx.util.Pair;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  */
 public class RelocationTests {
 
-    CPMCarParkWithStatus map;
+    CPMCarParkSingleLaneWidth map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
 
@@ -31,7 +31,7 @@ public class RelocationTests {
          * to the same parking lane.
          * */
 
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -56,7 +56,7 @@ public class RelocationTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 2 vehicles registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 2);
@@ -100,7 +100,7 @@ public class RelocationTests {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 1 vehicle registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 1);

@@ -1,4 +1,4 @@
-package aim4.map.cpm;
+package aim4.map.cpm.components;
 
 import aim4.map.DataCollectionLine;
 import aim4.vehicle.VehicleSimModel;

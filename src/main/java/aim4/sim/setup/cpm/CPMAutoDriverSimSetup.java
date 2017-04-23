@@ -2,7 +2,7 @@ package aim4.sim.setup.cpm;
 
 import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.CPMMapUtil;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
 
@@ -27,7 +27,7 @@ public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
     public Simulator getSimulator() {
         double currentTime = 0.0;
 
-        CPMBasicMap layout = new CPMCarParkWithStatus(laneWidth, // laneWidth
+        CPMBasicMap layout = new CPMCarParkSingleLaneWidth(laneWidth, // laneWidth
                 speedLimit,
                 currentTime,
                 numberOfParkingLanes,

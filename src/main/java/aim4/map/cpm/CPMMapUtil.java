@@ -1,7 +1,8 @@
 package aim4.map.cpm;
 
 import aim4.config.SimConfig;
-import aim4.map.cpm.CPMSpawnPoint.*;
+import aim4.map.cpm.components.CPMSpawnPoint;
+import aim4.map.cpm.components.CPMSpawnPoint.*;
 import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;

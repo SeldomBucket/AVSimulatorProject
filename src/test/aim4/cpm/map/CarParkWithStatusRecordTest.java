@@ -2,7 +2,7 @@ package aim4.cpm.map;
 
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import javafx.util.Pair;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
  * TEST SUITE PURPOSE: Ensure that the map records the correct data.
  */
 public class CarParkWithStatusRecordTest {
-    CPMCarParkWithStatus map;
+    CPMCarParkSingleLaneWidth map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
     int numberOfVehicles = 5;
@@ -24,7 +24,7 @@ public class CarParkWithStatusRecordTest {
         /**
          * Set up a map.
          * */
-        this.map = new CPMCarParkWithStatus(4, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(4, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 3, // numberOfParkingLanes
@@ -50,7 +50,7 @@ public class CarParkWithStatusRecordTest {
             throw new RuntimeException("RuntimeException thrown: " + ". Message was: " + e.getMessage());
         }
 
-        assertTrue(sim.getMap() instanceof CPMCarParkWithStatus);
+        assertTrue(sim.getMap() instanceof CPMCarParkSingleLaneWidth);
 
         // There should be 0 vehicles registered with the status monitor.
         assertTrue(sim.getMap().getStatusMonitor().getVehicles().size() == 0);

@@ -3,6 +3,7 @@ package util.cpm.simulators;
 import aim4.driver.cpm.CPMCoordinator;
 import aim4.map.DataCollectionLine;
 import aim4.map.cpm.*;
+import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.testmaps.CPMMapParkingLane;
 import aim4.map.lane.Lane;

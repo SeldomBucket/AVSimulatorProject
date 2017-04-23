@@ -2,6 +2,7 @@ package aim4.map.cpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.cpm.components.CPMExitDataCollectionLine;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.cpm.parking.ParkingArea;
@@ -18,7 +19,7 @@ import java.util.List;
 /**
  * A car park map with a parking area.
  */
-public class CPMCarParkWithStatus extends CPMBasicMap {
+public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
     // TODO CPM Decide if this should extend CPMBasicMap or CPMMapCarPark
 
     /** The number of parking lanes. */
@@ -40,9 +41,9 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     /** The total area of the car park. */
     private double totalCarParkArea; // in square metres
 
-    public CPMCarParkWithStatus(double laneWidth, double speedLimit, double initTime,
-                         int numberOfParkingLanes, double parkingLength,
-                         double accessLength) {
+    public CPMCarParkSingleLaneWidth(double laneWidth, double speedLimit, double initTime,
+                                     int numberOfParkingLanes, double parkingLength,
+                                     double accessLength) {
         super(laneWidth, speedLimit, initTime);
 
         if(numberOfParkingLanes == 0) {

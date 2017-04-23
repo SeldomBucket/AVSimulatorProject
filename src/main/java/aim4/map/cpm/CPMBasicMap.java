@@ -2,10 +2,10 @@ package aim4.map.cpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.SpawnPoint;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;

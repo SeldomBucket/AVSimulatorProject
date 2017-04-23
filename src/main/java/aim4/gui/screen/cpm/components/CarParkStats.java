@@ -1,6 +1,6 @@
 package aim4.gui.screen.cpm.components;
 
-import aim4.map.cpm.CPMCarParkWithStatus;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.util.Util;
@@ -62,7 +62,7 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         int numberOfCarsNotCateredFor = sim.getNumberOfVehiclesNotCateredFor();
         int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
         int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
-        int carParkArea = (int)Math.ceil(((CPMCarParkWithStatus)sim.getMap()).getTotalCarParkArea());
+        int carParkArea = (int)Math.ceil(((CPMCarParkSingleLaneWidth)sim.getMap()).getTotalCarParkArea());
         Util.updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
         Util.updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
         Util.updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);

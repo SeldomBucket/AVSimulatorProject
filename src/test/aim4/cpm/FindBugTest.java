@@ -1,11 +1,8 @@
 package aim4.cpm;
 
 import aim4.driver.cpm.CPMCoordinator.*;
-import aim4.map.connections.Corner;
-import aim4.map.cpm.CPMExitDataCollectionLine;
 import aim4.map.cpm.CPMMapUtil;
-import aim4.map.cpm.CPMCarParkWithStatus;
-import aim4.map.cpm.testmaps.CPMMapOneCorner;
+import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import javafx.util.Pair;
@@ -14,10 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 import util.cpm.MockCPMDriver;
 import util.cpm.simulators.SimulatorForCarParkWithStatus;
-import util.cpm.simulators.SimulatorForMapOneCorner;
 import util.sim.TestSimThread;
-
-import java.awt.geom.Point2D;
 
 import static org.junit.Assert.assertTrue;
 
@@ -25,7 +19,7 @@ import static org.junit.Assert.assertTrue;
  * Created by Becci on 21-Mar-17.
  */
 public class FindBugTest {
-    CPMCarParkWithStatus map;
+    CPMCarParkSingleLaneWidth map;
     TestSimThread simThread;
     CPMAutoDriverSimulator sim;
 
@@ -37,7 +31,7 @@ public class FindBugTest {
     @Test
     public void testFindBugWith2Vehicles() throws Exception {
 
-        this.map = new CPMCarParkWithStatus(2, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(2, // laneWidth
                 10.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
@@ -82,7 +76,7 @@ public class FindBugTest {
     @Test
     public void testFindBugWithDatasetFile() throws Exception {
 
-        this.map = new CPMCarParkWithStatus(2, // laneWidth
+        this.map = new CPMCarParkSingleLaneWidth(2, // laneWidth
                 5.0, // speedLimit
                 0.0, // initTime
                 1, // numberOfParkingLanes
