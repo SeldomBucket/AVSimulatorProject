@@ -3,6 +3,7 @@ package aim4.gui.parampanel.cpm;
 import aim4.gui.component.LabeledSlider;
 import aim4.gui.parampanel.cpm.components.CPMLabeledSlider;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 
 import javax.swing.border.EmptyBorder;
 
@@ -32,9 +33,10 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
 
     @Override
     public void createAdditionalComponents(BasicCPMSimSetup simSetup) {
+        assert simSetup instanceof CPMSingleWidthSimSetup;
         laneWidthSlider =
                 new CPMLabeledSlider(1.0, 3.0,
-                        simSetup.getLaneWidth(),
+                        ((CPMSingleWidthSimSetup)simSetup).getLaneWidth(),
                         1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.2f meters",
                         "%.0f",
@@ -43,7 +45,7 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
 
         numberOfParkingLanesSlider =
                 new CPMLabeledSlider(0, 50,
-                        simSetup.getNumberOfParkingLanes(),
+                        ((CPMSingleWidthSimSetup)simSetup).getNumberOfParkingLanes(),
                         10.0, 1.0,
                         "Number of Parking Lanes: %.0f",
                         "%.0f",

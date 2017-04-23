@@ -11,7 +11,6 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 /**
  * Created by Becci on 12-Apr-17.
@@ -19,10 +18,14 @@ import java.util.List;
 public class CPMMapParkingLane extends CPMBasicMap {
 
     ParkingLane onlyParkingLane;
+    double laneWidth;
+    double halfLaneWidth;
 
     public CPMMapParkingLane(double laneWidth, double speedLimit, double initTime,
                              double accessLength, double overlappingRoadWidth, double parkingLaneWidth) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         // Calculate the map dimensions
         double mapWidth = 100;
@@ -35,20 +38,20 @@ public class CPMMapParkingLane extends CPMBasicMap {
         double y1 = 0;
         double x2 = x1;
         double y2 = mapHeight;
-        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2);
+        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2, laneWidth);
         verticalRoads.add(northBoundRoad);
 
         // Create the horizontal Road with a parking lane
         // EAST - ENTERS CAR PARK
         x1 = 0;
-        y1 = mapHeight/2;
+        y1 = mapHeight / 2;
         x2 = mapWidth - BORDER;
         y2 = y1;
         Road parkingRoad = createRoadWithOneParkingLane("Parking Road 0", x1, y1, x2, y2,
-                                                            accessLength, overlappingRoadWidth,
-                                                                parkingLaneWidth, speedLimit);
+                accessLength, overlappingRoadWidth,
+                parkingLaneWidth, speedLimit);
         horizontalRoads.add(parkingRoad);
-        onlyParkingLane = (ParkingLane)parkingRoad.getOnlyLane();
+        onlyParkingLane = (ParkingLane) parkingRoad.getOnlyLane();
 
         // Record all roads
         roads = new ArrayList<Road>(horizontalRoads);
@@ -87,6 +90,11 @@ public class CPMMapParkingLane extends CPMBasicMap {
     }
 
     @Override
+    public double getLaneWidth() {
+        return laneWidth;
+    }
+
+    @Override
     public StatusMonitor getStatusMonitor() {
         return null;
     }
@@ -96,5 +104,7 @@ public class CPMMapParkingLane extends CPMBasicMap {
         return null;
     }
 
-    public ParkingLane getOnlyParkingLane() { return onlyParkingLane; }
+    public ParkingLane getOnlyParkingLane() {
+        return onlyParkingLane;
+    }
 }

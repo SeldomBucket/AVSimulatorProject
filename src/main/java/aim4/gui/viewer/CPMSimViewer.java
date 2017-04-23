@@ -5,10 +5,9 @@ import aim4.gui.Viewer;
 import aim4.gui.screen.cpm.CPMStatScreen;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.gui.setuppanel.SimSetupPanel;
-import aim4.map.cpm.CPMMapUtil.*;
+import aim4.map.cpm.CPMMapUtil.SpawnSpecType;
 import aim4.sim.Simulator;
-import aim4.sim.setup.cpm.BasicCPMSimSetup;
-import aim4.sim.setup.cpm.CPMAutoDriverSimSetup;
+import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import javafx.util.Pair;
 
@@ -22,22 +21,22 @@ public class CPMSimViewer extends SimViewer {
     /**
      * Creates the CPMSimViewer
      *
-     * @param statusPanel   A reference to the StatusPanelContainer in Viewer
+     * @param statusPanel A reference to the StatusPanelContainer in Viewer
      * @param viewer
      */
     public CPMSimViewer(StatusPanelContainer statusPanel, Viewer viewer) {
-        super(statusPanel, viewer, new CPMSimSetupPanel(new BasicCPMSimSetup(
+        super(statusPanel, viewer, new CPMSimSetupPanel(new CPMSingleWidthSimSetup(
                 5.0, // speedLimit - approx. 10mph
                 0.28, // trafficLevel
-                2.0, // laneWidth
-                10, // numberOfParkingLanes
                 50.0, // parkingLength
                 1.0, // accessLength,
                 SpawnSpecType.SINGLE, // spawn spec type
                 new Pair<Boolean, String>(false, ""), // useCsvFile
                 new Pair<Boolean, Double>(false, -1.0), // useSpecificSimTime
-                "COUPE",
-                new ArrayList<Double>()
+                "COUPE", // singleSpawnSpec
+                new ArrayList<Double>(), //mixedSpawnDistribution
+                2.0, // laneWidth
+                10 // numberOfParkingLanes
         )), false);
     }
 
@@ -54,7 +53,7 @@ public class CPMSimViewer extends SimViewer {
     protected Simulator.SimStepResult runSimulationStep() {
         if (sim instanceof CPMAutoDriverSimulator && statScreen instanceof CPMStatScreen) {
             // check if the simulation should continue to run.
-            if (((CPMAutoDriverSimulator) sim).hasSimTimeElapsed()){
+            if (((CPMAutoDriverSimulator) sim).hasSimTimeElapsed()) {
                 pauseSimProcess();
                 ((CPMStatScreen) statScreen).updateSimulationStatus(true);
             }

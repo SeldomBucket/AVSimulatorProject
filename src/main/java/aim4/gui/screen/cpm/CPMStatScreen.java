@@ -3,6 +3,7 @@ package aim4.gui.screen.cpm;
 import aim4.gui.Viewer;
 import aim4.gui.screen.StatScreen;
 import aim4.gui.screen.cpm.components.*;
+import aim4.gui.screen.cpm.components.singlewidth.SimConfigSummary;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.gui.viewer.CPMSimViewer;
 import aim4.sim.Simulator;

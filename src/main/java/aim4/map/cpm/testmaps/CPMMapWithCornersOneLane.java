@@ -16,6 +16,9 @@ import java.util.*;
  */
 public class CPMMapWithCornersOneLane extends CPMBasicMap {
 
+    double laneWidth;
+    double halfLaneWidth;
+
     /**
      * Create a very simple map.
      * For now, have 3 roads in backwards C shape.
@@ -23,7 +26,9 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
     public CPMMapWithCornersOneLane(int laneWidth, double speedLimit,
                                     double initTime, double width,
                                     double height) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
@@ -37,7 +42,7 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         double y1 = height - BORDER;
         double x2 = x1;
         double y2 = BORDER;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2, laneWidth);
 
         verticalRoads.add(southBoundRoad);
 
@@ -47,7 +52,7 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         y1 = BORDER + halfLaneWidth;
         x2 = 0;
         y2 = y1;
-        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
+        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(westBoundRoad.getOnlyLane());
 
         horizontalRoads.add(westBoundRoad);
@@ -57,7 +62,7 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         y1 = height - BORDER - halfLaneWidth;
         x2 = width - BORDER;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundRoad.getOnlyLane();
 
         horizontalRoads.add(eastBoundRoad);
@@ -87,6 +92,11 @@ public class CPMMapWithCornersOneLane extends CPMBasicMap {
         makeCorner(southBoundRoad, westBoundRoad);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

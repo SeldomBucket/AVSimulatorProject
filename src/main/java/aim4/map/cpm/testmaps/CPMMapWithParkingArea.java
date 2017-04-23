@@ -21,11 +21,15 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
     private double parkingLength;
     private double accessLength;
     private ParkingArea parkingArea;
+    double laneWidth;
+    double halfLaneWidth;
 
     public CPMMapWithParkingArea(int laneWidth, double speedLimit, double initTime,
                                  int numberOfParkingLanes, double parkingLength,
                                  double accessLength) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
         this.numberOfParkingLanes = numberOfParkingLanes;
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
@@ -62,7 +66,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         double y1 = mapHeight - BORDER;
         double x2 = x1;
         double y2 = BORDER;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Road", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Road", x1, y1, x2, y2, laneWidth);
         verticalRoads.add(southBoundRoad);
 
         //NORTH - LEAVES PARKING
@@ -70,7 +74,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         y1 = BORDER;
         x2 = x1;
         y2 = mapHeight - BORDER;
-        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2);
+        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2, laneWidth);
         verticalRoads.add(northBoundRoad);
 
         // Create the horizontal Roads
@@ -79,7 +83,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         y1 = mapHeight - BORDER - halfLaneWidth;
         x2 = 0;
         y2 = y1;
-        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
+        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2, laneWidth);
         horizontalRoads.add(westBoundRoad);
 
         // EAST - ENTERS CAR PARK
@@ -87,7 +91,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         y1 = mapHeight - BORDER - laneWidth - halfLaneWidth;
         x2 = BORDER + laneWidth;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2, laneWidth);
         horizontalRoads.add(eastBoundRoad);
 
         // Record all roads
@@ -163,6 +167,11 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
 
     public ParkingArea getParkingArea(){
         return parkingArea;
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

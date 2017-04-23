@@ -3,9 +3,9 @@ package aim4.map.cpm;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.components.CPMExitDataCollectionLine;
+import aim4.map.cpm.parking.ParkingArea;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
-import aim4.map.cpm.parking.ParkingArea;
 import aim4.vehicle.VinRegistry;
 
 import java.awt.geom.Point2D;
@@ -22,31 +22,60 @@ import java.util.List;
 public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
     // TODO CPM Decide if this should extend CPMBasicMap or CPMMapCarPark
 
-    /** The number of parking lanes. */
+    /**
+     * The number of parking lanes.
+     */
     private int numberOfParkingLanes;
-    /** The length of the parking lanes used for parking. */
+    /**
+     * The length of the parking lanes used for parking.
+     */
     private double parkingLength;
-    /** The length of the parking lanes used for access. */
+    /**
+     * The length of the parking lanes used for access.
+     */
     private double accessLength;
-    /** The parking area. */
+    /**
+     * Width of each lane
+     */
+    protected double laneWidth;
+    /**
+     * Half of the width of each lane
+     */
+    protected double halfLaneWidth;
+    /**
+     * The parking area.
+     */
     private ParkingArea parkingArea;
-    /** The status monitor recording the status of this car park. */
+    /**
+     * The status monitor recording the status of this car park.
+     */
     private StatusMonitor statusMonitor;
-    /** A list of sensored lines used by the StatusMonitor. */
+    /**
+     * A list of sensored lines used by the StatusMonitor.
+     */
     private List<SensoredLine> sensoredLines;
-    /** The exit data collection line. */
+    /**
+     * The exit data collection line.
+     */
     private CPMExitDataCollectionLine exitDataCollectionLine;
-    /** The entry data collection line. */
+    /**
+     * The entry data collection line.
+     */
     private DataCollectionLine entryDataCollectionLine;
-    /** The total area of the car park. */
+    /**
+     * The total area of the car park.
+     */
     private double totalCarParkArea; // in square metres
 
     public CPMCarParkSingleLaneWidth(double laneWidth, double speedLimit, double initTime,
                                      int numberOfParkingLanes, double parkingLength,
                                      double accessLength) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
 
-        if(numberOfParkingLanes == 0) {
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
+
+        if (numberOfParkingLanes == 0) {
             throw new RuntimeException("There must be at least 1 parking lane!");
         }
         this.numberOfParkingLanes = numberOfParkingLanes;
@@ -54,13 +83,13 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         this.accessLength = accessLength;
 
         // Calculate the map dimensions
-        double mapWidth = (BORDER*2) // The border used to pad the map
-                + (laneWidth*2) // The 2 vertical roads either side of the parking area
-                + (2*accessLength) // The length of the parking lane used for access (either side)
+        double mapWidth = (BORDER * 2) // The border used to pad the map
+                + (laneWidth * 2) // The 2 vertical roads either side of the parking area
+                + (2 * accessLength) // The length of the parking lane used for access (either side)
                 + parkingLength; // The length of the parking lanes used for parking
-        double mapHeight = (BORDER*2) // The border used to pad the map
+        double mapHeight = (BORDER * 2) // The border used to pad the map
                 + laneWidth // The horizontal road running across the top of the parking area
-                + (laneWidth*numberOfParkingLanes); // The number of horizontal parking lanes
+                + (laneWidth * numberOfParkingLanes); // The number of horizontal parking lanes
         this.dimensions = new Rectangle2D.Double(0, 0, mapWidth, mapHeight);
 
         // Calculate the start point for the parking area
@@ -76,7 +105,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         this.statusMonitor = new StatusMonitor(parkingArea);
 
         // Add all roads/lanes from parking area to the map's records
-        for (Road road : parkingArea.getRoads()){
+        for (Road road : parkingArea.getRoads()) {
             horizontalRoads.add(road);
             registerLane(road.getOnlyLane());
         }
@@ -88,7 +117,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         double y1 = mapHeight - BORDER;
         double x2 = x1;
         double y2 = BORDER;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Road", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Road", x1, y1, x2, y2, laneWidth);
         verticalRoads.add(southBoundRoad);
 
         //NORTH - LEAVES PARKING
@@ -96,7 +125,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         y1 = BORDER;
         x2 = x1;
         y2 = mapHeight - BORDER;
-        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2);
+        Road northBoundRoad = createRoadWithOneLane("Northbound Road", x1, y1, x2, y2, laneWidth);
         verticalRoads.add(northBoundRoad);
 
         // Create the horizontal Roads
@@ -105,7 +134,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         y1 = mapHeight - BORDER - halfLaneWidth;
         x2 = 0;
         y2 = y1;
-        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2);
+        Road westBoundRoad = createRoadWithOneLane("Westbound Avenue", x1, y1, x2, y2, laneWidth);
         horizontalRoads.add(westBoundRoad);
 
         // EAST - ENTERS CAR PARK
@@ -113,7 +142,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         y1 = mapHeight - BORDER - laneWidth - halfLaneWidth;
         x2 = BORDER + laneWidth;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2, laneWidth);
         horizontalRoads.add(eastBoundRoad);
 
         // Record all roads
@@ -149,7 +178,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
             // Deal with the roads inbetween
             roadsInParkingArea.remove(firstParkingRoad);
             roadsInParkingArea.remove(lastParkingRoad);
-            for (Road road : roadsInParkingArea){
+            for (Road road : roadsInParkingArea) {
                 makeJunction(road, southBoundRoad);
                 makeJunction(road, northBoundRoad);
             }
@@ -194,7 +223,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         x2 = x1;
         y2 = y1 - laneWidth;*/
         // x1 = 0.5;
-        x1 = BORDER/2;
+        x1 = BORDER / 2;
         y1 = parkingArea.getStartPoint().getY();
         x2 = x1;
         y2 = y1 - laneWidth;
@@ -243,7 +272,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         double totalArea = 0;
 
         // Add the area of the parking area (w*h)
-        totalArea += parkingArea.getTotalLength()*(parkingArea.getNumberOfParkingLanes()*parkingArea.getParkingLaneWidth());
+        totalArea += parkingArea.getTotalLength() * (parkingArea.getNumberOfParkingLanes() * parkingArea.getParkingLaneWidth());
 
         // Add the West road, but only up to the
         // length of the parking area
@@ -252,19 +281,33 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         totalCarParkArea = totalArea;
     }
 
-    public ParkingArea getParkingArea(){
+    public double getLaneWidth() {
+        return laneWidth;
+    }
+
+    public ParkingArea getParkingArea() {
         return parkingArea;
     }
 
-    public StatusMonitor getStatusMonitor() { return statusMonitor; }
+    public StatusMonitor getStatusMonitor() {
+        return statusMonitor;
+    }
 
-    public List<SensoredLine> getSensoredLines() { return sensoredLines; }
+    public List<SensoredLine> getSensoredLines() {
+        return sensoredLines;
+    }
 
-    public CPMExitDataCollectionLine getExitDataCollectionLine() { return exitDataCollectionLine; }
+    public CPMExitDataCollectionLine getExitDataCollectionLine() {
+        return exitDataCollectionLine;
+    }
 
-    public DataCollectionLine getEntryDataCollectionLine() { return entryDataCollectionLine; }
+    public DataCollectionLine getEntryDataCollectionLine() {
+        return entryDataCollectionLine;
+    }
 
-    public double getTotalCarParkArea() { return totalCarParkArea; }
+    public double getTotalCarParkArea() {
+        return totalCarParkArea;
+    }
 
     @Override
     public void printDataCollectionLinesData(String outFileName) {
@@ -284,7 +327,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         outfile.printf("VIN,VehicleType,EntryTime,ExitTime,ParkingTime,TimeToRetrieve,EstimatedDistanceTravelled,NumberOfReEntries%n");
 
         for (int vin : exitDataCollectionLine.getAllVIN()) {
-            for(double time : exitDataCollectionLine.getTimes(vin)) {
+            for (double time : exitDataCollectionLine.getTimes(vin)) {
                 outfile.printf("%d,%s,%.2f,%.2f,%.2f,%.2f,%.2f,%d",
                         vin,
                         VinRegistry.getVehicleSpecFromVIN(vin).getName(),
@@ -294,13 +337,13 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
                         calculateTimeToRetrieve(entryDataCollectionLine, vin, time),
                         exitDataCollectionLine.getEstimatedDistanceTravelled(vin),
                         exitDataCollectionLine.getNumberOfReEntries(vin)
-                        );
+                );
             }
         }
         outfile.close();
     }
 
-    private Double calculateTimeToRetrieve(DataCollectionLine entryDataCollectionLine, int vin, double exitTime){
+    private Double calculateTimeToRetrieve(DataCollectionLine entryDataCollectionLine, int vin, double exitTime) {
         double entryTime = entryDataCollectionLine.getTimes(vin).get(0); // TODO CPM why is it a list, will this give us the right thing?
         double parkingTime = exitDataCollectionLine.getParkingTime(vin);
         double retrievalTime = entryTime + parkingTime;

@@ -5,19 +5,59 @@ import aim4.map.cpm.CPMMapUtil;
 import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.Simulator;
+import javafx.util.Pair;
+
+import java.util.List;
 
 /**
  * Setup for simulation of AVs in an AV specific car park which are self-organising.
  */
-public class CPMAutoDriverSimSetup extends BasicCPMSimSetup {
+public class CPMSingleWidthSimSetup extends BasicCPMSimSetup {
 
+    /** The width of all lanes */
+    protected double laneWidth;
+    /** The number of parking rows in the car park. */
+    protected int numberOfParkingLanes;
     /**
      * Create a setup for the simulator in which all vehicles are autonomous.
      *
-     * @param basicSimSetup  the basic simulator setup
+     * @param simSetup  the basic simulator setup
      */
-    public CPMAutoDriverSimSetup(BasicCPMSimSetup basicSimSetup) {
-        super(basicSimSetup);
+    public CPMSingleWidthSimSetup(CPMSingleWidthSimSetup simSetup) {
+        super(simSetup);
+        this.laneWidth = simSetup.laneWidth;
+        this.numberOfParkingLanes = simSetup.numberOfParkingLanes;
+    }
+
+    public CPMSingleWidthSimSetup(double speedLimit, double trafficLevel,
+                            double parkingLength, double accessLength,
+                            CPMMapUtil.SpawnSpecType spawnSpecType,
+                            Pair<Boolean, String> useCSVFile,
+                            Pair<Boolean, Double> useSpecificSimTime,
+                            String singleSpawnSpecName,
+                            List<Double> mixedSpawnDistribution,
+                            double laneWidth,
+                            int numberOfParkingLanes) {
+        super(speedLimit, trafficLevel, parkingLength, accessLength, spawnSpecType,
+         useCSVFile, useSpecificSimTime, singleSpawnSpecName, mixedSpawnDistribution);
+        this.laneWidth = laneWidth;
+        this.numberOfParkingLanes = numberOfParkingLanes;
+    }
+
+    public double getLaneWidth() {
+        return laneWidth;
+    }
+
+    public void setLaneWidth(double laneWidth) {
+        this.laneWidth = laneWidth;
+    }
+
+    public int getNumberOfParkingLanes() {
+        return numberOfParkingLanes;
+    }
+
+    public void setNumberOfParkingLanes(int numberOfParkingLanes) {
+        this.numberOfParkingLanes = numberOfParkingLanes;
     }
 
     /**

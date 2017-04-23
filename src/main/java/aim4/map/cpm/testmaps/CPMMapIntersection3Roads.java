@@ -21,13 +21,18 @@ import java.util.List;
  */
 public class CPMMapIntersection3Roads extends CPMBasicMap {
 
+    double laneWidth;
+    double halfLaneWidth;
+
     /**
      * Create a map with an intersection made up of 3 roads.
      */
     public CPMMapIntersection3Roads(int laneWidth, double speedLimit,
                                     double initTime, double width,
                                     double height) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
@@ -41,7 +46,7 @@ public class CPMMapIntersection3Roads extends CPMBasicMap {
         double y1 = height;
         double x2 = x1;
         double y2 = 0;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(southBoundRoad.getOnlyLane());
 
         verticalRoads.add(southBoundRoad);
@@ -52,7 +57,7 @@ public class CPMMapIntersection3Roads extends CPMBasicMap {
         y1 = height/2;
         x2 = width/2;
         y2 = y1;
-        Road eastBoundEntryRoad = createRoadWithOneLane("Eastbound Entry Avenue", x1, y1, x2, y2);
+        Road eastBoundEntryRoad = createRoadWithOneLane("Eastbound Entry Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundEntryRoad.getOnlyLane();
 
         horizontalRoads.add(eastBoundEntryRoad);
@@ -62,7 +67,7 @@ public class CPMMapIntersection3Roads extends CPMBasicMap {
         y1 = height/2;
         x2 = width;
         y2 = y1;
-        Road eastBoundExitRoad = createRoadWithOneLane("Eastbound Exit Avenue", x1, y1, x2, y2);
+        Road eastBoundExitRoad = createRoadWithOneLane("Eastbound Exit Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(eastBoundExitRoad.getOnlyLane());
 
         horizontalRoads.add(eastBoundExitRoad);
@@ -105,6 +110,11 @@ public class CPMMapIntersection3Roads extends CPMBasicMap {
         intersections.add(intersection1);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

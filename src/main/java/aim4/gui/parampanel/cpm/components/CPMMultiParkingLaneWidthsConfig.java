@@ -108,7 +108,17 @@ public class CPMMultiParkingLaneWidthsConfig extends JPanel {
         parkingLaneSetFields.remove(0);
     }
 
-    public CPMMultiWidthParamPanel getParamPanel() {
-        return paramPanel;
+    public List<Pair<Integer, Double>> getParkingLaneSetValues() {
+        List<Pair<Integer, Double>> parkingLaneSetValues =
+                new ArrayList<Pair<Integer, Double>>(parkingLaneSetFields.size());
+
+        for (Pair<JTextField, JTextField> pair : parkingLaneSetFields) {
+            int numberOfLanes = Integer.parseInt(pair.getKey().getText());
+            double width = Double.parseDouble(pair.getValue().getText());
+            Pair<Integer, Double> valuePair = new Pair<Integer, Double>(numberOfLanes, width);
+            parkingLaneSetValues.add(valuePair);
+        }
+
+        return parkingLaneSetValues;
     }
 }

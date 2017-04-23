@@ -18,13 +18,18 @@ import java.util.List;
  */
 public class CPMMapJunction3Roads extends CPMBasicMap {
 
+    double laneWidth;
+    double halfLaneWidth;
+
     /**
      * Create a map with a T-Junction with 3 roads.
      */
     public CPMMapJunction3Roads(int laneWidth, double speedLimit,
                                 double initTime, double width,
                                 double height) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
@@ -39,7 +44,7 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
         double y1 = (height/2) - halfLaneWidth;
         double x2 = x1;
         double y2 = height;
-        Road northBoundRoad = createRoadWithOneLane("Northbound Avenue", x1, y1, x2, y2);
+        Road northBoundRoad = createRoadWithOneLane("Northbound Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(northBoundRoad.getOnlyLane());
         entranceLane = northBoundRoad.getOnlyLane();
 
@@ -51,7 +56,7 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
         y1 = height/2;
         x2 = width/2;
         y2 = y1;
-        Road eastBoundEntryRoad = createRoadWithOneLane("Eastbound Entry Avenue", x1, y1, x2, y2);
+        Road eastBoundEntryRoad = createRoadWithOneLane("Eastbound Entry Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundEntryRoad.getOnlyLane();
         exitLanes.add(eastBoundEntryRoad.getOnlyLane());
 
@@ -62,7 +67,7 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
         y1 = height/2;
         x2 = width;
         y2 = y1;
-        Road eastBoundExitRoad = createRoadWithOneLane("Eastbound Exit Avenue", x1, y1, x2, y2);
+        Road eastBoundExitRoad = createRoadWithOneLane("Eastbound Exit Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundExitRoad.getOnlyLane();
         exitLanes.add(eastBoundExitRoad.getOnlyLane());
 
@@ -104,6 +109,11 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
         junctions.add(junction);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

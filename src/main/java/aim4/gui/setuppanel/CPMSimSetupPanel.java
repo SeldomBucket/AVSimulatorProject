@@ -4,7 +4,8 @@ import aim4.gui.parampanel.cpm.CPMMultiWidthParamPanel;
 import aim4.gui.parampanel.cpm.CPMSingleWidthParamPanel;
 import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
-import aim4.sim.setup.cpm.CPMAutoDriverSimSetup;
+import aim4.sim.setup.cpm.CPMMultiWidthSimSetup;
+import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 
 import javax.swing.*;
 import java.awt.*;
@@ -31,14 +32,14 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     /** the auto driver only simulation setup panel */
     private CPMMultiWidthParamPanel multiWidthParamPanel;
     /** The simulation setup panel */
-    private BasicCPMSimSetup simSetup;
+    private CPMSingleWidthSimSetup simSetup;
 
     /**
      * Create a simulation setup panel
      *
      * @param initSimSetup  the initial simulation setup
      */
-    public CPMSimSetupPanel(BasicCPMSimSetup initSimSetup) {
+    public CPMSimSetupPanel(CPMSingleWidthSimSetup initSimSetup) {
         this.simSetup = initSimSetup;
 
         // create the combo box pane
@@ -65,8 +66,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
         multiWidthParamPanel =
                 new CPMMultiWidthParamPanel(simSetup);
         cards.add(multiWidthParamPanel, CPM_MULTI_WIDTH_SETUP_PANEL);
-
-
+        // TODO CPM Problem: not all cars have a scroll pane.
 
         // add the combo box pane and cards pane
         setLayout(new BorderLayout());
@@ -89,7 +89,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     @Override
     public SimSetup getSimSetup() {
         if (comboBox.getSelectedIndex() == 0) {
-            CPMAutoDriverSimSetup newSimSetup = new CPMAutoDriverSimSetup(simSetup);
+            CPMSingleWidthSimSetup newSimSetup = new CPMSingleWidthSimSetup(simSetup);
             newSimSetup.setTrafficLevel(singleWidthParamPanel.getTrafficRate());
             newSimSetup.setLaneWidth(singleWidthParamPanel.getLaneWidth());
             newSimSetup.setNumberOfParkingLanes(singleWidthParamPanel.getNumberOfParkingLanes());
@@ -101,6 +101,19 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
             newSimSetup.setUseCSVFile(singleWidthParamPanel.getUseCSVFileDetails());
             newSimSetup.setUseSpecificSimTime(singleWidthParamPanel.getUseSpecificSimTimeDetails());
             return newSimSetup;
+        } else if (comboBox.getSelectedIndex() == 1) {
+            return new CPMMultiWidthSimSetup(
+                    10.0, // speedLimit // TODO CPM Where should this come from? Should share this.
+                    multiWidthParamPanel.getTrafficRate(),
+                    multiWidthParamPanel.getParkingLength(),
+                    multiWidthParamPanel.getAccessLength(),
+                    multiWidthParamPanel.getSpawnSpecType(),
+                    multiWidthParamPanel.getUseCSVFileDetails(),
+                    multiWidthParamPanel.getUseSpecificSimTimeDetails(),
+                    multiWidthParamPanel.getSingleSpawnSpecName(),
+                    multiWidthParamPanel.getMixedSpawnDistribution(),
+                    multiWidthParamPanel.getParkingLaneSets()
+            );
         } else {
             throw new RuntimeException(
                     "SimSetupPane::getSimSetup(): not implemented yet");

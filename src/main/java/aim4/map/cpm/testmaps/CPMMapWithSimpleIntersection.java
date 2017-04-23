@@ -17,6 +17,8 @@ import java.util.*;
  */
 public class CPMMapWithSimpleIntersection extends CPMBasicMap {
 
+    double laneWidth;
+    double halfLaneWidth;
 
     /**
      * Create a map with an intersection where only 2 roads cross over
@@ -25,7 +27,9 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
     public CPMMapWithSimpleIntersection(int laneWidth, double speedLimit,
                                         double initTime, double width,
                                         double height) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         this.dimensions = new Rectangle2D.Double(0, 0, width, height);
 
@@ -39,7 +43,7 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         double y1 = height;
         double x2 = x1;
         double y2 = 0;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(southBoundRoad.getOnlyLane());
 
         verticalRoads.add(southBoundRoad);
@@ -50,7 +54,7 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         y1 = height/2;
         x2 = width;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundRoad.getOnlyLane();
         exitLanes.add(eastBoundRoad.getOnlyLane());
 
@@ -92,6 +96,11 @@ public class CPMMapWithSimpleIntersection extends CPMBasicMap {
         intersections.add(intersection1);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

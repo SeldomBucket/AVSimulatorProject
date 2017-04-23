@@ -1,6 +1,6 @@
 package aim4.sim.setup.cpm;
 
-import aim4.map.cpm.CPMMapUtil.*;
+import aim4.map.cpm.CPMMapUtil.SpawnSpecType;
 import aim4.sim.Simulator;
 import javafx.util.Pair;
 
@@ -11,40 +11,53 @@ import java.util.List;
  */
 public class BasicCPMSimSetup implements CPMSimSetup {
 
-    /** The speed limit of the roads */
+    /**
+     * The speed limit of the roads
+     */
     protected double speedLimit;
-    /** The traffic level */
+    /**
+     * The traffic level
+     */
     protected double trafficLevel;
-    /** The width of all lanes */
-    // TODO CPM can separate this into lanes and parking lanes so can have different for both
-    protected double laneWidth;
-    /** The number of parking rows in the car park. */
-    protected int numberOfParkingLanes;
-    /** The length of the parking lanes used for parking.*/
+
+
+    /**
+     * The length of the parking lanes used for parking.
+     */
     protected double parkingLength;
-    /** The length of the parking lanes used for accessing the parking.*/
+    /**
+     * The length of the parking lanes used for accessing the parking.
+     */
     protected double accessLength;
-    /** The type of spawn specification. */
+    /**
+     * The type of spawn specification.
+     */
     protected SpawnSpecType spawnSpecType;
-    /** The distribution for a mixed spawn spec. */
+    /**
+     * The distribution for a mixed spawn spec.
+     */
     protected List<Double> mixedSpawnDistribution;
-    /** The name of vehicle spec for single spec spawn, e.g. COUPE */
+    /**
+     * The name of vehicle spec for single spec spawn, e.g. COUPE
+     */
     protected String singleSpawnSpecName;
-    /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
+    /**
+     * Whether to use a CSV file for the spawn times and parking times, and the location of the file
+     */
     protected Pair<Boolean, String> useCSVFile;
-    /** Whether to run the simulation for a specific period of time */
+    /**
+     * Whether to run the simulation for a specific period of time
+     */
     protected Pair<Boolean, Double> useSpecificSimTime;
 
     /**
      * Create a copy of a given basic simulator setup.
      *
-     * @param basicSimSetup  a basic simulator setup
+     * @param basicSimSetup a basic simulator setup
      */
     public BasicCPMSimSetup(BasicCPMSimSetup basicSimSetup) {
         this.speedLimit = basicSimSetup.speedLimit;
         this.trafficLevel = basicSimSetup.trafficLevel;
-        this.laneWidth = basicSimSetup.laneWidth;
-        this.numberOfParkingLanes = basicSimSetup.numberOfParkingLanes;
         this.parkingLength = basicSimSetup.parkingLength;
         this.accessLength = basicSimSetup.accessLength;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
@@ -57,10 +70,9 @@ public class BasicCPMSimSetup implements CPMSimSetup {
     /**
      * Create a basic simulator setup.
      *
-     * @param speedLimit                  the speed limit in the car park
+     * @param speedLimit the speed limit in the car park
      */
     public BasicCPMSimSetup(double speedLimit, double trafficLevel,
-                            double laneWidth, int numberOfParkingLanes,
                             double parkingLength, double accessLength,
                             SpawnSpecType spawnSpecType,
                             Pair<Boolean, String> useCSVFile,
@@ -69,8 +81,6 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             List<Double> mixedSpawnDistribution) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
-        this.laneWidth = laneWidth;
-        this.numberOfParkingLanes = numberOfParkingLanes;
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
         this.spawnSpecType = spawnSpecType;
@@ -101,22 +111,6 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.trafficLevel = trafficLevel;
     }
 
-    public double getLaneWidth() {
-        return laneWidth;
-    }
-
-    public void setLaneWidth(double laneWidth) {
-        this.laneWidth = laneWidth;
-    }
-
-    public int getNumberOfParkingLanes() {
-        return numberOfParkingLanes;
-    }
-
-    public void setNumberOfParkingLanes(int numberOfParkingLanes) {
-        this.numberOfParkingLanes = numberOfParkingLanes;
-    }
-
     public double getParkingLength() {
         return parkingLength;
     }
@@ -129,11 +123,17 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         return accessLength;
     }
 
-    public void setAccessLength(double accessLength) { this.accessLength = accessLength; }
+    public void setAccessLength(double accessLength) {
+        this.accessLength = accessLength;
+    }
 
-    public SpawnSpecType getSpawnSpecType() { return spawnSpecType; }
+    public SpawnSpecType getSpawnSpecType() {
+        return spawnSpecType;
+    }
 
-    public void setSpawnSpecType(SpawnSpecType spawnSpecType) { this.spawnSpecType = spawnSpecType; }
+    public void setSpawnSpecType(SpawnSpecType spawnSpecType) {
+        this.spawnSpecType = spawnSpecType;
+    }
 
     public String getSingleSpawnSpecName() {
         return singleSpawnSpecName;
@@ -159,9 +159,13 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useCSVFile = useCSVFile;
     }
 
-    public Pair<Boolean, Double> getUseSpecificSimTime() { return useSpecificSimTime; }
+    public Pair<Boolean, Double> getUseSpecificSimTime() {
+        return useSpecificSimTime;
+    }
 
-    public void setUseSpecificSimTime(Pair<Boolean, Double> useSpecificSimTime) { this.useSpecificSimTime = useSpecificSimTime; }
+    public void setUseSpecificSimTime(Pair<Boolean, Double> useSpecificSimTime) {
+        this.useSpecificSimTime = useSpecificSimTime;
+    }
 
 
 }

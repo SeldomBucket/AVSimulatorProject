@@ -16,12 +16,17 @@ import java.util.Collections;
  */
 public class CPMMapOneCorner extends CPMBasicMap{
 
+    double laneWidth;
+    double halfLaneWidth;
+
     /**
      * Create a map with one corner.
      */
     public CPMMapOneCorner(int laneWidth, double speedLimit,
                                     double initTime) {
-        super(laneWidth, speedLimit, initTime);
+        super(speedLimit, initTime);
+        this.laneWidth = laneWidth;
+        this.halfLaneWidth = laneWidth / 2;
 
         double width = 100;
         double height = 100;
@@ -34,7 +39,7 @@ public class CPMMapOneCorner extends CPMBasicMap{
         double y1 = height - BORDER;
         double x2 = x1;
         double y2 = 0;
-        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2);
+        Road southBoundRoad = createRoadWithOneLane("Southbound Avenue", x1, y1, x2, y2, laneWidth);
         exitLanes.add(southBoundRoad.getOnlyLane());
 
         verticalRoads.add(southBoundRoad);
@@ -45,7 +50,7 @@ public class CPMMapOneCorner extends CPMBasicMap{
         y1 = height - BORDER - halfLaneWidth;
         x2 = width - BORDER;
         y2 = y1;
-        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2);
+        Road eastBoundRoad = createRoadWithOneLane("Eastbound Avenue", x1, y1, x2, y2, laneWidth);
         entranceLane = eastBoundRoad.getOnlyLane();
 
         horizontalRoads.add(eastBoundRoad);
@@ -78,6 +83,11 @@ public class CPMMapOneCorner extends CPMBasicMap{
         makeCorner(eastBoundRoad, southBoundRoad);
 
         initializeSpawnPoints(initTime);
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return laneWidth;
     }
 
     @Override

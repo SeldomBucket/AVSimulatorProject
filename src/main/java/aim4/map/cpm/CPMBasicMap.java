@@ -26,81 +26,113 @@ import java.util.Map;
 /**
  * The base class for all CPM Maps.
  */
-public abstract class CPMBasicMap implements CPMMap{
+public abstract class CPMBasicMap implements CPMMap {
     /////////////////////////////////
     // CONSTANTS
     /////////////////////////////////
 
-    /** The length of the no vehicle zone */
+    /**
+     * The length of the no vehicle zone
+     */
     protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
 
-    /** The length of the map border, used for
+    /**
+     * The length of the map border, used for
      * space between map edge and elements, distance
      * of DCL from edge etc.
-     * */
+     */
     protected static final double BORDER = 28.0;
 
     // general
-    /**The initial time*/
+    /**
+     * The initial time
+     */
     protected double initTime;
-    /**Width of each lane*/
-    protected double laneWidth;
-    /**Half of the width of each lane*/
-    protected double halfLaneWidth;
-    /**Speed limit*/
+    /**
+     * Speed limit
+     */
     protected double speedLimit;
-    /** The dimensions of the map */
+    /**
+     * The dimensions of the map
+     */
     protected Rectangle2D dimensions;
-    /** The data collection lines */
+    /**
+     * The data collection lines
+     */
     protected List<DataCollectionLine> dataCollectionLines;
-    /** The vehicles currently on this map. */
+    /**
+     * The vehicles currently on this map.
+     */
     private List<CPMBasicAutoVehicle> vehicles = new ArrayList<CPMBasicAutoVehicle>();
 
     // spawn points
-    /** The spawn points */
+    /**
+     * The spawn points
+     */
     protected List<CPMSpawnPoint> spawnPoints;
-    /** The horizontal spawn points */
+    /**
+     * The horizontal spawn points
+     */
     protected List<CPMSpawnPoint> horizontalSpawnPoints;
-    /** The vertical spawn points */
+    /**
+     * The vertical spawn points
+     */
     protected List<CPMSpawnPoint> verticalSpawnPoints;
 
     // lanes and roads
-    /** The lane registry */
+    /**
+     * The lane registry
+     */
     protected Registry<Lane> laneRegistry =
             new ArrayListRegistry<Lane>();
-    /** A mapping form lanes to roads they belong */
-    protected Map<Lane,Road> laneToRoad = new HashMap<Lane,Road>();
-    /** The entrance lane, used to create a SpawnPoint*/
+    /**
+     * A mapping form lanes to roads they belong
+     */
+    protected Map<Lane, Road> laneToRoad = new HashMap<Lane, Road>();
+    /**
+     * The entrance lane, used to create a SpawnPoint
+     */
     protected Lane entranceLane;
-    /** The exit lanes*/
+    /**
+     * The exit lanes
+     */
     protected List<Lane> exitLanes = new ArrayList<Lane>();
-    /** The set of vertical roads */
+    /**
+     * The set of vertical roads
+     */
     protected List<Road> verticalRoads = new ArrayList<Road>();
-    /** The set of horizontal roads */
+    /**
+     * The set of horizontal roads
+     */
     protected List<Road> horizontalRoads = new ArrayList<Road>();
-    /** The set of roads */
+    /**
+     * The set of roads
+     */
     protected List<Road> roads;
 
     // road connections
-    /** The set of corners */
+    /**
+     * The set of corners
+     */
     protected List<Corner> corners = new ArrayList<Corner>();
-    /** The set of junctions. */
+    /**
+     * The set of junctions.
+     */
     protected List<Junction> junctions = new ArrayList<Junction>();
-    /**The set of intersections */
+    /**
+     * The set of intersections
+     */
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
-    public CPMBasicMap(double laneWidth, double speedLimit,
-                       double initTime) {
-
-        this.laneWidth = laneWidth;
-        this.halfLaneWidth = laneWidth/2;
+    public CPMBasicMap(double speedLimit, double initTime) {
         assert speedLimit < 30;
         this.speedLimit = speedLimit;
         this.initTime = initTime;
     }
 
     protected Road createRoadWithOneLane(String roadName, double x1,
-                                         double y1, double x2, double y2){
+                                         double y1, double x2, double y2,
+                                         double laneWidth) {
         // Create the road
         Road road = new Road(roadName, this);
         // Add a lane to the road
@@ -119,9 +151,9 @@ public abstract class CPMBasicMap implements CPMMap{
     }
 
     protected Road createRoadWithOneParkingLane(String roadName, double x1,
-                                         double y1, double x2, double y2,
-                                         double accessLength, double overlappingRoadWidth,
-                                         double laneWidth, double speedLimit){
+                                                double y1, double x2, double y2,
+                                                double accessLength, double overlappingRoadWidth,
+                                                double laneWidth, double speedLimit) {
         // Create the road
         Road road = new Road(roadName, this);
         // Add a lane to the road
@@ -134,7 +166,7 @@ public abstract class CPMBasicMap implements CPMMap{
         return road;
     }
 
-    protected void registerLane(Lane lane){
+    protected void registerLane(Lane lane) {
         int laneId = laneRegistry.register(lane);
         lane.setId(laneId);
     }
@@ -142,7 +174,7 @@ public abstract class CPMBasicMap implements CPMMap{
     /**
      * Initialize spawn points.
      *
-     * @param initTime  the initial time
+     * @param initTime the initial time
      */
     protected void initializeSpawnPoints(double initTime) {
         spawnPoints = new ArrayList<CPMSpawnPoint>(1);
@@ -155,8 +187,8 @@ public abstract class CPMBasicMap implements CPMMap{
     /**
      * Make the spawn point.
      *
-     * @param initTime  the initial time
-     * @param lane      the lane
+     * @param initTime the initial time
+     * @param lane     the lane
      * @return the spawn point
      */
     protected CPMSpawnPoint makeSpawnPoint(double initTime, Lane lane) {
@@ -174,7 +206,7 @@ public abstract class CPMBasicMap implements CPMMap{
                 lane, noVehicleZone);
     }
 
-    protected void makeCorner(Road road1, Road road2){
+    protected void makeCorner(Road road1, Road road2) {
         // Put the roads into a list
         List<Road> roadsForCorner = new ArrayList<Road>(2);
         roadsForCorner.add(road1);
@@ -183,7 +215,7 @@ public abstract class CPMBasicMap implements CPMMap{
         corners.add(corner);
     }
 
-    protected void makeJunction(Road road1, Road road2){
+    protected void makeJunction(Road road1, Road road2) {
         // Put the roads into a list
         List<Road> roadsForJunction = new ArrayList<Road>(2);
         roadsForJunction.add(road1);
@@ -192,7 +224,7 @@ public abstract class CPMBasicMap implements CPMMap{
         junctions.add(junction);
     }
 
-    protected void makeJunction(Road road1, Road road2, Road road3){
+    protected void makeJunction(Road road1, Road road2, Road road3) {
         // Put the roads into a list
         List<Road> roadsForJunction = new ArrayList<Road>(3);
         roadsForJunction.add(road1);
@@ -202,7 +234,7 @@ public abstract class CPMBasicMap implements CPMMap{
         junctions.add(junction);
     }
 
-    protected void makeSimpleIntersection(Road road1, Road road2){
+    protected void makeSimpleIntersection(Road road1, Road road2) {
         // Put the roads into a list
         List<Road> roadsForIntersection = new ArrayList<Road>(2);
         roadsForIntersection.add(road1);
@@ -211,7 +243,7 @@ public abstract class CPMBasicMap implements CPMMap{
         intersections.add(intersection);
     }
 
-    protected void makeSimpleIntersection(Road road1, Road road2, Road road3){
+    protected void makeSimpleIntersection(Road road1, Road road2, Road road3) {
         // Put the roads into a list
         List<Road> roadsForIntersection = new ArrayList<Road>(3);
         roadsForIntersection.add(road1);
@@ -241,10 +273,6 @@ public abstract class CPMBasicMap implements CPMMap{
         return laneRegistry;
     }
 
-    public double getLaneWidth(){
-        return laneWidth;
-    }
-
     public Road getRoad(Lane lane) {
         return laneToRoad.get(lane);
     }
@@ -254,8 +282,8 @@ public abstract class CPMBasicMap implements CPMMap{
     }
 
     public Road getRoadByName(String roadName) {
-        for (Road road: roads){
-            if (road.getName().equals(roadName)){
+        for (Road road : roads) {
+            if (road.getName().equals(roadName)) {
                 return road;
             }
         }
@@ -286,7 +314,9 @@ public abstract class CPMBasicMap implements CPMMap{
         return intersections;
     }
 
-    public List<CPMBasicAutoVehicle> getVehicles() { return vehicles; }
+    public List<CPMBasicAutoVehicle> getVehicles() {
+        return vehicles;
+    }
 
     public void removeCompletedVehicle(CPMBasicAutoVehicle vehicle) {
         vehicles.remove(vehicle);
@@ -305,7 +335,7 @@ public abstract class CPMBasicMap implements CPMMap{
         outfile.printf("VIN,Time,DCLname,vType,startLaneId%n");
         for (DataCollectionLine line : dataCollectionLines) {
             for (int vin : line.getAllVIN()) {
-                for(double time : line.getTimes(vin)) {
+                for (double time : line.getTimes(vin)) {
                     outfile.printf("%d,%.4f,%s,%s,%d%n",
                             vin, time, line.getName(),
                             VinRegistry.getVehicleSpecFromVIN(vin).getName(),

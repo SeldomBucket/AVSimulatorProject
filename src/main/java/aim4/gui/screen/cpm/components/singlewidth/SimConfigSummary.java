@@ -1,7 +1,9 @@
-package aim4.gui.screen.cpm.components;
+package aim4.gui.screen.cpm.components.singlewidth;
 
+import aim4.gui.screen.cpm.components.CPMStatScreenComponent;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 
 import javax.swing.*;
@@ -33,10 +35,10 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
 
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
-        laneWidthLabel = new JLabel("Lane width: " + setup.getLaneWidth());
+        laneWidthLabel = new JLabel("Lane width: " + ((CPMSingleWidthSimSetup)setup).getLaneWidth());
         laneWidthLabel.setOpaque(true);
 
-        numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + setup.getNumberOfParkingLanes());
+        numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMSingleWidthSimSetup)setup).getNumberOfParkingLanes());
         numberOfParkingLanesLabel.setOpaque(true);
 
         lengthOfParkingLabel = new JLabel("Parking length: " + setup.getParkingLength());
