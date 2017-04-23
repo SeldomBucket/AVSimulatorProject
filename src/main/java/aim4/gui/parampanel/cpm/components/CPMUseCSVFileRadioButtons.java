@@ -25,8 +25,9 @@ public class CPMUseCSVFileRadioButtons extends JPanel implements ChangeListener 
     JTextField fileLocationField;
 
     public CPMUseCSVFileRadioButtons(){
+        // setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
-        JLabel useCsvLabel = new JLabel("Use a CSV file to specify spawn times and parking times:");
+        JLabel useCsvLabel = new JLabel("Specify spawn times and parking times:");
         useCsvLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(useCsvLabel);
 

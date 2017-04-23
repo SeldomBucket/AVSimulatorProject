@@ -29,10 +29,11 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
 
     public CPMBasicParamPanel(BasicCPMSimSetup simSetup) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+
         // create the components
         mapAreaLabel = new CPMMapAreaLabel("Total area of car park (square metres): ", simSetup);
         mapAreaLabel.setOpaque(true);
-        mapAreaLabel.setBorder(new EmptyBorder(5, 5, 5, 5));
+        mapAreaLabel.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         parkingLengthSlider =
                 new CPMLabeledSlider(0.0, 60.0,
@@ -41,7 +42,7 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
                         "Length of Parking: %.1f meters",
                         "%.0f",
                         this);
-        parkingLengthSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
+        parkingLengthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         // TODO CPM What is minimum length for this?
         accessLengthSlider =
@@ -51,7 +52,7 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
                         "Length of Parking Lane Access: %.0f meters",
                         "%.0f",
                         this);
-        accessLengthSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
+        accessLengthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         trafficRateSlider =
                 new CPMLabeledSlider(0.0, 2500.0,
@@ -60,16 +61,16 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f",
                         this);
-        trafficRateSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
+        trafficRateSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         spawnSpecRadioButtons = new CPMSpawnSpecConfig();
-        spawnSpecRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
+        spawnSpecRadioButtons.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         useCSVFileRadioButtons = new CPMUseCSVFileRadioButtons();
-        useCSVFileRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
+        useCSVFileRadioButtons.setBorder(new EmptyBorder(0, 3, 3, 3));
 
         useSpecificSimTimeRadioButtons = new CPMSimTimeRadioButtons();
-        useSpecificSimTimeRadioButtons.setBorder(new EmptyBorder(0, 5, 5, 5));
+        useSpecificSimTimeRadioButtons.setBorder(new EmptyBorder(3, 3, 3, 3));
     }
 
     public double getParkingLength() {

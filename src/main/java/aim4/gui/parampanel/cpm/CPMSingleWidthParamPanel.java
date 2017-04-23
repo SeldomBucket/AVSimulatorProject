@@ -14,13 +14,6 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
     LabeledSlider laneWidthSlider;
     LabeledSlider numberOfParkingLanesSlider;
 
-
-    /**
-     * Create the autonomous driver only simulation parameter panel.
-     *
-     * @param simSetup the simulation setup
-     */
-
     public CPMSingleWidthParamPanel(BasicCPMSimSetup simSetup) {
         super(simSetup);
 
@@ -46,6 +39,7 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
                         "Width of Lanes (parking lanes and roads): %.2f meters",
                         "%.0f",
                         this);
+        laneWidthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         numberOfParkingLanesSlider =
                 new CPMLabeledSlider(0, 50,
@@ -54,7 +48,7 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
                         "Number of Parking Lanes: %.0f",
                         "%.0f",
                         this);
-        numberOfParkingLanesSlider.setBorder(new EmptyBorder(5, 5, 5, 5));
+        numberOfParkingLanesSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
     }
 
     @Override

@@ -21,6 +21,7 @@ public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
     JTextField secondsField;
 
     public CPMSimTimeRadioButtons(){
+        // setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         JLabel simTimeLabel = new JLabel("Run the simulation for:");
         simTimeLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -35,17 +36,17 @@ public class CPMSimTimeRadioButtons extends JPanel implements ChangeListener {
         specificTimeButton.setActionCommand("TRUE");
         this.add(specificTimeButton);
 
-        hoursField = new JTextField(2);
+        hoursField = new JTextField("24", 2);
         this.add(hoursField);
         JLabel hoursLabel = new JLabel("hours");
         this.add(hoursLabel);
 
-        minutesField = new JTextField(2);
+        minutesField = new JTextField("0", 2);
         this.add(minutesField);
         JLabel minutesLabel = new JLabel("minutes");
         this.add(minutesLabel);
 
-        secondsField = new JTextField(2);
+        secondsField = new JTextField("0", 2);
         this.add(secondsField);
         JLabel secondsLabel = new JLabel("seconds");
         this.add(secondsLabel);

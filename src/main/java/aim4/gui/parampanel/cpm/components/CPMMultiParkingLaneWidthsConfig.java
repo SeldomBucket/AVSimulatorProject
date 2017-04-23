@@ -73,7 +73,6 @@ public class CPMMultiParkingLaneWidthsConfig extends JPanel{
 
     public void addParkingLaneSet() {
         JPanel panel = new JPanel();
-        // panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         JLabel label = new JLabel("Number of parking lanes: ");
         panel.add(label);
