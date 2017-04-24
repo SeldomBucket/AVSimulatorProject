@@ -79,4 +79,16 @@ public class CPMMultiWidthSimSetup extends BasicCPMSimSetup {
 
         return new CPMAutoDriverSimulator(layout, useSpecificSimTime.getValue());
     }
+
+    public int getNumberOfParkingLanes() {
+        int numberOfParkingLanes = 0;
+        for (Pair<Integer,Double> pair : parkingLaneSets) {
+            numberOfParkingLanes += pair.getKey();
+        }
+        return numberOfParkingLanes;
+    }
+
+    public List<Pair<Integer, Double>> getParkingLaneSets() {
+        return parkingLaneSets;
+    }
 }

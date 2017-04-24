@@ -149,7 +149,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                 for(CPMSpawnSpec spawnSpec : spawnSpecs) {
                     // Check that the car park caters for vehicles this wide
                     double vehicleWidth = spawnSpec.getVehicleSpec().getWidth();
-                    double parkingLaneWidth = map.getParkingArea().getParkingLaneWidth();
+                    double parkingLaneWidth = map.getParkingArea().getMaxParkingLaneWidth();
                     if (parkingLaneWidth < (vehicleWidth+MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
                         numberOfVehiclesNotCateredFor++;
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");

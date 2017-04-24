@@ -8,6 +8,8 @@ import java.util.ArrayList;
  * Created by Becci on 24-Apr-17.
  */
 public interface ParkingArea {
-    ArrayList<Road> calculateListOfRoads();
+    public ArrayList<Road> calculateListOfRoads();
     public double calculateOverLappingRoadWidth();
+    public double getMaxParkingLaneWidth();
+
 }

@@ -1,8 +1,9 @@
-package aim4.gui.screen.cpm.components.singlewidth;
+package aim4.gui.screen.cpm.components.simspecific;
 
 import aim4.gui.screen.cpm.components.CPMStatScreenComponent;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
+import aim4.sim.setup.cpm.CPMMultiWidthSimSetup;
 import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 
@@ -18,15 +19,21 @@ import java.util.List;
 public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
 
     BasicCPMSimSetup setup;
+    boolean isSingleWidthSetup;
+    boolean isMultiWidthSetup;
 
     // Labels
     JLabel laneWidthLabel;
+    JLabel parkingLaneSetsLabel;
     JLabel numberOfParkingLanesLabel;
     JLabel lengthOfParkingLabel;
     JLabel useCvsLabel;
     JLabel trafficLevelLabel;
 
     public SimConfigSummary(CPMSimSetupPanel setupPanel) {
+        isSingleWidthSetup = setupPanel.getSimSetup() instanceof CPMSingleWidthSimSetup;
+        isMultiWidthSetup = setupPanel.getSimSetup() instanceof CPMMultiWidthSimSetup;
+
         JLabel title = new JLabel("Config Summary");
         Font font = title.getFont();
         Map attributes = font.getAttributes();
@@ -35,11 +42,19 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
 
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
-        laneWidthLabel = new JLabel("Lane width: " + ((CPMSingleWidthSimSetup)setup).getLaneWidth());
-        laneWidthLabel.setOpaque(true);
+        if (isSingleWidthSetup) {
+            laneWidthLabel = new JLabel("Lane width: " + ((CPMSingleWidthSimSetup) setup).getLaneWidth());
+            laneWidthLabel.setOpaque(true);
 
-        numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMSingleWidthSimSetup)setup).getNumberOfParkingLanes());
-        numberOfParkingLanesLabel.setOpaque(true);
+            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMSingleWidthSimSetup) setup).getNumberOfParkingLanes());
+            numberOfParkingLanesLabel.setOpaque(true);
+        } else if (isMultiWidthSetup) {
+            parkingLaneSetsLabel = new JLabel("Parking lanes and widths: ");
+            parkingLaneSetsLabel.setOpaque(true);
+
+            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMMultiWidthSimSetup) setup).getNumberOfParkingLanes());
+            numberOfParkingLanesLabel.setOpaque(true);
+        }
 
         lengthOfParkingLabel = new JLabel("Parking length: " + setup.getParkingLength());
         lengthOfParkingLabel.setOpaque(true);
@@ -52,7 +67,11 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(title);
-        this.add(laneWidthLabel);
+        if (isSingleWidthSetup) {
+            this.add(laneWidthLabel);
+        } else if (isMultiWidthSetup) {
+            this.add(parkingLaneSetsLabel);
+        }
         this.add(numberOfParkingLanesLabel);
         this.add(lengthOfParkingLabel);
         this.add(useCvsLabel);
@@ -70,7 +89,11 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
     @Override
     public List<String> getAllLabelsText(){
         List<String> labelsText = new ArrayList<String>();
-        labelsText.add(laneWidthLabel.getText());
+        if (isSingleWidthSetup) {
+            labelsText.add(laneWidthLabel.getText());
+        } else if (isMultiWidthSetup) {
+            labelsText.add(parkingLaneSetsLabel.getText());
+        }
         labelsText.add(numberOfParkingLanesLabel.getText());
         labelsText.add(lengthOfParkingLabel.getText());
         labelsText.add(useCvsLabel.getText());

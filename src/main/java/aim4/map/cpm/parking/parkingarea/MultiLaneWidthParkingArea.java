@@ -121,4 +121,15 @@ public class MultiLaneWidthParkingArea extends BasicParkingArea {
     public double calculateOverLappingRoadWidth() {
         return ((CPMCarParkMultiLaneWidth)map).getMaxLaneWidth();
     }
+
+    @Override
+    public double getMaxParkingLaneWidth() {
+        double maxLaneWidth = 0.0;
+        for (Pair<Integer, Double> pair : parkingLaneSets) {
+            if (pair.getValue() > maxLaneWidth) {
+                maxLaneWidth = pair.getValue();
+            }
+        }
+        return maxLaneWidth;
+    }
 }

@@ -273,7 +273,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         double totalArea = 0;
 
         // Add the area of the parking area (l*h)
-        totalArea += parkingArea.getTotalLength() * (parkingArea.getNumberOfParkingLanes() * parkingArea.getParkingLaneWidth());
+        totalArea += parkingArea.getTotalLength() * (parkingArea.getNumberOfParkingLanes() * parkingArea.getSingleParkingLaneWidth());
 
         // Add the West road, but only up to the
         // length of the parking area

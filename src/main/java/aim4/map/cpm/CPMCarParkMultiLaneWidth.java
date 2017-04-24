@@ -287,7 +287,7 @@ public class CPMCarParkMultiLaneWidth extends CPMBasicMap {
         totalCarParkArea = totalArea;
     }
 
-    private double getMaxLaneWidth(List<Pair<Integer, Double>> parkingLaneSets) {
+    public double getMaxLaneWidth(List<Pair<Integer, Double>> parkingLaneSets) {
         double maxLaneWidth = 0.0;
         for (Pair<Integer, Double> pair : parkingLaneSets) {
             if (pair.getValue() > maxLaneWidth) {

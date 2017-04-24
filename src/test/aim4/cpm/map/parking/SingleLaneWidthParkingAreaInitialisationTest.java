@@ -73,8 +73,8 @@ public class SingleLaneWidthParkingAreaInitialisationTest {
 
     @Test
     public void testGetParkingLaneWidth() {
-        assertEquals(4, testParkingArea1Lane.getParkingLaneWidth(), 0.01);
-        assertEquals(4, testParkingArea2Lanes.getParkingLaneWidth(), 0.01);
+        assertEquals(4, testParkingArea1Lane.getSingleParkingLaneWidth(), 0.01);
+        assertEquals(4, testParkingArea2Lanes.getSingleParkingLaneWidth(), 0.01);
     }
 
     @Test

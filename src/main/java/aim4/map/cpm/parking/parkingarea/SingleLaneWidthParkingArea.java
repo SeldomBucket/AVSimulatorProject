@@ -112,7 +112,7 @@ public class SingleLaneWidthParkingArea extends BasicParkingArea {
 
     public int getNumberOfParkingLanes() { return numberOfParkingLanes; }
 
-    public double getParkingLaneWidth() { return parkingLaneWidth; }
+    public double getSingleParkingLaneWidth() { return parkingLaneWidth; }
 
     @Override
     public ArrayList<Road> calculateListOfRoads() {
@@ -122,5 +122,10 @@ public class SingleLaneWidthParkingArea extends BasicParkingArea {
     @Override
     public double calculateOverLappingRoadWidth() {
         return map.getLaneWidth();
+    }
+
+    @Override
+    public double getMaxParkingLaneWidth() {
+        return parkingLaneWidth;
     }
 }
