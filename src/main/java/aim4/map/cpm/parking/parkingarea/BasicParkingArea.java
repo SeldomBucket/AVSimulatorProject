@@ -44,8 +44,6 @@ public abstract class BasicParkingArea implements ParkingArea {
         this.map = map;
         this.parkingLength = parkingLength;
         this.accessLength = accessLength;
-        this.overlappingRoadWidth = map.getLaneWidth();
-        this.totalLength = (2*accessLength) + (2*overlappingRoadWidth) + parkingLength;
     }
 
     public CPMMap getMap() { return map; }

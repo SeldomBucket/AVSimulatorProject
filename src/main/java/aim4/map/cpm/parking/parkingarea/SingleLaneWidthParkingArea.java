@@ -30,11 +30,11 @@ public class SingleLaneWidthParkingArea extends BasicParkingArea {
                                       int numberOfParkingLanes, double parkingLength,
                                       double parkingLaneWidth, double accessLength){
         super(startPoint, map, parkingLength, accessLength);
-
         this.numberOfParkingLanes = numberOfParkingLanes;
-        this.roads = calculateListOfRoads();
         this.parkingLaneWidth = parkingLaneWidth;
-
+        this.roads = calculateListOfRoads();
+        this.overlappingRoadWidth = calculateOverLappingRoadWidth();
+        this.totalLength = (2*accessLength) + (2*overlappingRoadWidth) + parkingLength;
 
         // TODO CPM decide if we need, maybe not if dynamically building the map
         // validateParameters();
@@ -117,5 +117,10 @@ public class SingleLaneWidthParkingArea extends BasicParkingArea {
     @Override
     public ArrayList<Road> calculateListOfRoads() {
         return new ArrayList<Road>(numberOfParkingLanes);
+    }
+
+    @Override
+    public double calculateOverLappingRoadWidth() {
+        return map.getLaneWidth();
     }
 }

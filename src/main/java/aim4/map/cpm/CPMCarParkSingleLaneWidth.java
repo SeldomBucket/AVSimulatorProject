@@ -212,6 +212,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
                         new Point2D.Double(x2, y2),
                         true);
         dataCollectionLines.add(exitDataCollectionLine);
+
         // Set size of array for the sensored lines.
         // One on entry, one on reentry and one on exit
         sensoredLines = new ArrayList<SensoredLine>(3);
@@ -271,7 +272,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
     private void calculateAreaOfCarPark() {
         double totalArea = 0;
 
-        // Add the area of the parking area (w*h)
+        // Add the area of the parking area (l*h)
         totalArea += parkingArea.getTotalLength() * (parkingArea.getNumberOfParkingLanes() * parkingArea.getParkingLaneWidth());
 
         // Add the West road, but only up to the

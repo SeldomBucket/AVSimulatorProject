@@ -9,4 +9,5 @@ import java.util.ArrayList;
  */
 public interface ParkingArea {
     ArrayList<Road> calculateListOfRoads();
+    public double calculateOverLappingRoadWidth();
 }

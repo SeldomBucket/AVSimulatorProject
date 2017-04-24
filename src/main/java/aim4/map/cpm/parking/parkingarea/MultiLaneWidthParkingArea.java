@@ -2,6 +2,7 @@ package aim4.map.cpm.parking.parkingarea;
 
 
 import aim4.map.Road;
+import aim4.map.cpm.CPMCarParkMultiLaneWidth;
 import aim4.map.cpm.CPMMap;
 import aim4.map.cpm.parking.ParkingLane;
 import javafx.util.Pair;
@@ -17,12 +18,17 @@ import java.util.List;
 public class MultiLaneWidthParkingArea extends BasicParkingArea {
 
     private List<Pair<Integer, Double>> parkingLaneSets;
+    private int totalNumberOfParkingLanes;
 
     public MultiLaneWidthParkingArea(Point2D startPoint, CPMMap map,
                                      double parkingLength, double accessLength,
                                      List<Pair<Integer, Double>> parkingLaneSets) {
         super(startPoint, map, parkingLength, accessLength);
         this.parkingLaneSets = parkingLaneSets;
+        this.totalNumberOfParkingLanes = totalNumberOfParkingLanes();
+        this.roads = calculateListOfRoads();
+        this.overlappingRoadWidth = calculateOverLappingRoadWidth();
+        this.totalLength = (2*accessLength) + (2*overlappingRoadWidth) + parkingLength;
 
         addParkingLanes();
     }
@@ -94,8 +100,8 @@ public class MultiLaneWidthParkingArea extends BasicParkingArea {
                 // If last lane of last set, don't bother
             }
         }
-        assert(parkingLanes.size() == totalNumberOfParkingLanes());
-        assert(roads.size() == totalNumberOfParkingLanes());
+        assert(parkingLanes.size() == totalNumberOfParkingLanes);
+        assert(roads.size() == totalNumberOfParkingLanes);
     }
 
     private int totalNumberOfParkingLanes() {
@@ -108,6 +114,11 @@ public class MultiLaneWidthParkingArea extends BasicParkingArea {
 
     @Override
     public ArrayList<Road> calculateListOfRoads() {
-        return null;
+        return new ArrayList<Road>(totalNumberOfParkingLanes());
+    }
+
+    @Override
+    public double calculateOverLappingRoadWidth() {
+        return ((CPMCarParkMultiLaneWidth)map).getMaxLaneWidth();
     }
 }
