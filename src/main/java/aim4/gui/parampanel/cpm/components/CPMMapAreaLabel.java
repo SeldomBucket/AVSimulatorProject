@@ -51,8 +51,6 @@ public class CPMMapAreaLabel extends JLabel {
 
         double totalArea = paramPanel.calculateCarParkArea();
 
-        // Add the West road, but only up to the
-        // length of the parking area
         setText(prefix + String.format("%.2f", totalArea));
     }
 }

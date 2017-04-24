@@ -279,13 +279,16 @@ public class CPMCarParkMultiLaneWidth extends CPMBasicMap {
     private void calculateAreaOfCarPark() {
         double totalArea = 0;
 
+        double parkingAreaLength = (2 * parkingArea.getAccessLength()) // either side of the parking length
+                + (2 * getMaxLaneWidth()) // roads either side of the parking area
+                + parkingArea.getParkingLength();
+
+        double parkingAreaHeight = calculateParkingAreaHeight();
+        // to account for top WEST road
+        parkingAreaHeight += getMaxLaneWidth();
+
         // Add the area of the parking area (l*h)
-        totalArea += parkingArea.getTotalLength() * calculateParkingAreaHeight();
-
-        // Add the West road, but only up to the
-        // length of the parking area
-        totalArea += getRoadByName("Westbound Avenue").getOnlyLane().getWidth() * parkingArea.getTotalLength();
-
+        totalArea = parkingAreaLength * parkingAreaHeight;
         totalCarParkArea = totalArea;
     }
 

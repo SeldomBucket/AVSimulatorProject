@@ -44,6 +44,36 @@ public class CPMMultiWidthParamPanel extends CPMBasicParamPanel {
 
     @Override
     public double calculateCarParkArea() {
-        return 0;
+        double parkingAreaLength = (2 * accessLengthSlider.getValue()) // either side of the parking length
+                + (2 * getMaxLaneWidth()) // roads either side of the parking area
+                + parkingLengthSlider.getValue();
+
+        double parkingAreaHeight = calculateParkingAreaHeight();
+        parkingAreaHeight += getMaxLaneWidth();
+
+        // Add the area of the parking area (l*h) (+ getMaxLaneWidth() to account for top WEST road)
+        double totalArea = parkingAreaLength * parkingAreaHeight;
+        return totalArea;
+    }
+
+    private double getMaxLaneWidth() {
+        List<Pair<Integer, Double>> parkingLaneSetValues = variedParkingLaneWidthsConfig.getParkingLaneSetValues();
+
+        double maxLaneWidth = 0.0;
+        for (Pair<Integer, Double> pair : parkingLaneSetValues) {
+            if (pair.getValue() > maxLaneWidth){
+                maxLaneWidth = pair.getValue();
+            }
+        }
+        return maxLaneWidth;
+    }
+
+    private double calculateParkingAreaHeight() {
+        List<Pair<Integer, Double>> parkingLaneSetValues = variedParkingLaneWidthsConfig.getParkingLaneSetValues();
+        double height = 0.0;
+        for (Pair<Integer, Double> pair : parkingLaneSetValues) {
+            height += pair.getKey() * pair.getValue();
+        }
+        return height;
     }
 }

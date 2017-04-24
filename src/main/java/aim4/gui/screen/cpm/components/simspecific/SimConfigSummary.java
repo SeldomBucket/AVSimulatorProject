@@ -6,6 +6,7 @@ import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.setup.cpm.CPMMultiWidthSimSetup;
 import aim4.sim.setup.cpm.CPMSingleWidthSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -43,16 +44,20 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
         if (isSingleWidthSetup) {
-            laneWidthLabel = new JLabel("Lane width: " + ((CPMSingleWidthSimSetup) setup).getLaneWidth());
+            laneWidthLabel = new JLabel("Lane width: "
+                    + ((CPMSingleWidthSimSetup) setup).getLaneWidth());
             laneWidthLabel.setOpaque(true);
 
-            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMSingleWidthSimSetup) setup).getNumberOfParkingLanes());
+            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: "
+                    + ((CPMSingleWidthSimSetup) setup).getNumberOfParkingLanes());
             numberOfParkingLanesLabel.setOpaque(true);
         } else if (isMultiWidthSetup) {
-            parkingLaneSetsLabel = new JLabel("Parking lanes and widths: ");
+            parkingLaneSetsLabel = new JLabel("Parking lanes and widths: \n"
+                    + getParkingLanesSetsText(((CPMMultiWidthSimSetup) setup).getParkingLaneSets()));
             parkingLaneSetsLabel.setOpaque(true);
 
-            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: " + ((CPMMultiWidthSimSetup) setup).getNumberOfParkingLanes());
+            numberOfParkingLanesLabel = new JLabel("Number of parking lanes: "
+                    + ((CPMMultiWidthSimSetup) setup).getNumberOfParkingLanes());
             numberOfParkingLanesLabel.setOpaque(true);
         }
 
@@ -79,6 +84,21 @@ public class SimConfigSummary extends JPanel implements CPMStatScreenComponent {
             this.add(trafficLevelLabel);
         }
 
+    }
+
+    private String getParkingLanesSetsText(List<Pair<Integer, Double>> parkingLaneSets) {
+        String setsString = "";
+        for (int i = 0 ; i < parkingLaneSets.size() ; i++) {
+            Pair<Integer,Double> pair = parkingLaneSets.get(0);
+            String newSet;
+            if (i == 0) {
+                newSet = String.format("(%dx%.1f)", pair.getKey(), pair.getValue());
+            } else {
+                newSet = String.format(",(%dx%.1f)", pair.getKey(), pair.getValue());
+            }
+            setsString += newSet;
+        }
+        return setsString;
     }
 
     @Override
