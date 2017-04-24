@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A SensoredLine is used by a StatusMonitor: when a vehicle
- * crosses a SensoredLine the StatusMonitor can decide how
+ * A SensoredLine is used by a BasicStatusMonitor: when a vehicle
+ * crosses a SensoredLine the BasicStatusMonitor can decide how
  * to update it's records of the car park, and whether any
  * messages need to be sent to CPMBasicCoordinator.
  */

@@ -4,7 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.CPMBasicMap;
 import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
-import aim4.map.cpm.parking.StatusMonitor;
+import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -175,7 +175,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
     }
 
     @Override
-    public StatusMonitor getStatusMonitor() {
+    public BasicStatusMonitor getStatusMonitor() {
         return null;
     }
 }

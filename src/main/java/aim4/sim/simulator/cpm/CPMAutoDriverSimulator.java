@@ -10,7 +10,7 @@ import aim4.map.cpm.components.CPMSpawnPoint;
 import aim4.map.cpm.components.CPMSpawnPoint.*;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
-import aim4.map.cpm.parking.StatusMonitor;
+import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
@@ -578,7 +578,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             assert map instanceof CPMCarParkSingleLaneWidth;
             for (SensoredLine line : ((CPMCarParkSingleLaneWidth) map).getSensoredLines()) {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
-                     StatusMonitor statusMonitor = map.getStatusMonitor();
+                     BasicStatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
                          System.out.println("Vehicle is entering.");
                          vehicle.setEntryTime(currentTime);

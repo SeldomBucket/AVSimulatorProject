@@ -5,7 +5,8 @@ import aim4.map.Road;
 import aim4.map.cpm.components.CPMExitDataCollectionLine;
 import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.SensoredLine;
-import aim4.map.cpm.parking.StatusMonitor;
+import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
+import aim4.map.cpm.parking.statusmonitor.SingleWidthStatusMonitor;
 import aim4.vehicle.VinRegistry;
 
 import java.awt.geom.Point2D;
@@ -49,9 +50,9 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
     /**
      * The status monitor recording the status of this car park.
      */
-    private StatusMonitor statusMonitor;
+    private BasicStatusMonitor statusMonitor;
     /**
-     * A list of sensored lines used by the StatusMonitor.
+     * A list of sensored lines used by the BasicStatusMonitor.
      */
     private List<SensoredLine> sensoredLines;
     /**
@@ -101,8 +102,8 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         this.parkingArea = new SingleLaneWidthParkingArea(startPoint, this, numberOfParkingLanes,
                 parkingLength, laneWidth, accessLength);
 
-        // Create the StatusMonitor
-        this.statusMonitor = new StatusMonitor(parkingArea);
+        // Create the BasicStatusMonitor
+        this.statusMonitor = new SingleWidthStatusMonitor(parkingArea);
 
         // Add all roads/lanes from parking area to the map's records
         for (Road road : parkingArea.getRoads()) {
@@ -290,7 +291,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         return parkingArea;
     }
 
-    public StatusMonitor getStatusMonitor() {
+    public BasicStatusMonitor getStatusMonitor() {
         return statusMonitor;
     }
 

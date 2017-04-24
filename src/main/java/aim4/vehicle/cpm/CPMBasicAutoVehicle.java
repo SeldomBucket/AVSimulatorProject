@@ -94,7 +94,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     // messaging
 
     /**
-     * The inbox for messages from the car park StatusMonitor.
+     * The inbox for messages from the car park BasicStatusMonitor.
      * There will only ever be one message, which will be a
      * ParkingLane (or null, if no room for vehicle to park).
      */
