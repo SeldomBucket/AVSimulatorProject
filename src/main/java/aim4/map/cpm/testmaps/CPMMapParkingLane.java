@@ -3,7 +3,7 @@ package aim4.map.cpm.testmaps;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.StatusMonitor;
 
@@ -100,7 +100,7 @@ public class CPMMapParkingLane extends CPMBasicMap {
     }
 
     @Override
-    public ParkingArea getParkingArea() {
+    public SingleLaneWidthParkingArea getParkingArea() {
         return null;
     }
 

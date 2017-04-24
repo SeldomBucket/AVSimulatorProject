@@ -1,6 +1,7 @@
 package aim4.map.cpm.parking;
 
 import aim4.driver.cpm.CPMV2VDriver;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
@@ -14,7 +15,7 @@ import java.util.*;
 public class StatusMonitor {
 
     /** The parking area that we are recording the status of. */
-    private ParkingArea parkingArea;
+    private SingleLaneWidthParkingArea parkingArea;
     /** A mapping from parking lanes to the amount of
      * space left for parking on that lane. */
     private Map<ParkingLane, Double> parkingLanesSpace = new HashMap<ParkingLane, Double>();
@@ -32,7 +33,7 @@ public class StatusMonitor {
      * Create a StatusMonitor to record the status of the car park.
      * @param parkingArea The parking area to record the status of.
      */
-    public StatusMonitor(ParkingArea parkingArea) {
+    public StatusMonitor(SingleLaneWidthParkingArea parkingArea) {
         this.parkingArea = parkingArea;
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
@@ -46,7 +47,7 @@ public class StatusMonitor {
      * @param parkingArea The parking area to extract the parking
      *                    lanes from.
      */
-    private void initialiseParkingLanesSpace(ParkingArea parkingArea){
+    private void initialiseParkingLanesSpace(SingleLaneWidthParkingArea parkingArea){
         for (ParkingLane lane : parkingArea.getParkingLanes()) {
             parkingLanesSpace.put(lane, lane.getTotalParkingLength());
         }

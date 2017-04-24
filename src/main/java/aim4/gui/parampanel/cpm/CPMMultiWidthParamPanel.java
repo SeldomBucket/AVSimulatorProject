@@ -4,14 +4,13 @@ import aim4.gui.parampanel.cpm.components.CPMMultiParkingLaneWidthsConfig;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import javafx.util.Pair;
 
-import javax.swing.*;
 import java.util.List;
 
 /**
  * The parameter panel for CPM simulations where the widths of
  * lanes in the car park can vary.
  */
-public class CPMMultiWidthParamPanel extends CPMBasicParamPanel  {
+public class CPMMultiWidthParamPanel extends CPMBasicParamPanel {
 
     CPMMultiParkingLaneWidthsConfig variedParkingLaneWidthsConfig;
 

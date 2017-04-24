@@ -4,7 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.StatusMonitor;
 
 import java.awt.geom.Point2D;
@@ -122,7 +122,7 @@ public class CPMMapJunction3Roads extends CPMBasicMap {
     }
 
     @Override
-    public ParkingArea getParkingArea() {
+    public SingleLaneWidthParkingArea getParkingArea() {
         return null;
     }
 }

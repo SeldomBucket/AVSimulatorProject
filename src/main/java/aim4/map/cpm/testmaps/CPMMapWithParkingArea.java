@@ -3,7 +3,7 @@ package aim4.map.cpm.testmaps;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.CPMBasicMap;
-import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.StatusMonitor;
 
 import java.awt.geom.Point2D;
@@ -20,7 +20,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
     private int numberOfParkingLanes;
     private double parkingLength;
     private double accessLength;
-    private ParkingArea parkingArea;
+    private SingleLaneWidthParkingArea parkingArea;
     double laneWidth;
     double halfLaneWidth;
 
@@ -50,7 +50,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         Point2D startPoint = new Point2D.Double(x, y);
 
         // Create the parking area
-        this.parkingArea = new ParkingArea(startPoint, this, numberOfParkingLanes,
+        this.parkingArea = new SingleLaneWidthParkingArea(startPoint, this, numberOfParkingLanes,
                 parkingLength, laneWidth, accessLength);
 
         // Add all roads/lanes from parking area to the map's records
@@ -165,7 +165,7 @@ public class CPMMapWithParkingArea extends CPMBasicMap {
         initializeSpawnPoints(initTime);
     }
 
-    public ParkingArea getParkingArea(){
+    public SingleLaneWidthParkingArea getParkingArea(){
         return parkingArea;
     }
 

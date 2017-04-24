@@ -3,7 +3,7 @@ package aim4.map.cpm;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.components.CPMExitDataCollectionLine;
-import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.vehicle.VinRegistry;
@@ -45,7 +45,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
     /**
      * The parking area.
      */
-    private ParkingArea parkingArea;
+    private SingleLaneWidthParkingArea parkingArea;
     /**
      * The status monitor recording the status of this car park.
      */
@@ -98,7 +98,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         Point2D startPoint = new Point2D.Double(x, y);
 
         // Create the parking area
-        this.parkingArea = new ParkingArea(startPoint, this, numberOfParkingLanes,
+        this.parkingArea = new SingleLaneWidthParkingArea(startPoint, this, numberOfParkingLanes,
                 parkingLength, laneWidth, accessLength);
 
         // Create the StatusMonitor
@@ -285,7 +285,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         return laneWidth;
     }
 
-    public ParkingArea getParkingArea() {
+    public SingleLaneWidthParkingArea getParkingArea() {
         return parkingArea;
     }
 

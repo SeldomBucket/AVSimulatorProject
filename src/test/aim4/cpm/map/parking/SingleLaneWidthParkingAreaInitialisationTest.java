@@ -2,7 +2,7 @@ package aim4.cpm.map.parking;
 
 import aim4.map.Road;
 import aim4.map.cpm.testmaps.CPMMapWithParkingArea;
-import aim4.map.cpm.parking.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * TEST SUITE PURPOSE: Check that when a Parking Area is created, it has all the correct attributes.
  */
-public class ParkingAreaInitialisationTest {
+public class SingleLaneWidthParkingAreaInitialisationTest {
     CPMMapWithParkingArea map1Lane = new CPMMapWithParkingArea(4, // laneWidth
             10.0, // speedLimit
             0.0, // initTime
@@ -25,8 +25,8 @@ public class ParkingAreaInitialisationTest {
             10, // parkingLength
             5); // accessLength
 
-    ParkingArea testParkingArea1Lane = map1Lane.getParkingArea();
-    ParkingArea testParkingArea2Lanes = map2Lanes.getParkingArea();
+    SingleLaneWidthParkingArea testParkingArea1Lane = map1Lane.getParkingArea();
+    SingleLaneWidthParkingArea testParkingArea2Lanes = map2Lanes.getParkingArea();
 
     @Test
     public void testGetMap() {
