@@ -15,6 +15,7 @@ import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
@@ -84,6 +85,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     protected int numberOfVehiclesNotCateredFor;
     /** A list of parked vehicles */
     protected List<CPMBasicAutoVehicle> parkedVehicles;
+    /** A map of vehicle specs and how many have been spawned and created */
+    protected Map<String, Integer> vehicleSpecToNumCompleted;
     /** The total number of bits transmitted by the completed vehicles */
     private int totalBitsTransmittedByCompletedVehicles;
     /** The total number of bits received by the completed vehicles */
@@ -105,6 +108,13 @@ public class CPMAutoDriverSimulator implements Simulator {
         numberOfVehiclesNotCateredFor = 0;
         totalBitsTransmittedByCompletedVehicles = 0;
         totalBitsReceivedByCompletedVehicles = 0;
+
+        // initialise vehicleSpecToNumCompleted
+        vehicleSpecToNumCompleted = new HashMap<String, Integer>(VehicleSpecDatabase.getNumOfSpec());
+        List<String> specNames = VehicleSpecDatabase.getSpecNames();
+        for (String spec : specNames) {
+            vehicleSpecToNumCompleted.put(spec, 0);
+        }
 
         System.out.println("CPM Simulator created!");
     }
@@ -157,9 +167,14 @@ public class CPMAutoDriverSimulator implements Simulator {
                         // Only create the vehicle if there is room in the car park
                         if (map.getStatusMonitor().roomForVehicle(spawnSpec.getVehicleSpec())) {
                             CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
                             map.addVehicleToMap(vehicle);
+
+                            int currentSpawnedOfThisSpec = vehicleSpecToNumCompleted.get(vehicle.getSpec().getName());
+                            vehicleSpecToNumCompleted.put(vehicle.getSpec().getName(), (currentSpawnedOfThisSpec+1));
+
                             break; // only handle the first spawn vehicle
                         } else {
                             System.out.println("Spawned vehicle discarded: not enough room.");
@@ -701,4 +716,8 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     public Map<Integer, CPMBasicAutoVehicle> getVinToVehicles() { return vinToVehicles; }
+
+    public Map<String, Integer> getVehicleSpecToNumCompleted() {
+        return vehicleSpecToNumCompleted;
+    }
 }

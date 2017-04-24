@@ -5,7 +5,10 @@ import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import aim4.util.Util;
+import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
+import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -23,10 +26,17 @@ public class SpawnConfigSummary extends JPanel implements CPMStatScreenComponent
     private JLabel singleSpecNameLabel;
     private JLabel spawnDistributionLabel;
     private List<JLabel> allSpecNamesLabels = new ArrayList<JLabel>(VehicleSpecDatabase.getNumOfSpec());
+    private boolean isSingleSpec;
+    private boolean isMixedSpec;
+    private boolean isRandomSpec;
 
     public SpawnConfigSummary(CPMSimSetupPanel setupPanel) {
 
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
+
+        isSingleSpec = setup.getSpawnSpecType() == CPMMapUtil.SpawnSpecType.SINGLE;
+        isMixedSpec = setup.getSpawnSpecType() == CPMMapUtil.SpawnSpecType.MIXED;
+        isRandomSpec = setup.getSpawnSpecType() == CPMMapUtil.SpawnSpecType.RANDOM;
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
@@ -43,12 +53,12 @@ public class SpawnConfigSummary extends JPanel implements CPMStatScreenComponent
         this.add(spawnSpecTypeLabel);
 
 
-        if(setup.getSpawnSpecType() == CPMMapUtil.SpawnSpecType.SINGLE){
+        if(isSingleSpec){
             singleSpecNameLabel = new JLabel("Only spawning: " + setup.getSingleSpawnSpecName());
             singleSpecNameLabel.setOpaque(true);
             this.add(singleSpecNameLabel);
         } else {
-            if (setup.getSpawnSpecType() == CPMMapUtil.SpawnSpecType.MIXED) {
+            if (isMixedSpec) {
                 spawnDistributionLabel = new JLabel("Spec distribution: " + setup.getMixedSpawnDistribution().toString());
                 spawnDistributionLabel.setOpaque(true);
                 this.add(spawnDistributionLabel);
@@ -62,17 +72,22 @@ public class SpawnConfigSummary extends JPanel implements CPMStatScreenComponent
     }
 
     @Override
-    public void update(CPMAutoDriverSimulator sim, java.util.List<CPMAutoDriverSimulator.CPMAutoDriverSimStepResult> resultToProcess) {
-        int numberOfDeniedEntries = sim.getMap().getStatusMonitor().getNumberOfDeniedEntries();
-        int numberOfCarsNotCateredFor = sim.getNumberOfVehiclesNotCateredFor();
-        int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
-        int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
-        int carParkArea = (int)Math.ceil(sim.getMap().getTotalCarParkArea());
-        /*Util.updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
-        Util.updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
-        Util.updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);
-        Util.updateLabel(numOfVehiclesInCarPark, numOfVehiclesInCarParkLabel);
-        Util.updateLabel(carParkArea, carParkAreaLabel);*/
+    public void update(CPMAutoDriverSimulator sim,
+                       List<CPMAutoDriverSimulator.CPMAutoDriverSimStepResult> resultToProcess) {
+        updateSpecLabels(sim);
+    }
+
+    private void updateSpecLabels(CPMAutoDriverSimulator sim){
+        for (JLabel label : allSpecNamesLabels) {
+
+            String labelText = label.getText();
+            // Split the text so we can get the number for the correct spec
+            String[] labelSplit = labelText.split(":");
+            String specName = labelSplit [0];
+
+            int newValue = sim.getVehicleSpecToNumCompleted().get(specName);
+            Util.updateLabel(newValue, label);
+        }
     }
 
     @Override
