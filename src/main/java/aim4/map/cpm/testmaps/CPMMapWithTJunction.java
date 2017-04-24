@@ -3,6 +3,7 @@ package aim4.map.cpm.testmaps;
 import aim4.map.*;
 import aim4.map.connections.Junction;
 import aim4.map.cpm.CPMBasicMap;
+import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
 
@@ -109,5 +110,15 @@ public class CPMMapWithTJunction extends CPMBasicMap {
     @Override
     public SingleLaneWidthParkingArea getParkingArea() {
         return null;
+    }
+
+    @Override
+    public List<SensoredLine> getSensoredLines() {
+        return null;
+    }
+
+    @Override
+    public double getTotalCarParkArea() {
+        return 0;
     }
 }

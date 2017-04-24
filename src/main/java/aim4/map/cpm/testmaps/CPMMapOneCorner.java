@@ -3,6 +3,7 @@ package aim4.map.cpm.testmaps;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.CPMBasicMap;
+import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
 
@@ -10,6 +11,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 /**
  * A map with one corner.
@@ -98,5 +100,15 @@ public class CPMMapOneCorner extends CPMBasicMap{
     @Override
     public SingleLaneWidthParkingArea getParkingArea() {
         return null;
+    }
+
+    @Override
+    public List<SensoredLine> getSensoredLines() {
+        return null;
+    }
+
+    @Override
+    public double getTotalCarParkArea() {
+        return 0;
     }
 }

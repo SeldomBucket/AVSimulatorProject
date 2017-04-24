@@ -1,6 +1,10 @@
 package aim4.map.cpm.parking.statusmonitor;
 
+import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.cpm.parking.ParkingLane;
+import aim4.map.cpm.parking.parkingarea.BasicParkingArea;
+import aim4.map.cpm.parking.parkingarea.ParkingArea;
+import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
@@ -46,9 +50,75 @@ public abstract class BasicStatusMonitor implements StatusMonitor {
         mostNumberOfVehicles = 0;
     }
 
+    /**
+     * Create a mapping from each parking lane to the length of
+     * the parking space available in that lane.
+     *
+     * @param parkingArea The parking area to extract the parking
+     *                    lanes from.
+     */
+    protected void initialiseParkingLanesSpace(BasicParkingArea parkingArea) {
+        for (ParkingLane lane : parkingArea.getParkingLanes()) {
+            parkingLanesSpace.put(lane, lane.getTotalParkingLength());
+        }
+    }
+
+    protected boolean willVehicleLengthFit(Map.Entry<ParkingLane, Double> parkingLaneEntry,
+                                         Double spaceNeeded) {
+
+        double spaceOnParkingLane = parkingLaneEntry.getValue();
+        if (spaceOnParkingLane > (spaceNeeded)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Decrease the capacity when a vehicle is entering the parking area.
+     * This is on ENTERING and RELOCATING
+     *
+     * @param vehicle The vehicle entering the parking area.
+     */
+    protected void decreaseCapacity(CPMBasicAutoVehicle vehicle, Map.Entry<ParkingLane, Double> parkingLaneEntry) {
+        double spaceTaken = calculateTotalVehicleSpace(vehicle);
+        if (!willVehicleLengthFit(parkingLaneEntry, spaceTaken)) {
+            assert vehicle.getDriver() instanceof CPMV2VDriver;
+            throw new RuntimeException("There's not enough room in the car " +
+                    "park for this vehicle to park! Vehicle is " +
+                    ((CPMV2VDriver) vehicle.getDriver()).getParkingStatus());
+        }
+        parkingLanesSpace.put(parkingLaneEntry.getKey(), parkingLaneEntry.getValue() - spaceTaken);
+    }
+
+    /**
+     * Increase the capacity when a vehicle has left the parking area.
+     * This is on EXIT and RELOCATING.
+     *
+     * @param vehicle the vehicle that has left the parking area
+     */
+    protected void increaseCapacity(CPMBasicAutoVehicle vehicle) {
+        ParkingLane laneToUpdate = vehicles.get(vehicle);
+        Map.Entry<ParkingLane, Double> entryToUpdate = findParkingLaneSpace(laneToUpdate);
+        double spaceFreed = calculateTotalVehicleSpace(vehicle);
+        parkingLanesSpace.put(entryToUpdate.getKey(), entryToUpdate.getValue() + spaceFreed);
+    }
+
+    private Map.Entry<ParkingLane, Double> findParkingLaneSpace(ParkingLane parkingLane) {
+        for (Map.Entry<ParkingLane, Double> entry : parkingLanesSpace.entrySet()) {
+            if (entry.getKey() == parkingLane) {
+                return entry;
+            }
+        }
+        throw new RuntimeException("Parking lane could not be found.");
+    }
+
+    protected void sendParkingLaneMessage(CPMBasicAutoVehicle vehicle, ParkingLane parkingLane) {
+        vehicle.sendMessageToI2VInbox(parkingLane);
+    }
+
     protected double calculateTotalVehicleSpace(CPMBasicAutoVehicle vehicle) {
         double vehicleLength = vehicle.getSpec().getLength();
-        double distanceBetweenVehicles = CPMAutoDriverSimulator.MIN_DISTANCE_BETWEEN_PARKED_VEHICLES; // TODO CPM find this value from AIM
+        double distanceBetweenVehicles = CPMAutoDriverSimulator.MIN_DISTANCE_BETWEEN_PARKED_VEHICLES;
         return vehicleLength + distanceBetweenVehicles;
     }
 

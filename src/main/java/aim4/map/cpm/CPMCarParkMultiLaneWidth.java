@@ -4,9 +4,11 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.components.CPMExitDataCollectionLine;
 import aim4.map.cpm.parking.parkingarea.MultiLaneWidthParkingArea;
+import aim4.map.cpm.parking.parkingarea.ParkingArea;
 import aim4.map.cpm.parking.parkingarea.SingleLaneWidthParkingArea;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.statusmonitor.BasicStatusMonitor;
+import aim4.map.cpm.parking.statusmonitor.MultiWidthStatusMonitor;
 import javafx.util.Pair;
 
 import java.awt.geom.Point2D;
@@ -107,7 +109,7 @@ public class CPMCarParkMultiLaneWidth extends CPMBasicMap {
                 parkingLength, accessLength, parkingLaneSets);
 
         // Create the BasicStatusMonitor
-        // this.statusMonitor = new BasicStatusMonitor(parkingArea);
+        this.statusMonitor = new MultiWidthStatusMonitor(parkingArea);
 
         // Add all roads/lanes from parking area to the map's records
         for (Road road : parkingArea.getRoads()) {
@@ -307,7 +309,7 @@ public class CPMCarParkMultiLaneWidth extends CPMBasicMap {
 
     @Override
     public double getLaneWidth() {
-        return 0;
+        return -1;
     }
 
     public double getMaxLaneWidth() {
@@ -316,11 +318,21 @@ public class CPMCarParkMultiLaneWidth extends CPMBasicMap {
 
     @Override
     public BasicStatusMonitor getStatusMonitor() {
-        return null;
+        return statusMonitor;
     }
 
     @Override
-    public SingleLaneWidthParkingArea getParkingArea() {
-        return null;
+    public ParkingArea getParkingArea() {
+        return parkingArea;
+    }
+
+    @Override
+    public List<SensoredLine> getSensoredLines() {
+        return sensoredLines;
+    }
+
+    @Override
+    public double getTotalCarParkArea() {
+        return totalCarParkArea;
     }
 }

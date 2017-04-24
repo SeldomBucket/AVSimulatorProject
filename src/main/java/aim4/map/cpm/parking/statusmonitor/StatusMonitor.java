@@ -1,5 +1,6 @@
 package aim4.map.cpm.parking.statusmonitor;
 
+import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 /**
@@ -8,10 +9,10 @@ import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 public interface StatusMonitor {
     /**
      * Calculate if there is enough room for the vehicle in the car park.
-     * @param vehicleLength The length of the vehicle that wishes to enter the car park
+     * @param vehicleSpec The specification of the vehicle that wishes to enter the car park
      * @return true if there is space for the vehicle to park.
      */
-    public boolean roomForVehicle(double vehicleLength);
+    public boolean roomForVehicle(VehicleSpec vehicleSpec);
 
     /**
      * Update capacity and allocate a parking lane to a vehicle on entry to the car park.

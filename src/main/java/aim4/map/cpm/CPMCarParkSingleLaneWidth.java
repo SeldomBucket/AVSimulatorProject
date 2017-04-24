@@ -307,6 +307,7 @@ public class CPMCarParkSingleLaneWidth extends CPMBasicMap {
         return entryDataCollectionLine;
     }
 
+    @Override
     public double getTotalCarParkArea() {
         return totalCarParkArea;
     }

@@ -155,8 +155,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
                         // Only create the vehicle if there is room in the car park
-                        double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                        if (map.getStatusMonitor().roomForVehicle(vehicleLength)) {
+                        if (map.getStatusMonitor().roomForVehicle(spawnSpec.getVehicleSpec())) {
                             CPMBasicAutoVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
@@ -574,9 +573,7 @@ public class CPMAutoDriverSimulator implements Simulator {
             }
 
             // Check if we've gone through a sensored line
-            // TODO CPM try remove the need for this assertion
-            assert map instanceof CPMCarParkSingleLaneWidth;
-            for (SensoredLine line : ((CPMCarParkSingleLaneWidth) map).getSensoredLines()) {
+            for (SensoredLine line : map.getSensoredLines()) {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
                      BasicStatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {

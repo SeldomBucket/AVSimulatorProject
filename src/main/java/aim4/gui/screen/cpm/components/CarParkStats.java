@@ -62,7 +62,7 @@ public class CarParkStats extends JPanel implements CPMStatScreenComponent{
         int numberOfCarsNotCateredFor = sim.getNumberOfVehiclesNotCateredFor();
         int maxVehiclesInCarPark = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
         int numOfVehiclesInCarPark = sim.getMap().getStatusMonitor().getVehicles().size();
-        int carParkArea = (int)Math.ceil(((CPMCarParkSingleLaneWidth)sim.getMap()).getTotalCarParkArea());
+        int carParkArea = (int)Math.ceil(sim.getMap().getTotalCarParkArea());
         Util.updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
         Util.updateLabel(numberOfCarsNotCateredFor, numberOfCarsNotCateredForLabel);
         Util.updateLabel(maxVehiclesInCarPark, maxVehiclesInCarParkLabel);
