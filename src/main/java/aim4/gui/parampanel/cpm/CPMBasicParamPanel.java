@@ -49,7 +49,7 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
                 new CPMLabeledSlider(0.0, 5.0,
                         simSetup.getAccessLength(),
                         1.0, 0.25,
-                        "Length of Parking Lane Access: %.0f meters",
+                        "Length of Parking Lane Access: %.2f meters",
                         "%.0f",
                         this);
         accessLengthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));

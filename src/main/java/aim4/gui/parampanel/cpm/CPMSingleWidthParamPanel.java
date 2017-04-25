@@ -38,7 +38,7 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
                 new CPMLabeledSlider(1.0, 3.0,
                         ((CPMSingleWidthSimSetup)simSetup).getLaneWidth(),
                         1.0, 0.5,
-                        "Width of Lanes (parking lanes and roads): %.2f meters",
+                        "Width of Lanes (parking lanes and roads): %.1f meters",
                         "%.0f",
                         this);
         laneWidthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
