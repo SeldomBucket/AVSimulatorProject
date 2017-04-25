@@ -99,7 +99,11 @@ public class CPMMapUtil {
         }
 
         public double generateParkingTime(){
-            return 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
     }
 
@@ -147,9 +151,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
@@ -281,9 +285,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
@@ -361,7 +365,11 @@ public class CPMMapUtil {
         }
 
         public double generateParkingTime(){
-            return 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
+            Random r = new Random();
+            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
     }
 
@@ -421,9 +429,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
@@ -561,9 +569,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
@@ -620,9 +628,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
@@ -755,9 +763,9 @@ public class CPMMapUtil {
 
         @Override
         public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
+            // Returns a random double between 00:01:30 and 15:07:14
+            double rangeMin = 90.0;
+            double rangeMax = 54434.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }

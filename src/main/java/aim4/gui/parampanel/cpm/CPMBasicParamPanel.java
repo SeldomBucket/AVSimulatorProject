@@ -55,9 +55,9 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
         accessLengthSlider.setBorder(new EmptyBorder(3, 3, 3, 3));
 
         trafficRateSlider =
-                new CPMLabeledSlider(0.0, 2500.0,
+                new CPMLabeledSlider(0.0, 100.0,
                         simSetup.getTrafficLevel() * 3600.0,
-                        500.0, 100.0,
+                        10.0, 5.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f",
                         this);
