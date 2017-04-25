@@ -14,10 +14,7 @@ import java.util.Map;
  */
 public class SingleWidthStatusMonitor extends BasicStatusMonitor {
 
-    /**
-     * The parking area that we are recording the status of.
-     */
-    private SingleLaneWidthParkingArea parkingArea;
+
 
     /**
      * Create a SingleWidthStatusMonitor to record the status of the car park.

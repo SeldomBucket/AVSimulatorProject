@@ -9,6 +9,8 @@ import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -19,8 +21,13 @@ import java.util.Map;
 public abstract class BasicStatusMonitor implements StatusMonitor {
 
     /**
+     * The parking area that we are recording the status of.
+     */
+    protected ParkingArea parkingArea;
+
+    /**
      * A mapping from parking lanes to the amount of
-     * space left for parking on that lane.
+     * space (length) left for parking on that lane.
      */
     protected Map<ParkingLane, Double> parkingLanesSpace = new HashMap<ParkingLane, Double>();
     /**
@@ -143,5 +150,20 @@ public abstract class BasicStatusMonitor implements StatusMonitor {
 
     public int getMostNumberOfVehicles() {
         return mostNumberOfVehicles;
+    }
+
+    /**
+     * Get the area of the car park that is available for vehicles to park in.
+     * @return the available parking area.
+     */
+    public double getAvailableParkingArea(){
+        double freeSpace = 0.0;
+        List<ParkingLane> parkingLanes = parkingArea.getParkingLanes();
+
+        for (ParkingLane lane : parkingLanes) {
+            freeSpace += parkingLanesSpace.get(lane) * lane.getWidth();
+        }
+
+        return freeSpace;
     }
 }

@@ -60,9 +60,15 @@ public class CarParkOccupancyTable extends JPanel
                             (int)hours,
                             Util.convertSecondsToTimeString(sim.getSimulationTime()),
                             sim.getMap().getStatusMonitor().getVehicles().size(),
-                            "0%"
+                            String.format("%.1f", getAvailableSpaceAsPercent(sim))
                     });
         }
+    }
+
+    private double getAvailableSpaceAsPercent(CPMAutoDriverSimulator sim) {
+        double availableSpace = sim.getMap().getStatusMonitor().getAvailableParkingArea();
+        double totalCarParkArea = sim.getMap().getTotalCarParkArea();
+        return (availableSpace/totalCarParkArea)*100;
     }
 
     @Override
