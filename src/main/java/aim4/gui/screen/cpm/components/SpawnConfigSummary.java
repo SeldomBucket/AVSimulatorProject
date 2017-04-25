@@ -93,11 +93,16 @@ public class SpawnConfigSummary extends JPanel implements CPMStatScreenComponent
     @Override
     public java.util.List<String> getAllLabelsText(){
         java.util.List<String> labelsText = new ArrayList<String>();
-        /*labelsText.add(numberOfCarsDeniedEntryLabel.getText());
-        labelsText.add(numberOfCarsNotCateredForLabel.getText());
-        labelsText.add(maxVehiclesInCarParkLabel.getText());
-        labelsText.add(numOfVehiclesInCarParkLabel.getText());
-        labelsText.add(carParkAreaLabel.getText());*/
+        labelsText.add(spawnSpecTypeLabel.getText());
+        if (isSingleSpec) {
+            labelsText.add(singleSpecNameLabel.getText());
+        }
+        if (isMixedSpec) {
+            labelsText.add(spawnDistributionLabel.getText());
+        }
+        for (JLabel label : allSpecNamesLabels){
+            labelsText.add(label.getText());
+        }
         return labelsText;
     }
 }

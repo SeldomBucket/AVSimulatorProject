@@ -62,9 +62,9 @@ public class CPMStatScreen extends StatScreen {
 
         printComponentOfLabels(carParkStats, outFileName);
         printComponentOfLabels(simConfigSummary, outFileName);
+        printComponentOfLabels(spawnConfigSummary, outFileName);
         printTable(outFileName, completedVehiclesTable);
         printTable(outFileName, carParkOccupancyTable);
-
     }
 
     private void printTable(String outFileName, StatScreenTable tablePanel){
