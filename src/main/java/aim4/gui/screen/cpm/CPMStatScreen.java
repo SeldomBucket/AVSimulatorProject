@@ -36,6 +36,7 @@ public class CPMStatScreen extends StatScreen {
     SpawnConfigSummary spawnConfigSummary;
     CarParkStats carParkStats;
     CompletedVehiclesTable completedVehiclesTable;
+    CarParkOccupancyTable carParkOccupancyTable;
 
     public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer, CPMSimSetupPanel setupPanel) {
         this.viewer = viewer;
@@ -61,18 +62,19 @@ public class CPMStatScreen extends StatScreen {
 
         printComponentOfLabels(carParkStats, outFileName);
         printComponentOfLabels(simConfigSummary, outFileName);
-        printCompletedVehiclesTable(outFileName);
+        printTable(outFileName, completedVehiclesTable);
+        printTable(outFileName, carParkOccupancyTable);
 
     }
 
-    private void printCompletedVehiclesTable(String outFileName){
+    private void printTable(String outFileName, StatScreenTable tablePanel){
         try {
             // use FileWriter constructor that specifies open for appending
             CsvWriter csvOutput = new CsvWriter(new FileWriter(outFileName, true), ',');
 
-            TableModel tableModel = completedVehiclesTable.getTable().getModel();
-            int colCount = completedVehiclesTable.getTable().getModel().getColumnCount();
-            int rowCount = completedVehiclesTable.getTable().getModel().getRowCount();
+            TableModel tableModel = tablePanel.getTable().getModel();
+            int colCount = tablePanel.getTable().getModel().getColumnCount();
+            int rowCount = tablePanel.getTable().getModel().getRowCount();
 
             // Print the headers
             for (int colIndex = 0 ; colIndex < colCount ; colIndex ++){
@@ -157,7 +159,10 @@ public class CPMStatScreen extends StatScreen {
         spawnConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         completedVehiclesTable = new CompletedVehiclesTable();
-        completedVehiclesTable.setMaximumSize(new Dimension(150, 60));
+        completedVehiclesTable.setMaximumSize(new Dimension(50, 70));
+
+        carParkOccupancyTable = new CarParkOccupancyTable();
+        carParkOccupancyTable.setMaximumSize(new Dimension(50, 70));
 
 
         setLayout(new FlowLayout());
@@ -166,6 +171,7 @@ public class CPMStatScreen extends StatScreen {
         add(spawnConfigSummary);
         add(carParkStats);
         add(completedVehiclesTable);
+        add(carParkOccupancyTable);
 
 
         componentsToUpdate.add(generalInfo);
@@ -173,6 +179,7 @@ public class CPMStatScreen extends StatScreen {
         componentsToUpdate.add(carParkStats);
         componentsToUpdate.add(completedVehiclesTable);
         componentsToUpdate.add(spawnConfigSummary);
+        componentsToUpdate.add(carParkOccupancyTable);
     }
 
     public void updateSimulationStatus(boolean simComplete) {

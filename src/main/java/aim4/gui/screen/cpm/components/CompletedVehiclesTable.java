@@ -12,7 +12,8 @@ import java.util.List;
 /**
  * A table displaying information for the vehicles that have completed the simulation.
  */
-public class CompletedVehiclesTable extends JPanel implements CPMStatScreenComponent {
+public class CompletedVehiclesTable extends JPanel
+        implements CPMStatScreenComponent, StatScreenTable {
     private MapKeyTableModel model;
     private JTable table;
     private JScrollPane scrollPane;
