@@ -140,4 +140,6 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
     public Integer getNumberOfSimulations() {
         return numberOfSimulationsInput.getNumberOfSimulations();
     }
+
+    public String getFileLocation() { return numberOfSimulationsInput.getFileLocation(); }
 }

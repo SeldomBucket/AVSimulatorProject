@@ -22,9 +22,9 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
     private BasicCPMSimSetup setup;
     private JLabel numberOfSimulationsLabel;
     private JLabel currentSimulationNumberLabel;
+    private JLabel fileLocationLabel;
 
     public GeneralInfo(CPMSimSetupPanel setupPanel, int currentSimulationNumber) {
-
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
         simTimeLabel = new JLabel("Simulation Time: ");
@@ -48,6 +48,7 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         currentSimulationNumberLabel = new JLabel("Simulation number: " + currentSimulationNumber);
         currentSimulationNumberLabel.setOpaque(true);
 
+        fileLocationLabel = new JLabel ("File location: " + setup.getFileLocation());
 
         completedVehiclesLabel = new JLabel("Completed Vehicles: ");
         completedVehiclesLabel.setOpaque(true);
@@ -60,6 +61,7 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         this.add(simStatusLabel);
         this.add(currentSimulationNumberLabel);
         this.add(numberOfSimulationsLabel);
+        this.add(fileLocationLabel);
         this.add(completedVehiclesLabel);
         this.add(remainingVehiclesToSpawnLabel);
         this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -120,5 +122,14 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         String labelValue = labelSplit [1];
 
         return Integer.parseInt(labelValue);
+    }
+
+    public String getFileLocation() {
+        String labelText = fileLocationLabel.getText();
+        // Split the text so we can get the value
+        String[] labelSplit = labelText.split(": ");
+        String fileLocation = labelSplit [1];
+
+        return fileLocation;
     }
 }

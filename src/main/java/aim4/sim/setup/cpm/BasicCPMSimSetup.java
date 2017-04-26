@@ -51,6 +51,10 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      * The number of times the simulation should be run.
      */
     protected Integer numberOfSimulations;
+    /**
+     * The location where the csv files are output to
+     */
+    protected String fileLocation;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -68,6 +72,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useCSVFile = basicSimSetup.useCSVFile;
         this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
         this.numberOfSimulations = basicSimSetup.numberOfSimulations;
+        this.fileLocation = basicSimSetup.fileLocation;
     }
 
     /**
@@ -82,7 +87,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             Pair<Boolean, Double> useSpecificSimTime,
                             String singleSpawnSpecName,
                             List<Double> mixedSpawnDistribution,
-                            Integer numberOfSimulations) {
+                            Integer numberOfSimulations,
+                            String fileLocation) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.parkingLength = parkingLength;
@@ -93,6 +99,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.singleSpawnSpecName = singleSpawnSpecName;
         this.mixedSpawnDistribution = mixedSpawnDistribution;
         this.numberOfSimulations = numberOfSimulations;
+        this.fileLocation = fileLocation;
     }
 
     @Override
@@ -178,5 +185,13 @@ public class BasicCPMSimSetup implements CPMSimSetup {
 
     public void setNumberOfSimulations(Integer numberOfSimulations) {
         this.numberOfSimulations = numberOfSimulations;
+    }
+
+    public String getFileLocation() {
+        return fileLocation;
+    }
+
+    public void setFileLocation(String fileLocation) {
+        this.fileLocation = fileLocation;
     }
 }

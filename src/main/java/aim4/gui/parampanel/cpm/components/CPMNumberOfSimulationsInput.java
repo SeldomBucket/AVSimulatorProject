@@ -33,4 +33,6 @@ public class CPMNumberOfSimulationsInput extends JPanel{
     public Integer getNumberOfSimulations() {
         return (Integer)numberOfSimulationsSpinner.getValue();
     }
+
+    public String getFileLocation() { return fileLocationField.getText(); }
 }

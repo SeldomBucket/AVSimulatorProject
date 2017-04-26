@@ -7,6 +7,7 @@ import aim4.gui.screen.cpm.components.simspecific.SimConfigSummary;
 import aim4.gui.setuppanel.CPMSimSetupPanel;
 import aim4.gui.viewer.CPMSimViewer;
 import aim4.sim.Simulator;
+import aim4.sim.setup.cpm.BasicCPMSimSetup;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator.*;
 import com.csvreader.CsvWriter;
@@ -39,7 +40,8 @@ public class CPMStatScreen extends StatScreen {
     CompletedVehiclesTable completedVehiclesTable;
     CarParkOccupancyTable carParkOccupancyTable;
 
-    public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer, CPMSimSetupPanel setupPanel, int currentSimulationNumber) {
+    public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer,
+                         CPMSimSetupPanel setupPanel, int currentSimulationNumber) {
         this.viewer = viewer;
         this.simViewer = simViewer;
         this.setupPanel = setupPanel;
@@ -194,5 +196,13 @@ public class CPMStatScreen extends StatScreen {
 
     public Integer getCurrentSimulationNumber() {
         return generalInfo.getCurrentSimulationNumber();
+    }
+
+    public void updateCurrentSimulationNumber() {
+        this.currentSimulationNumber += 1;
+    }
+
+    public String getFileLocation() {
+        return generalInfo.getFileLocation();
     }
 }

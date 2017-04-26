@@ -101,6 +101,7 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
             newSimSetup.setUseCSVFile(singleWidthParamPanel.getUseCSVFileDetails());
             newSimSetup.setUseSpecificSimTime(singleWidthParamPanel.getUseSpecificSimTimeDetails());
             newSimSetup.setNumberOfSimulations(singleWidthParamPanel.getNumberOfSimulations());
+            newSimSetup.setFileLocation(singleWidthParamPanel.getFileLocation());
             return newSimSetup;
         } else if (comboBox.getSelectedIndex() == 1) {
             return new CPMMultiWidthSimSetup(
@@ -114,7 +115,8 @@ public class CPMSimSetupPanel extends SimSetupPanel implements ItemListener {
                     multiWidthParamPanel.getSingleSpawnSpecName(),
                     multiWidthParamPanel.getMixedSpawnDistribution(),
                     multiWidthParamPanel.getParkingLaneSets(),
-                    multiWidthParamPanel.getNumberOfSimulations()
+                    multiWidthParamPanel.getNumberOfSimulations(),
+                    multiWidthParamPanel.getFileLocation()
             );
         } else {
             throw new RuntimeException(

@@ -30,10 +30,11 @@ public class CPMMultiWidthSimSetup extends BasicCPMSimSetup {
                                  String singleSpawnSpecName,
                                  List<Double> mixedSpawnDistribution,
                                  List<Pair<Integer, Double>> parkingLaneSets,
-                                 Integer numberOfSimulations) {
+                                 Integer numberOfSimulations,
+                                 String fileLocation) {
         super(speedLimit, trafficLevel, parkingLength, accessLength,
                 spawnSpecType, useCSVFile, useSpecificSimTime, singleSpawnSpecName,
-                mixedSpawnDistribution, numberOfSimulations);
+                mixedSpawnDistribution, numberOfSimulations, fileLocation);
         this.parkingLaneSets = parkingLaneSets;
     }
 
