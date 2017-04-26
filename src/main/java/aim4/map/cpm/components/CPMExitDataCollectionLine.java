@@ -74,7 +74,7 @@ public class CPMExitDataCollectionLine extends DataCollectionLine {
                 vinToParkingTime.put(vin, parkingTime);
                 vinToEstimatedDistanceTravelled.put(vin, ((CPMBasicAutoVehicle) v).getEstimatedDistanceTravelled());
                 vinToNumberOfReEntries.put(vin, ((CPMBasicAutoVehicle) v).getNumberOfReEntries());
-                System.out.println("INTERSECT WITH DCL");
+                // System.out.println("INTERSECT WITH DCL");
                 return true;
             } else {
                 return false;

@@ -45,7 +45,7 @@ public class SingleWidthStatusMonitor extends BasicStatusMonitor {
         decreaseCapacity(vehicle, parkingLaneEntry);
 
         // Allocate this parking lane to the vehicle by sending message
-        System.out.println("Status monitor sending parking lane to vehicle.");
+        // System.out.println("Status monitor sending parking lane to vehicle.");
         sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
 
         // Register the vehicle with the StatusMonitor, along with the
@@ -65,7 +65,7 @@ public class SingleWidthStatusMonitor extends BasicStatusMonitor {
         decreaseCapacity(vehicle, parkingLaneEntry);
 
         // Allocate this parking lane to the vehicle by sending message
-        System.out.println("Status monitor sending parking lane to vehicle.");
+        // System.out.println("Status monitor sending parking lane to vehicle.");
         sendParkingLaneMessage(vehicle, parkingLaneEntry.getKey());
 
         // Update the vehicles parking lane in BasicStatusMonitor records, along with the
@@ -119,7 +119,7 @@ public class SingleWidthStatusMonitor extends BasicStatusMonitor {
                 name = entry.getKey().getRoadName();
             }
         }
-        System.out.println("Lane with most room is " + name);
+        // System.out.println("Lane with most room is " + name);
         return maxEntry;
     }
 }

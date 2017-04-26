@@ -58,7 +58,7 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
                     double vehicleWidth = spawnSpec.getVehicleSpec().getWidth();
                     double parkingLaneWidth = map.getRoadByName("Parking Road 0").getOnlyLane().getWidth();
                     if (parkingLaneWidth < (vehicleWidth + MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
-                        System.out.println("Spawned vehicle discarded: map doesn't cater for vehicles this wide.");
+                        // System.out.println("Spawned vehicle discarded: map doesn't cater for vehicles this wide.");
                     } else {
                         // Only create the vehicle if there is room in the car park
                         double vehicleLength = spawnSpec.getVehicleSpec().getLength();
@@ -70,7 +70,7 @@ public class SimulatorForMapParkingLane extends CPMAutoDriverSimulator {
                             map.addVehicleToMap(vehicle);
                             break; // only handle the first spawn vehicle
                         } else {
-                            System.out.println("Spawned vehicle discarded: not enough room.");
+                            // System.out.println("Spawned vehicle discarded: not enough room.");
                         }
                     }
                 }

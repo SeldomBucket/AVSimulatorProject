@@ -181,7 +181,7 @@ public class CPMAutoDriverSimulator implements Simulator {
                         }
                     }
                 }
-            } // else ignore the spawnSpecs and do nothingSystem.out.println("No vehicle spawned: canSpawn = False.");
+            } // else ignore the spawnSpecs and do nothing System.out.println("No vehicle spawned: canSpawn = False.");
         }
     }
 
@@ -592,16 +592,16 @@ public class CPMAutoDriverSimulator implements Simulator {
                  if (line.intersect(vehicle, currentTime, p1, p2)) {
                      BasicStatusMonitor statusMonitor = map.getStatusMonitor();
                      if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
-                         System.out.println("Vehicle is entering.");
+                         // System.out.println("Vehicle is entering.");
                          vehicle.setEntryTime(currentTime);
                          statusMonitor.vehicleOnEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.REENTRY) {
-                         System.out.println("Vehicle is re-entering.");
+                         // System.out.println("Vehicle is re-entering.");
                          statusMonitor.vehicleOnReEntry(vehicle);
                      }
                      if (line.getType() == SensoredLine.SensoredLineType.EXIT) {
-                         System.out.println("Vehicle is exiting.");
+                         // System.out.println("Vehicle is exiting.");
                          vehicle.setExitTime(currentTime);
                          statusMonitor.vehicleOnExit(vehicle);
                      }

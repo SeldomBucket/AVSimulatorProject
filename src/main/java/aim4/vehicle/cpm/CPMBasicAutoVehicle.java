@@ -237,7 +237,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     }
 
     public void clearI2Vinbox() {
-        System.out.println("I2V inbox cleared");
+        // System.out.println("I2V inbox cleared");
         I2Vinbox = null;
     }
 
@@ -250,7 +250,7 @@ public class CPMBasicAutoVehicle extends BasicAutoVehicle {
     }
 
     public void clearV2Vinbox() {
-        System.out.println("V2V inbox cleared");
+        // System.out.println("V2V inbox cleared");
         V2Vinbox = null;
     }
 

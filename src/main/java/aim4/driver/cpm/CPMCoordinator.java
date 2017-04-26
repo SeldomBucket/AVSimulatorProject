@@ -195,8 +195,8 @@ public class CPMCoordinator implements Coordinator {
     private void checkTimeToExit() {
         if (vehicle.getTimeToExit() <= 0
                 && parkingStatus != ParkingStatus.EXIT) {
-            System.out.println("Parking time has elapsed, " +
-                               "setting parking status to EXIT.");
+            // System.out.println("Parking time has elapsed, " +
+                               // "setting parking status to EXIT.");
             parkingStatus = ParkingStatus.EXIT;
             drivingState = DrivingState.DEFAULT_DRIVING_BEHAVIOUR;
             // Tell the vehicle in front to relocate, if there is one
@@ -213,12 +213,12 @@ public class CPMCoordinator implements Coordinator {
         // We only want to send the message if the vehicle is actually parked
         // I.e. is stationary, no velocity, and if we haven't already sent it
         // a message
-        System.out.println("Finding vehicle in front");
+        // System.out.println("Finding vehicle in front");
         CPMBasicAutoVehicle vehicleInFront = vehicle.getVehicleInFront();
         if(vehicleInFront != null
             && vehicleInFront.getVelocity() == 0.0
                 && vehicleInFront.getMessagesFromV2VInbox() == null) {
-            System.out.println("Sending message " +  status.toString() + " to vehicle in front");
+            // System.out.println("Sending message " +  status.toString() + " to vehicle in front");
             vehicleInFront.sendMessageToV2VInbox(status);
         }
     }
@@ -231,11 +231,11 @@ public class CPMCoordinator implements Coordinator {
         if ((I2Vinbox != null && parkingStatus == ParkingStatus.WAITING) ||
                 (I2Vinbox != null && parkingStatus == ParkingStatus.RELOCATING) ) {
             // We have been granted access to the car park and know where to park
-            System.out.println("Changing status to PARKING.");
+            // System.out.println("Changing status to PARKING.");
             setParkingStatus(ParkingStatus.PARKING);
             vehicle.setTargetParkingLane(I2Vinbox);
             vehicle.clearI2Vinbox();
-            System.out.println("Finding space on " + I2Vinbox.getRoadName());
+            // System.out.println("Finding space on " + I2Vinbox.getRoadName());
             if (!vehicle.hasEnteredCarPark()) {
                 vehicle.setHasEntered();
             } else {
@@ -251,7 +251,7 @@ public class CPMCoordinator implements Coordinator {
         ParkingStatus V2Vinbox = vehicle.getMessagesFromV2VInbox();
         if ((V2Vinbox == ParkingStatus.RELOCATING && parkingStatus == ParkingStatus.PARKING)) {
             // The vehicle behind us needs to exit, so change our parking status
-            System.out.println("Changing status to " + V2Vinbox.toString());
+            // System.out.println("Changing status to " + V2Vinbox.toString());
             setParkingStatus(V2Vinbox);
             setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
             // If there is a vehicle in front, we need to send them the same message
@@ -338,19 +338,19 @@ public class CPMCoordinator implements Coordinator {
             // If so, then switch to the relevant traversing mode.
             assert driver != null;
             if (driver.inCorner() != null){
-                System.out.println("Entering corner.");
+                // System.out.println("Entering corner.");
                 currentCorner = driver.inCorner();
                 vehicle.updateEstimatedDistanceTravelled(currentCorner);
                 setDrivingState(DrivingState.TRAVERSING_CORNER);
             }
             if (driver.inJunction() != null){
-                System.out.println("Entering junction.");
+                // System.out.println("Entering junction.");
                 currentJunction = driver.inJunction();
                 vehicle.updateEstimatedDistanceTravelled(currentJunction);
                 setDrivingState(DrivingState.TRAVERSING_JUNCTION);
             }
             if (driver.inIntersection() != null){
-                System.out.println("Entering intersection.");
+                // System.out.println("Entering intersection.");
                 SimpleIntersection currentIntersection = driver.inIntersection();
                 vehicle.updateEstimatedDistanceTravelled(currentIntersection);
                 setDrivingState(DrivingState.TRAVERSING_INTERSECTION);
@@ -359,7 +359,7 @@ public class CPMCoordinator implements Coordinator {
             // so vehicle will drive past the parking end point
             if (driver.getCurrentLane() instanceof ParkingLane
                     && parkingStatus == ParkingStatus.PARKING) {
-                System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
+                // System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
                 setDrivingState(DrivingState.TRAVERSING_PARKING_LANE);
             }
             pilot.followCurrentLane();
@@ -381,7 +381,7 @@ public class CPMCoordinator implements Coordinator {
             assert driver != null;
             Corner corner = driver.inCorner();
             if (corner == null) {
-                System.out.println("Driver is now out of the corner.");
+                // System.out.println("Driver is now out of the corner.");
                 // The vehicle is out of the corner.
                 // Go back to default driving behaviour
                 currentCorner = null;
@@ -415,7 +415,7 @@ public class CPMCoordinator implements Coordinator {
             assert driver != null;
             Junction junction = driver.inJunction();
             if (junction == null) {
-                System.out.println("Driver is now out of the junction.");
+                // System.out.println("Driver is now out of the junction.");
                 // The vehicle is out of the junction.
                 // Go back to default driving behaviour
                 currentJunction = null;
@@ -449,7 +449,7 @@ public class CPMCoordinator implements Coordinator {
             assert driver != null;
             SimpleIntersection intersection = driver.inIntersection();
             if (intersection == null) {
-                System.out.println("Driver is now out of the intersection.");
+                // System.out.println("Driver is now out of the intersection.");
                 // The vehicle is out of the intersection.
                 // Go back to default driving behaviour
                 pilot.clearDepartureLane();
@@ -474,7 +474,7 @@ public class CPMCoordinator implements Coordinator {
             // First check that we are still on a parking lane
             assert(driver != null);
             if (!driver.inParkingLane() || parkingStatus == ParkingStatus.EXIT){
-                System.out.println("Driver is now leaving the parking lane.");
+                // System.out.println("Driver is now leaving the parking lane.");
                 // Find out which state to be in next
                 // Find out if we need to change state
                 if (driver.inCorner() != null){
@@ -489,7 +489,7 @@ public class CPMCoordinator implements Coordinator {
             }
             if (vehicle.getTargetParkingLane() ==
                     driver.getParkingLaneCurrentlyIn()){
-                System.out.println("Reached target parking lane");
+                // System.out.println("Reached target parking lane");
                 vehicle.clearTargetParkingLane();
             }
             // keep driving on the parking lane

@@ -86,7 +86,7 @@ public class CPMMapUtil {
                         double parkingTime = generateParkingTime();
                         result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                         numberOfSpawnedVehicles += 1;
-                        System.out.println("Vehicle spawned!");
+                        // System.out.println("Vehicle spawned!");
                     }
                 }
             }
@@ -138,7 +138,7 @@ public class CPMMapUtil {
                 if (Util.random.nextDouble() < spawnProbability) {
                     double parkingTime = generateParkingTime();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                    // System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                 }
             }
             return result;
@@ -271,7 +271,7 @@ public class CPMMapUtil {
                     double parkingTime = spawnTimes.get(0).getValue();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
                     spawnTimes.remove(0);
-                    System.out.println("Vehicle spawned at time: " + initTime);
+                    // System.out.println("Vehicle spawned at time: " + initTime);
                 }
             }
 
@@ -352,7 +352,7 @@ public class CPMMapUtil {
                                 vehicleSpec,
                                 parkingTime));
                         numberOfSpawnedVehicles += 1;
-                        System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                        // System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                     }
                 }
             }
@@ -415,7 +415,7 @@ public class CPMMapUtil {
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
                                                 vehicleSpec,
                                                 parkingTime));
-                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                    // System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                 }
             }
 
@@ -555,7 +555,7 @@ public class CPMMapUtil {
                     double parkingTime = spawnTimes.get(0).getValue();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
                     spawnTimes.remove(0);
-                    System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
+                    // System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
                 }
             }
 
@@ -614,7 +614,7 @@ public class CPMMapUtil {
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
                             vehicleSpec,
                             parkingTime));
-                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+                    // System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                 }
             }
 
@@ -749,7 +749,7 @@ public class CPMMapUtil {
                     double parkingTime = spawnTimes.get(0).getValue();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
                     spawnTimes.remove(0);
-                    System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
+                    // System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
                 }
             }
 
