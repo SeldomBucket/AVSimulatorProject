@@ -61,7 +61,7 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
         trafficRateSlider =
                 new CPMLabeledSlider(0.0, 100.0,
                         simSetup.getTrafficLevel() * 3600.0,
-                        10.0, 5.0,
+                        10.0, 1.0,
                         "Traffic Level: %.0f vehicles/hour/lane",
                         "%.0f",
                         this);
@@ -144,9 +144,6 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
     public String getFileLocation() { return numberOfSimulationsInput.getFileLocation(); }
 
     public List<String> getSpecsToIncludeForRandomSpawn() {
-        if (spawnSpecRadioButtons.getSpecsToIncludeForRandom().isEmpty()) {
-            throw new RuntimeException("At least one vehicle specification must be chosen for random spawning.");
-        }
         return spawnSpecRadioButtons.getSpecsToIncludeForRandom();
     }
 }

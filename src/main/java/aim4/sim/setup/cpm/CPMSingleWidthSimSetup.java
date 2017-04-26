@@ -88,6 +88,9 @@ public class CPMSingleWidthSimSetup extends BasicCPMSimSetup {
                 }
                 break;
             case RANDOM:
+                if (specsToIncludeForRandomSpawn.isEmpty()) {
+                    throw new RuntimeException("At least one vehicle specification must be chosen for random spawning.");
+                }
                 if (!useCSVFile.getKey()){
                     CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel, specsToIncludeForRandomSpawn);
                 } else {
