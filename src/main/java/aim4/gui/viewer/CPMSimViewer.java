@@ -73,7 +73,6 @@ public class CPMSimViewer extends SimViewer {
                 Integer currentSimulationNumber = ((CPMStatScreen) statScreen).getCurrentSimulationNumber();
 
                 String filepath = ((CPMStatScreen) statScreen).getFileLocation();
-                String fileLocation = "C:\\Users\\Becci\\Google Drive\\Documents\\York\\Year 3\\Project\\Experiments\\dataCollected\\firstSet";
                 printStatScreenToCsv(currentSimulationNumber, filepath);
 
                 // If there are more simulations to run

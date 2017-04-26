@@ -39,7 +39,7 @@ public class CarParkOccupancyTable extends JPanel
         // TODO CPM should get number of hours from simSetup
         this.collectionHours = new ArrayList<Integer>(24);
 
-        for (int i = 1 ; i < 24 ; i++) {
+        for (int i = 1 ; i < 25 ; i++) {
             collectionHours.add(i);
         }
     }
@@ -47,6 +47,8 @@ public class CarParkOccupancyTable extends JPanel
     @Override
     public void update(CPMAutoDriverSimulator sim,
                        List<CPMAutoDriverSimulator.CPMAutoDriverSimStepResult> results) {
+
+        assert (!collectionHours.isEmpty());
 
         String timeString = Util.convertSecondsToTimeString(sim.getSimulationTime());
         String[] data = timeString.split(":");
