@@ -90,6 +90,7 @@ public class CPMSimViewer extends SimViewer {
                     startSimProcess();
                 } else {
                     ((CPMStatScreen) statScreen).updateSimulationStatus(true);
+                    simThread.terminate();
                 }
             } else { // If simulation time has not elapsed
                 stepResult = super.runSimulationStep();

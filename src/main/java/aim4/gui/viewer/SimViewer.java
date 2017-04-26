@@ -94,7 +94,7 @@ public abstract class SimViewer extends JPanel implements
     /**
      * The simulation's thread
      */
-    private SimThread simThread;
+    protected SimThread simThread;
     /**
      * The target simulation speed
      */
