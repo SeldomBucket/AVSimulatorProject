@@ -150,33 +150,40 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
+        // INFORMATION PANEL
+        JPanel informationPanel = new JPanel();
+
         generalInfo = new GeneralInfo(setupPanel, currentSimulationNumber);
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
+        informationPanel.add(generalInfo);
 
         simConfigSummary = new SimConfigSummary(setupPanel);
         simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
+        informationPanel.add(simConfigSummary);
 
         carParkStats = new CarParkStats();
         carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+        informationPanel.add(carParkStats);
 
         spawnConfigSummary = new SpawnConfigSummary(setupPanel);
         spawnConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
+        informationPanel.add(spawnConfigSummary);
+
+        // TABLES PANEL
+        JPanel tablesPanel = new JPanel();
 
         completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(50, 70));
+        tablesPanel.add(completedVehiclesTable);
 
         carParkOccupancyTable = new CarParkOccupancyTable();
         carParkOccupancyTable.setMaximumSize(new Dimension(50, 70));
+        tablesPanel.add(carParkOccupancyTable);
 
 
-        setLayout(new FlowLayout());
-        add(generalInfo);
-        add(simConfigSummary);
-        add(spawnConfigSummary);
-        add(carParkStats);
-        add(completedVehiclesTable);
-        add(carParkOccupancyTable);
-
+        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        add(informationPanel);
+        add(tablesPanel);
 
         componentsToUpdate.add(generalInfo);
         componentsToUpdate.add(simConfigSummary);
