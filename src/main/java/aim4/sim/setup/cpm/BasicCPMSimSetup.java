@@ -55,6 +55,10 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      * The location where the csv files are output to
      */
     protected String fileLocation;
+    /**
+     * The list of vehicle specs that should be included when randomly spawning vehicles.
+     */
+    protected List<String> specsToIncludeForRandomSpawn;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -73,6 +77,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
         this.numberOfSimulations = basicSimSetup.numberOfSimulations;
         this.fileLocation = basicSimSetup.fileLocation;
+        this.specsToIncludeForRandomSpawn = basicSimSetup.specsToIncludeForRandomSpawn;
     }
 
     /**
@@ -88,7 +93,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             String singleSpawnSpecName,
                             List<Double> mixedSpawnDistribution,
                             Integer numberOfSimulations,
-                            String fileLocation) {
+                            String fileLocation,
+                            List<String> specsToIncludeForRandomSpawn) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.parkingLength = parkingLength;
@@ -100,6 +106,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.mixedSpawnDistribution = mixedSpawnDistribution;
         this.numberOfSimulations = numberOfSimulations;
         this.fileLocation = fileLocation;
+        this.specsToIncludeForRandomSpawn = specsToIncludeForRandomSpawn;
     }
 
     @Override
@@ -193,5 +200,13 @@ public class BasicCPMSimSetup implements CPMSimSetup {
 
     public void setFileLocation(String fileLocation) {
         this.fileLocation = fileLocation;
+    }
+
+    public List<String> getSpecsToIncludeForRandomSpawn() {
+        return specsToIncludeForRandomSpawn;
+    }
+
+    public void setSpecsToIncludeForRandomSpawn(List<String> specsToIncludeForRandomSpawn) {
+        this.specsToIncludeForRandomSpawn = specsToIncludeForRandomSpawn;
     }
 }

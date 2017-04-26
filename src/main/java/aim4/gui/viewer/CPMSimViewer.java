@@ -46,7 +46,8 @@ public class CPMSimViewer extends SimViewer {
                 2.0, // laneWidth
                 10, // numberOfParkingLanes
                 1, // numberOfSimulations
-                ""
+                "",
+                new ArrayList<String>(0)
         )), false);
         this.viewer = viewer;
     }

@@ -22,6 +22,7 @@ public class CPMSpawnSpecConfig extends JPanel {
     /** The label which indicates the length and width of the selected vehicle spec for single spawn */
     JLabel specSizeLabel;
     List<JTextField> specDistributionFields = new ArrayList<JTextField>();
+    List<JCheckBox> specsToIncludeForRandom = new ArrayList<JCheckBox>(VehicleSpecDatabase.getNumOfSpec());
 
     public CPMSpawnSpecConfig(){
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -80,6 +81,11 @@ public class CPMSpawnSpecConfig extends JPanel {
         randomSpecButton.setSelected(true);
         randomSpecPanel.add(randomSpecButton);
 
+        for (String spec : specNames) {
+            JCheckBox check = new JCheckBox(spec);
+            randomSpecPanel.add(check);
+            specsToIncludeForRandom.add(check);
+        }
 
         group = new ButtonGroup();
         group.add(singleSpecButton);
@@ -119,6 +125,16 @@ public class CPMSpawnSpecConfig extends JPanel {
         }
 
         return distribution;
+    }
+
+    public List<String> getSpecsToIncludeForRandom() {
+        List<String> specsToInclude = new ArrayList<String>();
+        for (JCheckBox check : specsToIncludeForRandom) {
+            if (check.isSelected()) {
+                specsToInclude.add(check.getText());
+            }
+        }
+        return specsToInclude;
     }
 
     private String getSelectedVehicleSpecSizeString() {

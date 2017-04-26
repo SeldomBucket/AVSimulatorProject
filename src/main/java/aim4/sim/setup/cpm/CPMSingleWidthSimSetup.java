@@ -39,10 +39,11 @@ public class CPMSingleWidthSimSetup extends BasicCPMSimSetup {
                             double laneWidth,
                             int numberOfParkingLanes,
                             Integer numberOfSimulations,
-                            String fileLocation) {
+                            String fileLocation,
+                            List<String> specsToIncludeForRandomSpawn) {
         super(speedLimit, trafficLevel, parkingLength, accessLength, spawnSpecType,
          useCSVFile, useSpecificSimTime, singleSpawnSpecName, mixedSpawnDistribution,
-                numberOfSimulations, fileLocation);
+                numberOfSimulations, fileLocation, specsToIncludeForRandomSpawn);
         this.laneWidth = laneWidth;
         this.numberOfParkingLanes = numberOfParkingLanes;
     }
@@ -88,9 +89,9 @@ public class CPMSingleWidthSimSetup extends BasicCPMSimSetup {
                 break;
             case RANDOM:
                 if (!useCSVFile.getKey()){
-                    CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                    CPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel, specsToIncludeForRandomSpawn);
                 } else {
-                    CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
+                    CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile, specsToIncludeForRandomSpawn);
                 }
                 break;
             case MIXED:

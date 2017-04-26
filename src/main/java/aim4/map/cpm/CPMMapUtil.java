@@ -381,18 +381,23 @@ public class CPMMapUtil {
         private List<Double> proportion;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
+        /** The vehicle specifications that should be randomly spawned */
+        private List<String> specsToSpawn;
 
         /**
          * Create a spec generator that infinitely generates vehicles.
          * The vehicle spec is chosen with a uniform random probability.
          */
-        public InfiniteSpawnRandomSpecGenerator(double trafficLevel) {
-            int n = VehicleSpecDatabase.getNumOfSpec();
+        public InfiniteSpawnRandomSpecGenerator(double trafficLevel, List<String> specsToSpawn) {
+            this.specsToSpawn = specsToSpawn;
+
+            int n = specsToSpawn.size();
             proportion = new ArrayList<Double>(n);
             double p = 1.0 / n;
             for(int i=0; i<n; i++) {
                 proportion.add(p);
             }
+
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
@@ -410,7 +415,8 @@ public class CPMMapUtil {
                 time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < spawnProbability) {
                     int i = Util.randomIndex(proportion);
-                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                    String specName = specsToSpawn.get(i);
+                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(specName);
                     double parkingTime = generateParkingTime();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(),
                                                 vehicleSpec,
@@ -448,16 +454,20 @@ public class CPMMapUtil {
         private boolean isDone = false;
         /** The proportion of each spec */
         private List<Double> proportion;
+        /** The vehicle specifications that should be randomly spawned */
+        private List<String> specsToSpawn;
 
 
         /**
          * Create a spec generator that spawns vehicles with a uniform random spec, at times according to
          * the given CSV file.
          */
-        public SpecificSpawnRandomSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
+        public SpecificSpawnRandomSpecGenerator(Pair<Boolean, String> useCSVFilePair,
+                                                List<String> specsToSpawn) {
             processCSV(useCSVFilePair);
+            this.specsToSpawn = specsToSpawn;
 
-            int n = VehicleSpecDatabase.getNumOfSpec();
+            int n = specsToSpawn.size();
             proportion = new ArrayList<Double>(n);
             double p = 1.0 / n;
             for(int i=0; i<n; i++) {
@@ -551,7 +561,8 @@ public class CPMMapUtil {
             if (!isDone) {
                 if (spawnTimes.get(0).getKey() < initTime) {
                     int i = Util.randomIndex(proportion);
-                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+                    String specName = specsToSpawn.get(i);
+                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(specName);
                     double parkingTime = spawnTimes.get(0).getValue();
                     result.add(new CPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
                     spawnTimes.remove(0);
@@ -803,11 +814,12 @@ public class CPMMapUtil {
     }
 
     public static void setUpSpecificRandomSpecVehicleSpawnPoint(CPMMap map,
-                                                                Pair<Boolean, String> useCSVPair){
+                                                                Pair<Boolean, String> useCSVPair,
+                                                                List<String> specsToSpawn){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new SpecificSpawnRandomSpecGenerator(useCSVPair));
+                    new SpecificSpawnRandomSpecGenerator(useCSVPair, specsToSpawn));
         }
     }
 
@@ -822,11 +834,12 @@ public class CPMMapUtil {
     }
 
     public static void setUpInfiniteRandomSpecVehicleSpawnPoint(CPMMap map,
-                                                                double trafficLevel){
+                                                                double trafficLevel,
+                                                                List<String> specsToSpawn){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(CPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnRandomSpecGenerator(trafficLevel));
+                    new InfiniteSpawnRandomSpecGenerator(trafficLevel, specsToSpawn));
         }
     }
 

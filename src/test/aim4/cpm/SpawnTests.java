@@ -3,6 +3,7 @@ package aim4.cpm;
 import aim4.map.cpm.CPMCarParkSingleLaneWidth;
 import aim4.map.cpm.CPMMapUtil;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
+import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import javafx.util.Pair;
 import org.junit.After;
@@ -269,7 +270,7 @@ public class SpawnTests {
                 5); // access length
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\validSeconds.csv");
-        CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(map, useCsvPair, VehicleSpecDatabase.getSpecNames());
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 
@@ -318,7 +319,7 @@ public class SpawnTests {
                 5); // access length
         Pair<Boolean, String> useCsvPair =
                 new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\validTimes.csv");
-        CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(map, useCsvPair);
+        CPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(map, useCsvPair, VehicleSpecDatabase.getSpecNames());
         this.sim = new CPMAutoDriverSimulator(map, -1.0);
         this.simThread = new TestSimThread(sim);
 

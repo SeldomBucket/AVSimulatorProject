@@ -142,4 +142,11 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
     }
 
     public String getFileLocation() { return numberOfSimulationsInput.getFileLocation(); }
+
+    public List<String> getSpecsToIncludeForRandomSpawn() {
+        if (spawnSpecRadioButtons.getSpecsToIncludeForRandom().isEmpty()) {
+            throw new RuntimeException("At least one vehicle specification must be chosen for random spawning.");
+        }
+        return spawnSpecRadioButtons.getSpecsToIncludeForRandom();
+    }
 }
