@@ -20,8 +20,10 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
     private JLabel completedVehiclesLabel;
     private JLabel remainingVehiclesToSpawnLabel;
     private BasicCPMSimSetup setup;
+    private JLabel numberOfSimulationsLabel;
+    private JLabel currentSimulationNumberLabel;
 
-    public GeneralInfo(CPMSimSetupPanel setupPanel) {
+    public GeneralInfo(CPMSimSetupPanel setupPanel, int currentSimulationNumber) {
 
         setup = (BasicCPMSimSetup)setupPanel.getSimSetup();
 
@@ -40,6 +42,13 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         }
         simStatusLabel.setOpaque(true);
 
+        numberOfSimulationsLabel = new JLabel("Number of simulations: " + setup.getNumberOfSimulations());
+        numberOfSimulationsLabel.setOpaque(true);
+
+        currentSimulationNumberLabel = new JLabel("Simulation number: " + currentSimulationNumber);
+        currentSimulationNumberLabel.setOpaque(true);
+
+
         completedVehiclesLabel = new JLabel("Completed Vehicles: ");
         completedVehiclesLabel.setOpaque(true);
 
@@ -49,6 +58,8 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(simTimeLabel);
         this.add(simStatusLabel);
+        this.add(currentSimulationNumberLabel);
+        this.add(numberOfSimulationsLabel);
         this.add(completedVehiclesLabel);
         this.add(remainingVehiclesToSpawnLabel);
         this.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -91,5 +102,23 @@ public class GeneralInfo extends JPanel implements CPMStatScreenComponent{
         } else {
             simStatusLabel.setText("Simulation Status: Running");
         }
+    }
+
+    public Integer getNumberOfSimulations() {
+        String labelText = numberOfSimulationsLabel.getText();
+        // Split the text so we can get the value
+        String[] labelSplit = labelText.split(": ");
+        String labelValue = labelSplit [1];
+
+        return Integer.parseInt(labelValue);
+    }
+
+    public Integer getCurrentSimulationNumber() {
+        String labelText = currentSimulationNumberLabel.getText();
+        // Split the text so we can get the value
+        String[] labelSplit = labelText.split(": ");
+        String labelValue = labelSplit [1];
+
+        return Integer.parseInt(labelValue);
     }
 }

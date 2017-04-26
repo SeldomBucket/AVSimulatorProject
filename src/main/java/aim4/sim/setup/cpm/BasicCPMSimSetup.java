@@ -19,8 +19,6 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      * The traffic level
      */
     protected double trafficLevel;
-
-
     /**
      * The length of the parking lanes used for parking.
      */
@@ -49,6 +47,10 @@ public class BasicCPMSimSetup implements CPMSimSetup {
      * Whether to run the simulation for a specific period of time
      */
     protected Pair<Boolean, Double> useSpecificSimTime;
+    /**
+     * The number of times the simulation should be run.
+     */
+    protected Integer numberOfSimulations;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -65,6 +67,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.singleSpawnSpecName = basicSimSetup.singleSpawnSpecName;
         this.useCSVFile = basicSimSetup.useCSVFile;
         this.useSpecificSimTime = basicSimSetup.useSpecificSimTime;
+        this.numberOfSimulations = basicSimSetup.numberOfSimulations;
     }
 
     /**
@@ -78,7 +81,8 @@ public class BasicCPMSimSetup implements CPMSimSetup {
                             Pair<Boolean, String> useCSVFile,
                             Pair<Boolean, Double> useSpecificSimTime,
                             String singleSpawnSpecName,
-                            List<Double> mixedSpawnDistribution) {
+                            List<Double> mixedSpawnDistribution,
+                            Integer numberOfSimulations) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.parkingLength = parkingLength;
@@ -88,6 +92,7 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useSpecificSimTime = useSpecificSimTime;
         this.singleSpawnSpecName = singleSpawnSpecName;
         this.mixedSpawnDistribution = mixedSpawnDistribution;
+        this.numberOfSimulations = numberOfSimulations;
     }
 
     @Override
@@ -167,5 +172,11 @@ public class BasicCPMSimSetup implements CPMSimSetup {
         this.useSpecificSimTime = useSpecificSimTime;
     }
 
+    public Integer getNumberOfSimulations() {
+        return numberOfSimulations;
+    }
 
+    public void setNumberOfSimulations(Integer numberOfSimulations) {
+        this.numberOfSimulations = numberOfSimulations;
+    }
 }

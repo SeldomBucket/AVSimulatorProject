@@ -29,6 +29,7 @@ public class CPMStatScreen extends StatScreen {
     CPMSimViewer simViewer;
     List<CPMStatScreenComponent> componentsToUpdate;
     List<CPMAutoDriverSimStepResult> resultsToProcess;
+    int currentSimulationNumber;
 
     // Components
     GeneralInfo generalInfo;
@@ -38,10 +39,11 @@ public class CPMStatScreen extends StatScreen {
     CompletedVehiclesTable completedVehiclesTable;
     CarParkOccupancyTable carParkOccupancyTable;
 
-    public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer, CPMSimSetupPanel setupPanel) {
+    public CPMStatScreen(Viewer viewer, CPMSimViewer simViewer, CPMSimSetupPanel setupPanel, int currentSimulationNumber) {
         this.viewer = viewer;
         this.simViewer = simViewer;
         this.setupPanel = setupPanel;
+        this.currentSimulationNumber = currentSimulationNumber;
         this.componentsToUpdate = new ArrayList<CPMStatScreenComponent>();
         this.resultsToProcess = new ArrayList<CPMAutoDriverSimStepResult>();
     }
@@ -146,7 +148,7 @@ public class CPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        generalInfo = new GeneralInfo(setupPanel);
+        generalInfo = new GeneralInfo(setupPanel, currentSimulationNumber);
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         simConfigSummary = new SimConfigSummary(setupPanel);
@@ -184,5 +186,13 @@ public class CPMStatScreen extends StatScreen {
 
     public void updateSimulationStatus(boolean simComplete) {
         generalInfo.updateSimStatusLabel(simComplete);
+    }
+
+    public Integer getNumberOfSimulations() {
+        return generalInfo.getNumberOfSimulations();
+    }
+
+    public Integer getCurrentSimulationNumber() {
+        return generalInfo.getCurrentSimulationNumber();
     }
 }

@@ -32,6 +32,7 @@ public class CPMMultiWidthParamPanel extends CPMBasicParamPanel {
 
     @Override
     public void addComponentsToPanel() {
+        add(numberOfSimulationsInput);
         add(mapAreaLabel);
         add(variedParkingLaneWidthsConfig);
         add(parkingLengthSlider);

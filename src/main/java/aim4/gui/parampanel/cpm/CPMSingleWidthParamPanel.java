@@ -55,6 +55,7 @@ public class CPMSingleWidthParamPanel extends CPMBasicParamPanel {
 
     @Override
     public void addComponentsToPanel() {
+        add(numberOfSimulationsInput);
         add(mapAreaLabel);
         add(laneWidthSlider);
         add(numberOfParkingLanesSlider);

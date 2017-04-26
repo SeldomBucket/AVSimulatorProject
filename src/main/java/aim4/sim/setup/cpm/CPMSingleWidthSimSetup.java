@@ -37,9 +37,10 @@ public class CPMSingleWidthSimSetup extends BasicCPMSimSetup {
                             String singleSpawnSpecName,
                             List<Double> mixedSpawnDistribution,
                             double laneWidth,
-                            int numberOfParkingLanes) {
+                            int numberOfParkingLanes,
+                            Integer numberOfSimulations) {
         super(speedLimit, trafficLevel, parkingLength, accessLength, spawnSpecType,
-         useCSVFile, useSpecificSimTime, singleSpawnSpecName, mixedSpawnDistribution);
+         useCSVFile, useSpecificSimTime, singleSpawnSpecName, mixedSpawnDistribution, numberOfSimulations);
         this.laneWidth = laneWidth;
         this.numberOfParkingLanes = numberOfParkingLanes;
     }

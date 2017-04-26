@@ -26,11 +26,15 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
     protected CPMUseCSVFileRadioButtons useCSVFileRadioButtons;
     protected CPMSimTimeRadioButtons useSpecificSimTimeRadioButtons;
     protected CPMMapAreaLabel mapAreaLabel;
+    protected CPMNumberOfSimulationsInput numberOfSimulationsInput;
 
     public CPMBasicParamPanel(BasicCPMSimSetup simSetup) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         // create the components
+        numberOfSimulationsInput = new CPMNumberOfSimulationsInput();
+        numberOfSimulationsInput.setBorder(new EmptyBorder(3, 3, 3, 3));
+
         mapAreaLabel = new CPMMapAreaLabel("Total area of car park (square metres): ", simSetup);
         mapAreaLabel.setOpaque(true);
         mapAreaLabel.setBorder(new EmptyBorder(3, 3, 3, 3));
@@ -131,5 +135,9 @@ public abstract class CPMBasicParamPanel extends JPanel implements CPMParamPanel
         }
         Pair<Boolean, Double> useSpecificSimTimePair = new Pair<Boolean, Double>(useSpecificSimTime, simTime);
         return useSpecificSimTimePair;
+    }
+
+    public Integer getNumberOfSimulations() {
+        return numberOfSimulationsInput.getNumberOfSimulations();
     }
 }
