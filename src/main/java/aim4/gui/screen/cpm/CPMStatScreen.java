@@ -33,10 +33,12 @@ public class CPMStatScreen extends StatScreen {
     int currentSimulationNumber;
 
     // Components
+    JPanel informationPanel;
     GeneralInfo generalInfo;
     SimConfigSummary simConfigSummary;
     SpawnConfigSummary spawnConfigSummary;
     CarParkStats carParkStats;
+    JPanel tablesPanel;
     CompletedVehiclesTable completedVehiclesTable;
     CarParkOccupancyTable carParkOccupancyTable;
 
@@ -143,6 +145,9 @@ public class CPMStatScreen extends StatScreen {
             this.remove((JComponent) comp);
         }
         componentsToUpdate.clear();
+
+        this.remove(informationPanel);
+        this.remove(tablesPanel);
     }
 
     public void addResultToProcess(CPMAutoDriverSimStepResult simStepResult) {
@@ -151,7 +156,7 @@ public class CPMStatScreen extends StatScreen {
 
     private void setupScreen(){
         // INFORMATION PANEL
-        JPanel informationPanel = new JPanel();
+        informationPanel = new JPanel();
 
         generalInfo = new GeneralInfo(setupPanel, currentSimulationNumber);
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
@@ -170,7 +175,7 @@ public class CPMStatScreen extends StatScreen {
         informationPanel.add(spawnConfigSummary);
 
         // TABLES PANEL
-        JPanel tablesPanel = new JPanel();
+        tablesPanel = new JPanel();
 
         completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(50, 70));
