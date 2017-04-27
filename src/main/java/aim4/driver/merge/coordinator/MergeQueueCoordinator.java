@@ -21,6 +21,9 @@ import java.util.List;
  * Created by Callum on 19/04/2017.
  */
 public class MergeQueueCoordinator extends MergeCoordinator {
+    // CONSTANT
+    private static final double REQUEST_TIME_GAP = 0.1;
+
     // NESTED CLASSES //
     public enum State {
         PLANNING,
@@ -177,6 +180,8 @@ public class MergeQueueCoordinator extends MergeCoordinator {
         /** {@inheritDoc} */
         @Override
         public boolean perform() {
+            //Update Next allowed request time
+            nextAllowedSendingRequestTime = nextAllowedSendingRequestTime + REQUEST_TIME_GAP;
             //Get distance to merge
             double distanceToMerge = getDriver().distanceToNextMerge();
             //Create request
