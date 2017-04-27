@@ -32,7 +32,6 @@ public class SingleLaneOnlyMap extends MergeMap {
         Road road = new Road("Single Lane Road", this);
 
         //Create lane
-
         Point2D laneStart = new Point2D.Double(LANE_START_X_POS, LANE_Y_POS);
         Point2D laneEnd = new Point2D.Double(laneLength, LANE_Y_POS);
         Line2D laneLine = new Line2D.Double(

@@ -106,6 +106,8 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     private Map<Integer,AIMVehicleSimModel> vinToVehicles;
     /** The current time */
     private double currentTime;
+    /** The last time a vehicle completed */
+    private double lastVehicleCompleteTime;
     /** The number of completed vehicles */
     private int numOfCompletedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
@@ -1033,6 +1035,7 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                     vehicle.getFinalXPos(),
                     vehicle.getFinalYPos()
             ));
+            lastVehicleCompleteTime = currentTime;
         }
     }
 
@@ -1086,26 +1089,31 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     protected AIMResult produceResult() {
-        return new AIMResult(vehiclesRecord, numOfCompletedVehicles/currentTime);
+        return new AIMResult(vehiclesRecord, numOfCompletedVehicles/lastVehicleCompleteTime);
     }
 
     protected String resultsToCSV(AIMResult result) {
         StringBuilder sb = new StringBuilder();
         //Global Stats
-        sb.append("Throughput:");
+        sb.append("Maximum Delay");
         sb.append(',');
-        sb.append(result.getThroughput());
+        sb.append("Average Delay");
         sb.append(',');
-        sb.append("Max Delay:");
+        sb.append("Minimum Delay");
         sb.append(',');
+        sb.append("No. Completed Vehicles");
+        sb.append(',');
+        sb.append("Throughput");
+        sb.append('\n');
         sb.append(result.getMaxDelay());
         sb.append(',');
-        sb.append("Min Delay:");
+        sb.append(result.getAverageDelay());
         sb.append(',');
         sb.append(result.getMinDelay());
-        sb.append("Average Delay:");
         sb.append(',');
-        sb.append(result.getAverageDelay());
+        sb.append(result.getCompletedVehicles());
+        sb.append(',');
+        sb.append(result.getThroughput());
         sb.append('\n');
         sb.append('\n');
         //Headings

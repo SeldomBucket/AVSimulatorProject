@@ -11,6 +11,7 @@ public class AIMResult {
     private double maxDelay;
     private double minDelay;
     private double averageDelay;
+    private double completedVehicles;
 
     public AIMResult(List<AIMVehicleResult> vehicleResults, double throughput) {
         this.vehicleResults = vehicleResults;
@@ -25,7 +26,8 @@ public class AIMResult {
                 minDelay = result.getDelayTime();
             totalDelay += result.getDelayTime();
         }
-        this.averageDelay = totalDelay / vehicleResults.size();
+        this.completedVehicles = vehicleResults.size();
+        this.averageDelay = totalDelay / completedVehicles;
     }
 
     public List<AIMVehicleResult> getVehicleResults() {
@@ -45,6 +47,10 @@ public class AIMResult {
     }
 
     public double getAverageDelay() {
-        return minDelay;
+        return averageDelay;
+    }
+
+    public double getCompletedVehicles() {
+        return completedVehicles;
     }
 }

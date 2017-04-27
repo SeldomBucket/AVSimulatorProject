@@ -376,7 +376,7 @@ public class GridMapUtil {
             List<AIMSpawnSpec> specs = new ArrayList<AIMSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if(!schedule.isEmpty()) {
-                    if (time == schedule.peek().getSpawnTime()) {
+                    if (time > schedule.peek().getSpawnTime()) {
                         specs.add(new AIMSpawnSpec(
                                 spawnPoint.getCurrentTime(),
                                 VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),

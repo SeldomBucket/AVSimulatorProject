@@ -12,6 +12,7 @@ import aim4.vehicle.VinRegistry;
 import aim4.vehicle.merge.*;
 
 import java.awt.geom.Path2D;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -28,25 +29,30 @@ public class SpawnHelper {
     }
 
     /**
-     * Spawn vehicles
-     *
-     * @param timeStep
+     * Spawns vehicles
+     * @param timeStep The time step
+     * @param protocolType The protocol type for the given simulation
+     * @return A List of the Vehicles spawned. Null if no vehicles spawned.
      */
-    public void spawnVehicles(double timeStep, ProtocolType protocolType) {
+    public List<MergeVehicleSimModel> spawnVehicles(double timeStep, ProtocolType protocolType) {
         for(MergeSpawnPoint spawnPoint : map.getSpawnPoints()) {
             List<MergeSpawnPoint.MergeSpawnSpec> spawnSpecs = spawnPoint.act(timeStep);
             if(!spawnSpecs.isEmpty()){
                 if(canSpawnVehicle(spawnPoint)) {
+                    List<MergeVehicleSimModel> spawnedVehicles = new ArrayList<MergeVehicleSimModel>();
                     for(MergeSpawnPoint.MergeSpawnSpec spawnSpec : spawnSpecs) {
                         MergeVehicleSimModel vehicle = setupVehicle(spawnPoint, spawnSpec, protocolType);
                         VinRegistry.registerVehicle(vehicle);
                         vinToVehicles.put(vehicle.getVIN(), vehicle);
+                        spawnedVehicles.add(vehicle);
                         if(!canSpawnVehicle(spawnPoint))
                             break;
                     }
+                    return spawnedVehicles;
                 }
             }
         }
+        return null;
     }
 
     /**

@@ -13,9 +13,14 @@ import aim4.im.merge.reservation.nogrid.ReservationMergeManager;
 import aim4.map.connections.MergeConnection;
 import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpec;
 import aim4.map.merge.MergeSpawnPoint.MergeSpawnSpecGenerator;
+import aim4.sim.setup.merge.enums.ProtocolType;
+import aim4.sim.simulator.merge.helper.SensorInputHelper;
+import aim4.sim.simulator.merge.helper.SpawnHelper;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.merge.MergeVehicleSimModel;
+import com.sun.scenario.effect.Merge;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -24,10 +29,7 @@ import org.json.simple.parser.ParseException;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
 
 /**
  * Created by Callum on 17/03/2017.
@@ -291,7 +293,7 @@ public class MergeMapUtil {
             List<MergeSpawnSpec> specs = new ArrayList<MergeSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
                 if(!schedule.isEmpty()) {
-                    if (time == schedule.peek().getSpawnTime()) {
+                    if (time > schedule.peek().getSpawnTime()) {
                         specs.add(new MergeSpawnSpec(
                                 spawnPoint.getCurrentTime(),
                                 VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName())
@@ -304,37 +306,53 @@ public class MergeMapUtil {
     }
 
     // SPAWN SCHEDULE GENERATOR //
-    public static JSONArray createSpawnSchedule(double trafficLevel, double timeLimit) {
-        //Create generation parameters
-        int n = VehicleSpecDatabase.getNumOfSpec();
-        List<Double> proportion = new ArrayList<Double>(n);
-        double p = 1.0 / n;
-        for(int i=0; i<n; i++) {
-            proportion.add(p);
-        }
+    public static JSONArray createSpawnSchedule(double trafficLevel, double timeLimit, double speedLimit) {
+        //Create Map to base the schedule on
+        SingleLaneOnlyMap map = new SingleLaneOnlyMap(0, speedLimit, 200);
+        MergeMapUtil.setUniformSpawnSpecGenerator(map, trafficLevel);
 
-        double prob = trafficLevel * SimConfig.SPAWN_TIME_STEP;
-        // Cannot generate more than one vehicle in each spawn time step
-        assert prob <= 1.0;
+        //Create SpawnHelper
+        Map<Integer, MergeVehicleSimModel> vinToVehicles = new HashMap<Integer, MergeVehicleSimModel>();
+        SpawnHelper spawnHelper = new SpawnHelper(map, vinToVehicles);
+        SensorInputHelper sensorInputHelper = new SensorInputHelper(map, vinToVehicles);
 
         //Create schedule
         JSONArray schedule = new JSONArray();
         double currentTime = 0;
-        while(currentTime < timeLimit) {
-            currentTime += SimConfig.TIME_STEP;
-            for(double time = currentTime; time < currentTime + SimConfig.TIME_STEP; time += SimConfig.SPAWN_TIME_STEP) {
-                if (Util.random.nextDouble() < prob) {
-                    int i = Util.randomIndex(proportion);
-                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
-                    JSONObject scheduledSpawn = new JSONObject();
-                    scheduledSpawn.put("specName", vehicleSpec.getName());
-                    scheduledSpawn.put("spawnTime", currentTime);
-                    schedule.add(scheduledSpawn);
-                }
+        while (currentTime < timeLimit) {
+            //Spawn Vehicles
+            List<MergeVehicleSimModel> spawnedVehicles =
+                    spawnHelper.spawnVehicles(SimConfig.MERGE_TIME_STEP, ProtocolType.NONE);
+            if (spawnedVehicles != null) {
+                VehicleSpec vSpec = spawnedVehicles.get(0).getSpec(); //Only expecting one.
+                JSONObject scheduledSpawn = new JSONObject();
+                scheduledSpawn.put("specName", vSpec.getName());
+                scheduledSpawn.put("spawnTime", currentTime);
+                schedule.add(scheduledSpawn);
             }
+
+            //Provide sensor input
+            sensorInputHelper.provideSensorInput();
+
+            //Vehicle movement
+            for(MergeVehicleSimModel vehicle : vinToVehicles.values()){
+                vehicle.getDriver().act();
+            }
+            for(MergeVehicleSimModel vehicle : vinToVehicles.values()){
+                vehicle.move(SimConfig.TIME_STEP);
+            }
+            List<MergeVehicleSimModel> removedVehicles = new ArrayList<MergeVehicleSimModel>(vinToVehicles.size());
+            for(MergeVehicleSimModel vehicle : vinToVehicles.values()){
+                if(!vehicle.getShape().intersects(map.getDimensions()))
+                    removedVehicles.add(vehicle);
+            }
+            for(MergeVehicleSimModel vehicle : removedVehicles) {
+                vinToVehicles.remove(vehicle.getVIN());
+            }
+            currentTime += SimConfig.TIME_STEP;
         }
+
 
         return schedule;
     }
-
 }

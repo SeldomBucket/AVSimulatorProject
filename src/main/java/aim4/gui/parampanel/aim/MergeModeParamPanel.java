@@ -84,6 +84,7 @@ public class MergeModeParamPanel extends JPanel implements ActionListener {
         targetSchedulePane.add(targetScheduleClearButton);
 
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        this.add(speedLimitSlider);
         this.add(mergeSchedulePane);
         this.add(targetSchedulePane);
     }

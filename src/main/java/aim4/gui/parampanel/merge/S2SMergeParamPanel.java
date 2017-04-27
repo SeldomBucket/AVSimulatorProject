@@ -61,6 +61,8 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
     private LabeledSlider scheduleTrafficRateSlider;
     /**Dictates the length of time the schedule will spawn for*/
     private LabeledSlider scheduleTimeLimitSlider;
+    /**Dictates the expected speed to be used for the schedule. To do with the time required to clear the no vehicle zone*/
+    private LabeledSlider scheduleSpeedSlider;
 
     private JTextArea mergeSchedulePathTextbox;
     private JTextArea targetSchedulePathTextbox;
@@ -226,6 +228,12 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
                         500.0, 100.0,
                         "Schedule time limit: %.0fs",
                         "%.0fs");
+        scheduleSpeedSlider =
+                new LabeledSlider(0.0, 80.0,
+                        S2SSimSetup.DEFAULT_TARGET_LANE_SPEED_LIMIT,
+                        10.0, 5.0,
+                        "Lane Speed Limit: %.0f metres/second",
+                        "%.0f");
         //Create button
         JButton createScheduleButton = new JButton("Create schedule");
         createScheduleButton.addActionListener(this);
@@ -234,8 +242,9 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
         //Create Panel
         JPanel scheduleGenPanel = new JPanel();
         scheduleGenPanel.setLayout(new BoxLayout(scheduleGenPanel, BoxLayout.PAGE_AXIS));
-        scheduleGenPanel.add(trafficRateSlider);
+        scheduleGenPanel.add(scheduleTrafficRateSlider);
         scheduleGenPanel.add(scheduleTimeLimitSlider);
+        scheduleGenPanel.add(scheduleSpeedSlider);
         scheduleGenPanel.add(createScheduleButton);
 
         return scheduleGenPanel;
@@ -311,7 +320,8 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
             case CREATE_SCHEDULE:
                 double trafficLevel = scheduleTrafficRateSlider.getValue() / 3600;
                 double timeLimit = scheduleTimeLimitSlider.getValue();
-                JSONArray schedule = MergeMapUtil.createSpawnSchedule(trafficLevel, timeLimit);
+                double speedLimit = scheduleSpeedSlider.getValue();
+                JSONArray schedule = MergeMapUtil.createSpawnSchedule(trafficLevel, timeLimit, speedLimit);
                 try {
                     saveJSON(schedule);
                 } catch (IOException ex) {
