@@ -51,6 +51,6 @@ public class CoreMergeResult {
     }
 
     public double getCompletedVehicles() {
-        return minDelay;
+        return completedVehicles;
     }
 }
