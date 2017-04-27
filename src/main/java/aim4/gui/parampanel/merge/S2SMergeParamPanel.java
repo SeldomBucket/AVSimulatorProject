@@ -63,6 +63,8 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
     private LabeledSlider scheduleTimeLimitSlider;
     /**Dictates the expected speed to be used for the schedule. To do with the time required to clear the no vehicle zone*/
     private LabeledSlider scheduleSpeedSlider;
+    /**Dictates the number of schedules to create*/
+    private LabeledSlider numberOfSchedulesSlider;
 
     private JTextArea mergeSchedulePathTextbox;
     private JTextArea targetSchedulePathTextbox;
@@ -234,6 +236,12 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
                         10.0, 5.0,
                         "Lane Speed Limit: %.0f metres/second",
                         "%.0f");
+        numberOfSchedulesSlider =
+                new LabeledSlider(0, 100,
+                        1,
+                        10, 1,
+                        "Number of schedules to save: %.0f schedules",
+                        "%.0f");
         //Create button
         JButton createScheduleButton = new JButton("Create schedule");
         createScheduleButton.addActionListener(this);
@@ -245,6 +253,7 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
         scheduleGenPanel.add(scheduleTrafficRateSlider);
         scheduleGenPanel.add(scheduleTimeLimitSlider);
         scheduleGenPanel.add(scheduleSpeedSlider);
+        scheduleGenPanel.add(numberOfSchedulesSlider);
         scheduleGenPanel.add(createScheduleButton);
 
         return scheduleGenPanel;
@@ -321,9 +330,13 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
                 double trafficLevel = scheduleTrafficRateSlider.getValue() / 3600;
                 double timeLimit = scheduleTimeLimitSlider.getValue();
                 double speedLimit = scheduleSpeedSlider.getValue();
-                JSONArray schedule = MergeMapUtil.createSpawnSchedule(trafficLevel, timeLimit, speedLimit);
+                List<JSONArray> schedules = new ArrayList<JSONArray>();
+                for(int i = 0; i < numberOfSchedulesSlider.getValue(); i++) {
+                    JSONArray schedule = MergeMapUtil.createSpawnSchedule(trafficLevel, timeLimit, speedLimit);
+                    schedules.add(schedule);
+                }
                 try {
-                    saveJSON(schedule);
+                    saveJSON(schedules);
                 } catch (IOException ex) {
                     String stackTraceMessage = "";
                     for(StackTraceElement line : ex.getStackTrace())
@@ -351,17 +364,27 @@ public class S2SMergeParamPanel extends MergeParamPanel implements ActionListene
             return null;
     }
 
-    private void saveJSON(JSONArray json) throws IOException {
-        String jsonString = json.toJSONString();
-        List<String> jsonList = new ArrayList<String>();
-        jsonList.add(jsonString);
+    private void saveJSON(List<JSONArray> schedules) throws IOException {
         FileNameExtensionFilter filter = new FileNameExtensionFilter("JSON Files","json");
         final JFileChooser fc = new JFileChooser();
         fc.setFileFilter(filter);
         int returnVal = fc.showSaveDialog(this);
         if(returnVal == JFileChooser.APPROVE_OPTION) {
-            File file = fc.getSelectedFile();
-            Files.write(Paths.get(file.getAbsolutePath()), jsonList, Charset.forName("UTF-8"));
+            String pathExtension = fc.getSelectedFile().getAbsolutePath();
+            for(int i = 0; i < schedules.size(); i++) {
+                String jsonString = schedules.get(i).toJSONString();
+                List<String> writeList = new ArrayList<String>();
+                writeList.add(jsonString);
+                String path = pathExtension;
+                if(pathExtension.endsWith(".json")) {
+                    int lastIndex = path.lastIndexOf(".json");
+                    if(lastIndex > -1)
+                        path = path.substring(0, lastIndex) + "_" + Integer.toString(i+1) + ".json";
+                } else {
+                    path = path.substring(0, path.length()) + "_" + Integer.toString(i+1) + ".json";
+                }
+                Files.write(Paths.get(path), writeList, Charset.forName("UTF-8"));
+            }
         }
     }
 }
