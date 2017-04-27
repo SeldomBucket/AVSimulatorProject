@@ -45,6 +45,7 @@ public class V2IMergeSimulator extends CoreMergeSimulator {
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
         provideCompletedVehiclesWithResultsInfo(completedVehicles);
         recordCompletedVehicles(completedVehicles);
+        updateMaxMinVelocities();
         incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);

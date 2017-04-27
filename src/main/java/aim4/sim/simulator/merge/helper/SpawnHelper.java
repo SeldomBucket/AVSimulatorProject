@@ -115,6 +115,8 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
         vehicle.setStartTime(spawnPoint.getCurrentTime());
+        vehicle.setMaxVelocity(initVelocity);
+        vehicle.setMinVelocity(initVelocity);
         if(spawnPoint.getHeading() == 0)
             vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
         else
@@ -144,6 +146,8 @@ public class SpawnHelper {
                         lane.getSpeedLimit(),
                         spawnSpec.getSpawnTime());
         vehicle.setStartTime(spawnPoint.getCurrentTime());
+        vehicle.setMaxVelocity(initVelocity);
+        vehicle.setMinVelocity(initVelocity);
         if(spawnPoint.getHeading() == 0)
             vehicle.setStartingRoad(RoadNames.TARGET_ROAD);
         else

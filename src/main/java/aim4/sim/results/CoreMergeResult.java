@@ -10,18 +10,22 @@ public class CoreMergeResult {
     private double throughput;
     private double maxDelay;
     private double minDelay;
+    private double averageDelay;
 
     public CoreMergeResult(List<CoreMergeVehicleResult> vehicleResults, double throughput) {
         this.vehicleResults = vehicleResults;
         this.throughput = throughput;
         this.maxDelay = Double.MIN_VALUE;
         this.minDelay = Double.MAX_VALUE;
+        double totalDelay = 0;
         for(CoreMergeVehicleResult result : vehicleResults) {
             if(maxDelay < result.getDelayTime())
                 maxDelay = result.getDelayTime();
             if(minDelay > result.getDelayTime())
                 minDelay = result.getDelayTime();
+            totalDelay += result.getDelayTime();
         }
+        this.averageDelay = totalDelay / vehicleResults.size();
     }
 
     public List<CoreMergeVehicleResult> getVehicleResults() {
@@ -38,5 +42,9 @@ public class CoreMergeResult {
 
     public double getMinDelay() {
         return minDelay;
+    }
+
+    public double getAverageDelay() {
+        return averageDelay;
     }
 }

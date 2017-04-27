@@ -290,11 +290,13 @@ public class MergeMapUtil {
             double initTime = spawnPoint.getCurrentTime();
             List<MergeSpawnSpec> specs = new ArrayList<MergeSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
-                if (time == schedule.peek().getSpawnTime()) {
-                    specs.add(new MergeSpawnSpec(
-                            spawnPoint.getCurrentTime(),
-                            VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName())
-                    ));
+                if(!schedule.isEmpty()) {
+                    if (time == schedule.peek().getSpawnTime()) {
+                        specs.add(new MergeSpawnSpec(
+                                spawnPoint.getCurrentTime(),
+                                VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName())
+                        ));
+                    }
                 }
             }
             return specs;

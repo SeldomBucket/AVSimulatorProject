@@ -8,6 +8,8 @@ import aim4.sim.results.CoreMergeVehicleResult;
 import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.helper.SensorInputHelper;
 import aim4.sim.simulator.merge.helper.SpawnHelper;
+import aim4.vehicle.ResultsEnabledVehicle;
+import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
@@ -87,6 +89,7 @@ public class CoreMergeSimulator implements MergeSimulator {
         Map<Integer, MergeVehicleSimModel> completedVehicles = cleanUpCompletedVehicles();
         provideCompletedVehiclesWithResultsInfo(completedVehicles);
         recordCompletedVehicles(completedVehicles);
+        updateMaxMinVelocities();
         incrementCurrentTime(timeStep);
 
         return new CoreMergeSimStepResult(completedVehicles);
@@ -215,6 +218,9 @@ public class CoreMergeSimulator implements MergeSimulator {
         sb.append("Min Delay:");
         sb.append(',');
         sb.append(result.getMinDelay());
+        sb.append("Average Delay:");
+        sb.append(',');
+        sb.append(result.getAverageDelay());
         sb.append('\n');
         sb.append('\n');
         //Headings
@@ -320,6 +326,17 @@ public class CoreMergeSimulator implements MergeSimulator {
                     vehicle.getFinalYPos()
             ));
         }
+    }
+
+    protected void updateMaxMinVelocities() {
+         for(int vin : vinToVehicles.keySet()) {
+             MergeVehicleSimModel vehicle = vinToVehicles.get(vin);
+             if(vehicle.getVelocity() > vehicle.getMaxVelocity())
+                 vehicle.setMaxVelocity(vehicle.getVelocity());
+             else if(vehicle.getVelocity() < vehicle.getMinVelocity()) {
+                 vehicle.setMinVelocity(vehicle.getVelocity());
+             }
+         }
     }
 
 }

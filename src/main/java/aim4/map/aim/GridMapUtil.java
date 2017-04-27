@@ -375,12 +375,14 @@ public class GridMapUtil {
             double initTime = spawnPoint.getCurrentTime();
             List<AIMSpawnSpec> specs = new ArrayList<AIMSpawnSpec>();
             for (double time = initTime; time < initTime + timestep; time += SimConfig.SPAWN_TIME_STEP) {
-                if (time == schedule.peek().getSpawnTime()) {
-                    specs.add(new AIMSpawnSpec(
-                            spawnPoint.getCurrentTime(),
-                            VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
-                            destinationRoad
-                    ));
+                if(!schedule.isEmpty()) {
+                    if (time == schedule.peek().getSpawnTime()) {
+                        specs.add(new AIMSpawnSpec(
+                                spawnPoint.getCurrentTime(),
+                                VehicleSpecDatabase.getVehicleSpecByName(schedule.poll().getSpecName()),
+                                destinationRoad
+                        ));
+                    }
                 }
             }
             return specs;
