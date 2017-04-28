@@ -10,7 +10,9 @@ import aim4.msg.merge.i2v.QReject;
 import aim4.msg.merge.v2i.QDone;
 import aim4.msg.merge.v2i.QRequest;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -26,6 +28,15 @@ public class QueueManager {
      */
     private Queue<Integer> vinQueue;
     /**
+     * The VIN list containing vehicle the last 2 * MAX_DISTANCE_TO_MERGE_TO_ACCEPT vehicles that have been given GO
+     * commands. Used to ensure that no erroneous VEHICLE_IN_FRONT_NOT_IN_QUEUE messages are sent
+     */
+    private List<Integer> vinsSentGoCache;
+    /**
+     * Used to index vinsSentGoCache
+     */
+    private int vinsSentGoCacheIndex;
+    /**
      * The merge manager callback
      * @param callback
      */
@@ -38,6 +49,8 @@ public class QueueManager {
 
     public QueueManager(V2IQueueMergeManagerCallback callback) {
         this.vinQueue = new LinkedList<Integer>();
+        this.vinsSentGoCache = new ArrayList<Integer>(new Double(2*MAX_DISTANCE_TO_MERGE_TO_ACCEPT).intValue());
+        this.vinsSentGoCacheIndex = 0;
         this.callback = callback;
         this.mergeFree = true;
     }
@@ -46,7 +59,13 @@ public class QueueManager {
     public void act() {
         if(mergeFree && !vinQueue.isEmpty()) {
             mergeFree = false;
-            sendGo(vinQueue.poll());
+            int vin = vinQueue.poll();
+            sendGo(vin);
+            vinsSentGoCache.add(vinsSentGoCacheIndex, vin);
+            if(vinsSentGoCacheIndex < vinsSentGoCache.size() - 1)
+                vinsSentGoCacheIndex++;
+            else
+                vinsSentGoCacheIndex = 0;
         }
     }
 
@@ -56,6 +75,10 @@ public class QueueManager {
             sendReject(request.getVin(), QReject.Reason.ALREADY_IN_QUEUE);
         } else if(request.getDistanceToMerge() > MAX_DISTANCE_TO_MERGE_TO_ACCEPT) {
             sendReject(request.getVin(), QReject.Reason.TOO_FAR);
+        } else if(!vinQueue.contains(request.getVehicleInFrontVIN()) &&
+                request.getVehicleInFrontVIN() != 0 &&
+                !vinsSentGoCache.contains(request.getVehicleInFrontVIN())){
+            sendReject(request.getVin(), QReject.Reason.VEHICLE_IN_FRONT_NOT_IN_QUEUE);
         } else {
             vinQueue.add(request.getVin());
             sendConfirm(request.getVin());

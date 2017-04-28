@@ -1,14 +1,11 @@
 package aim4.sim.simulator.merge.helper;
 
-import aim4.config.Debug;
 import aim4.driver.merge.MergeAutoDriver;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
-import aim4.vehicle.AutoVehicleSimModel;
 import aim4.vehicle.merge.MergeAutoVehicleSimModel;
 import aim4.vehicle.merge.MergeVehicleSimModel;
-import com.sun.scenario.effect.Merge;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
@@ -40,6 +37,7 @@ public class SensorInputHelper {
         Map<MergeVehicleSimModel, MergeVehicleSimModel> nextVehicle = computeNextVehicle(vehicleLists);
 
         provideIntervalInfo(nextVehicle);
+        providePrecedingVehicleVIN(nextVehicle);
         provideVehicleTrackingInfo(vehicleLists);
     }
 
@@ -110,6 +108,19 @@ public class SensorInputHelper {
             }
         }
 
+    }
+
+    private void providePrecedingVehicleVIN(Map<MergeVehicleSimModel, MergeVehicleSimModel> nextVehicle) {
+        for (MergeVehicleSimModel mergeVehicle : vinToVehicles.values()) {
+            if(mergeVehicle instanceof MergeAutoVehicleSimModel) {
+                MergeAutoVehicleSimModel autoVehicle = (MergeAutoVehicleSimModel) mergeVehicle;
+
+                if(nextVehicle.containsKey(autoVehicle))
+                    autoVehicle.setPrecedingVehicleVIN(nextVehicle.get(autoVehicle).getVIN());
+                else
+                    autoVehicle.setPrecedingVehicleVIN(0);
+            }
+        }
     }
 
     private void provideVehicleTrackingInfo(Map<Lane, SortedMap<Double, MergeVehicleSimModel>> vehicleLists) {

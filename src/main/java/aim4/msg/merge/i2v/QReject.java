@@ -10,7 +10,7 @@ public class QReject extends I2VMergeMessage {
     public enum Reason {
         /** The vehicle was too far away from the merge to enter the queue */
         TOO_FAR,
-        /** The vehicle is already in the queue */
+        VEHICLE_IN_FRONT_NOT_IN_QUEUE, /** The vehicle is already in the queue */
         ALREADY_IN_QUEUE
     }
 

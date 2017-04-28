@@ -187,6 +187,7 @@ public class MergeQueueCoordinator extends MergeCoordinator {
             //Create request
             QRequest request = new QRequest(
                     vehicle.getVIN(),
+                    getVehicle().getPrecedingVehicleVIN(),
                     getDriver().getCurrentMM().getId(),
                     distanceToMerge
             );
@@ -330,7 +331,12 @@ public class MergeQueueCoordinator extends MergeCoordinator {
                 break;
             case ALREADY_IN_QUEUE:
                 setState(State.AWAITING_GO);
-                System.err.printf("vin %d received an AWAITING_GO reject message\n",
+                System.err.printf("vin %d received an ALREADY_IN_QUEUE reject message\n",
+                        vehicle.getVIN());
+                break;
+            case VEHICLE_IN_FRONT_NOT_IN_QUEUE:
+                setState(State.PLANNING);
+                System.err.printf("vin %d received a VEHICLE_IN_FRONT_NOT_IN_QUEUE reject message\n",
                         vehicle.getVIN());
                 break;
             default:

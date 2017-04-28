@@ -23,6 +23,7 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
     private double minVelocity;
     private double finalXPos;
     private double finalYPos;
+    private int precedingVehicleVIN;
 
     /**
      * Construct a vehicle
@@ -53,6 +54,16 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
     public void setDriver(Driver driver) {
         assert driver instanceof MergeAutoDriver;
         this.driver = (MergeAutoDriver) driver;
+    }
+
+    @Override
+    public void setPrecedingVehicleVIN(int vin) {
+        this.precedingVehicleVIN = vin;
+    }
+
+    @Override
+    public int getPrecedingVehicleVIN() {
+        return this.precedingVehicleVIN;
     }
 
     //Result accessors

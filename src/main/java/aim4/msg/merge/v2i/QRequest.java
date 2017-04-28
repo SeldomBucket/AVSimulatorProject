@@ -6,16 +6,19 @@ package aim4.msg.merge.v2i;
 public class QRequest extends V2IMergeMessage {
     // PRIVATE FIELDS//
     private double distanceToMerge;
+    private int vehicleInFrontVin;
 
     // CONSTRUCTOR //
-    public QRequest(int vin, int mmID, double distanceToMerge) {
+    public QRequest(int vin, int vehicleInFrontVIN, int mmID, double distanceToMerge) {
         super(vin, mmID);
         this.distanceToMerge = distanceToMerge;
+        this.vehicleInFrontVin = vehicleInFrontVIN;
     }
 
     public QRequest(QRequest msg) {
         this(
                 msg.getVin(),
+                msg.getVehicleInFrontVIN(),
                 msg.getMMID(),
                 msg.getDistanceToMerge()
         );
@@ -23,6 +26,10 @@ public class QRequest extends V2IMergeMessage {
 
     public Type getMessageType() {
         return Type.Q_REQUEST;
+    }
+
+    public int getVehicleInFrontVIN() {
+        return vehicleInFrontVin;
     }
 
     public double getDistanceToMerge() {
