@@ -30,11 +30,10 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui.parampanel.aim;
 
-import javax.swing.BoxLayout;
-import javax.swing.JPanel;
-
 import aim4.gui.component.LabeledSlider;
 import aim4.sim.setup.aim.BasicSimSetup;
+
+import javax.swing.*;
 
 /**
  * The autonomous driver only simulation parameter panel.

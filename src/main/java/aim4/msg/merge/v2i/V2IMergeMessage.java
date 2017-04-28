@@ -10,15 +10,25 @@ public class V2IMergeMessage {
      * messages.
      */
     public enum Type {
-        /** Mesage requesting a reservation or a change of reservation. */
+        /**
+         * Mesage requesting a reservation or a change of reservation.
+         */
         REQUEST,
-        /** Message cancelling a currently held reservation. */
+        /**
+         * Message cancelling a currently held reservation.
+         */
         CANCEL,
-        /** Message indicating that the vehicle has traversed the intersection. */
+        /**
+         * Message indicating that the vehicle has traversed the intersection.
+         */
         DONE,
-        /** Message requesting entry into the admission control zone. */
+        /**
+         * Message requesting entry into the admission control zone.
+         */
         ACZ_REQUEST,
-        /** Message cancelling a previous ACZ_REQUEST. */
+        /**
+         *  Message cancelling a previous ACZ_REQUEST.
+         */
         ACZ_CANCEL,
         /**
          * Message indicating the vehicle has completed entering the admission
@@ -30,6 +40,14 @@ public class V2IMergeMessage {
          * leaving the roadway.
          */
         ACZ_EXIT,
+        /**
+         * Requests a position in the queue for a queue manager
+         */
+        Q_REQUEST,
+        /**
+         * Lets a queue manager know that the vehicle has left the merge zone
+         */
+        Q_DONE,
         /**
          * Message indicating the vehicle has left the admission control zone by
          * driving straight out of it.

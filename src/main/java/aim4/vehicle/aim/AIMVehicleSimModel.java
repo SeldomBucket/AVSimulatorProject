@@ -30,15 +30,16 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
-import java.util.Queue;
-
 import aim4.msg.aim.v2i.V2IMessage;
+import aim4.vehicle.ResultsEnabledVehicle;
 import aim4.vehicle.VehicleSimModel;
+
+import java.util.Queue;
 
 /**
  * The interface of a vehicle from the viewpoint of a simulator.
  */
-public interface AIMVehicleSimModel extends VehicleSimModel {
+public interface AIMVehicleSimModel extends VehicleSimModel, ResultsEnabledVehicle {
   /////////////////////////////////
   // PUBLIC METHODS
   /////////////////////////////////

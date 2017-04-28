@@ -6,13 +6,12 @@ import aim4.driver.cpm.CPMV2VDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.cpm.*;
-import aim4.map.cpm.CPMSpawnPoint.*;
+import aim4.map.cpm.CPMSpawnPoint.CPMSpawnSpec;
 import aim4.map.cpm.parking.ParkingLane;
 import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
-import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -29,7 +28,6 @@ import java.util.List;
  * The simulator of AVs in an AV specific car park which are self-organising.
  */
 public class CPMAutoDriverSimulator implements Simulator {
-
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -676,4 +674,10 @@ public class CPMAutoDriverSimulator implements Simulator {
     }
 
     public Map<Integer, CPMBasicAutoVehicle> getVinToVehicles() { return vinToVehicles; }
+
+    public String produceResultsCSV(){
+        StringBuilder sb = new StringBuilder();
+        sb.append("Sorry, CPM does not produce a results file");
+        return sb.toString();
+    }
 }

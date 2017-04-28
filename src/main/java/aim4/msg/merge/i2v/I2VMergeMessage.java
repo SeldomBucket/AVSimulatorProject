@@ -18,6 +18,12 @@ public class I2VMergeMessage {
         ACZ_CONFIRM,
         /** Message rejecting a request to enter the admission control zone. */
         ACZ_REJECT,
+        /** Message confirming that a vehicle has a place on the queue */
+        Q_CONFIRM,
+        /** Message alerting a vehicle to the fact that it does not have a place on the queue */
+        Q_REJECT,
+        /** Message telling a vehicle to go through the merge */
+        Q_GO
     };
 
     /////////////////////////////////
@@ -82,7 +88,7 @@ public class I2VMergeMessage {
      *
      * @return the ID number of the MergeManager sending this message
      */
-    public int getImId() {
+    public int getMMID() {
         return mmID;
     }
 

@@ -248,6 +248,10 @@ public class V2IMergeGridManager extends BasicMergeManager implements V2IMergeGr
         mergePolicy.processV2IMergeMessage(msg);
     }
 
+    /**
+     * Sends an I2V message to the vehicles
+     * @param msg a I2V message
+     */
     @Override
     public void sendI2VMessage(I2VMergeMessage msg) {
         outbox.add(msg);

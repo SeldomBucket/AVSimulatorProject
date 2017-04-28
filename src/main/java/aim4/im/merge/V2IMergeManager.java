@@ -42,11 +42,6 @@ public class V2IMergeManager extends BasicMergeManager implements V2IMergeManage
      * meters.
      */
     private static final double DEFAULT_ACZ_SIZE = 40.0; // meters
-    /**
-     * The length, in meters, of the AdmissionControlZone for which to return
-     * a debug shape.
-     */
-    private static final double ACZ_DISTANCE_SHAPE_LENGTH = 1; // meter
 
 
     //PRIVATE FIELDS//

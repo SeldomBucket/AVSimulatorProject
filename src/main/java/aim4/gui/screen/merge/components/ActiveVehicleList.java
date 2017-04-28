@@ -5,6 +5,7 @@ import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -25,10 +26,11 @@ public class ActiveVehicleList extends JPanel implements MergeStatScreenComponen
                 "Y Position",
                 "State"
         });
-
         this.table = new JTable(model);
         scrollPane = new JScrollPane(table);
         scrollPane.setVisible(true);
+
+        this.setLayout(new GridLayout(0, 1));
         this.add(scrollPane);
     }
 

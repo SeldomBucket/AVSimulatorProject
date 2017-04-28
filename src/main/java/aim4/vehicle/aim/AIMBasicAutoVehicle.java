@@ -30,19 +30,20 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.vehicle.aim;
 
+import aim4.config.Debug;
+import aim4.driver.Driver;
+import aim4.driver.aim.AIMAutoDriver;
+import aim4.map.merge.RoadNames;
+import aim4.msg.aim.i2v.I2VMessage;
+import aim4.msg.aim.v2i.V2IMessage;
+import aim4.vehicle.BasicAutoVehicle;
+import aim4.vehicle.VehicleSpec;
+
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-
-import aim4.config.Debug;
-import aim4.driver.Driver;
-import aim4.driver.aim.AIMAutoDriver;
-import aim4.msg.aim.i2v.I2VMessage;
-import aim4.msg.aim.v2i.V2IMessage;
-import aim4.vehicle.BasicAutoVehicle;
-import aim4.vehicle.VehicleSpec;
 
 
 /**
@@ -128,6 +129,17 @@ public class AIMBasicAutoVehicle extends BasicAutoVehicle
      */
     private V2IMessage lastV2IMessage;
 
+    //Result properties
+    private RoadNames startingRoad;
+    private double startTime;
+    private double finishTime;
+    private double delayTime;
+    private double finalVelocity;
+    private double maxVelocity;
+    private double minVelocity;
+    private double finalXPos;
+    private double finalYPos;
+
     /////////////////////////////////
     // CONSTRUCTORS
     /////////////////////////////////
@@ -184,7 +196,6 @@ public class AIMBasicAutoVehicle extends BasicAutoVehicle
         assert driver instanceof AIMAutoDriver;
         this.driver = (AIMAutoDriver) driver;
     }
-
 
     // messaging
 
@@ -271,6 +282,97 @@ public class AIMBasicAutoVehicle extends BasicAutoVehicle
     @Override
     public V2IMessage getLastV2IMessage() {
         return lastV2IMessage;
+    }
+
+    //results
+    @Override
+    public double getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setStartTime(double startTime) {
+        this.startTime = startTime;
+    }
+
+    @Override
+    public RoadNames getStartingRoad() {
+        return startingRoad;
+    }
+
+    @Override
+    public void setStartingRoad(RoadNames startingRoad) {
+        this.startingRoad = startingRoad;
+    }
+
+    @Override
+    public double getFinishTime() {
+        return finishTime;
+    }
+
+    @Override
+    public void setFinishTime(double finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    @Override
+    public double getDelay() {
+        return delayTime;
+    }
+
+    @Override
+    public void setDelay(double delayTime) {
+        this.delayTime = delayTime;
+    }
+
+    @Override
+    public double getFinalVelocity() {
+        return finalVelocity;
+    }
+
+    @Override
+    public void setFinalVelocity(double finalVelocity) {
+        this.finalVelocity = finalVelocity;
+    }
+
+    @Override
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
+    @Override
+    public void setMaxVelocity(double maxVelocity) {
+        this.maxVelocity = maxVelocity;
+    }
+
+    @Override
+    public double getMinVelocity() {
+        return minVelocity;
+    }
+
+    @Override
+    public void setMinVelocity(double minVelocity) {
+        this.minVelocity = minVelocity;
+    }
+
+    @Override
+    public double getFinalXPos() {
+        return finalXPos;
+    }
+
+    @Override
+    public void setFinalXPos(double finalXPos) {
+        this.finalXPos = finalXPos;
+    }
+
+    @Override
+    public double getFinalYPos() {
+        return finalYPos;
+    }
+
+    @Override
+    public void setFinalYPos(double finalYPos) {
+        this.finalYPos = finalYPos;
     }
 
 }

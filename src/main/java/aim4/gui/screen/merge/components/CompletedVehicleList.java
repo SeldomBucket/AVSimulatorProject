@@ -5,6 +5,7 @@ import aim4.sim.simulator.merge.MergeSimulator;
 import aim4.vehicle.merge.MergeVehicleSimModel;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -18,16 +19,22 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
     public CompletedVehicleList() {
         this.model = new MapKeyTableModel(new String[]{
                 "VIN",
+                "Starting Road",
+                "Spec",
+                "Start Time",
+                "Finish Time",
+                "Delay",
                 "Final Velocity",
+                "Max Velocity",
+                "Min Velocity",
                 "Final X Position",
-                "Final Y Position",
-                "Max Acceleration",
-                "Max Deceleration",
-                "Delay"
+                "Final Y Position"
         });
         this.table = new JTable(model);
         scrollPane = new JScrollPane(table);
         scrollPane.setVisible(true);
+
+        this.setLayout(new GridLayout(0, 1));
         this.add(scrollPane);
     }
 
@@ -37,13 +44,17 @@ public class CompletedVehicleList extends JPanel implements MergeStatScreenCompo
             for (int vin : stepResult.getCompletedVehicles().keySet()) {
                 MergeVehicleSimModel vehicle = stepResult.getCompletedVehicles().get(vin);
                 model.addOrUpdateRow(vin, new Object[]{
-                        vehicle.getVIN(),
-                        vehicle.getVelocity(),
-                        vehicle.getPosition().getX(),
-                        vehicle.getPosition().getY(),
-                        vehicle.getMaxAcceleration(),
-                        vehicle.getMaxDeceleration(),
-                        sim.calculateDelay(vehicle)
+                        vin,
+                        vehicle.getStartingRoad().toString(),
+                        vehicle.getSpec().getName(),
+                        vehicle.getStartTime(),
+                        vehicle.getFinishTime(),
+                        vehicle.getDelay(),
+                        vehicle.getFinalVelocity(),
+                        vehicle.getMaxVelocity(),
+                        vehicle.getMinVelocity(),
+                        vehicle.getFinalXPos(),
+                        vehicle.getFinalYPos()
                 });
             }
         }

@@ -14,6 +14,7 @@ import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.S2SMergeMap;
 import aim4.map.track.WayPoint;
 import aim4.msg.merge.i2v.I2VMergeMessage;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.vehicle.AccelSchedule;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.merge.MergeV2IAutoVehicle;
@@ -72,7 +73,7 @@ public class V2IMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        V2IMergeSimulator sim = new V2IMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.TEST_MERGE);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
@@ -125,8 +126,8 @@ public class V2IMergeSimulatorIntergrationTest {
         AccelSchedule toStopAccelSchedule = vehicle.getAccelSchedule();
         List<AccelSchedule.TimeAccel> accelList = toStopAccelSchedule.getList();
         double stoppingDistance =
-                0.5 * Math.abs(vehicle.getMaxDeceleration()) *
-                        Math.pow(calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration()), 2);
+                0.5 * Math.abs(vehicle.getSpec().getMaxDeceleration()) *
+                        Math.pow(calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getSpec().getMaxDeceleration()), 2);
         double distanceToStopPoint =
                 mergeLane.getStartPoint().distance(merge.getEntryPoint(driver.getCurrentLane()))
                         - MergeAutoPilot.DEFAULT_STOP_DISTANCE_BEFORE_MERGE;
@@ -135,11 +136,11 @@ public class V2IMergeSimulatorIntergrationTest {
         //Accel 1
         double timeAtDeceleration = (distanceToSlowDown / vehicle.getVelocity());
         AccelSchedule.TimeAccel slowToStop = accelList.get(0);
-        assertEquals(vehicle.getMaxDeceleration(), slowToStop.getAcceleration(), 0);
+        assertEquals(vehicle.getSpec().getMaxDeceleration(), slowToStop.getAcceleration(), 0);
         assertEquals(timeAtDeceleration, slowToStop.getTime(), 0.01);
 
         //Accel 2
-        double timeAtStop = timeAtDeceleration + calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration());
+        double timeAtStop = timeAtDeceleration + calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getSpec().getMaxDeceleration());
         AccelSchedule.TimeAccel stop = accelList.get(1);
         assertEquals(0, stop.getAcceleration(), 0);
         assertEquals(timeAtStop, stop.getTime(), 0.01);
@@ -311,7 +312,7 @@ public class V2IMergeSimulatorIntergrationTest {
                 new ReservationMergeManager.Config(SimConfig.TIME_STEP, SimConfig.MERGE_TIME_STEP);
         MergeMapUtil.setFCFSMergeManagers(map, currentTime, mergeReservationConfig);
         MergeMapUtil.setSingleSpawnPointS2SMergeOnly(map, VehicleSpecDatabase.getVehicleSpecByName("COUPE"));
-        V2IMergeSimulator sim = new V2IMergeSimulator(map);
+        V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.TEST_TARGET);
 
         //Create useful references
         V2IMergeManager mergeManager = (V2IMergeManager) map.getMergeManagers().get(0);
@@ -364,8 +365,8 @@ public class V2IMergeSimulatorIntergrationTest {
         AccelSchedule toStopAccelSchedule = vehicle.getAccelSchedule();
         List<AccelSchedule.TimeAccel> accelList = toStopAccelSchedule.getList();
         double stoppingDistance =
-                0.5 * Math.abs(vehicle.getMaxDeceleration()) *
-                        Math.pow(calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration()), 2);
+                0.5 * Math.abs(vehicle.getSpec().getMaxDeceleration()) *
+                        Math.pow(calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getSpec().getMaxDeceleration()), 2);
         double distanceToStopPoint =
                 mergeLane.getStartPoint().distance(merge.getEntryPoint(driver.getCurrentLane()))
                         - MergeAutoPilot.DEFAULT_STOP_DISTANCE_BEFORE_MERGE;
@@ -374,11 +375,11 @@ public class V2IMergeSimulatorIntergrationTest {
         //Accel 1
         double timeAtDeceleration = (distanceToSlowDown / vehicle.getVelocity());
         AccelSchedule.TimeAccel slowToStop = accelList.get(0);
-        assertEquals(vehicle.getMaxDeceleration(), slowToStop.getAcceleration(), 0);
+        assertEquals(vehicle.getSpec().getMaxDeceleration(), slowToStop.getAcceleration(), 0);
         assertEquals(timeAtDeceleration, slowToStop.getTime(), 0.01);
 
         //Accel 2
-        double timeAtStop = timeAtDeceleration + calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getMaxDeceleration());
+        double timeAtStop = timeAtDeceleration + calculateTimeToDecelerate(vehicle.getVelocity(), 0, vehicle.getSpec().getMaxDeceleration());
         AccelSchedule.TimeAccel stop = accelList.get(1);
         assertEquals(0, stop.getAcceleration(), 0);
         assertEquals(timeAtStop, stop.getTime(), 0.01);

@@ -2,6 +2,7 @@ package aim4.vehicle.merge;
 
 import aim4.driver.Driver;
 import aim4.driver.merge.MergeAutoDriver;
+import aim4.map.merge.RoadNames;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -12,6 +13,17 @@ import java.awt.geom.Point2D;
  */
 public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAutoVehicleSimModel {
     protected MergeAutoDriver driver;
+    //Result properties
+    private RoadNames startingRoad;
+    private double startTime;
+    private double finishTime;
+    private double delayTime;
+    private double finalVelocity;
+    private double maxVelocity;
+    private double minVelocity;
+    private double finalXPos;
+    private double finalYPos;
+    private int precedingVehicleVIN;
 
     /**
      * Construct a vehicle
@@ -31,6 +43,8 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
         super(spec, pos, heading, velocity, steeringAngle, acceleration, targetVelocity, currentTime);
     }
 
+    //ACCESSORS
+    //Driver
     @Override
     public MergeAutoDriver getDriver() {
         return driver;
@@ -43,12 +57,105 @@ public class MergeBasicAutoVehicle extends BasicAutoVehicle implements MergeAuto
     }
 
     @Override
-    public double getMaxAcceleration() {
-        return spec.getMaxAcceleration();
+    public void setPrecedingVehicleVIN(int vin) {
+        this.precedingVehicleVIN = vin;
     }
 
     @Override
-    public double getMaxDeceleration() {
-        return spec.getMaxDeceleration();
+    public int getPrecedingVehicleVIN() {
+        return this.precedingVehicleVIN;
+    }
+
+    //Result accessors
+
+
+    @Override
+    public RoadNames getStartingRoad() {
+        return startingRoad;
+    }
+
+    @Override
+    public void setStartingRoad(RoadNames startingRoad) {
+        this.startingRoad = startingRoad;
+    }
+
+    @Override
+    public double getFinishTime() {
+        return finishTime;
+    }
+
+    @Override
+    public void setFinishTime(double finishTime) {
+        this.finishTime = finishTime;
+    }
+
+    @Override
+    public double getDelay() {
+        return delayTime;
+    }
+
+    @Override
+    public void setDelay(double delayTime) {
+        this.delayTime = delayTime;
+    }
+
+    @Override
+    public double getFinalVelocity() {
+        return finalVelocity;
+    }
+
+    @Override
+    public void setFinalVelocity(double finalVelocity) {
+        this.finalVelocity = finalVelocity;
+    }
+
+    @Override
+    public double getMaxVelocity() {
+        return maxVelocity;
+    }
+
+    @Override
+    public void setMaxVelocity(double maxVelocity) {
+        this.maxVelocity = maxVelocity;
+    }
+
+    @Override
+    public double getMinVelocity() {
+        return minVelocity;
+    }
+
+    @Override
+    public void setMinVelocity(double minVelocity) {
+        this.minVelocity = minVelocity;
+    }
+
+    @Override
+    public double getFinalXPos() {
+        return finalXPos;
+    }
+
+    @Override
+    public void setFinalXPos(double finalXPos) {
+        this.finalXPos = finalXPos;
+    }
+
+    @Override
+    public double getFinalYPos() {
+        return finalYPos;
+    }
+
+    @Override
+    public void setFinalYPos(double finalYPos) {
+        this.finalYPos = finalYPos;
+    }
+
+    @Override
+    public double getStartTime() {
+        return startTime;
+    }
+
+    @Override
+    public void setStartTime(double startTime) {
+        this.startTime = startTime;
     }
 }

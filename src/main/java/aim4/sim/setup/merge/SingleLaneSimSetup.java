@@ -2,6 +2,7 @@ package aim4.sim.setup.merge;
 
 import aim4.map.merge.MergeMapUtil;
 import aim4.map.merge.SingleLaneOnlyMap;
+import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.merge.CoreMergeSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 
@@ -25,6 +26,6 @@ public class SingleLaneSimSetup implements MergeSimSetup {
         SingleLaneOnlyMap map = new SingleLaneOnlyMap(currentTime, speedLimit, laneLength);
         MergeMapUtil.setUniformSpawnSpecGenerator(map, trafficRate);
 
-        return new CoreMergeSimulator(map);
+        return new CoreMergeSimulator(map, ProtocolType.NONE);
     }
 }

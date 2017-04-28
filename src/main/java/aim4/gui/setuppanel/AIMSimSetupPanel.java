@@ -30,20 +30,15 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui.setuppanel;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-
 import aim4.gui.parampanel.aim.AutoDriverOnlyParamPanel;
+import aim4.gui.parampanel.aim.MergeModeParamPanel;
 import aim4.gui.parampanel.aim.TrafficSignalParamPanel;
 import aim4.sim.setup.aim.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * The simulation setup panel.
@@ -54,6 +49,7 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
 
   final static String AUTO_DRIVER_ONLY_SETUP_PANEL = "AIM Protocol";
   final static String TRAFFIC_SIGNAL_SETUP_PANEL = "Traffic Signals";
+  final static String MERGE_MODE_SETUP_PANEL = "Merge Mode";
   final static String STOP_SIGN_SETUP_PANEL = "Stop Signs";
 
   /** The combox box */
@@ -66,6 +62,8 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
   private AutoDriverOnlyParamPanel autoDriverOnlySetupPanel;
   /** The traffic signal setup panel */
   private TrafficSignalParamPanel trafficSignalSetupPanel;
+  /** The merge mode setup panel */
+  private MergeModeParamPanel mergeModeSetupPanel;
   /** The simulation setup panel */
   private BasicSimSetup simSetup;
 
@@ -84,6 +82,7 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     String comboBoxItems[] =
       { AUTO_DRIVER_ONLY_SETUP_PANEL,
         TRAFFIC_SIGNAL_SETUP_PANEL,
+        MERGE_MODE_SETUP_PANEL,
         STOP_SIGN_SETUP_PANEL };
     comboBox = new JComboBox(comboBoxItems);
     comboBox.setEditable(false);
@@ -95,12 +94,13 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
     cards = new JPanel(cardLayout);
 
     // add the parameter panels
-    autoDriverOnlySetupPanel =
-      new AutoDriverOnlyParamPanel(simSetup);
+    autoDriverOnlySetupPanel = new AutoDriverOnlyParamPanel(simSetup);
     addParamPanel(autoDriverOnlySetupPanel, AUTO_DRIVER_ONLY_SETUP_PANEL);
     trafficSignalSetupPanel = new TrafficSignalParamPanel();
-    cards.add(trafficSignalSetupPanel, TRAFFIC_SIGNAL_SETUP_PANEL);
-    cards.add(new JPanel(), STOP_SIGN_SETUP_PANEL);
+    addParamPanel(trafficSignalSetupPanel, TRAFFIC_SIGNAL_SETUP_PANEL);
+    mergeModeSetupPanel = new MergeModeParamPanel();
+    addParamPanel(mergeModeSetupPanel, MERGE_MODE_SETUP_PANEL);
+    addParamPanel(new JPanel(), STOP_SIGN_SETUP_PANEL);
 
     // add the combo box pane and cards pane
     setLayout(new BorderLayout());
@@ -142,14 +142,16 @@ public class AIMSimSetupPanel extends SimSetupPanel implements ItemListener {
       //                                         "src/main/resources/SignalPhases/AIM4Phases.csv");
       // simSetup2.setTrafficVolume("src/main/resources/SignalPhases/AIM4Volumes.csv");
       ApproxNPhasesTrafficSignalSimSetup simSetup2 =
-        new ApproxNPhasesTrafficSignalSimSetup(simSetup,
-                                               "/SignalPhases/AIM4Phases.csv");
+              new ApproxNPhasesTrafficSignalSimSetup(simSetup,
+                      "/SignalPhases/AIM4Phases.csv");
       simSetup2.setTrafficVolume("/SignalPhases/AIM4Volumes.csv");
 
       simSetup2.setLanesPerRoad(trafficSignalSetupPanel.getLanesPerRoad());
       simSetup2.setStopDistBeforeIntersection(1.0);
       return simSetup2;
     } else if (comboBox.getSelectedIndex() == 2) {
+      return mergeModeSetupPanel.getSimSetup();
+    } else if (comboBox.getSelectedIndex() == 3) {
       ApproxStopSignSimSetup simSetup2 =
         new ApproxStopSignSimSetup(simSetup);
       simSetup2.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());

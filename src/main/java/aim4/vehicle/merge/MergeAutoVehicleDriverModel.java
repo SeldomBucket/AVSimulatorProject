@@ -9,4 +9,7 @@ import aim4.vehicle.AutoVehicleDriverModel;
 public interface MergeAutoVehicleDriverModel extends AutoVehicleDriverModel {
     @Override
     MergeAutoDriver getDriver();
+
+    void setPrecedingVehicleVIN(int vin);
+    int getPrecedingVehicleVIN();
 }
