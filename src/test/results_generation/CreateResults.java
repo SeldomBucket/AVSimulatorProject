@@ -11,7 +11,7 @@ import aim4.sim.setup.merge.enums.ProtocolType;
 import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.merge.MergeSimulator;
 import org.json.simple.JSONArray;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -28,13 +28,14 @@ import java.util.List;
  * Created by Callum on 28/04/2017.
  */
 public class CreateResults {
-    private final static int TEST_COUNTS = 10;
+    private final static int TEST_COUNTS = 20;
     private final static double TIME_LIMIT = 1000;
     private final static double STANDARD_SPEED_LIMIT = 20;
     private final static double STANDARD_TRAFFIC_RATE = 1000;
     private final static double STANDARD_LEAD_IN = 150;
     private final static double STANDARD_ANGLE = 45;
     private final static double STANDARD_TRAFFIC_LEVEL = STANDARD_TRAFFIC_RATE/3600;
+    private final static String MEAN_ROW_INDICATOR = "MEAN ROW";
     private final static String TRAFFIC_LEVEL_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("\\schedules\\trafficLevel\\");
     private final static String SPEED_LIMIT_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("\\schedules\\speedLimit\\");
     private final static String RESULTS_STORE_PATH_STEM = new File("").getAbsolutePath() + ("\\results\\");
@@ -53,7 +54,7 @@ public class CreateResults {
         MERGE_ANGLE
     }
 
-    @Before
+    @Ignore //Change to Test to run individually and create schedules
     public void CreateSpawnSchedules() throws IOException {
         //Create directories
         Path trafficLevelsParentDir = Paths.get(TRAFFIC_LEVEL_SCHEDULES_PATH_STEM);
@@ -69,7 +70,7 @@ public class CreateResults {
             for (double trafficRate : trafficRates) {
 
                 //Generate Schedules
-                double trafficLevel = trafficRate / 3600f;
+                double trafficLevel = trafficRate / 3600;
                 List<JSONArray> schedules = new ArrayList<JSONArray>();
                 for (int i = 1; i <= TEST_COUNTS; i++) {
                     JSONArray schedule = MergeMapUtil.createSpawnSchedule(trafficLevel, TIME_LIMIT, STANDARD_SPEED_LIMIT);
@@ -158,7 +159,6 @@ public class CreateResults {
 
             //Get results
             List<CoreMergeResult> results = new ArrayList<CoreMergeResult>();
-            List<String> csvResults = new ArrayList<String>();
             for(int i = 0; i < TEST_COUNTS; i++) {
                 File targetSpawnSchedule = targetSpawnSchedules.get(i);
                 File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -203,13 +203,12 @@ public class CreateResults {
                 else
                     summaryResultsCSV.add(result.produceGlobalStatsCSV());
             }
-            summaryResultsCSV.addAll(produceMeanMergeRow(results));
+            summaryResultsCSV.addAll(produceMeanMergeRow(results,Integer.toString(new Double(trafficRate).intValue())));
             summaryResultsCSV.add("");
             summaryResultsCSV.add("");
         }
 
         //Save summary results
-        summaryResultsCSV.add(CoreMergeResult.produceGlobalStatsCSVHeader());
         summaryResultsCSV.addAll(produceMeanTable(summaryResultsCSV));
         saveGlobalResultsFile(TestType.TRAFFIC_LEVEL_QUEUE, summaryResultsCSV);
     }
@@ -243,7 +242,6 @@ public class CreateResults {
 
             //Get results
             List<AIMResult> results = new ArrayList<AIMResult>();
-            List<String> csvResults = new ArrayList<String>();
             for(int i = 0; i < TEST_COUNTS; i++) {
                 File targetSpawnSchedule = targetSpawnSchedules.get(i);
                 File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -288,13 +286,12 @@ public class CreateResults {
                 else
                     summaryResultsCSV.add(result.produceGlobalStatsCSV());
             }
-            summaryResultsCSV.addAll(produceMeanAIMRow(results));
+            summaryResultsCSV.addAll(produceMeanAIMRow(results, Integer.toString(new Double(trafficRate).intValue())));
             summaryResultsCSV.add("");
             summaryResultsCSV.add("");
         }
 
         //Save summary results
-        summaryResultsCSV.add(AIMResult.produceGlobalStatsCSVHeader());
         summaryResultsCSV.addAll(produceMeanTable(summaryResultsCSV));
         saveGlobalResultsFile(TestType.TRAFFIC_LEVEL_AIM, summaryResultsCSV);
     }
@@ -331,7 +328,6 @@ public class CreateResults {
 
             //Get results
             List<CoreMergeResult> results = new ArrayList<CoreMergeResult>();
-            List<String> csvResults = new ArrayList<String>();
             for(int i = 0; i < TEST_COUNTS; i++) {
                 File targetSpawnSchedule = targetSpawnSchedules.get(i);
                 File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -376,13 +372,12 @@ public class CreateResults {
                 else
                     summaryResultsCSV.add(result.produceGlobalStatsCSV());
             }
-            summaryResultsCSV.addAll(produceMeanMergeRow(results));
+            summaryResultsCSV.addAll(produceMeanMergeRow(results, Integer.toString(new Double(mergingAngle).intValue())));
             summaryResultsCSV.add("");
             summaryResultsCSV.add("");
         }
 
         //Save summary results
-        summaryResultsCSV.add(CoreMergeResult.produceGlobalStatsCSVHeader());
         summaryResultsCSV.addAll(produceMeanTable(summaryResultsCSV));
         saveGlobalResultsFile(TestType.MERGE_ANGLE, summaryResultsCSV);
     }
@@ -421,7 +416,6 @@ public class CreateResults {
 
                 //Get results
                 List<CoreMergeResult> results = new ArrayList<CoreMergeResult>();
-                List<String> csvResults = new ArrayList<String>();
                 for (int i = 0; i < TEST_COUNTS; i++) {
                     File targetSpawnSchedule = targetSpawnSchedules.get(i);
                     File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -469,14 +463,17 @@ public class CreateResults {
                     else
                         summaryResultsCSV.add(result.produceGlobalStatsCSV());
                 }
-                summaryResultsCSV.addAll(produceMeanMergeRow(results));
+                summaryResultsCSV.addAll(produceMeanMergeRow(results, String.format(
+                        "%d,%d",
+                        new Double(mergeSpeedLimit).intValue(),
+                        new Double(targetSpeedLimit).intValue())
+                ));
                 summaryResultsCSV.add("");
                 summaryResultsCSV.add("");
             }
         }
 
         //Save summary results
-        summaryResultsCSV.add(CoreMergeResult.produceGlobalStatsCSVHeader());
         summaryResultsCSV.addAll(produceMeanTable(summaryResultsCSV));
         saveGlobalResultsFile(TestType.SPEED_LIMIT, summaryResultsCSV);
     }
@@ -511,11 +508,10 @@ public class CreateResults {
                 List<File> targetSpawnSchedules =
                         getSpawnSchedules(RoadNames.TARGET_ROAD, TestType.LEAD_IN, targetLeadInDistance);
                 List<File> mergeSpawnSchedules =
-                        getSpawnSchedules(RoadNames.MERGING_ROAD, TestType.LEAD_IN, targetLeadOutDistance);
+                        getSpawnSchedules(RoadNames.MERGING_ROAD, TestType.LEAD_IN, mergeLeadInDistance);
 
                 //Get results
                 List<CoreMergeResult> results = new ArrayList<CoreMergeResult>();
-                List<String> csvResults = new ArrayList<String>();
                 for (int i = 0; i < TEST_COUNTS; i++) {
                     File targetSpawnSchedule = targetSpawnSchedules.get(i);
                     File mergeSpawnSchedule = mergeSpawnSchedules.get(i);
@@ -541,8 +537,8 @@ public class CreateResults {
                                 TestType.LEAD_IN,
                                 String.format(
                                         "%d_%d",
-                                        new Double(mergeSpeedLimit).intValue(),
-                                        new Double(targetSpeedLimit).intValue()
+                                        new Double(mergeLeadInDistance).intValue(),
+                                        new Double(targetLeadInDistance).intValue()
                                 ),
                                 i + 1,
                                 csvResult);
@@ -553,8 +549,8 @@ public class CreateResults {
                 //Produce summary results
                 summaryResultsCSV.add(String.format(
                         "Results for Lead In: Merge:%d Target:%d",
-                        new Double(mergeSpeedLimit).intValue(),
-                        new Double(targetSpeedLimit).intValue())
+                        new Double(mergeLeadInDistance).intValue(),
+                        new Double(targetLeadInDistance).intValue())
                 );
                 summaryResultsCSV.add(CoreMergeResult.produceGlobalStatsCSVHeader());
                 for (CoreMergeResult result : results) {
@@ -563,19 +559,22 @@ public class CreateResults {
                     else
                         summaryResultsCSV.add(result.produceGlobalStatsCSV());
                 }
-                summaryResultsCSV.addAll(produceMeanMergeRow(results));
+                summaryResultsCSV.addAll(produceMeanMergeRow(results, String.format(
+                        "%d,%d",
+                        new Double(mergeLeadInDistance).intValue(),
+                        new Double(targetLeadInDistance).intValue())
+                ));
                 summaryResultsCSV.add("");
                 summaryResultsCSV.add("");
             }
         }
 
         //Save summary results
-        summaryResultsCSV.add(CoreMergeResult.produceGlobalStatsCSVHeader());
         summaryResultsCSV.addAll(produceMeanTable(summaryResultsCSV));
         saveGlobalResultsFile(TestType.LEAD_IN, summaryResultsCSV);
     }
 
-    private List<String> produceMeanAIMRow(List<AIMResult> results) {
+    private List<String> produceMeanAIMRow(List<AIMResult> results, String dataTitle) {
         double totalMaxDelay = 0;
         double totalMaxTargetDelay = 0;
         double totalMaxMergeDelay = 0;
@@ -594,7 +593,11 @@ public class CreateResults {
         int totalCompletedVehicles = 0;
         int totalCompletedTargetVehicles = 0;
         int totalCompletedMergeVehicles = 0;
+        int nonNullResults = 0;
         for(AIMResult result : results) {
+            if(result == null)
+                continue;
+            nonNullResults++;
             totalMaxDelay += result.getMaxDelay();
             totalMaxTargetDelay += result.getMaxTargetDelay();
             totalMaxMergeDelay += result.getMaxMergeDelay();
@@ -614,24 +617,29 @@ public class CreateResults {
             totalCompletedTargetVehicles += result.getCompletedTargetVehicles();
             totalCompletedMergeVehicles += result.getCompletedMergeVehicles();
         }
-        double meanMaxDelay = totalMaxDelay / results.size();
-        double meanMaxTargetDelay = totalMaxTargetDelay / results.size();
-        double meanMaxMergeDelay = totalMaxMergeDelay / results.size();
-        double meanMinDelay = totalMinDelay / results.size();
-        double meanMinTargetDelay = totalMinTargetDelay / results.size();
-        double meanMinMergeDelay = totalMinMergeDelay / results.size();
-        double meanAverageDelay = totalAverageDelay / results.size();
-        double meanAverageTargetDelay = totalAverageTargetDelay / results.size();
-        double meanAverageMergeDelay = totalAverageMergeDelay / results.size();
-        double meanStdDevDelay = totalStdDevDelay / results.size();
-        double meanStdDevTargetDelay = totalStdDevTargetDelay / results.size();
-        double meanStdDevMergeDelay = totalStdDevMergeDelay / results.size();
-        double meanThroughput = totalThroughput / results.size();
-        double meanThroughputTarget = totalThroughputTarget / results.size();
-        double meanThroughputMerge = totalThroughputMerge / results.size();
-        double meanCompletedVehicles = totalCompletedVehicles / results.size();
-        double meanCompletedTargetVehicles = totalCompletedTargetVehicles / results.size();
-        double meanCompletedMergeVehicles = totalCompletedMergeVehicles / results.size();
+        if(nonNullResults == 0) {
+            List<String> response = new ArrayList<>();
+            response.add("All results failed to complete");
+            return response;
+        }
+        double meanMaxDelay = totalMaxDelay / nonNullResults;
+        double meanMaxTargetDelay = totalMaxTargetDelay / nonNullResults;
+        double meanMaxMergeDelay = totalMaxMergeDelay / nonNullResults;
+        double meanMinDelay = totalMinDelay / nonNullResults;
+        double meanMinTargetDelay = totalMinTargetDelay / nonNullResults;
+        double meanMinMergeDelay = totalMinMergeDelay / nonNullResults;
+        double meanAverageDelay = totalAverageDelay / nonNullResults;
+        double meanAverageTargetDelay = totalAverageTargetDelay / nonNullResults;
+        double meanAverageMergeDelay = totalAverageMergeDelay / nonNullResults;
+        double meanStdDevDelay = totalStdDevDelay / nonNullResults;
+        double meanStdDevTargetDelay = totalStdDevTargetDelay / nonNullResults;
+        double meanStdDevMergeDelay = totalStdDevMergeDelay / nonNullResults;
+        double meanThroughput = totalThroughput / nonNullResults;
+        double meanThroughputTarget = totalThroughputTarget / nonNullResults;
+        double meanThroughputMerge = totalThroughputMerge / nonNullResults;
+        double meanCompletedVehicles = totalCompletedVehicles / nonNullResults;
+        double meanCompletedTargetVehicles = totalCompletedTargetVehicles / nonNullResults;
+        double meanCompletedMergeVehicles = totalCompletedMergeVehicles / nonNullResults;
 
         StringBuilder sb = new StringBuilder();
         sb.append(meanMaxDelay);
@@ -671,12 +679,12 @@ public class CreateResults {
         sb.append(meanCompletedMergeVehicles);
 
         List<String> meanRow = new ArrayList<String>();
-        meanRow.add("MEAN ROW");
+        meanRow.add(MEAN_ROW_INDICATOR + "," + dataTitle);
         meanRow.add(sb.toString());
         return meanRow;
     }
 
-    private List<String> produceMeanMergeRow(List<CoreMergeResult> results) {
+    private List<String> produceMeanMergeRow(List<CoreMergeResult> results, String dataTitle) {
         double totalMaxDelay = 0;
         double totalMaxTargetDelay = 0;
         double totalMaxMergeDelay = 0;
@@ -695,7 +703,11 @@ public class CreateResults {
         int totalCompletedVehicles = 0;
         int totalCompletedTargetVehicles = 0;
         int totalCompletedMergeVehicles = 0;
+        int nonNullResults = 0;
         for(CoreMergeResult result : results) {
+            if(result == null)
+                continue;
+            nonNullResults++;
             totalMaxDelay += result.getMaxDelay();
             totalMaxTargetDelay += result.getMaxTargetDelay();
             totalMaxMergeDelay += result.getMaxMergeDelay();
@@ -715,24 +727,29 @@ public class CreateResults {
             totalCompletedTargetVehicles += result.getCompletedTargetVehicles();
             totalCompletedMergeVehicles += result.getCompletedMergeVehicles();
         }
-        double meanMaxDelay = totalMaxDelay / results.size();
-        double meanMaxTargetDelay = totalMaxTargetDelay / results.size();
-        double meanMaxMergeDelay = totalMaxMergeDelay / results.size();
-        double meanMinDelay = totalMinDelay / results.size();
-        double meanMinTargetDelay = totalMinTargetDelay / results.size();
-        double meanMinMergeDelay = totalMinMergeDelay / results.size();
-        double meanAverageDelay = totalAverageDelay / results.size();
-        double meanAverageTargetDelay = totalAverageTargetDelay / results.size();
-        double meanAverageMergeDelay = totalAverageMergeDelay / results.size();
-        double meanStdDevDelay = totalStdDevDelay / results.size();
-        double meanStdDevTargetDelay = totalStdDevTargetDelay / results.size();
-        double meanStdDevMergeDelay = totalStdDevMergeDelay / results.size();
-        double meanThroughput = totalThroughput / results.size();
-        double meanThroughputTarget = totalThroughputTarget / results.size();
-        double meanThroughputMerge = totalThroughputMerge / results.size();
-        double meanCompletedVehicles = totalCompletedVehicles / results.size();
-        double meanCompletedTargetVehicles = totalCompletedTargetVehicles / results.size();
-        double meanCompletedMergeVehicles = totalCompletedMergeVehicles / results.size();
+        if(nonNullResults == 0) {
+            List<String> response = new ArrayList<>();
+            response.add("All results failed to complete");
+            return response;
+        }
+        double meanMaxDelay = totalMaxDelay / nonNullResults;
+        double meanMaxTargetDelay = totalMaxTargetDelay / nonNullResults;
+        double meanMaxMergeDelay = totalMaxMergeDelay / nonNullResults;
+        double meanMinDelay = totalMinDelay / nonNullResults;
+        double meanMinTargetDelay = totalMinTargetDelay / nonNullResults;
+        double meanMinMergeDelay = totalMinMergeDelay / nonNullResults;
+        double meanAverageDelay = totalAverageDelay / nonNullResults;
+        double meanAverageTargetDelay = totalAverageTargetDelay / nonNullResults;
+        double meanAverageMergeDelay = totalAverageMergeDelay / nonNullResults;
+        double meanStdDevDelay = totalStdDevDelay / nonNullResults;
+        double meanStdDevTargetDelay = totalStdDevTargetDelay / nonNullResults;
+        double meanStdDevMergeDelay = totalStdDevMergeDelay / nonNullResults;
+        double meanThroughput = totalThroughput / nonNullResults;
+        double meanThroughputTarget = totalThroughputTarget / nonNullResults;
+        double meanThroughputMerge = totalThroughputMerge / nonNullResults;
+        double meanCompletedVehicles = totalCompletedVehicles / nonNullResults;
+        double meanCompletedTargetVehicles = totalCompletedTargetVehicles / nonNullResults;
+        double meanCompletedMergeVehicles = totalCompletedMergeVehicles / nonNullResults;
 
         StringBuilder sb = new StringBuilder();
         sb.append(meanMaxDelay);
@@ -772,16 +789,21 @@ public class CreateResults {
         sb.append(meanCompletedMergeVehicles);
 
         List<String> meanRow = new ArrayList<String>();
-        meanRow.add("MEAN ROW");
+        meanRow.add(MEAN_ROW_INDICATOR + "," + dataTitle);
         meanRow.add(sb.toString());
         return meanRow;
     }
 
     private List<String> produceMeanTable(List<String> summaryTable) {
         List<String> meanTable = new ArrayList<String>();
+        meanTable.add("," + CoreMergeResult.produceGlobalStatsCSVHeader());
         for(int i = 0; i < summaryTable.size(); i++) {
-            if(summaryTable.get(i).contains("MEAN ROW"))
-                meanTable.add(summaryTable.get(i+1));
+            if(summaryTable.get(i).contains(MEAN_ROW_INDICATOR)) {
+                String dataTitle = summaryTable.get(i).substring(
+                        summaryTable.get(i).indexOf(',') + 1,
+                        summaryTable.get(i).length());
+                meanTable.add(dataTitle + ',' + summaryTable.get(i + 1));
+            }
         }
         return meanTable;
     }
@@ -809,11 +831,25 @@ public class CreateResults {
                     break;
                 case MERGE_ANGLE:
                     path = TRAFFIC_LEVEL_SCHEDULES_PATH_STEM;
-                    path = path.concat(roadTypeFirst + "_" + STANDARD_TRAFFIC_LEVEL + "_" + Integer.toString(i+1) + ".json");
+                    path = path.concat(
+                            roadTypeFirst
+                                    + "_"
+                                    + Integer.toString(new Double(STANDARD_TRAFFIC_RATE).intValue())
+                                    + "_"
+                                    + Integer.toString(i+1)
+                                    + ".json"
+                    );
                     break;
                 case LEAD_IN:
                     path = TRAFFIC_LEVEL_SCHEDULES_PATH_STEM;
-                    path = path.concat(roadTypeFirst + "_" + STANDARD_TRAFFIC_LEVEL + "_" + Integer.toString(i+1) + ".json");
+                    path = path.concat(
+                            roadTypeFirst
+                                    + "_"
+                                    + Integer.toString(new Double(STANDARD_TRAFFIC_RATE).intValue())
+                                    + "_"
+                                    + Integer.toString(i+1)
+                                    + ".json"
+                    );
                     break;
             }
 
@@ -869,13 +905,13 @@ public class CreateResults {
                 Path mergeAngleSubDir = Paths.get(RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "\\");
                 if(!Files.exists(mergeAngleSubDir))
                     Files.createDirectories(mergeAngleSubDir);
-                path = RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + resultSetNumber + ".csv";
+                path = RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "\\" + fileName;
                 break;
             case LEAD_IN:
                 Path leadInSubDir = Paths.get(RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "\\");
                 if(!Files.exists(leadInSubDir))
                     Files.createDirectories(leadInSubDir);
-                path = RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + resultSetNumber + ".csv";
+                path = RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "\\" + fileName;
                 break;
         }
 
