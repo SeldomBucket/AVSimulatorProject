@@ -1,12 +1,16 @@
 package aim4.driver.merge.coordinator;
 
+import aim4.config.SimConfig;
 import aim4.driver.merge.MergeAutoDriver;
 import aim4.driver.merge.pilot.MergeAutoPilot;
+import aim4.im.merge.MergeManager;
 import aim4.map.Road;
 import aim4.map.connections.MergeConnection;
 import aim4.map.lane.Lane;
 import aim4.map.merge.MergeMap;
 import aim4.map.merge.RoadNames;
+import aim4.vehicle.AccelSchedule;
+import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.merge.MergeAutoVehicleDriverModel;
 
 import java.util.EnumMap;
@@ -25,6 +29,10 @@ public class MergeAutoCoordinator extends MergeCoordinator {
          * The agent follows the current lane and does not enter the intersection
          */
         DEFAULT_DRIVING_BEHAVIOUR,
+        /**
+         * The agent continues driving towards the exit
+         */
+        END_OF_MERGE,
         /**
          * The agent is crossing the merge.
          */
@@ -77,6 +85,7 @@ public class MergeAutoCoordinator extends MergeCoordinator {
         stateHandlers.put(State.PLANNING, new PlanningStateHandler());
         stateHandlers.put(State.DEFAULT_DRIVING_BEHAVIOUR, new DefaultDrivingBehaviourHandler());
         stateHandlers.put(State.TRAVERSING_MERGE, new TraversingMergeStateHandler());
+        stateHandlers.put(State.END_OF_MERGE, new EndOfMergeStateHandler());
         stateHandlers.put(State.TERMINAL_STATE, terminalStateHandler);
     }
 
@@ -95,6 +104,12 @@ public class MergeAutoCoordinator extends MergeCoordinator {
     private class PlanningStateHandler implements StateHandler {
         @Override
         public boolean perform() {
+            if(vehicle.gaugeVelocity() < VehicleUtil.MIN_MAX_TURN_VELOCITY)
+                if(vehicle.getAccelSchedule() != null)
+                    vehicle.removeAccelSchedule();
+            else
+                if(vehicle.getAccelSchedule() == null)
+                    vehicle.setAccelSchedule(calculateAccelProfileToArriveAtMergeAtSafeSpeed());
             if(driver.inMerge() != null) {
                 setState(State.TRAVERSING_MERGE);
             } else {
@@ -108,8 +123,18 @@ public class MergeAutoCoordinator extends MergeCoordinator {
         @Override
         public boolean perform() {
             pilot.followCurrentLane();
-            pilot.simpleThrottleAction();
+            if(vehicle.getAccelSchedule() == null) //Motion handled by accel schedule if it exists.
+                pilot.simpleThrottleAction();
             setState(State.PLANNING);
+            return false;
+        }
+    }
+
+    private class EndOfMergeStateHandler implements StateHandler {
+        @Override
+        public boolean perform() {
+            pilot.followCurrentLane();
+            pilot.simpleThrottleAction();
             return false;
         }
     }
@@ -120,7 +145,7 @@ public class MergeAutoCoordinator extends MergeCoordinator {
             MergeConnection mergeConnection = driver.inMerge();
             if(mergeConnection == null){
                 //Vehicle cleared connection. Return to normal driving
-                setState(State.DEFAULT_DRIVING_BEHAVIOUR);
+                setState(State.END_OF_MERGE);
                 Lane target = null;
                 for(Road r : map.getRoads())
                     if(r.getName().equals(RoadNames.TARGET_ROAD.toString()))
@@ -146,5 +171,58 @@ public class MergeAutoCoordinator extends MergeCoordinator {
     @Override
     public boolean isTerminated() {
         return state == State.TERMINAL_STATE;
+    }
+
+    // ACCEL //
+    private AccelSchedule calculateAccelProfileToArriveAtMergeAtSafeSpeed() {
+        MergeManager mergeManager = driver.getCurrentLane().getLaneMM().firstMergeManager();
+        Lane entryLane = driver.getCurrentLane();
+        Lane exitLane = mergeManager.getMergeConnection().getExitLanes().get(0);
+
+        double safeTurnSpeed = VehicleUtil.maxTurnVelocity(vehicle.getSpec(), entryLane, exitLane, mergeManager, map);
+        double distanceToMerge = driver.distanceToNextMerge();
+        double maxDeceleration = vehicle.getSpec().getMaxDeceleration();
+        double maxAcceleration = vehicle.getSpec().getMaxAcceleration();
+        double maxVelocity = Math.min(vehicle.getSpec().getMaxVelocity(), driver.getCurrentLane().getSpeedLimit());
+        double startTime = vehicle.gaugeTime();
+
+        AccelSchedule accelSchedule = new AccelSchedule();
+        //Accelerate until no longer safe
+        double timeToAccelUntil = startTime;
+        double currentVelocity = vehicle.gaugeVelocity();
+        double currentDistanceToMerge = distanceToMerge;
+        if(currentVelocity < maxVelocity) {
+            accelSchedule.add(vehicle.gaugeTime(), maxAcceleration);
+            while (canSlowDownSafely(currentVelocity, safeTurnSpeed, maxDeceleration, currentDistanceToMerge) &&
+                    currentVelocity < maxVelocity) {
+                timeToAccelUntil += SimConfig.TIME_STEP;
+                currentVelocity = (SimConfig.TIME_STEP * maxAcceleration) + currentVelocity;
+                currentDistanceToMerge = currentDistanceToMerge - SimConfig.TIME_STEP * currentVelocity;
+            }
+            accelSchedule.add(Math.min(timeToAccelUntil, startTime), 0);
+        } else {
+            accelSchedule.add(vehicle.gaugeTime(), 0);
+        }
+
+        //Decelerate if required
+        if(currentVelocity > safeTurnSpeed) {
+            double distanceForDecel = VehicleUtil.distanceToChangeBetween(currentVelocity, safeTurnSpeed, maxDeceleration);
+            double distanceFromDecelPoint = currentDistanceToMerge - distanceForDecel;
+            double timeUntilDecel = distanceFromDecelPoint / currentVelocity;
+            double timeToHitMerge = VehicleUtil.timeToChangeBetween(currentVelocity, safeTurnSpeed, maxDeceleration);
+            if(timeUntilDecel != 0) {
+                accelSchedule.add(timeToAccelUntil + timeUntilDecel, maxDeceleration);
+            }
+            accelSchedule.add(timeToAccelUntil + timeUntilDecel + timeToHitMerge, 0);
+        }
+        return accelSchedule;
+    }
+
+    private boolean canSlowDownSafely(double currentVelocity, double targetVelocity, double maxDeceleration, double distance) {
+        double distanceTravelledWhenSlowing = VehicleUtil.distanceToChangeBetween(currentVelocity, targetVelocity, maxDeceleration);
+        if(distance > distanceTravelledWhenSlowing)
+            return true;
+        else
+            return false;
     }
 }

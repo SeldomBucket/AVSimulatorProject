@@ -140,7 +140,7 @@ public class S2SSimSetup implements MergeSimSetup {
             VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
             map.getMergeSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.SingleSpawnSpecGenerator(spec));
             map.getTargetSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.NoSpawnSpecGenerator());
-            CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.NONE);
+            V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.QUEUE);
             CoreMergeSimulator.CoreMergeSimStepResult simStepResult =
                     new CoreMergeSimulator.CoreMergeSimStepResult(new HashMap<Integer, MergeVehicleSimModel>());
             while(simStepResult.getCompletedVehicles().size() < 1) {
@@ -162,7 +162,7 @@ public class S2SSimSetup implements MergeSimSetup {
             VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
             map.getTargetSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.SingleSpawnSpecGenerator(spec));
             map.getMergeSpawnPoint().setVehicleSpecChooser(new MergeMapUtil.NoSpawnSpecGenerator());
-            CoreMergeSimulator sim = new CoreMergeSimulator(map, ProtocolType.NONE);
+            V2IMergeSimulator sim = new V2IMergeSimulator(map, ProtocolType.QUEUE);
             CoreMergeSimulator.CoreMergeSimStepResult simStepResult =
                     new CoreMergeSimulator.CoreMergeSimStepResult(new HashMap<Integer, MergeVehicleSimModel>());
             while(simStepResult.getCompletedVehicles().size() < 1) {

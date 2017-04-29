@@ -38,6 +38,7 @@ public class MergeQueueCoordinator extends MergeCoordinator {
         MOVING_TO_MERGE,
         TRAVERSING,
         CLEARING,
+        MOVE_TO_END,
         TERMINAL_STATE
     }
 
@@ -150,6 +151,9 @@ public class MergeQueueCoordinator extends MergeCoordinator {
 
         stateHandlers.put(State.CLEARING,
                 new ClearingStateHandler());
+
+        stateHandlers.put(State.MOVE_TO_END,
+                new MoveToEndStateHandler());
 
         stateHandlers.put(State.TERMINAL_STATE,
                 terminalStateHandler);
@@ -277,7 +281,17 @@ public class MergeQueueCoordinator extends MergeCoordinator {
                     getVehicle().getVIN(),
                     getDriver().getCurrentMM().getId())
             );
-            setState(State.TERMINAL_STATE);
+            setState(State.MOVE_TO_END);
+            pilot.followCurrentLane();
+            pilot.simpleThrottleActionDontEnterMerge();
+            return false;
+        }
+    }
+
+    private class MoveToEndStateHandler implements StateHandler {
+        /** {@inheritDoc} */
+        @Override
+        public boolean perform() {
             pilot.followCurrentLane();
             pilot.simpleThrottleActionDontEnterMerge();
             return false;
