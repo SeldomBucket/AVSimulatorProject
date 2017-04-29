@@ -8,7 +8,7 @@ import aim4.map.Road;
 import aim4.map.aim.AIMSpawnPoint;
 import aim4.map.aim.GridIntersectionMap;
 import aim4.map.aim.GridMapUtil;
-import aim4.sim.Simulator;
+import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.aim.AutoDriverOnlySimulator;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
@@ -36,17 +36,26 @@ public class MergeMimicSimSetup implements AIMSimSetup {
     private double granularity = 1.0;
 
     private static final double LANE_WIDTH = 4;
-    private static final double DISTANCE_BETWEEN = 150;
+    private static final double DEFAULT_DISTANCE_BETWEEN = 150;
     private static final double MEDIAN_SIZE = 1;
 
     private File mergeSchedule;
     private File targetSchedule;
     private double speedLimit;
+    private double leadInDistance;
+
+    public MergeMimicSimSetup(File mergeSchedule, File targetSchedule, double speedLimit, double leadInDistance) {
+        this.mergeSchedule = mergeSchedule;
+        this.targetSchedule = targetSchedule;
+        this.speedLimit = speedLimit;
+        this.leadInDistance = leadInDistance;
+    }
 
     public MergeMimicSimSetup(File mergeSchedule, File targetSchedule, double speedLimit) {
         this.mergeSchedule = mergeSchedule;
         this.targetSchedule = targetSchedule;
         this.speedLimit = speedLimit;
+        this.leadInDistance = DEFAULT_DISTANCE_BETWEEN;
     }
 
     @Override
@@ -58,7 +67,7 @@ public class MergeMimicSimSetup implements AIMSimSetup {
     }
 
     @Override
-    public Simulator getSimulator() {
+    public AIMSimulator getSimulator() {
         double currentTime = 0.0;
         GridIntersectionMap layout = new GridIntersectionMap(
                 currentTime, //Current time
@@ -68,7 +77,7 @@ public class MergeMimicSimSetup implements AIMSimSetup {
                 speedLimit, //Speed limit
                 1, //Lanes per road
                 MEDIAN_SIZE, //Width between roads on same side
-                DISTANCE_BETWEEN //Distance between intersections
+                leadInDistance //Distance between intersections
         );
         ReservationGridManager.Config gridConfig =
                 new ReservationGridManager.Config(SimConfig.TIME_STEP,
@@ -99,7 +108,7 @@ public class MergeMimicSimSetup implements AIMSimSetup {
     private Map<String, Double> simulateExpectedMergeLaneTimes(GridIntersectionMap mapOriginal) {
         Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
         for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
-            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DISTANCE_BETWEEN);
+            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DEFAULT_DISTANCE_BETWEEN);
             VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
             Road destination = null;
             for(Road r : map.getDestinationRoads())
@@ -132,7 +141,7 @@ public class MergeMimicSimSetup implements AIMSimSetup {
     private Map<String, Double> simulateExpectedTargetLaneTimes(GridIntersectionMap mapOriginal) {
         Map<String, Double> specToExpectedTime = new HashMap<String, Double>();
         for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++) {
-            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DISTANCE_BETWEEN);
+            GridIntersectionMap map = new GridIntersectionMap(mapOriginal, LANE_WIDTH, MEDIAN_SIZE, DEFAULT_DISTANCE_BETWEEN);
             VehicleSpec spec = VehicleSpecDatabase.getVehicleSpecById(specID);
             Road destination = null;
             for(Road r : map.getDestinationRoads())

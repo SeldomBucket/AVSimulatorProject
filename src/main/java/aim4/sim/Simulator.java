@@ -31,6 +31,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 package aim4.sim;
 
 import aim4.map.BasicMap;
+import aim4.sim.results.SimulatorResult;
 import aim4.vehicle.VehicleSimModel;
 
 /**
@@ -99,4 +100,10 @@ public interface Simulator {
      * @return String A CSV String representing the results of this simulator.
      */
     String produceResultsCSV();
+
+    /**
+     * Produces a results object for this simulator
+     * @return SimulatorResult A results object for this simulator.
+     */
+    SimulatorResult produceResult();
 }

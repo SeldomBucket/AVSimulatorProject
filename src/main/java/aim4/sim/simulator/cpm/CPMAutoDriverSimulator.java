@@ -12,10 +12,12 @@ import aim4.map.cpm.parking.SensoredLine;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
+import aim4.sim.results.SimulatorResult;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.awt.*;
 import java.awt.geom.Line2D;
@@ -679,5 +681,10 @@ public class CPMAutoDriverSimulator implements Simulator {
         StringBuilder sb = new StringBuilder();
         sb.append("Sorry, CPM does not produce a results file");
         return sb.toString();
+    }
+
+    public SimulatorResult produceResult(){
+        //Sorry, CPM does not produce results in this way.
+        throw new NotImplementedException();
     }
 }

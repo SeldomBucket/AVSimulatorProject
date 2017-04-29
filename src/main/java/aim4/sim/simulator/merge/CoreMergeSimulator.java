@@ -37,14 +37,10 @@ public class CoreMergeSimulator implements MergeSimulator {
     private Map<Integer, MergeVehicleSimModel> vinToVehicles;
     /* The current time */
     private double currentTime;
-    /* The last time a vehicle completed */
-    private double lastVehicleCompleteTime;
     /* The number of vehicles that passed through the merge zone */
     private int numberOfCompletedVehicles;
     /* The protocol type */
     protected ProtocolType protocolType;
-    /* The time for which the simulation should run */
-    protected Double timeLimit;
 
     //RESULTS//
     protected List<CoreMergeVehicleResult> vehiclesRecord;
@@ -196,87 +192,12 @@ public class CoreMergeSimulator implements MergeSimulator {
 
     // RESULTS PRODUCTION //
     public String produceResultsCSV(){
-        return resultsToCSV(produceResult());
+        return produceResult().produceCSVString();
     }
 
-    protected CoreMergeResult produceResult() {
-        CoreMergeResult result = new CoreMergeResult(vehiclesRecord, numberOfCompletedVehicles/lastVehicleCompleteTime);
+    public CoreMergeResult produceResult() {
+        CoreMergeResult result = new CoreMergeResult(vehiclesRecord);
         return result;
-    }
-
-    protected String resultsToCSV(CoreMergeResult result) {
-        StringBuilder sb = new StringBuilder();
-        //Global Stats
-        sb.append("Maximum Delay");
-        sb.append(',');
-        sb.append("Average Delay");
-        sb.append(',');
-        sb.append("Minimum Delay");
-        sb.append(',');
-        sb.append("No. Completed Vehicles");
-        sb.append(',');
-        sb.append("Throughput");
-        sb.append('\n');
-        sb.append(result.getMaxDelay());
-        sb.append(',');
-        sb.append(result.getAverageDelay());
-        sb.append(',');
-        sb.append(result.getMinDelay());
-        sb.append(',');
-        sb.append(result.getCompletedVehicles());
-        sb.append(',');
-        sb.append(result.getThroughput());
-        sb.append('\n');
-        sb.append('\n');
-        //Headings
-        sb.append("VIN");
-        sb.append(',');
-        sb.append("Starting Road");
-        sb.append(',');
-        sb.append("Vehicle Spec");
-        sb.append(',');
-        sb.append("Start Time");
-        sb.append(',');
-        sb.append("Finish Time");
-        sb.append(',');
-        sb.append("Delay");
-        sb.append(',');
-        sb.append("Final Velocity");
-        sb.append(',');
-        sb.append("Max Velocity");
-        sb.append(',');
-        sb.append("Min Velocity");
-        sb.append(',');
-        sb.append("Final X Position");
-        sb.append(',');
-        sb.append("Final Y Position");
-        sb.append('\n');
-        //Vehicle Data
-        for(CoreMergeVehicleResult vr : result.getVehicleResults()){
-            sb.append(vr.getVin());
-            sb.append(',');
-            sb.append(vr.getStartingRoad());
-            sb.append(',');
-            sb.append(vr.getSpecType());
-            sb.append(',');
-            sb.append(vr.getStartTime());
-            sb.append(',');
-            sb.append(vr.getFinishTime());
-            sb.append(',');
-            sb.append(vr.getDelayTime());
-            sb.append(',');
-            sb.append(vr.getFinalVelocity());
-            sb.append(',');
-            sb.append(vr.getMaxVelocity());
-            sb.append(',');
-            sb.append(vr.getMinVelocity());
-            sb.append(',');
-            sb.append(vr.getFinalXPos());
-            sb.append(',');
-            sb.append(vr.getFinalYPos());
-            sb.append('\n');
-        }
-        return sb.toString();
     }
 
     protected void provideCompletedVehiclesWithResultsInfo(Map<Integer, MergeVehicleSimModel> completedVehicles) {
@@ -330,7 +251,6 @@ public class CoreMergeSimulator implements MergeSimulator {
                     vehicle.getFinalXPos(),
                     vehicle.getFinalYPos()
             ));
-            lastVehicleCompleteTime = currentTime;
         }
     }
 

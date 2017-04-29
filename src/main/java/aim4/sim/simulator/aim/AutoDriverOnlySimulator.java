@@ -106,8 +106,6 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     private Map<Integer,AIMVehicleSimModel> vinToVehicles;
     /** The current time */
     private double currentTime;
-    /** The last time a vehicle completed */
-    private double lastVehicleCompleteTime;
     /** The number of completed vehicles */
     private int numOfCompletedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
@@ -1035,7 +1033,6 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
                     vehicle.getFinalXPos(),
                     vehicle.getFinalYPos()
             ));
-            lastVehicleCompleteTime = currentTime;
         }
     }
 
@@ -1085,11 +1082,11 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
     }
 
     public String produceResultsCSV(){
-        return resultsToCSV(produceResult());
+        return produceResult().produceCSVString();
     }
 
-    protected AIMResult produceResult() {
-        return new AIMResult(vehiclesRecord, numOfCompletedVehicles/lastVehicleCompleteTime);
+    public AIMResult produceResult() {
+        return new AIMResult(vehiclesRecord);
     }
 
     protected String resultsToCSV(AIMResult result) {
