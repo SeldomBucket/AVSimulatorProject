@@ -17,7 +17,9 @@ public class S2SMergeConnection extends MergeConnection {
     private Point2D targetEntryPoint;
     private Point2D mergeEntryPoint;
     private Point2D exitPoint;
+    private Area areaPlus;
 
+    private static final double areaPlusAdjust = 1;
     /**
      * Basic class constructor.
      * Takes the Roads which meet to make this connection.
@@ -33,6 +35,13 @@ public class S2SMergeConnection extends MergeConnection {
                         exitPoint.getX(), exitPoint.getY()), //Width of merge zone
                 2 * Point2D.distance(mergeEntryPoint.getX(), mergeEntryPoint.getY(),
                         mergeEntryPoint.getX(), mergeEntryPoint.getY()))); //Height of merge zone
+        this.areaPlus = new Area(new Rectangle2D.Double(
+                targetEntryPoint.getX() - areaPlusAdjust, // Upper left corner X of merge zone
+                mergeEntryPoint.getY() + areaPlusAdjust,  // Upper left corner Y of merge zone
+                Point2D.distance(targetEntryPoint.getX(), targetEntryPoint.getY(),
+                        exitPoint.getX(), exitPoint.getY()) + 2*areaPlusAdjust, //Width of merge zone
+                2 * Point2D.distance(mergeEntryPoint.getX(), mergeEntryPoint.getY(),
+                        mergeEntryPoint.getX(), mergeEntryPoint.getY()) + 2*areaPlusAdjust)); //Height of merge zone
         validate(roads);
         this.targetEntryPoint = targetEntryPoint;
         this.mergeEntryPoint = mergeEntryPoint;
@@ -75,5 +84,9 @@ public class S2SMergeConnection extends MergeConnection {
                 throw new IllegalArgumentException("Unexpected road name found");
         }
 
+    }
+
+    public Area getAreaPlus() {
+        return areaPlus;
     }
 }

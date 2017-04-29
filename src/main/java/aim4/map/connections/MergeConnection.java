@@ -2,6 +2,7 @@ package aim4.map.connections;
 
 import aim4.map.Road;
 
+import java.awt.geom.Area;
 import java.util.List;
 
 /**
@@ -17,4 +18,6 @@ public abstract class MergeConnection extends BasicConnection {
     public MergeConnection(List<Road> roads) {
         super(roads);
     }
+
+    public abstract Area getAreaPlus();
 }

@@ -62,7 +62,7 @@ public class VehicleUtil {
     /**
      * The minimum max turn velocity
      */
-    private static final double MIN_MAX_TURN_VELOCITY = 7.0;
+    public static final double MIN_MAX_TURN_VELOCITY = 7.0;
 
     /**
      * The resolution to within which the vehicle will determine its maximum

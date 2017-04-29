@@ -54,8 +54,7 @@ public class MergeAutoPilot extends BasicPilot {
 
     //DRIVING ACTIONS//
     public void simpleThrottleActionDontEnterMerge() {
-        cruise();
-        dontHitVehicleInFront();
+        simpleThrottleAction();
         dontEnterMerge();
     }
 
