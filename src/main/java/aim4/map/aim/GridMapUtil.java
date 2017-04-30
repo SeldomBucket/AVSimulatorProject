@@ -775,7 +775,7 @@ public class GridMapUtil {
                                 targetSchedule,
                                 targetRoad
                         ));
-            } else if(sp.getHeading() == Math.PI/2) {
+            } else if(sp.getHeading() == Math.PI + Math.PI/2) {
                 Road mergeRoad = null;
                 for(Road r : map.getDestinationRoads())
                     if(r.getIndexLane().getInitialHeading() == 0)

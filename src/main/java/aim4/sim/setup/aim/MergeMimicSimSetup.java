@@ -117,12 +117,21 @@ public class MergeMimicSimSetup implements AIMSimSetup {
                     break;
                 }
             for(AIMSpawnPoint spawn : map.getSpawnPoints()) {
-                if(spawn.getHeading() == Math.PI/2)
+                if(spawn.getHeading() == 2*Math.PI - Math.PI/2)
                     spawn.setVehicleSpecChooser(new GridMapUtil.SingleSpawnSpecGenerator(destination, spec));
                 else
                     spawn.setVehicleSpecChooser(GridMapUtil.nullSpawnSpecGenerator);
             }
             AutoDriverOnlySimulator sim = new AutoDriverOnlySimulator(map, true);
+            ReservationGridManager.Config gridConfig =
+                    new ReservationGridManager.Config(SimConfig.TIME_STEP,
+                            SimConfig.GRID_TIME_STEP,
+                            staticBufferSize,
+                            internalTileTimeBufferSize,
+                            edgeTileTimeBufferSize,
+                            isEdgeTileTimeBufferEnabled,
+                            granularity);  // granularity
+            GridMapUtil.setFCFSManagers(map, 0, gridConfig);
             AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult =
                     new AutoDriverOnlySimulator.AutoDriverOnlySimStepResult(new ArrayList<Integer>());
             AIMVehicleSimModel vehicle = null;
@@ -156,6 +165,15 @@ public class MergeMimicSimSetup implements AIMSimSetup {
                     spawn.setVehicleSpecChooser(GridMapUtil.nullSpawnSpecGenerator);
             }
             AutoDriverOnlySimulator sim = new AutoDriverOnlySimulator(map, true);
+            ReservationGridManager.Config gridConfig =
+                    new ReservationGridManager.Config(SimConfig.TIME_STEP,
+                            SimConfig.GRID_TIME_STEP,
+                            staticBufferSize,
+                            internalTileTimeBufferSize,
+                            edgeTileTimeBufferSize,
+                            isEdgeTileTimeBufferEnabled,
+                            granularity);  // granularity
+            GridMapUtil.setFCFSManagers(map, 0, gridConfig);
             AutoDriverOnlySimulator.AutoDriverOnlySimStepResult simStepResult =
                     new AutoDriverOnlySimulator.AutoDriverOnlySimStepResult(new ArrayList<Integer>());
             AIMVehicleSimModel vehicle = null;

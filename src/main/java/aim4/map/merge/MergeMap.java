@@ -10,10 +10,7 @@ import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
 import aim4.vehicle.VinRegistry;
 
-import java.awt.geom.GeneralPath;
-import java.awt.geom.Path2D;
-import java.awt.geom.Point2D;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.*;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -196,6 +193,20 @@ public class MergeMap implements BasicMap {
     }
 
     private Path2D calculateNoVehicleZone(Lane lane, Point2D startPoint, double startDistance) {
+        //If Merging road, must not intersect target road.
+        double targetRoadY = 0;
+        if(this.getRoad(lane).getName().equals(RoadNames.MERGING_ROAD.toString())) {
+            Road targetRoad = null;
+            for(Road r : getRoads()) {
+                if (r.getName().equals(RoadNames.TARGET_ROAD.toString())){
+                    targetRoad = r;
+                    break;
+                }
+            }
+
+            targetRoadY = targetRoad.getIndexLane().getShape().getBounds2D().getY() + targetRoad.getIndexLane().getWidth();
+        }
+
         Point2D noVehicleZoneEnd = calculateLowerPointAlongMergeLane(lane, startDistance + NO_VEHICLE_ZONE_LENGTH);
         double boundIncrease = 0.5; //Grows the zone slightly larger than required.
         double laneXAdjustment;
@@ -212,18 +223,42 @@ public class MergeMap implements BasicMap {
             laneXAdjustment = (LANE_WIDTH/2) / Math.cos(interiorAngle);
             laneYAdjustment = (LANE_WIDTH/2) / Math.sin(interiorAngle);
         }
-        double xPoints[] = {
-                startPoint.getX() - laneXAdjustment - boundIncrease,
-                startPoint.getX() + laneXAdjustment + boundIncrease,
-                noVehicleZoneEnd.getX() + laneXAdjustment + boundIncrease,
-                noVehicleZoneEnd.getX() - laneXAdjustment - boundIncrease
-        };
-        double yPoints[] = {
-                startPoint.getY() - laneYAdjustment - boundIncrease,
-                startPoint.getY() + laneYAdjustment + boundIncrease,
-                noVehicleZoneEnd.getY() + laneYAdjustment + boundIncrease,
-                noVehicleZoneEnd.getY() - laneYAdjustment - boundIncrease
-        };
+        double xPoints[];
+        double yPoints[];
+        if(noVehicleZoneEnd.getY() - laneYAdjustment - boundIncrease < targetRoadY) {
+            double intAngle = (2*Math.PI) - lane.getInitialHeading();
+            double topAngle = Math.PI - intAngle;
+            //SIN RULE y/sin(int) = x/sin(top)
+            double yDown = startPoint.getY() - targetRoadY;
+            double xAcross = startPoint.getX() + yDown*(Math.sin(topAngle) / Math.sin(intAngle));
+
+            xPoints = new double[]{
+                    startPoint.getX() - laneXAdjustment - boundIncrease,
+                    startPoint.getX() + laneXAdjustment + boundIncrease,
+                    Math.min(xAcross, noVehicleZoneEnd.getX()) + laneXAdjustment + boundIncrease,
+                    Math.min(xAcross, noVehicleZoneEnd.getX()) - laneXAdjustment - boundIncrease,
+            };
+            yPoints = new double[]{
+                    startPoint.getY() - laneYAdjustment + boundIncrease,
+                    startPoint.getY() + laneYAdjustment + boundIncrease,
+                    Math.max(targetRoadY, noVehicleZoneEnd.getY() + laneYAdjustment - boundIncrease),
+                    targetRoadY
+            };
+        }else{
+            xPoints = new double[]{
+                    startPoint.getX() - laneXAdjustment - boundIncrease,
+                    startPoint.getX() + laneXAdjustment + boundIncrease,
+                    noVehicleZoneEnd.getX() + laneXAdjustment + boundIncrease,
+                    noVehicleZoneEnd.getX() - laneXAdjustment - boundIncrease
+            };
+            yPoints = new double[]{
+                    startPoint.getY() - laneYAdjustment + boundIncrease,
+                    startPoint.getY() + laneYAdjustment + boundIncrease,
+                    noVehicleZoneEnd.getY() + laneYAdjustment - boundIncrease,
+                    noVehicleZoneEnd.getY() - laneYAdjustment - boundIncrease
+            };
+        }
+
         GeneralPath noVehicleZonePath = new GeneralPath(GeneralPath.WIND_EVEN_ODD, xPoints.length);
         noVehicleZonePath.moveTo(xPoints[0], yPoints[0]);
 
@@ -232,7 +267,9 @@ public class MergeMap implements BasicMap {
         };
 
         noVehicleZonePath.closePath();
+
         Path2D noVehicleZone = new Path2D.Double(noVehicleZonePath);
+
         return noVehicleZone;
     }
 
@@ -242,23 +279,23 @@ public class MergeMap implements BasicMap {
             return new Point2D.Double(
                     lane.getStartPoint().getX() + distance,
                     lane.getStartPoint().getY()
-                    );
+            );
         } else if (lane.getInitialHeading() == (2*Math.PI - Math.PI/2)) { //Lane goes down vertically T->B
             return new Point2D.Double(
                     lane.getStartPoint().getX(),
                     lane.getStartPoint().getY() - distance
             );
         } else {
-            double laneAngle = (2 * Math.PI) - lane.getInitialHeading();
-            double interiorAngle = (Math.PI / 2) - laneAngle;
-            double otherAngle = Math.PI / 2 - laneAngle;
+            double interiorAngle = 2*Math.PI - lane.getInitialHeading();
+            double topAngle = Math.PI - interiorAngle;
 
-            double laneYAdjustment = (distance * Math.sin(interiorAngle)) / Math.sin(Math.PI / 2);
-            double laneXAdjustment = (distance * Math.sin(otherAngle)) / Math.sin(Math.PI / 2);
+            //SIN RULE a / sinA = b / sinB :: a = b sinA / sinB
+            double xAdj = (distance*Math.sin(topAngle)) / Math.sin(Math.PI/2);
+            double yAdj = (distance*Math.sin(interiorAngle)) / Math.sin(Math.PI/2);
 
             return new Point2D.Double(
-                    startPoint.getX() + laneXAdjustment,
-                    startPoint.getY() - laneYAdjustment
+                    lane.getStartPoint().getX() + xAdj,
+                    lane.getStartPoint().getY() - yAdj
             );
         }
     }

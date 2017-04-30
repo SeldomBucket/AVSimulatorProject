@@ -48,6 +48,7 @@ import aim4.msg.aim.v2i.V2IMessage;
 import aim4.sim.results.AIMResult;
 import aim4.sim.results.AIMVehicleResult;
 import aim4.vehicle.VehicleSpec;
+import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.aim.*;
@@ -147,8 +148,18 @@ public class AutoDriverOnlySimulator implements AIMSimulator {
         this.basicIntersectionMap = basicIntersectionMap;
         this.vinToVehicles = new HashMap<Integer,AIMVehicleSimModel>();
         if(mergeMode) {
+            Map<String, Double> fakeDelayTimes = new HashMap<String, Double>();
+            for(int specID = 0; specID < VehicleSpecDatabase.getNumOfSpec(); specID++)
+                fakeDelayTimes.put(VehicleSpecDatabase.getVehicleSpecById(specID).getName(), new Double(0));
             this.vehiclesRecord = new ArrayList<AIMVehicleResult>();
-            this.specToExpectedTimeMergeLane = specToExpectedTimeMergeLane;
+            if(specToExpectedTimeMergeLane != null)
+                this.specToExpectedTimeMergeLane = specToExpectedTimeMergeLane;
+            else
+                this.specToExpectedTimeMergeLane = fakeDelayTimes;
+            if(specToExpectedTimeTargetLane != null)
+                this.specToExpectedTimeTargetLane = specToExpectedTimeMergeLane;
+            else
+                this.specToExpectedTimeTargetLane = fakeDelayTimes;
             this.specToExpectedTimeTargetLane = specToExpectedTimeTargetLane;
         }
 
