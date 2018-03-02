@@ -4,6 +4,7 @@ import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.lane.LineSegmentLane;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
 import java.util.List;
 

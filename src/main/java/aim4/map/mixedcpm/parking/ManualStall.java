@@ -5,6 +5,6 @@ import java.awt.geom.Rectangle2D;
 public class ManualStall extends StallInfo{
 
     ManualStall(StallInfo stallInfo) {
-        super(stallInfo.width, stallInfo.length, stallInfo.type);
+        super(stallInfo.getWidth(), stallInfo.getLength(), stallInfo.getType());
     }
 }

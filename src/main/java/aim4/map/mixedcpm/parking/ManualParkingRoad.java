@@ -7,28 +7,34 @@ import aim4.map.lane.Lane;
 import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
-public class ManualParkingRoad extends Road{
+public class ManualParkingRoad{
 
+    private Road centreRoad;
     private StallStack stallStackPair[];
     private boolean HasParkingSpaces;
 
     // Public Methods
     public ManualParkingRoad(String name, BasicMap map, Lane lane){
-        super(name, map);
-        this.addTheRightMostLane(lane);
+        ArrayList<Lane> laneList = new ArrayList<>();
+        laneList.add(lane);
+        centreRoad = new Road(name, laneList, map);
         stallStackPair = new StallStack[] { new StallStack(0,
                                                     lane.getStartPoint().getX(),
                                                     lane.getStartPoint().getY(),
-                                                    lane.getLength()),
+                                                    lane.getLength(),
+                                                    true),
                                             new StallStack(0,
                                                     lane.getStartPoint().getX(),
                                                     lane.getStartPoint().getY(),
-                                                    lane.getLength()) };
+                                                    lane.getLength(),
+                                                    false) };
         }
 
-    public ArrayList<ParkingSpace> getParkingSpaces(){
-        ArrayList<ParkingSpace> returnList = stallStackPair[0].getParkingSpaces();
-        returnList.addAll(stallStackPair[1].getParkingSpaces());
+    public ArrayList<ManualStall> getParkingSpaces(){
+        ArrayList<ManualStall> returnList = stallStackPair[0].getManualStalls();
+        returnList.addAll(stallStackPair[1].getManualStalls());
         return returnList;
     }
+
+    public Road getCentreRoad() { return centreRoad; }
 }
