@@ -1,7 +1,5 @@
 package aim4.map.mixedcpm.parking;
 
-import org.mockito.internal.stubbing.answers.DoesNothing;
-
 import java.util.HashMap;
 import java.util.Map;
 
