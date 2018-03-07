@@ -39,22 +39,22 @@ public class ManualParkingRoad{
      */
     public ManualParkingRoad(Road road,
                              ManualParkingArea parkingArea,
-                             Double firstStackLength){
+                             Double firstStackLength) {
         centreRoad = road;
         stallStackPair =
-                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX(),
-                                                    road.getOnlyLane().getStartPoint().getY(),
+                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2,
+                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth()/2,
                                                     firstStackLength,
-                                                    road.getOnlyLane().getLength(),
+                                                    road.getOnlyLane().getLength() - road.getOnlyLane().getWidth(),
                                                     false,
                                                     this),
-                                    new StallStack( road.getOnlyLane().getStartPoint().getX(),
-                                                    road.getOnlyLane().getStartPoint().getY(),
+                                    new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2,
+                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth()/2,
                                                     0,
-                                                    road.getOnlyLane().getLength(),
+                                                    road.getOnlyLane().getLength() - road.getOnlyLane().getWidth(),
                                                     false,
                                                     this)
-        };
+                };
         this.parkingArea = parkingArea;
         this.parkingArea.update();
         this.roadID = UUID.randomUUID();
@@ -125,13 +125,13 @@ public class ManualParkingRoad{
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
                         // TODO ED THE SEARCH
                     }
-                    if (searchType != SearchParameter.anyFreeSpace) {break;}
+                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 case correctHeight:
 
-                    if (searchType != SearchParameter.anyFreeSpace) {break;}
+                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 case emptyStack:
 
-                    if (searchType != SearchParameter.anyFreeSpace) {break;}
+                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
             }
         }
         return null;

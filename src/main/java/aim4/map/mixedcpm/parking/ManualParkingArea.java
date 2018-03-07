@@ -20,7 +20,6 @@ public class ManualParkingArea extends MixedCPMRoadMap {
     private Road entryRoad;
     private Road exitRoad;
     private MixedCPMBasicMap map;
-    private ArrayList<Road> removedRoads;
 
     // TODO ED make size of area changeable, as long as the outside of the
 
@@ -61,8 +60,8 @@ public class ManualParkingArea extends MixedCPMRoadMap {
      * @return the ManualStall if it can fit, null otherwise
      */
     public ManualStall findSpace(StallInfo stallInfo){
-        ManualStall tempStall = null;
-        stallInfo.getLength();
+        ManualStall tempStall;
+
         String roadName = UUID.randomUUID().toString();
         if (parkingRoads.size() == 0){
 
@@ -91,7 +90,6 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         }
 
         //        Next, add new road and use that        //
-        // TODO ED Road name generation
         tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
         if (tempStall != null){ return tempStall; }
 
@@ -109,7 +107,7 @@ public class ManualParkingArea extends MixedCPMRoadMap {
             if (i == parkingRoads.size()){
                 currentRoad.setLastRoad(true);
                 if (currentRoad.getParkingSpaces().size() == 0){
-                    removeParkingRoad(currentRoad.getID());
+                    removeParkingRoad(currentRoad);
                 }
             }else{
                 currentRoad.setLastRoad(true);
@@ -186,15 +184,12 @@ public class ManualParkingArea extends MixedCPMRoadMap {
 
     /**
      * remove a parking road and all junctions/references to it
-     * @param roadID the ID of the road to remove
+     * @param road the ParkingRoad to remove
      */
-    private void removeParkingRoad(UUID roadID) {
-        // TODO ED removeParkingRoad fix this, it's all a bit wrong...
+    private void removeParkingRoad(ManualParkingRoad road) {
         for (ManualParkingRoad parkingRoad: parkingRoads) {
-            if (parkingRoad.getID() == roadID){
-                this.removedRoads.add(parkingRoad.getCentreRoad());
-                this.parkingRoads.remove(parkingRoad);
-                this.removeRoad(parkingRoad.getCentreRoad());
+            if (parkingRoad == road){
+                this.map.removeRoad(parkingRoad.getCentreRoad());
                 break;
             }
         }

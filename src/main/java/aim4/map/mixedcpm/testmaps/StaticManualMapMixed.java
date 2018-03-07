@@ -15,7 +15,6 @@ public class StaticManualMapMixed extends MixedCPMBasicMap {
     public StaticManualMapMixed(){
         super(3,5,0);
 
-        // TODO ED dimensions of this map
         double width = 30;
         double height = 20;
         this.dimensions = new Rectangle2D.Double(0.0,0.0,width + BORDER*2,height + BORDER*2);

@@ -38,10 +38,6 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     protected Lane entranceLane;
     /** The exit lanes*/
     protected List<Lane> exitLanes = new ArrayList<Lane>();
-    /** The set of vertical roads */
-    protected List<Road> verticalRoads = new ArrayList<Road>();
-    /** The set of horizontal roads */
-    protected List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
     protected List<Road> roads = new ArrayList<Road>();
 
@@ -189,23 +185,23 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     }
 
     /**
-     * Remove a road and all junctions from the map
+     * Remove a road and all simple intersections/junctions connected to it from the map
      * @param road road to be removed
      * @return whether the road was removed successfully or not
      */
     public boolean removeRoad(Road road){
         // Find all the roads attached to this road, and delete the corresponding junction
         for (Junction junction : road.getJunctions()){
-            for (Road junctionRoad : junction.getRoads()){
-                junctionRoad.removeJunction(junction);
+            for (Road connectedRoad : junction.getRoads()){
+                connectedRoad.removeJunction(junction);
             }
         }
         this.junctions.removeAll(road.getJunctions());
 
         // Find all the roads attached to this road, and delete the corresponding intersection
         for (SimpleIntersection intersection : road.getIntersections()){
-            for (Road junctionRoad : intersection.getRoads()){
-                junctionRoad.removeSimpleIntersection(intersection);
+            for (Road connectedRoad : intersection.getRoads()){
+                connectedRoad.removeSimpleIntersection(intersection);
             }
         }
         this.intersections.removeAll(road.getIntersections());
