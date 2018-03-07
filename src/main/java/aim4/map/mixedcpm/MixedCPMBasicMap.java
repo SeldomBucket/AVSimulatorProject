@@ -17,7 +17,20 @@ import java.util.List;
 /**
  * The base class for all CPM Maps.
  */
-public abstract class MixedMixedCPMBasicMap extends MixedCPMRoadMap implements MixedCPMMap {
+public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedCPMMap {
+
+    /////////////////////////////////
+    // CONSTANTS
+    /////////////////////////////////
+
+    /** The length of the no vehicle zone */
+    protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
+
+    /** The length of the map border, used for
+     * space between map edge and elements, distance
+     * of DCL from edge etc.
+     * */
+    protected static final double BORDER = 28.0;
 
     /** The Manual Parking Area */
     protected ManualParkingArea manualParkingArea;
@@ -36,7 +49,7 @@ public abstract class MixedMixedCPMBasicMap extends MixedCPMRoadMap implements M
     /** The vertical spawn points */
     protected List<MixedCPMSpawnPoint> verticalSpawnPoints;
 
-    public MixedMixedCPMBasicMap(double laneWidth, double speedLimit, double initTime){
+    public MixedCPMBasicMap(double laneWidth, double speedLimit, double initTime){
         super(laneWidth, speedLimit);
         this.initTime = initTime;
     }

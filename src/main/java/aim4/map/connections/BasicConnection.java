@@ -198,9 +198,29 @@ public abstract class BasicConnection implements RoadConnection {
         LineSegmentLane laneFromRoad1 = (LineSegmentLane) road1.getOnlyLane();
         LineSegmentLane laneFromRoad2 = (LineSegmentLane) road2.getOnlyLane();
         Point2D intersectionPoint = laneFromRoad1.intersectionPoint(laneFromRoad2.getLine());
-        double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(laneFromRoad1.getStartPoint(),
-                laneFromRoad2.getStartPoint(),
-                intersectionPoint);
+
+        // Make sure the point we're using isn't the same as the intersection point
+        Point2D lane1MeasurementPoint, lane2MeasurementPoint;
+        if (!intersectionPoint.equals(laneFromRoad1.getStartPoint())){
+            lane1MeasurementPoint = laneFromRoad1.getStartPoint();
+        }else if(!intersectionPoint.equals(laneFromRoad1.getEndPoint())){
+            lane1MeasurementPoint = laneFromRoad1.getEndPoint();
+        }else{
+            lane1MeasurementPoint = laneFromRoad1.getPointAtNormalizedDistance(laneFromRoad1.getLength()/2);
+        }
+
+        if (!intersectionPoint.equals(laneFromRoad2.getStartPoint())){
+            lane2MeasurementPoint = laneFromRoad2.getStartPoint();
+        }else if(!intersectionPoint.equals(laneFromRoad2.getEndPoint())){
+            lane2MeasurementPoint = laneFromRoad2.getEndPoint();
+        }else{
+            lane2MeasurementPoint = laneFromRoad2.getPointAtNormalizedDistance(laneFromRoad2.getLength()/2);
+        }
+
+        double angleInRadians = GeomMath.angleBetweenTwoPointsWithFixedPoint(
+                                                    lane1MeasurementPoint,
+                                                    lane2MeasurementPoint,
+                                                    intersectionPoint);
         double angleInDegrees = Math.toDegrees(angleInRadians);
         if (Math.abs(angleInDegrees) == 90.0 || Math.abs(angleInDegrees) == 270.0) {
             return true;
