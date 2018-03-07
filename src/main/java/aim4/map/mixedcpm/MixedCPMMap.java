@@ -8,6 +8,7 @@ import aim4.map.cpm.CPMSpawnPoint;
 import aim4.map.cpm.parking.ParkingArea;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
+import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 
@@ -26,6 +27,7 @@ public interface MixedCPMMap extends BasicMap {
     public StatusMonitor getStatusMonitor();
     public void addVehicleToMap(MixedCPMBasicAutoVehicle vehicle);
     public List<MixedCPMBasicAutoVehicle> getVehicles();
-    public ParkingArea getParkingArea();
+    public ManualParkingArea getManualParkingArea();
+    public void update();
 
 }

@@ -2,9 +2,11 @@ package aim4.map.mixedcpm.parking;
 
 import aim4.map.BasicMap;
 import aim4.map.Road;
+import aim4.map.connections.Junction;
 import aim4.map.lane.Lane;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class ManualParkingRoad{
@@ -20,7 +22,7 @@ public class ManualParkingRoad{
     /**
      * Enum to show which type of space you want to search for
      */
-    public enum StallSearchParameter{
+    public enum SearchParameter {
         exactSize,
         correctHeight,
         emptyStack,
@@ -28,24 +30,21 @@ public class ManualParkingRoad{
     }
 
     // Public Methods
-    public ManualParkingRoad(String name,
-                             BasicMap map,
-                             Lane lane,
-                             ManualParkingArea parkingArea){
-        ArrayList<Lane> laneList = new ArrayList<>();
-        laneList.add(lane);
-        centreRoad = new Road(name, laneList, map);
+    public ManualParkingRoad(Road road,
+                             ManualParkingArea parkingArea,
+                             Double firstStackLength){
+        centreRoad = road;
         stallStackPair =
-                new StallStack[] {  new StallStack(0,
-                                                    lane.getStartPoint().getX(),
-                                                    lane.getStartPoint().getY(),
-                                                    lane.getLength(),
+                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX(),
+                                                    road.getOnlyLane().getStartPoint().getY(),
+                                                    firstStackLength,
+                                                    road.getOnlyLane().getLength(),
                                                     false,
                                                     this),
-                                    new StallStack(0,
-                                                    lane.getStartPoint().getX(),
-                                                    lane.getStartPoint().getY(),
-                                                    lane.getLength(),
+                                    new StallStack( road.getOnlyLane().getStartPoint().getX(),
+                                                    road.getOnlyLane().getStartPoint().getY(),
+                                                    0,
+                                                    road.getOnlyLane().getLength(),
                                                     false,
                                                     this)
         };
@@ -62,6 +61,12 @@ public class ManualParkingRoad{
 
     public Road getCentreRoad() { return centreRoad; }
 
+    public double getEntireWidth() {
+        return centreRoad.getOnlyLane().getWidth() +
+                stallStackPair[0].getMaxStallLength() +
+                stallStackPair[1].getMaxStallLength();
+    }
+
     public UUID getID()
     {
         return this.roadID;
@@ -77,7 +82,7 @@ public class ManualParkingRoad{
         }
     }
 
-    public ManualStall findNewSpace(StallInfo stallInfo, StallSearchParameter searchType) {
+    public ManualStall findNewSpace(StallInfo stallInfo, SearchParameter searchType) {
         for (StallStack stack:stallStackPair) {
             switch (searchType) {
                 case exactSize:
@@ -85,13 +90,13 @@ public class ManualParkingRoad{
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
                         //DO THE SEARCH
                     }
-                    if (searchType != StallSearchParameter.anyFreeSpace) {break;}
+                    if (searchType != SearchParameter.anyFreeSpace) {break;}
                 case correctHeight:
 
-                    if (searchType != StallSearchParameter.anyFreeSpace) {break;}
+                    if (searchType != SearchParameter.anyFreeSpace) {break;}
                 case emptyStack:
 
-                    if (searchType != StallSearchParameter.anyFreeSpace) {break;}
+                    if (searchType != SearchParameter.anyFreeSpace) {break;}
             }
         }
         return null;
