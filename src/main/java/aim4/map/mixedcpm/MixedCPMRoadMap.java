@@ -53,6 +53,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     /**The set of intersections */
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
 
+    /**
+     * Constructor for the MixedCPMRoadMap
+     * @param laneWidth the standard width of the lanes in this map
+     * @param speedLimit the standard speed limit of this map
+     */
     public MixedCPMRoadMap(double laneWidth, double speedLimit) {
         this.laneWidth = laneWidth;
         this.halfLaneWidth = laneWidth/2;
@@ -60,12 +65,24 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         this.speedLimit = speedLimit;
     }
 
+    /**
+     * register a lane in the lane registry
+     * @param lane the lane to be registered
+     */
     protected void registerLane(Lane lane){
         int laneId = laneRegistry.register(lane);
         lane.setId(laneId);
     }
 
-
+    /**
+     * Creates a road with one lane and adds it to the map
+     * @param roadName the name of the road
+     * @param x1 x of the centre of the start of the road
+     * @param y1 y of the centre of the start of the road
+     * @param x2 x of the centre of the end of the road
+     * @param y2 y of the centre of the end of the road
+     * @return
+     */
     protected Road makeRoadWithOneLane(String roadName, double x1,
                                        double y1, double x2, double y2){
         // Create the road
@@ -86,6 +103,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         return road;
     }
 
+    /**
+     * Make a corner and store it in the map
+     * @param road1 road1 of the corner
+     * @param road2 road2 of the corner
+     */
     protected void makeCorner(Road road1, Road road2){
         // Put the roads into a list
         List<Road> roadsForCorner = new ArrayList<Road>(2);
@@ -95,6 +117,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         corners.add(corner);
     }
 
+    /**
+     * Make a junction and store it in the map - roads must be at 90 degrees
+     * @param road1 road1 of the junction
+     * @param road2 road2 of the junction
+     */
     protected void makeJunction(Road road1, Road road2){
         // Put the roads into a list
         List<Road> roadsForJunction = new ArrayList<Road>(2);
@@ -106,6 +133,13 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         road2.addJunction(junction);
     }
 
+
+    /**
+     * Make a junction and store it in the map - roads must be at 90 degrees
+     * @param road1 road1 of the junction
+     * @param road2 road2 of the junction
+     * @param road3 road3 of the junction
+     */
     protected void makeJunction(Road road1, Road road2, Road road3){
         // Put the roads into a list
         List<Road> roadsForJunction = new ArrayList<Road>(3);
@@ -119,6 +153,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         road3.addJunction(junction);
     }
 
+    /**
+     * Make an intersection and store it in the map - roads must be at 90 degrees
+     * @param road1 road1 of the intersection
+     * @param road2 road2 of the intersection
+     */
     protected void makeSimpleIntersection(Road road1, Road road2){
         // Put the roads into a list
         List<Road> roadsForIntersection = new ArrayList<Road>(2);
@@ -130,6 +169,12 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         road2.addSimpleIntersection(intersection);
     }
 
+    /**
+     * Make an intersection and store it in the map - roads must be at 90 degrees
+     * @param road1 road1 of the intersection
+     * @param road2 road2 of the intersection
+     * @param road3 road3 of the intersection
+     */
     protected void makeSimpleIntersection(Road road1, Road road2, Road road3){
         // Put the roads into a list
         List<Road> roadsForIntersection = new ArrayList<Road>(3);
@@ -143,6 +188,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         road3.addSimpleIntersection(intersection);
     }
 
+    /**
+     * Remove a road and all junctions from the map
+     * @param road road to be removed
+     * @return whether the road was removed successfully or not
+     */
     public boolean removeRoad(Road road){
         // Find all the roads attached to this road, and delete the corresponding junction
         for (Junction junction : road.getJunctions()){
@@ -167,6 +217,8 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         this.roads.remove(road);
         return false;
     }
+
+    // GETTERS
 
     public List<Road> getRoads() {
         return roads;

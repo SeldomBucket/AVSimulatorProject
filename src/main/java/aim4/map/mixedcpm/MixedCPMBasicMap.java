@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The base class for all CPM Maps.
+ * The base class for all Mixed CPM Maps.
  */
 public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedCPMMap {
 
@@ -49,20 +49,23 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /** The vertical spawn points */
     protected List<MixedCPMSpawnPoint> verticalSpawnPoints;
 
+    /**
+     * Constructor for MixedCPMBasicMap
+     * @param laneWidth Standard width of the lanes
+     * @param speedLimit Speed limit for all lanes
+     * @param initTime Time the map was initialised at
+     */
     public MixedCPMBasicMap(double laneWidth, double speedLimit, double initTime){
         super(laneWidth, speedLimit);
         this.initTime = initTime;
     }
 
+    /**
+     * Update roads in MixedCPMBasicMap from the manualParkingArea
+     */
     public void update(){
-        for (Road road : this.manualParkingArea.getRoads())
-        {
-            if (!this.roads.contains(road)){
-                this.roads.add(road);
-            }
-        }
+        // TODO ED Take all roads from manualParkingArea? May not be needed?
     }
-
 
     /**
      * Make the spawn point.
@@ -99,23 +102,46 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         spawnPoints.addAll(horizontalSpawnPoints);
     }
 
-
+    /**
+     * Add a vehicle to this map
+     * @param vehicle the vehicle to add
+     */
     public void addVehicleToMap(MixedCPMBasicAutoVehicle vehicle) {
         vehicles.add(vehicle);
     }
 
+    /**
+     * Remove a vehicle from the map
+     * @param vehicle the vehicle to remove
+     */
     public void removeCompletedVehicle(MixedCPMBasicAutoVehicle vehicle) {
         vehicles.remove(vehicle);
     }
 
+    /**
+     * Returns the spawn points of this map
+     * @return the spawn points
+     */
     public List<MixedCPMSpawnPoint> getSpawnPoints() {
         return spawnPoints;
     }
 
+    /**
+     * Returns the data collection lines of this map
+     * @return the data collection lines
+     */
     public List<DataCollectionLine> getDataCollectionLines() { return dataCollectionLines; }
 
+    /**
+     * Returns the vehicles in this map
+     * @return the vehicles
+     */
     public List<MixedCPMBasicAutoVehicle> getVehicles() { return vehicles; }
 
+    /**
+     * prints the data from the data collection lines to a file
+     * @param outFileName  the name of the file to which the data is outputted.
+     */
     public void printDataCollectionLinesData(String outFileName) {
         PrintStream outfile = null;
         try {

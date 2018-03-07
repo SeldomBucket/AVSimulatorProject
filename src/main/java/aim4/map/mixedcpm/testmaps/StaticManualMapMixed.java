@@ -35,13 +35,21 @@ public class StaticManualMapMixed extends MixedCPMBasicMap {
         // TODO ED test manual parking area
     }
 
+    /**
+     * Gets the status monitor of this map
+     * @return null as this map doesn't have any status monitors
+     */
     @Override
     public StatusMonitor getStatusMonitor() {
         return null;
     }
 
+    /**
+     * Gets the manual parking area of this map
+     * @return the manual parking area
+     */
     @Override
     public ManualParkingArea getManualParkingArea() {
-        return null;
+        return manualParkingArea;
     }
 }

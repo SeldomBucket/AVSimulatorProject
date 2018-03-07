@@ -30,6 +30,13 @@ public class ManualParkingRoad{
     }
 
     // Public Methods
+
+    /**
+     * Constructor for ManualParkingRoad
+     * @param road The road for the centre of this ManualParkingRoad
+     * @param parkingArea the ManualParkingArea this ManualParkingRoad belongs to
+     * @param firstStackLength the length of the first stack
+     */
     public ManualParkingRoad(Road road,
                              ManualParkingArea parkingArea,
                              Double firstStackLength){
@@ -53,25 +60,47 @@ public class ManualParkingRoad{
         this.roadID = UUID.randomUUID();
     }
 
+    /**
+     * get parking spaces from both stall stacks
+     * @return list of parking spaces
+     */
     public ArrayList<ManualStall> getParkingSpaces(){
         ArrayList<ManualStall> returnList = stallStackPair[0].getManualStalls();
         returnList.addAll(stallStackPair[1].getManualStalls());
         return returnList;
     }
 
-    public Road getCentreRoad() { return centreRoad; }
+    /**
+     * gets the centre road
+     * @return the centre road
+     */
+    public Road getCentreRoad() {
+        return centreRoad;
+    }
 
+    /**
+     * gets the width of the entire ManualParkingRoad, including both stall stacks
+     * @return the entire width of this ManualParkingRoad
+     */
     public double getEntireWidth() {
         return centreRoad.getOnlyLane().getWidth() +
                 stallStackPair[0].getMaxStallLength() +
                 stallStackPair[1].getMaxStallLength();
     }
 
+    /**
+     * gets ID of this road
+     * @return the ID
+     */
     public UUID getID()
     {
         return this.roadID;
     }
 
+    /**
+     * marks this as the last road, and marks the last stall stack if applicable
+     * @param lastRoad whether this road is the last road or not
+     */
     public void setLastRoad(boolean lastRoad){
         this.lastRoad = lastRoad;
         if (lastRoad){
@@ -82,6 +111,12 @@ public class ManualParkingRoad{
         }
     }
 
+    /**
+     * Finds a new space based on the size of the stallInfo
+     * @param stallInfo the parameters of the space to find
+     * @param searchType the way the space should be searched for
+     * @return the stall if it was found, null if not
+     */
     public ManualStall findNewSpace(StallInfo stallInfo, SearchParameter searchType) {
         for (StallStack stack:stallStackPair) {
             switch (searchType) {

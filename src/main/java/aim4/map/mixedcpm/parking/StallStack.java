@@ -22,12 +22,13 @@ public class StallStack {
     private ManualParkingRoad parkingRoad;
 
     /**
-     *
+     * Constructor for a stall stack
      * @param x x position of the stall stack
      * @param y y position of the stall stack
      * @param laneLength length of the lane this stall stack is attached to
      * @param maxStallLength the maximum length of vehicle this stack is
      * @param lastStallStack if this is the stall stack to the left of the road
+     * @param parkingRoad the ManualParkingRoad this stall stack belongs to
      */
     public StallStack(double x,
                       double y,
@@ -59,11 +60,12 @@ public class StallStack {
     }
 
     /**
-     * 
+     * Attempts to add a manual stall
      * @param stallInfo The information of the stall which is being added
-     * @return
+     * @return the ManualStall which was added, null if it wasn't possible
      */
     public ManualStall addManualStall(StallInfo stallInfo){
+        // TODO ED addManualStall
         if (maxStallLength == 0){
             // Set up rectangle
             boundingBox = new Rectangle2D.Double(x, y, laneLength, stallInfo.getWidth());
@@ -72,19 +74,31 @@ public class StallStack {
         return null;
     }
 
-    public boolean removeManualStall(UUID stallID) {
+    /**
+     * Removes a manual stall, and if this is the last stall stack, sets its length to 0
+     * @param stallID the stall ID of the stall to be removed
+     */
+    public void removeManualStall(UUID stallID) {
         if (lastStallStack) {
-            // If this is the last space in the last stall stack, set the height of this stall stack to 0
+            // If this is the last space in the last stall stack, set the length of this stall stack to 0
             maxStallLength = 0;
             idealStallWidth = 0;
         }
-        return false;
+        // TODO ED removeManualStall
     }
 
+    /**
+     * Gets the maximum stall length this stall stack can fit
+     * @return the maximum stall length
+     */
     public double getMaxStallLength() {
         return maxStallLength;
     }
 
+    /**
+     * Gets the ideal stall width for this stall stack
+     * @return the ideal stall width
+     */
     public double getIdealStallWidth() {
         return idealStallWidth;
     }

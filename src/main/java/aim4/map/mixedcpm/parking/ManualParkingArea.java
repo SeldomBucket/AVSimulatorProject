@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * ManualParkingArea
  *
- * Manages the
+ * Manages the parking area for manual vehicles
  */
 public class ManualParkingArea extends MixedCPMRoadMap {
     private List<ManualParkingRoad> parkingRoads;
@@ -25,14 +25,17 @@ public class ManualParkingArea extends MixedCPMRoadMap {
     // TODO ED make size of area changeable, as long as the outside of the
 
     /**
-     *
-     * @param topRoad
-     * @param bottomRoad
+     * Constructors for the ManualParkingArea
+     * @param topRoad the top road of the area (must be parallel to the bottom road)
+     * @param bottomRoad the bottom road of the area
+     * @param map the map this ManualParkingArea belongs to
+     * @param dimensions the dimensions of this map
      */
     public ManualParkingArea(Road topRoad, Road bottomRoad, MixedCPMBasicMap map, Rectangle2D dimensions){
         super(map.getLaneWidth(), map.getMaximumSpeedLimit());
-        // TODO ED make bounding box (dimensions) for the area
         this.dimensions = dimensions;
+
+        // TODO ED make sure that the top and bottom roads are parallel and top is above bottom
         assert topRoad.getOnlyLane().getStartPoint().getX() < bottomRoad.getOnlyLane().getStartPoint().getX();
         assert topRoad.getOnlyLane().getEndPoint().getX() < bottomRoad.getOnlyLane().getEndPoint().getX();
 
@@ -43,11 +46,20 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         this.map = map;
     }
 
+    /**
+     * add a vehicle to the map, finding a stall for them
+     * @param vehicle the vehicle to be added
+     */
     public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle){
         // TODO ED call findSpaceForVehicle and give the location of that space
 
     }
 
+    /**
+     * Find a stall based on the stallInfo
+     * @param stallInfo the parameters of the stall to find the space
+     * @return the ManualStall if it can fit, null otherwise
+     */
     public ManualStall findSpace(StallInfo stallInfo){
         ManualStall tempStall = null;
         stallInfo.getLength();
@@ -88,6 +100,9 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         return null;
     }
 
+    /**
+     * update the parking roads and make sure the last one is labelled properly
+     */
     public void update(){
         for (int i = parkingRoads.size()-1; i >= 0; i--){
             ManualParkingRoad currentRoad = parkingRoads.get(i);
@@ -111,8 +126,12 @@ public class ManualParkingArea extends MixedCPMRoadMap {
     //                          //
     //////////////////////////////
 
-
-
+    /**
+     * adds a new parking road and finds a space based on stallInfo
+     * @param roadName the name of the road
+     * @param stallInfo the parameters of the stall to find in the new road
+     * @return the Manual stall if it is found, null otherwise
+     */
     private ManualStall addNewParkingRoadAndFindSpace(String roadName, StallInfo stallInfo){
 
         // Using new StallInfo, set up a new road (with the stall stack size
@@ -125,6 +144,10 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         }
     }
 
+    /**
+     * gets the x position of the first empty space
+     * @return a pointer to the empty space
+     */
     private double getEmptySpacePointer(){
         double sum = 0;
         for (ManualParkingRoad parkingRoad : parkingRoads){
@@ -133,6 +156,12 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         return sum;
     }
 
+    /**
+     * add a new parking road
+     * @param roadName the name of the new road
+     * @param initialStackWidth the initial width of the left stack
+     * @return the ManualParkingRoad if it was possible, null otherwise
+     */
     public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth) {
         double spacePointer = getEmptySpacePointer();
         if (this.dimensions.getWidth() < spacePointer + initialStackWidth + this.laneWidth){
@@ -155,13 +184,17 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         return parkingRoad;
     }
 
+    /**
+     * remove a parking road and all junctions/references to it
+     * @param roadID the ID of the road to remove
+     */
     private void removeParkingRoad(UUID roadID) {
+        // TODO ED removeParkingRoad fix this, it's all a bit wrong...
         for (ManualParkingRoad parkingRoad: parkingRoads) {
             if (parkingRoad.getID() == roadID){
                 this.removedRoads.add(parkingRoad.getCentreRoad());
                 this.parkingRoads.remove(parkingRoad);
                 this.removeRoad(parkingRoad.getCentreRoad());
-                // TODO ED REMOVE THE ROAD FROM THE MAP SOMEHOW
                 break;
             }
         }
