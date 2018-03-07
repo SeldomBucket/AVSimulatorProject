@@ -1,10 +1,8 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.map.Road;
-import aim4.map.cpm.CPMRoadMap;
-import aim4.map.lane.Lane;
-import aim4.map.lane.LineSegmentLane;
-import aim4.map.mixedcpm.MixedCPMBasicMap;
+import aim4.map.mixedcpm.MixedCPMRoadMap;
+import aim4.map.mixedcpm.MixedMixedCPMBasicMap;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
 
 import java.util.ArrayList;
@@ -16,11 +14,11 @@ import java.util.UUID;
  *
  * Manages the
  */
-public class ManualParkingArea extends CPMRoadMap {
+public class ManualParkingArea extends MixedCPMRoadMap {
     private List<ManualParkingRoad> parkingRoads;
     private Road entryRoad;
     private Road exitRoad;
-    private MixedCPMBasicMap map;
+    private MixedMixedCPMBasicMap map;
     private ArrayList<Road> removedRoads;
 
     /**
@@ -28,7 +26,7 @@ public class ManualParkingArea extends CPMRoadMap {
      * @param topRoad
      * @param bottomRoad
      */
-    public ManualParkingArea(Road topRoad, Road bottomRoad, MixedCPMBasicMap map){
+    public ManualParkingArea(Road topRoad, Road bottomRoad, MixedMixedCPMBasicMap map){
         super(map.getLaneWidth(), map.getMaximumSpeedLimit());
         assert topRoad.getOnlyLane().getStartPoint().getX() < bottomRoad.getOnlyLane().getStartPoint().getX();
         assert topRoad.getOnlyLane().getEndPoint().getX() < bottomRoad.getOnlyLane().getEndPoint().getX();
@@ -38,12 +36,10 @@ public class ManualParkingArea extends CPMRoadMap {
 
         this.parkingRoads = new ArrayList<>();
         this.map = map;
-
-        // Set up in and out roads at top and bottom of area
     }
 
     public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle){
-        // call findSpaceForVehicle and give the location of that space
+        // TODO ED call findSpaceForVehicle and give the location of that space
 
     }
 
@@ -73,9 +69,9 @@ public class ManualParkingArea extends CPMRoadMap {
     private ManualStall findSpaceForVehicle(StallInfo stallInfo){
         ManualStall tempStall = null;
         stallInfo.getLength();
-
         if (parkingRoads.size() == 0){
-            return addNewParkingRoadAndFindSpace(stallInfo);
+            // TODO ED Road name generation
+            return addNewParkingRoadAndFindSpace("road1", stallInfo);
         }
 
         // Find a space for the vehicle
@@ -100,7 +96,8 @@ public class ManualParkingArea extends CPMRoadMap {
         }
 
         //        Next, add new road and use that        //
-        tempStall = addNewParkingRoadAndFindSpace(stallInfo);
+        // TODO ED Road name generation
+        tempStall = addNewParkingRoadAndFindSpace("road1", stallInfo);
         if (tempStall != null){ return tempStall; }
 
         //      Next, extend the last stack to allow for longer vehicles
@@ -108,11 +105,11 @@ public class ManualParkingArea extends CPMRoadMap {
         return null;
     }
 
-    private ManualStall addNewParkingRoadAndFindSpace(StallInfo stallInfo){
+    private ManualStall addNewParkingRoadAndFindSpace(String roadName, StallInfo stallInfo){
 
         // Using new StallInfo, set up a new road (with the stall stack size
         // Set up connections to end roads
-        ManualParkingRoad road = addNewParkingRoad(stallInfo.getLength());
+        ManualParkingRoad road = addNewParkingRoad(roadName, stallInfo.getLength());
         if (road != null){
             return road.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.exactSize);
         }else {
@@ -128,29 +125,24 @@ public class ManualParkingArea extends CPMRoadMap {
         return sum;
     }
 
-    private ManualParkingRoad addNewParkingRoad(Double initialStackWidth) {
+    private ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth) {
         double spacePointer = getEmptySpacePointer();
-        // TODO if can't fit new parking road and initial stack return null
         if (this.dimensions.getWidth() < spacePointer + initialStackWidth + this.laneWidth){
             return null;
         }
 
-        LineSegmentLane lane = new LineSegmentLane( this.entryRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
-                                                    this.entryRoad.getOnlyLane().getStartPoint().getY(),
-                                                    this.exitRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
-                                                    this.exitRoad.getOnlyLane().getStartPoint().getY(),
-                                                    this.getLaneWidth(),
-                                                    this.getMaximumSpeedLimit());
-        ArrayList<Lane> onlyLaneList = new ArrayList<Lane>(){{add(lane);}};
+        Road road = this.makeRoadWithOneLane(roadName,
+                                                this.entryRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
+                                                this.entryRoad.getOnlyLane().getStartPoint().getY(),
+                                                this.exitRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
+                                                this.exitRoad.getOnlyLane().getStartPoint().getY());
 
-        Road road = new Road("road1", onlyLaneList,this.map);
+        this.makeJunction(this.entryRoad, road);
+        this.makeJunction(this.exitRoad, road);
 
         ManualParkingRoad parkingRoad = new ManualParkingRoad(road, this, initialStackWidth);
 
-        this.makeSimpleIntersection(this.entryRoad, parkingRoad.getCentreRoad());
-        this.makeSimpleIntersection(this.exitRoad, parkingRoad.getCentreRoad());
-
-        parkingRoads.add(parkingRoad);
+        this.parkingRoads.add(parkingRoad);
 
         return parkingRoad;
     }
@@ -158,9 +150,10 @@ public class ManualParkingArea extends CPMRoadMap {
     private boolean removeParkingRoad(UUID roadID) {
         for (ManualParkingRoad parkingRoad: parkingRoads) {
             if (parkingRoad.getID() == roadID){
-                removedRoads.add(parkingRoad.getCentreRoad());
-                parkingRoads.remove(parkingRoad);
-                this.roads.remove(parkingRoad.getCentreRoad());
+                this.removedRoads.add(parkingRoad.getCentreRoad());
+                this.parkingRoads.remove(parkingRoad);
+                this.removeRoad(parkingRoad.getCentreRoad());
+
                 // TODO REMOVE THE ROAD FROM THE MAP SOMEHOW?
                 break;
             }

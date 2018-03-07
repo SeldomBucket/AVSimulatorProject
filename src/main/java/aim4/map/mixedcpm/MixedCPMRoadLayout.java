@@ -1,4 +1,4 @@
-package aim4.map.cpm;
+package aim4.map.mixedcpm;
 
 import aim4.map.Road;
 import aim4.map.connections.Corner;
@@ -9,9 +9,9 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
 import java.util.List;
 
 /**
- * Interface for all CPM maps.
+ * Interface for all Mixed CPM road maps.
  */
-public interface CPMRoadLayout {
+public interface MixedCPMRoadLayout {
     public List<Road> getRoads();
     public List<Corner> getCorners();
     public List<Junction> getJunctions();

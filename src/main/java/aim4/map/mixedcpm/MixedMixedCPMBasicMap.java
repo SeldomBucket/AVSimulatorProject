@@ -2,9 +2,7 @@ package aim4.map.mixedcpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.cpm.CPMRoadMap;
 import aim4.map.lane.Lane;
-import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
@@ -19,7 +17,7 @@ import java.util.List;
 /**
  * The base class for all CPM Maps.
  */
-public abstract class MixedCPMBasicMap extends CPMRoadMap implements MixedCPMMap {
+public abstract class MixedMixedCPMBasicMap extends MixedCPMRoadMap implements MixedCPMMap {
 
     /** The Manual Parking Area */
     protected ManualParkingArea manualParkingArea;
@@ -38,7 +36,7 @@ public abstract class MixedCPMBasicMap extends CPMRoadMap implements MixedCPMMap
     /** The vertical spawn points */
     protected List<MixedCPMSpawnPoint> verticalSpawnPoints;
 
-    public MixedCPMBasicMap(double laneWidth, double speedLimit, double initTime){
+    public MixedMixedCPMBasicMap(double laneWidth, double speedLimit, double initTime){
         super(laneWidth, speedLimit);
         this.initTime = initTime;
     }
@@ -88,24 +86,6 @@ public abstract class MixedCPMBasicMap extends CPMRoadMap implements MixedCPMMap
         spawnPoints.addAll(horizontalSpawnPoints);
     }
 
-    protected Road createRoadWithOneLane(String roadName, double x1,
-                                         double y1, double x2, double y2){
-        // Create the road
-        Road road = new Road(roadName, this);
-        // Add a lane to the road
-        Lane lane = new LineSegmentLane(x1,
-                y1,
-                x2,
-                y2,
-                laneWidth,
-                speedLimit);
-        registerLane(lane);
-        // Add lane to road
-        road.addTheRightMostLane(lane);
-        laneToRoad.put(lane, road);
-
-        return road;
-    }
 
     public void addVehicleToMap(MixedCPMBasicAutoVehicle vehicle) {
         vehicles.add(vehicle);

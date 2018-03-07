@@ -88,7 +88,7 @@ public class ManualParkingRoad{
                 case exactSize:
                     if (stallInfo.getLength() == stack.getMaxStallLength() &&
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
-                        //DO THE SEARCH
+                        // TODO ED THE SEARCH
                     }
                     if (searchType != SearchParameter.anyFreeSpace) {break;}
                 case correctHeight:

@@ -35,6 +35,8 @@ import java.util.Collections;
 import java.util.List;
 
 import aim4.map.aim.BasicIntersectionMap;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 
 /**
@@ -47,13 +49,17 @@ public class Road {
   /////////////////////////////////
 
   /** The name of this road. */
-  private String name;
+  protected String name;
   /** The lanes that make up this road, from left to right. */
-  private List<Lane> lanes;
+  protected List<Lane> lanes;
   /** The Road that follows this one in the opposite direction. */
-  private Road dual;
+  protected Road dual;
   /** The Layout of which the Road is a part. */
-  private BasicMap map;
+  protected RoadMap map;
+  /** The junctions this road is connected to */
+  ArrayList<Junction> junctions = new ArrayList<>();
+  /** The intersections this road is connected to */
+  ArrayList<SimpleIntersection> intersections = new ArrayList<>();
 
   /////////////////////////////////
   // CLASS CONSTRUCTORS
@@ -65,7 +71,7 @@ public class Road {
    * @param name   the name of the Road
    * @param map    the map of which the Road is a part
    */
-  public Road(String name, BasicMap map) {
+  public Road(String name, RoadMap map) {
     this(name, new ArrayList<Lane>(), map);
   }
 
@@ -76,7 +82,7 @@ public class Road {
    * @param lanes  the Lanes from which to make the Road
    * @param map    the Layout of which the Road is a part
    */
-  public Road(String name, List<Lane> lanes, BasicMap map) {
+  public Road(String name, List<Lane> lanes, RoadMap map) {
     this.name = name;
     this.lanes = new ArrayList<Lane>(lanes);
     this.map = map;
@@ -197,5 +203,33 @@ public class Road {
    */
   public String getName() {
     return name;
+  }
+
+  public ArrayList<Junction> getJunctions(){
+      return junctions;
+  }
+
+  public ArrayList<SimpleIntersection> getIntersections(){
+      return intersections;
+  }
+
+  public void addJunction(Junction junction){
+    junctions.add(junction);
+  }
+
+  public void removeJunction(Junction junction){
+    if (junctions.contains(junction)){
+      junctions.remove(junction);
+    }
+  }
+
+  public void addSimpleIntersection(SimpleIntersection intersection){
+    intersections.add(intersection);
+  }
+
+  public void removeSimpleIntersection(SimpleIntersection intersection){
+    if (intersections.contains(intersection)){
+      intersections.remove(intersection);
+    }
   }
 }
