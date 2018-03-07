@@ -31,7 +31,7 @@ public class CarParkWithStatusRecordTest {
                 20, // parkingLength
                 5); // access length
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\secondParksLongerThanFirst.csv");
+                new Pair<Boolean, String>(true, "src/test/aim4/cpm/testfiles/secondParksLongerThanFirst.csv");
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map,useCsvPair );
         this.sim = new CPMAutoDriverSimulator(map);
         this.simThread = new TestSimThread(sim);

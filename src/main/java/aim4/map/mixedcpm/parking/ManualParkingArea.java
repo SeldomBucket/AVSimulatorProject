@@ -35,11 +35,14 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         this.dimensions = dimensions;
 
         // TODO ED make sure that the top and bottom roads are parallel and top is above bottom
-        assert topRoad.getOnlyLane().getStartPoint().getX() < bottomRoad.getOnlyLane().getStartPoint().getX();
-        assert topRoad.getOnlyLane().getEndPoint().getX() < bottomRoad.getOnlyLane().getEndPoint().getX();
+        assert topRoad.getOnlyLane().getStartPoint().getY() < bottomRoad.getOnlyLane().getStartPoint().getY();
+        assert topRoad.getOnlyLane().getEndPoint().getY() < bottomRoad.getOnlyLane().getEndPoint().getY();
 
         this.entryRoad = topRoad;
         this.exitRoad = bottomRoad;
+
+        this.roads.add(topRoad);
+        this.roads.add(bottomRoad);
 
         this.parkingRoads = new ArrayList<>();
         this.map = map;
@@ -95,6 +98,16 @@ public class ManualParkingArea extends MixedCPMRoadMap {
 
         //      Next, extend the last stack to allow for longer vehicles
 
+        return null;
+    }
+
+    public ManualParkingRoad getParkingRoadByName(String parkingRoadName){
+
+        for (ManualParkingRoad road: parkingRoads){
+            if (road.getName().equals(parkingRoadName)){
+                return road;
+            }
+        }
         return null;
     }
 
@@ -168,9 +181,9 @@ public class ManualParkingArea extends MixedCPMRoadMap {
 
         Road road = this.makeRoadWithOneLane(roadName,
                                                 this.entryRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
-                                                this.entryRoad.getOnlyLane().getStartPoint().getY(),
+                                                this.entryRoad.getOnlyLane().getStartPoint().getY() - this.halfLaneWidth,
                                                 this.exitRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
-                                                this.exitRoad.getOnlyLane().getStartPoint().getY());
+                                                this.exitRoad.getOnlyLane().getStartPoint().getY() + this.halfLaneWidth);
 
         this.makeJunction(this.entryRoad, road);
         this.makeJunction(this.exitRoad, road);
@@ -186,10 +199,12 @@ public class ManualParkingArea extends MixedCPMRoadMap {
      * remove a parking road and all junctions/references to it
      * @param road the ParkingRoad to remove
      */
-    private void removeParkingRoad(ManualParkingRoad road) {
+    public void removeParkingRoad(ManualParkingRoad road) {
         for (ManualParkingRoad parkingRoad: parkingRoads) {
             if (parkingRoad == road){
-                this.map.removeRoad(parkingRoad.getCentreRoad());
+                //this.map.removeRoad(parkingRoad.getCentreRoad());
+                this.removeRoad(parkingRoad.getCentreRoad());
+                parkingRoads.remove(parkingRoad);
                 break;
             }
         }

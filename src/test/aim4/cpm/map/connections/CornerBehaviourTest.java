@@ -13,6 +13,8 @@ import util.cpm.simulators.SimulatorForMapOneCorner;
 import util.sim.TestSimThread;
 
 import java.awt.geom.Point2D;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import static org.junit.Assert.assertTrue;
 
@@ -31,8 +33,10 @@ public class CornerBehaviourTest {
         this.map = new CPMMapOneCorner(2, // laneWidth
                 10.0, // speedLimit
                 0.0); // initTime
+        Path currentDirectory = Paths.get("");
+        String cwdString = currentDirectory.toAbsolutePath().toString() + "/src/test/aim4/cpm/testfiles/oneVehicleParks10Seconds.csv";
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
+                new Pair<Boolean, String>(true, cwdString);
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.WAITING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
@@ -78,8 +82,10 @@ public class CornerBehaviourTest {
         this.map = new CPMMapOneCorner(2, // laneWidth
                 10.0, // speedLimit
                 0.0); // initTime
+        Path currentDirectory = Paths.get("");
+        String cwdString = currentDirectory.toAbsolutePath().toString() + "/src/test/aim4/cpm/testfiles/oneVehicleParks10Seconds.csv";
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
+                new Pair<Boolean, String>(true, cwdString);
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.PARKING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
@@ -125,8 +131,10 @@ public class CornerBehaviourTest {
         this.map = new CPMMapOneCorner(2, // laneWidth
                 10.0, // speedLimit
                 0.0); // initTime
+        Path currentDirectory = Paths.get("");
+        String cwdString = currentDirectory.toAbsolutePath().toString() + "/src/test/aim4/cpm/testfiles/oneVehicleParks10Seconds.csv";
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
+                new Pair<Boolean, String>(true, cwdString);
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.RELOCATING, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);
@@ -172,8 +180,10 @@ public class CornerBehaviourTest {
         this.map = new CPMMapOneCorner(2, // laneWidth
                 10.0, // speedLimit
                 0.0); // initTime
+        Path currentDirectory = Paths.get("");
+        String cwdString = currentDirectory.toAbsolutePath().toString() + "/src/test/aim4/cpm/testfiles/oneVehicleParks10Seconds.csv";
         Pair<Boolean, String> useCsvPair =
-                new Pair<Boolean, String>(true, "src\\test\\aim4\\cpm\\testfiles\\oneVehicleParks10Seconds.csv");
+                new Pair<Boolean, String>(true, cwdString);
         CPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(map, useCsvPair);
         this.sim = new SimulatorForMapOneCorner(map, ParkingStatus.EXIT, DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         this.simThread = new TestSimThread(sim);

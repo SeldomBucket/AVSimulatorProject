@@ -245,7 +245,7 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     }
 
     public Road getRoadByName(String roadName) {
-        for (Road road: roads){
+        for (Road road: this.getRoads()){
             if (road.getName().equals(roadName)){
                 return road;
             }

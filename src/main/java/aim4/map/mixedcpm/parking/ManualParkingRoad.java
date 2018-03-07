@@ -14,7 +14,7 @@ public class ManualParkingRoad{
     private Road centreRoad;
     private StallStack stallStackPair[];
     private boolean lastRoad;
-    private UUID roadID;
+    private String roadName;
 
     /** Parking area this road belongs to */
     private ManualParkingArea parkingArea;
@@ -40,16 +40,17 @@ public class ManualParkingRoad{
     public ManualParkingRoad(Road road,
                              ManualParkingArea parkingArea,
                              Double firstStackLength) {
+        this.roadName = road.getName();
         centreRoad = road;
         stallStackPair =
-                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2,
-                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth()/2,
+                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2 - firstStackLength,
+                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth(),
                                                     firstStackLength,
-                                                    road.getOnlyLane().getLength() - road.getOnlyLane().getWidth(),
+                                                    firstStackLength,
                                                     false,
                                                     this),
                                     new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2,
-                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth()/2,
+                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth(),
                                                     0,
                                                     road.getOnlyLane().getLength() - road.getOnlyLane().getWidth(),
                                                     false,
@@ -57,7 +58,6 @@ public class ManualParkingRoad{
                 };
         this.parkingArea = parkingArea;
         this.parkingArea.update();
-        this.roadID = UUID.randomUUID();
     }
 
     /**
@@ -89,12 +89,12 @@ public class ManualParkingRoad{
     }
 
     /**
-     * gets ID of this road
-     * @return the ID
+     * gets the name of this road (which is the same as the name of the centre road
+     * @return the name
      */
-    public UUID getID()
+    public String getName()
     {
-        return this.roadID;
+        return this.roadName;
     }
 
     /**

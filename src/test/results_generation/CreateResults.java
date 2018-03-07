@@ -36,15 +36,15 @@ public class CreateResults {
     private final static double STANDARD_ANGLE = 45;
     private final static double STANDARD_TRAFFIC_LEVEL = STANDARD_TRAFFIC_RATE/3600;
     private final static String MEAN_ROW_INDICATOR = "MEAN ROW";
-    private final static String TRAFFIC_LEVEL_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("\\schedules\\trafficLevel\\");
-    private final static String SPEED_LIMIT_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("\\schedules\\speedLimit\\");
-    private final static String RESULTS_STORE_PATH_STEM = new File("").getAbsolutePath() + ("\\results\\");
-    private final static String RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM = RESULTS_STORE_PATH_STEM + "TRAFFIC_LEVEL_QUEUE\\";
-    private final static String RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM = RESULTS_STORE_PATH_STEM + "TRAFFIC_LEVEL_AIM\\";
-    private final static String RESULTS_STORE_SPEED_LIMIT_PATH_STEM = RESULTS_STORE_PATH_STEM + "SPEED_LIMIT\\";
-    private static final String RESULTS_STORE_MERGE_ANGLE_PATH_STEM = RESULTS_STORE_PATH_STEM + "MERGE_ANGLE\\";
-    private static final String RESULTS_STORE_LEAD_IN_PATH_STEM = RESULTS_STORE_PATH_STEM + "LEAD_IN\\";
-    private final static String RESULTS_STORE_GLOBAL_PATH_STEM = RESULTS_STORE_PATH_STEM + "GLOBAL_RESULTS\\";
+    private final static String TRAFFIC_LEVEL_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("/schedules/trafficLevel/");
+    private final static String SPEED_LIMIT_SCHEDULES_PATH_STEM = new File("").getAbsolutePath() + ("/schedules/speedLimit/");
+    private final static String RESULTS_STORE_PATH_STEM = new File("").getAbsolutePath() + ("/results/");
+    private final static String RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM = RESULTS_STORE_PATH_STEM + "TRAFFIC_LEVEL_QUEUE/";
+    private final static String RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM = RESULTS_STORE_PATH_STEM + "TRAFFIC_LEVEL_AIM/";
+    private final static String RESULTS_STORE_SPEED_LIMIT_PATH_STEM = RESULTS_STORE_PATH_STEM + "SPEED_LIMIT/";
+    private static final String RESULTS_STORE_MERGE_ANGLE_PATH_STEM = RESULTS_STORE_PATH_STEM + "MERGE_ANGLE/";
+    private static final String RESULTS_STORE_LEAD_IN_PATH_STEM = RESULTS_STORE_PATH_STEM + "LEAD_IN/";
+    private final static String RESULTS_STORE_GLOBAL_PATH_STEM = RESULTS_STORE_PATH_STEM + "GLOBAL_RESULTS/";
 
     private enum TestType {
         TRAFFIC_LEVEL_QUEUE,
@@ -884,34 +884,34 @@ public class CreateResults {
         String path = "";
         switch(testType) {
             case TRAFFIC_LEVEL_QUEUE:
-                Path trafficLevelQueueSubDir = Paths.get(RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM + parameterString + "\\");
+                Path trafficLevelQueueSubDir = Paths.get(RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM + parameterString + "/");
                 if(!Files.exists(trafficLevelQueueSubDir))
                     Files.createDirectories(trafficLevelQueueSubDir);
-                path = RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM + parameterString + "\\" + fileName;
+                path = RESULTS_STORE_TRAFFIC_LEVEL_QUEUE_PATH_STEM + parameterString + "/" + fileName;
                 break;
             case TRAFFIC_LEVEL_AIM:
-                Path trafficLevelAIMSubDir = Paths.get(RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM + parameterString + "\\");
+                Path trafficLevelAIMSubDir = Paths.get(RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM + parameterString + "/");
                 if(!Files.exists(trafficLevelAIMSubDir))
                     Files.createDirectories(trafficLevelAIMSubDir);
-                path = RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM + parameterString + "\\" + fileName;
+                path = RESULTS_STORE_TRAFFIC_LEVEL_AIM_PATH_STEM + parameterString + "/" + fileName;
                 break;
             case SPEED_LIMIT:
-                Path speedLimitSubDir = Paths.get(RESULTS_STORE_SPEED_LIMIT_PATH_STEM + parameterString + "\\");
+                Path speedLimitSubDir = Paths.get(RESULTS_STORE_SPEED_LIMIT_PATH_STEM + parameterString + "/");
                 if(!Files.exists(speedLimitSubDir))
                     Files.createDirectories(speedLimitSubDir);
-                path = RESULTS_STORE_SPEED_LIMIT_PATH_STEM + parameterString + "\\" + fileName;
+                path = RESULTS_STORE_SPEED_LIMIT_PATH_STEM + parameterString + "/" + fileName;
                 break;
             case MERGE_ANGLE:
-                Path mergeAngleSubDir = Paths.get(RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "\\");
+                Path mergeAngleSubDir = Paths.get(RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "/");
                 if(!Files.exists(mergeAngleSubDir))
                     Files.createDirectories(mergeAngleSubDir);
-                path = RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "\\" + fileName;
+                path = RESULTS_STORE_MERGE_ANGLE_PATH_STEM + parameterString + "/" + fileName;
                 break;
             case LEAD_IN:
-                Path leadInSubDir = Paths.get(RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "\\");
+                Path leadInSubDir = Paths.get(RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "/");
                 if(!Files.exists(leadInSubDir))
                     Files.createDirectories(leadInSubDir);
-                path = RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "\\" + fileName;
+                path = RESULTS_STORE_LEAD_IN_PATH_STEM + parameterString + "/" + fileName;
                 break;
         }
 

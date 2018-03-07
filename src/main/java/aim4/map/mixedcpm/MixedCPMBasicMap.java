@@ -12,7 +12,9 @@ import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * The base class for all Mixed CPM Maps.
@@ -60,12 +62,6 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         this.initTime = initTime;
     }
 
-    /**
-     * Update roads in MixedCPMBasicMap from the manualParkingArea
-     */
-    public void update(){
-        // TODO ED Take all roads from manualParkingArea? May not be needed?
-    }
 
     /**
      * Make the spawn point.
@@ -87,6 +83,18 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
         return new MixedCPMSpawnPoint(initTime, pos, heading, steeringAngle, acceleration,
                 lane, noVehicleZone);
+    }
+
+    @Override
+    public List<Road> getRoads() {
+        // TODO ED return union of lists of roads of this map and the manual parking area
+        //ArrayList<Road> returnList = Stream.of(super.getRoads(), this.manualParkingArea.getRoads()).flatMap(Collection::stream);
+        return super.getRoads();
+    }
+
+    @Override
+    public void update(){
+        // TODO ED maybe...?
     }
 
     /**

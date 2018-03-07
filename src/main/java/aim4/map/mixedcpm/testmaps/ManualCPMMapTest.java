@@ -10,13 +10,11 @@ import java.awt.geom.Rectangle2D;
 /**
  * Test map which is just a standard manual car park (for testing the spaces)
  */
-public class StaticManualMapMixed extends MixedCPMBasicMap {
+public class ManualCPMMapTest extends MixedCPMBasicMap {
 
-    public StaticManualMapMixed(){
-        super(3,5,0);
+    public ManualCPMMapTest(double height, double width, double laneWidth, double speedLimit, double initTime){
+        super(laneWidth,speedLimit,initTime);
 
-        double width = 30;
-        double height = 20;
         this.dimensions = new Rectangle2D.Double(0.0,0.0,width + BORDER*2,height + BORDER*2);
 
         Road topRoad = makeRoadWithOneLane("topRoad",
@@ -30,7 +28,6 @@ public class StaticManualMapMixed extends MixedCPMBasicMap {
                                                 this.dimensions.getWidth()- BORDER,
                                                 this.dimensions.getHeight() - BORDER);
         this.manualParkingArea = new ManualParkingArea(topRoad, bottomRoad, this, new Rectangle2D.Double(BORDER, BORDER, width, height));
-        manualParkingArea.addNewParkingRoad("Test", 10);
         // TODO ED test manual parking area
     }
 
