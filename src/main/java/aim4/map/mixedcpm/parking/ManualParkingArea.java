@@ -2,9 +2,10 @@ package aim4.map.mixedcpm.parking;
 
 import aim4.map.Road;
 import aim4.map.mixedcpm.MixedCPMRoadMap;
-import aim4.map.mixedcpm.MixedMixedCPMBasicMap;
+import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
 
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -18,16 +19,20 @@ public class ManualParkingArea extends MixedCPMRoadMap {
     private List<ManualParkingRoad> parkingRoads;
     private Road entryRoad;
     private Road exitRoad;
-    private MixedMixedCPMBasicMap map;
+    private MixedCPMBasicMap map;
     private ArrayList<Road> removedRoads;
+
+    // TODO ED make size of area changeable, as long as the outside of the
 
     /**
      *
      * @param topRoad
      * @param bottomRoad
      */
-    public ManualParkingArea(Road topRoad, Road bottomRoad, MixedMixedCPMBasicMap map){
+    public ManualParkingArea(Road topRoad, Road bottomRoad, MixedCPMBasicMap map, Rectangle2D dimensions){
         super(map.getLaneWidth(), map.getMaximumSpeedLimit());
+        // TODO ED make bounding box (dimensions) for the area
+        this.dimensions = dimensions;
         assert topRoad.getOnlyLane().getStartPoint().getX() < bottomRoad.getOnlyLane().getStartPoint().getX();
         assert topRoad.getOnlyLane().getEndPoint().getX() < bottomRoad.getOnlyLane().getEndPoint().getX();
 
@@ -43,35 +48,13 @@ public class ManualParkingArea extends MixedCPMRoadMap {
 
     }
 
-    public void update(){
-        for (int i = parkingRoads.size()-1; i >= 0; i--){
-            ManualParkingRoad currentRoad = parkingRoads.get(i);
-            if (i == parkingRoads.size()){
-                currentRoad.setLastRoad(true);
-                if (currentRoad.getParkingSpaces().size() == 0){
-                    removeParkingRoad(currentRoad.getID());
-                }
-            }else{
-                currentRoad.setLastRoad(true);
-            }
-        }
-
-        map.update();
-    }
-
-
-    //////////////////////////////
-    //                          //
-    //      Private Methods     //
-    //                          //
-    //////////////////////////////
-
-    private ManualStall findSpaceForVehicle(StallInfo stallInfo){
+    public ManualStall findSpace(StallInfo stallInfo){
         ManualStall tempStall = null;
         stallInfo.getLength();
+        String roadName = UUID.randomUUID().toString();
         if (parkingRoads.size() == 0){
-            // TODO ED Road name generation
-            return addNewParkingRoadAndFindSpace("road1", stallInfo);
+
+            return addNewParkingRoadAndFindSpace(roadName, stallInfo);
         }
 
         // Find a space for the vehicle
@@ -97,13 +80,38 @@ public class ManualParkingArea extends MixedCPMRoadMap {
 
         //        Next, add new road and use that        //
         // TODO ED Road name generation
-        tempStall = addNewParkingRoadAndFindSpace("road1", stallInfo);
+        tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
         if (tempStall != null){ return tempStall; }
 
         //      Next, extend the last stack to allow for longer vehicles
 
         return null;
     }
+
+    public void update(){
+        for (int i = parkingRoads.size()-1; i >= 0; i--){
+            ManualParkingRoad currentRoad = parkingRoads.get(i);
+            if (i == parkingRoads.size()){
+                currentRoad.setLastRoad(true);
+                if (currentRoad.getParkingSpaces().size() == 0){
+                    removeParkingRoad(currentRoad.getID());
+                }
+            }else{
+                currentRoad.setLastRoad(true);
+            }
+        }
+
+        map.update();
+    }
+
+
+    //////////////////////////////
+    //                          //
+    //      Private Methods     //
+    //                          //
+    //////////////////////////////
+
+
 
     private ManualStall addNewParkingRoadAndFindSpace(String roadName, StallInfo stallInfo){
 
@@ -125,16 +133,16 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         return sum;
     }
 
-    private ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth) {
+    public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth) {
         double spacePointer = getEmptySpacePointer();
         if (this.dimensions.getWidth() < spacePointer + initialStackWidth + this.laneWidth){
             return null;
         }
 
         Road road = this.makeRoadWithOneLane(roadName,
-                                                this.entryRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
+                                                this.entryRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
                                                 this.entryRoad.getOnlyLane().getStartPoint().getY(),
-                                                this.exitRoad.getOnlyLane().getStartPoint().getX() + spacePointer + initialStackWidth,
+                                                this.exitRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
                                                 this.exitRoad.getOnlyLane().getStartPoint().getY());
 
         this.makeJunction(this.entryRoad, road);
@@ -147,17 +155,15 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         return parkingRoad;
     }
 
-    private boolean removeParkingRoad(UUID roadID) {
+    private void removeParkingRoad(UUID roadID) {
         for (ManualParkingRoad parkingRoad: parkingRoads) {
             if (parkingRoad.getID() == roadID){
                 this.removedRoads.add(parkingRoad.getCentreRoad());
                 this.parkingRoads.remove(parkingRoad);
                 this.removeRoad(parkingRoad.getCentreRoad());
-
-                // TODO REMOVE THE ROAD FROM THE MAP SOMEHOW?
+                // TODO ED REMOVE THE ROAD FROM THE MAP SOMEHOW
                 break;
             }
         }
-        return false;
     }
 }

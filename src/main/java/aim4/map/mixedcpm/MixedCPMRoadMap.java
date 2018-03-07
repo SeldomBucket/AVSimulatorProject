@@ -9,7 +9,6 @@ import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
-import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -18,19 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class MixedCPMRoadMap implements RoadMap {
-
-    /////////////////////////////////
-    // CONSTANTS
-    /////////////////////////////////
-
-    /** The length of the no vehicle zone */
-    protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
-
-    /** The length of the map border, used for
-     * space between map edge and elements, distance
-     * of DCL from edge etc.
-     * */
-    protected static final double BORDER = 28.0;
 
     // general
     /**Width of each lane*/
@@ -57,7 +43,7 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     /** The set of horizontal roads */
     protected List<Road> horizontalRoads = new ArrayList<Road>();
     /** The set of roads */
-    protected List<Road> roads;
+    protected List<Road> roads = new ArrayList<Road>();
 
     // road connections
     /** The set of corners */
