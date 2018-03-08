@@ -14,6 +14,11 @@ public class ManualParkingAreaInitialisationTest {
 
     ManualCPMMapTest testMap;
     ManualParkingArea testArea;
+    static final double AREA_HEIGHT = 20;
+    static final double AREA_WIDTH = 50;
+    static final double LANE_WIDTH = 3;
+    static final double SPEED_LIMIT = 10;
+    static final double INIT_TIME = 0;
 
     @BeforeClass
     public static void classSetup(){
@@ -22,7 +27,11 @@ public class ManualParkingAreaInitialisationTest {
 
     @Before
     public void testSetup(){
-        testMap = new ManualCPMMapTest(20,50,3,10,0);
+        testMap = new ManualCPMMapTest( AREA_HEIGHT,
+                                        AREA_WIDTH,
+                                        LANE_WIDTH,
+                                        SPEED_LIMIT,
+                                        INIT_TIME);
         testArea = testMap.getManualParkingArea();
     }
 
@@ -43,8 +52,12 @@ public class ManualParkingAreaInitialisationTest {
     public void testManualParkingAreaParkingRoadInitialisation(){
 
         String roadName = "testRoad";
-        testArea.addNewParkingRoad(roadName, 5);
+        double initialStackWidth = 5;
+
+        testArea.addNewParkingRoad(roadName, initialStackWidth);
         Road road = testArea.getRoadByName(roadName);
+        Road topRoad = testArea.getRoadByName("topRoad");
+        Road bottomRoad = testArea.getRoadByName("bottomRoad");
         ManualParkingRoad manualParkingRoad = testArea.getParkingRoadByName(roadName);
 
         // Check the road is in the map as well as the parking area
@@ -52,6 +65,10 @@ public class ManualParkingAreaInitialisationTest {
 
         // Check the centre road of the ManualParkingRoad is set up correctly by the ManualParkingArea
         assertEquals(road, manualParkingRoad.getCentreRoad());
+
+        // Check the centre road is in the right position
+        double expectedPosition = this.testArea.getDimensions().getMinX() + initialStackWidth;
+        assertEquals(expectedPosition, road.getOnlyLane().getShape().getBounds2D().getMinX(), 0);
 
         // Test parking road removal
         testArea.removeParkingRoad(manualParkingRoad);
@@ -62,7 +79,8 @@ public class ManualParkingAreaInitialisationTest {
     }
 
     /**
-     * Stall stacks shouldn't intersect with the top and bottom roads
+     * Stall stacks shouldn't intersect with the top, bottom, and centre roads
+     * & should lie directly next to them
      */
     @Test
     public void testManualParkingAreaStallStacks(){
@@ -76,6 +94,9 @@ public class ManualParkingAreaInitialisationTest {
 
         StallStack leftStack = manualParkingRoad.getStallStackPair()[0];
         StallStack rightStack = manualParkingRoad.getStallStackPair()[1];
+
+        // Check left stall stack is correct size
+        assertEquals(initialStackSize, leftStack.getBounds().getWidth(), 0);
 
         // Check stall stack doesn't intersect with topRoad
         assertFalse(topRoad.getOnlyLane().getShape().getBounds2D().intersects(leftStack.getBounds()));
@@ -97,8 +118,6 @@ public class ManualParkingAreaInitialisationTest {
         assertEquals(leftStack.getBounds().getMaxX(), centreRoad.getOnlyLane().getShape().getBounds2D().getMinX(), 0);
         assertEquals(rightStack.getBounds().getMinX(), centreRoad.getOnlyLane().getShape().getBounds2D().getMaxX(), 0);
 
-        // Check left stall stack is correct size
-        assertEquals(initialStackSize, leftStack.getBounds().getWidth(), 0);
     }
 
     @Test
@@ -109,13 +128,21 @@ public class ManualParkingAreaInitialisationTest {
         int initialStackSize = 5;
         testArea.addNewParkingRoad(roadName1, initialStackSize);
         ManualParkingRoad manualParkingRoad1 = testArea.getParkingRoadByName(roadName1);
+        Road road1 = manualParkingRoad1.getCentreRoad();
         StallStack road1RightStack = manualParkingRoad1.getStallStackPair()[1];
-        road1RightStack.addManualStall(new StallInfo(5,5, StallTypes.NoPaddingTest));
+
+        //Set the right stack of road 1 to have a stack size of 5
+        road1RightStack.addManualStall(new StallInfo(1, initialStackSize, StallTypes.NoPaddingTest));
 
         testArea.addNewParkingRoad(roadName2, initialStackSize);
         ManualParkingRoad manualParkingRoad2 = testArea.getParkingRoadByName(roadName2);
 
+        Road road2 = manualParkingRoad2.getCentreRoad();
         StallStack road2LeftStack = manualParkingRoad2.getStallStackPair()[0];
+
+        // Check road2 is in the correct place
+        double expectedRoad2MinX = road1.getOnlyLane().getShape().getBounds2D().getMaxX() + initialStackSize * 2;
+        assertEquals(expectedRoad2MinX, road2.getOnlyLane().getShape().getBounds2D().getMinX(), 0);
 
         // Check stall stacks on adjacent lanes don't intersect
         assertFalse(road1RightStack.getBounds().intersects(road2LeftStack.getBounds()));

@@ -51,7 +51,7 @@ public class StallInfo {
     public StallInfo(double vehicleWidth, double vehicleLength, StallTypes type){
         this.type = type;
         this.width = vehicleWidth + stallPadding.get(type)[0];
-        this.width = vehicleLength + stallPadding.get(type)[1];
+        this.length = vehicleLength + stallPadding.get(type)[1];
     }
 
     /**

@@ -111,7 +111,7 @@ public class StallStack {
     private void setMaxStallLength(double maxStallLength){
         boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
                 this.boundingBox.getY(),
-                this.boundingBox.getHeight(),
-                maxStallLength);
+                maxStallLength,
+                this.boundingBox.getHeight());
     }
 }
