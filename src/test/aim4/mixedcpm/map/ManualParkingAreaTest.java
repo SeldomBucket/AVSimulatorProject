@@ -10,7 +10,7 @@ import static org.junit.Assert.*;
 /**
  * This test suite sets up a ManualParkingArea and checks all the
  */
-public class ManualParkingAreaInitialisationTest {
+public class ManualParkingAreaTest {
 
     ManualCPMMapTest testMap;
     ManualParkingArea testArea;
@@ -83,7 +83,7 @@ public class ManualParkingAreaInitialisationTest {
      * & should lie directly next to them
      */
     @Test
-    public void testManualParkingAreaStallStacks(){
+    public void testManualParkingAreaStallStacksInitialisation(){
         String roadName = "testRoad";
         int initialStackSize = 5;
         testArea.addNewParkingRoad(roadName, initialStackSize);
@@ -120,6 +120,10 @@ public class ManualParkingAreaInitialisationTest {
 
     }
 
+    /**
+     * Test adding a second lane to the manual parking area
+     * correct road position, correct stack positions
+     */
     @Test
     public void testManualParkingAreaTwoParkingLanes(){
 
@@ -147,13 +151,10 @@ public class ManualParkingAreaInitialisationTest {
         // Check stall stacks on adjacent lanes don't intersect
         assertFalse(road1RightStack.getBounds().intersects(road2LeftStack.getBounds()));
 
-        // Check stall stacks for adjacent lanes share a back line
+        // Check stall stacks for adjacent lanes are back to back
         assertEquals(road1RightStack.getBounds().getMaxX(), road2LeftStack.getBounds().getMinX(), 0);
     }
 
-    /**
-     *
-     */
 
     @After
     public void testTearDown(){

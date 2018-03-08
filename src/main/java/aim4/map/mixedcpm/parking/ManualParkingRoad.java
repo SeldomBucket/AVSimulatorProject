@@ -1,15 +1,10 @@
 package aim4.map.mixedcpm.parking;
 
-import aim4.map.BasicMap;
 import aim4.map.Road;
-import aim4.map.connections.Junction;
-import aim4.map.lane.Lane;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 
-public class ManualParkingRoad{
+public class ManualParkingRoad implements IManualParkingRoad {
 
     private Road centreRoad;
     private StallStack stallStackPair[];

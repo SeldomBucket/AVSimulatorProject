@@ -1,5 +1,6 @@
 package aim4.map.mixedcpm.parking;
 
+
 import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class StallStack {
     private boolean lastStallStack;
     private Rectangle2D boundingBox;
     /** The parking road this stall stack belongs to */
-    private ManualParkingRoad parkingRoad;
+    private IManualParkingRoad parkingRoad;
 
     /**
      * Constructor for a stall stack
@@ -30,11 +31,11 @@ public class StallStack {
                       double stallStackHeight,
                       double maxStallLength,
                       boolean lastStallStack,
-                      ManualParkingRoad parkingRoad){
+                      IManualParkingRoad parkingRoad){
         stalls = new ArrayList<>();
         this.lastStallStack = lastStallStack;
-        this.parkingRoad = parkingRoad;
         boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
+        this.parkingRoad = parkingRoad;
     }
 
     // Public Methods

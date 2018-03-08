@@ -1,6 +1,8 @@
 package aim4.mixedcpm.map;
 
-public class ParkingRoadTests {
+public class ManualParkingRoadTests {
+
+    // TODO ED Do the mocks of everything
 
     /**
 
