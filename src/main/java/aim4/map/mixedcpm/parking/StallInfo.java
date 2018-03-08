@@ -15,7 +15,10 @@ public class StallInfo {
     static
     {
         stallPadding = new HashMap<>();
-        
+
+        Double[] noPadding = {0.0, 0.0};
+        stallPadding.put(StallTypes.NoPaddingTest, noPadding);
+
         Double[] standardPadding = {0.5, 0.5};
         stallPadding.put(StallTypes.Standard, standardPadding);
         

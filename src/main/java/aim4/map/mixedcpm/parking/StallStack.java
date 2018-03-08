@@ -8,11 +8,6 @@ import java.util.UUID;
 public class StallStack {
     /** The parkingSpaces in this stall stack */
     private ArrayList<ManualStall> stalls;
-    private double x;
-    private double y;
-    private double height;
-    /** The maximum length of a stall in this stall stack */
-    private double maxStallLength;
     /** The ideal width of a space in this stall */
     private double idealStallWidth = 0;
     /** Whether this is the last stall stack (i.e. the one on the outside edge) */
@@ -37,10 +32,6 @@ public class StallStack {
                       boolean lastStallStack,
                       ManualParkingRoad parkingRoad){
         stalls = new ArrayList<>();
-        this.x = x;
-        this.y = y;
-        this.height = stallStackHeight;
-        this.maxStallLength = maxStallLength;
         this.lastStallStack = lastStallStack;
         this.parkingRoad = parkingRoad;
         boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
@@ -67,9 +58,9 @@ public class StallStack {
      */
     public ManualStall addManualStall(StallInfo stallInfo){
         // TODO ED addManualStall
-        if (maxStallLength == 0){
+        if (getMaxStallLength() == 0){
             // Set up rectangle
-            boundingBox = new Rectangle2D.Double(x, y, height, stallInfo.getWidth());
+            setMaxStallLength(stallInfo.getLength());
             ManualStall parkingSpace =  new ManualStall(stallInfo, this);
         }
         return null;
@@ -82,7 +73,11 @@ public class StallStack {
     public void removeManualStall(UUID stallID) {
         if (lastStallStack) {
             // If this is the last space in the last stall stack, set the length of this stall stack to 0
-            maxStallLength = 0;
+
+            boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
+                                                this.boundingBox.getY(),
+                                                this.boundingBox.getHeight(),
+                                                0);
             idealStallWidth = 0;
         }
         // TODO ED removeManualStall
@@ -93,7 +88,7 @@ public class StallStack {
      * @return the maximum stall length
      */
     public double getMaxStallLength() {
-        return maxStallLength;
+        return boundingBox.getWidth();
     }
 
     /**
@@ -113,4 +108,10 @@ public class StallStack {
     }
 
     // Private methods
+    private void setMaxStallLength(double maxStallLength){
+        boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
+                this.boundingBox.getY(),
+                this.boundingBox.getHeight(),
+                maxStallLength);
+    }
 }

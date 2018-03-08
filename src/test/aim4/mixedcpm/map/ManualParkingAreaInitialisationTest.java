@@ -1,9 +1,7 @@
 package aim4.mixedcpm.map;
 
 import aim4.map.Road;
-import aim4.map.mixedcpm.parking.ManualParkingArea;
-import aim4.map.mixedcpm.parking.ManualParkingRoad;
-import aim4.map.mixedcpm.parking.StallStack;
+import aim4.map.mixedcpm.parking.*;
 import aim4.map.mixedcpm.testmaps.ManualCPMMapTest;
 import org.junit.*;
 
@@ -24,7 +22,7 @@ public class ManualParkingAreaInitialisationTest {
 
     @Before
     public void testSetup(){
-        testMap = new ManualCPMMapTest(20,30,3,10,0);
+        testMap = new ManualCPMMapTest(20,50,3,10,0);
         testArea = testMap.getManualParkingArea();
     }
 
@@ -101,6 +99,29 @@ public class ManualParkingAreaInitialisationTest {
 
         // Check left stall stack is correct size
         assertEquals(initialStackSize, leftStack.getBounds().getWidth(), 0);
+    }
+
+    @Test
+    public void testManualParkingAreaTwoParkingLanes(){
+
+        String roadName1 = "testRoad1";
+        String roadName2 = "testRoad2";
+        int initialStackSize = 5;
+        testArea.addNewParkingRoad(roadName1, initialStackSize);
+        ManualParkingRoad manualParkingRoad1 = testArea.getParkingRoadByName(roadName1);
+        StallStack road1RightStack = manualParkingRoad1.getStallStackPair()[1];
+        road1RightStack.addManualStall(new StallInfo(5,5, StallTypes.NoPaddingTest));
+
+        testArea.addNewParkingRoad(roadName2, initialStackSize);
+        ManualParkingRoad manualParkingRoad2 = testArea.getParkingRoadByName(roadName2);
+
+        StallStack road2LeftStack = manualParkingRoad2.getStallStackPair()[0];
+
+        // Check stall stacks on adjacent lanes don't intersect
+        assertFalse(road1RightStack.getBounds().intersects(road2LeftStack.getBounds()));
+
+        // Check stall stacks for adjacent lanes share a back line
+        assertEquals(road1RightStack.getBounds().getMaxX(), road2LeftStack.getBounds().getMinX(), 0);
     }
 
     /**

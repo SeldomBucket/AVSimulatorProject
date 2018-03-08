@@ -30,7 +30,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * space between map edge and elements, distance
      * of DCL from edge etc.
      * */
-    protected static final double BORDER = 28.0;
+    protected static final double BORDER = 10.0;
 
     /** The Manual Parking Area */
     protected ManualParkingArea manualParkingArea;
