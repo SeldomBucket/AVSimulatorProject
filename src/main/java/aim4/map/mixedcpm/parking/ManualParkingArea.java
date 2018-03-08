@@ -74,25 +74,28 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         // Find a space for the vehicle
         // Search parkingRoads for a suitable space and add if possible
 
-        //        First search for stack with correct height & same ideal width        //
+        //        First search for stack with correct height & same ideal width
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.exactSize);
+            tempStall = road.findNewSpace(stallInfo,
+                                   ManualParkingRoad.SearchParameter.exactSize);
             if (tempStall != null){ return tempStall; }
         }
 
-        //        Next, search for stack with correct height only        //
+        //        Next, search for stack with correct height only
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.correctHeight);
+            tempStall = road.findNewSpace(stallInfo,
+                               ManualParkingRoad.SearchParameter.correctHeight);
             if (tempStall != null){ return tempStall; }
         }
 
-        //       Next, search for empty stacks       //
+        //       Next, search for empty stacks
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.emptyStack);
+            tempStall = road.findNewSpace(stallInfo,
+                                  ManualParkingRoad.SearchParameter.emptyStack);
             if (tempStall != null){ return tempStall; }
         }
 
-        //        Next, add new road and use that        //
+        //        Next, add new road and use that
         tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
         if (tempStall != null){ return tempStall; }
 
@@ -143,13 +146,16 @@ public class ManualParkingArea extends MixedCPMRoadMap {
      * @param stallInfo the parameters of the stall to find in the new road
      * @return the Manual stall if it is found, null otherwise
      */
-    private ManualStall addNewParkingRoadAndFindSpace(String roadName, StallInfo stallInfo){
+    private ManualStall addNewParkingRoadAndFindSpace(String roadName,
+                                                      StallInfo stallInfo){
 
         // Using new StallInfo, set up a new road (with the stall stack size
         // Set up connections to end roads
-        ManualParkingRoad road = addNewParkingRoad(roadName, stallInfo.getLength());
+        ManualParkingRoad road = addNewParkingRoad(roadName,
+                                                    stallInfo.getLength());
         if (road != null){
-            return road.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.exactSize);
+            return road.findNewSpace(stallInfo,
+                                    ManualParkingRoad.SearchParameter.exactSize);
         }else {
             return null;
         }
@@ -173,22 +179,32 @@ public class ManualParkingArea extends MixedCPMRoadMap {
      * @param initialStackWidth the initial width of the left stack
      * @return the ManualParkingRoad if it was possible, null otherwise
      */
-    public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth) {
+    public ManualParkingRoad addNewParkingRoad(String roadName,
+                                               double initialStackWidth) {
         double spacePointer = getEmptySpacePointer();
-        if (this.dimensions.getWidth() < spacePointer + initialStackWidth + this.laneWidth){
+        // Don't add if it can't fit
+        if (this.dimensions.getWidth() <
+                spacePointer + initialStackWidth + this.laneWidth){
             return null;
         }
 
-        Road road = this.makeRoadWithOneLane(roadName,
-                                                this.entryRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
-                                                this.entryRoad.getOnlyLane().getStartPoint().getY() - this.halfLaneWidth,
-                                                this.exitRoad.getOnlyLane().getStartPoint().getX() + this.halfLaneWidth + spacePointer + initialStackWidth,
-                                                this.exitRoad.getOnlyLane().getStartPoint().getY() + this.halfLaneWidth);
+        double roadX = this.entryRoad.getOnlyLane().getStartPoint().getX() +
+                        this.halfLaneWidth +
+                        spacePointer +
+                        initialStackWidth;
+        Road road = this.makeRoadWithOneLane(
+                roadName,
+                roadX,
+                this.entryRoad.getOnlyLane().getShape().getBounds2D().getMinY(),
+                roadX,
+                this.exitRoad.getOnlyLane().getShape().getBounds2D().getMaxY());
 
         this.makeJunction(this.entryRoad, road);
         this.makeJunction(this.exitRoad, road);
 
-        ManualParkingRoad parkingRoad = new ManualParkingRoad(road, this, initialStackWidth);
+        ManualParkingRoad parkingRoad = new ManualParkingRoad(road,
+                                                             this,
+                                                             initialStackWidth);
 
         this.parkingRoads.add(parkingRoad);
 
@@ -202,7 +218,6 @@ public class ManualParkingArea extends MixedCPMRoadMap {
     public void removeParkingRoad(ManualParkingRoad road) {
         for (ManualParkingRoad parkingRoad: parkingRoads) {
             if (parkingRoad == road){
-                //this.map.removeRoad(parkingRoad.getCentreRoad());
                 this.removeRoad(parkingRoad.getCentreRoad());
                 parkingRoads.remove(parkingRoad);
                 break;

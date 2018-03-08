@@ -42,17 +42,18 @@ public class ManualParkingRoad{
                              Double firstStackLength) {
         this.roadName = road.getName();
         centreRoad = road;
+        Road topRoad = parkingArea.getRoadByName("topRoad");
         stallStackPair =
-                new StallStack[] {  new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2 - firstStackLength,
-                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth(),
-                                                    firstStackLength,
+                new StallStack[] {  new StallStack( road.getOnlyLane().getShape().getBounds2D().getMinX()-firstStackLength,
+                                                    topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
+                                                    this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
                                                     firstStackLength,
                                                     false,
                                                     this),
-                                    new StallStack( road.getOnlyLane().getStartPoint().getX() - road.getOnlyLane().getWidth()/2,
-                                                    road.getOnlyLane().getStartPoint().getY() - road.getOnlyLane().getWidth(),
+                                    new StallStack( road.getOnlyLane().getShape().getBounds2D().getMaxX(),
+                                                    topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
+                                                    this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
                                                     0,
-                                                    road.getOnlyLane().getLength() - road.getOnlyLane().getWidth(),
                                                     false,
                                                     this)
                 };
@@ -135,6 +136,14 @@ public class ManualParkingRoad{
             }
         }
         return null;
+    }
+
+    /**
+     * Returns the stall stack
+     * @return the pair of stall stacks
+     */
+    public StallStack[] getStallStackPair(){
+        return stallStackPair;
     }
 }
 

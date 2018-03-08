@@ -11,9 +11,7 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Stream;
 
 /**
@@ -42,6 +40,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     protected List<DataCollectionLine> dataCollectionLines;
     /** The vehicles currently on this map. */
     private List<MixedCPMBasicAutoVehicle> vehicles = new ArrayList<MixedCPMBasicAutoVehicle>();
+
 
     // spawn points
     /** The spawn points */
@@ -87,9 +86,11 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
     @Override
     public List<Road> getRoads() {
-        // TODO ED return union of lists of roads of this map and the manual parking area
-        //ArrayList<Road> returnList = Stream.of(super.getRoads(), this.manualParkingArea.getRoads()).flatMap(Collection::stream);
-        return super.getRoads();
+        HashSet<Road> set = new HashSet<>();
+        set.addAll(this.roads);
+        set.addAll(this.manualParkingArea.roads);
+        // TODO ED When have automated section of car park, add here
+        return new ArrayList<>(set);
     }
 
     @Override

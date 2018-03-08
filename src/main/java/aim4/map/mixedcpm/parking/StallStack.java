@@ -10,7 +10,7 @@ public class StallStack {
     private ArrayList<ManualStall> stalls;
     private double x;
     private double y;
-    private double laneLength;
+    private double height;
     /** The maximum length of a stall in this stall stack */
     private double maxStallLength;
     /** The ideal width of a space in this stall */
@@ -25,24 +25,25 @@ public class StallStack {
      * Constructor for a stall stack
      * @param x x position of the stall stack
      * @param y y position of the stall stack
-     * @param laneLength length of the lane this stall stack is attached to
+     * @param stallStackHeight height of this stall stack
      * @param maxStallLength the maximum length of vehicle this stack is
      * @param lastStallStack if this is the stall stack to the left of the road
      * @param parkingRoad the ManualParkingRoad this stall stack belongs to
      */
     public StallStack(double x,
                       double y,
-                      double laneLength,
+                      double stallStackHeight,
                       double maxStallLength,
                       boolean lastStallStack,
                       ManualParkingRoad parkingRoad){
         stalls = new ArrayList<>();
         this.x = x;
         this.y = y;
-        this.laneLength = laneLength;
+        this.height = stallStackHeight;
         this.maxStallLength = maxStallLength;
         this.lastStallStack = lastStallStack;
         this.parkingRoad = parkingRoad;
+        boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
     }
 
     // Public Methods
@@ -68,7 +69,7 @@ public class StallStack {
         // TODO ED addManualStall
         if (maxStallLength == 0){
             // Set up rectangle
-            boundingBox = new Rectangle2D.Double(x, y, laneLength, stallInfo.getWidth());
+            boundingBox = new Rectangle2D.Double(x, y, height, stallInfo.getWidth());
             ManualStall parkingSpace =  new ManualStall(stallInfo, this);
         }
         return null;
@@ -101,6 +102,14 @@ public class StallStack {
      */
     public double getIdealStallWidth() {
         return idealStallWidth;
+    }
+
+    /**
+     * Gets the bounding box of the stall stack
+     * @return the rectangle representing the bounding box
+     */
+    public Rectangle2D getBounds() {
+        return boundingBox;
     }
 
     // Private methods
