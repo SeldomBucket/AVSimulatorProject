@@ -84,7 +84,7 @@ public class ManualParkingArea extends MixedCPMRoadMap {
         //        Next, search for stack with correct height only
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
-                               ManualParkingRoad.SearchParameter.correctHeight);
+                               ManualParkingRoad.SearchParameter.correctLength);
             if (tempStall != null){ return tempStall; }
         }
 

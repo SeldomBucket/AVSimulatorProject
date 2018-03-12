@@ -2,6 +2,7 @@ package aim4.map.mixedcpm.parking;
 
 import aim4.map.Road;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class ManualParkingRoad implements IManualParkingRoad {
@@ -19,7 +20,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
      */
     public enum SearchParameter {
         exactSize,
-        correctHeight,
+        correctLength,
         emptyStack,
         anyFreeSpace
     }
@@ -116,18 +117,25 @@ public class ManualParkingRoad implements IManualParkingRoad {
     public ManualStall findNewSpace(StallInfo stallInfo, SearchParameter searchType) {
         for (StallStack stack:stallStackPair) {
             switch (searchType) {
+                case anyFreeSpace:
                 case exactSize:
                     if (stallInfo.getLength() == stack.getMaxStallLength() &&
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
-                        // TODO ED THE SEARCH
+                        stack.addManualStall(stallInfo);
                     }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
-                case correctHeight:
-
+                case correctLength:
+                    if (stallInfo.getLength() == stack.getMaxStallLength()){
+                        stack.addManualStall(stallInfo);
+                    }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 case emptyStack:
-
+                    if (0 == stack.getMaxStallLength()){
+                        stack.addManualStall(stallInfo);
+                    }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
+                default:
+
             }
         }
         return null;
@@ -139,6 +147,21 @@ public class ManualParkingRoad implements IManualParkingRoad {
      */
     public StallStack[] getStallStackPair(){
         return stallStackPair;
+    }
+
+    @Override
+    public Point2D getStartPoint() {
+        return centreRoad.getOnlyLane().getStartPoint();
+    }
+
+    @Override
+    public ArrayList<Road> getRoads() {
+        ArrayList<Road> returnList = new ArrayList<>();
+        returnList.add(centreRoad);
+        for (ManualStall stall: getParkingSpaces()) {
+            returnList.add(stall.getRoad());
+        }
+        return returnList;
     }
 }
 

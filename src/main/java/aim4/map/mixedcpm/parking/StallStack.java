@@ -4,7 +4,10 @@ package aim4.map.mixedcpm.parking;
 import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.UUID;
+
+import static aim4.map.mixedcpm.parking.ManualStall.StallYComparater;
 
 public class StallStack {
     /** The parkingSpaces in this stall stack */
@@ -16,6 +19,7 @@ public class StallStack {
     private Rectangle2D boundingBox;
     /** The parking road this stall stack belongs to */
     private IManualParkingRoad parkingRoad;
+    private boolean roadOnLeft;
 
     /**
      * Constructor for a stall stack
@@ -36,6 +40,7 @@ public class StallStack {
         this.lastStallStack = lastStallStack;
         boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
         this.parkingRoad = parkingRoad;
+        this.roadOnLeft = parkingRoad.getStartPoint().getX() < x;
     }
 
     // Public Methods
@@ -58,13 +63,95 @@ public class StallStack {
      * @return the ManualStall which was added, null if it wasn't possible
      */
     public ManualStall addManualStall(StallInfo stallInfo){
-        // TODO ED addManualStall
+        double xPosition = roadOnLeft ?
+                                this.boundingBox.getMinX():
+                                this.boundingBox.getMaxX()-stallInfo.getLength();
+        if (stalls.size() == 0){
+            this.idealStallWidth = stallInfo.getWidth();
+        }
         if (getMaxStallLength() == 0){
             // Set up rectangle
             setMaxStallLength(stallInfo.getLength());
-            ManualStall parkingSpace =  new ManualStall(stallInfo, this);
+            ManualStall parkingSpace =  new ManualStall(xPosition,
+                                                        this.boundingBox.getMinY(),
+                                                        stallInfo,
+                                                        this);
+            this.stalls.add(parkingSpace);
+            return parkingSpace;
+        } else if (getMaxStallLength() >= stallInfo.getLength()){
+            double yPosition = -1;
+            if (stallInfo.getLength() == getMaxStallLength()){
+                if (stallInfo.getWidth() == idealStallWidth){
+                    //If length and ideal width match, search from top
+                    yPosition = findSpace(stallInfo.getWidth(), true);
+                }else{
+                    //If length matches and ideal width doesn't, search from bottom
+                    yPosition = findSpace(stallInfo.getWidth(), false);
+                }
+            }else if(stallInfo.getLength() < getMaxStallLength()){
+                //If length doesn't match search from bottom
+                yPosition = findSpace(stallInfo.getWidth(), false);
+            }
+
+            // Add parking space at position if a suitable gap was found
+            if (-1 != yPosition) {
+                ManualStall parkingSpace = new ManualStall( xPosition,
+                                                            yPosition,
+                                                            stallInfo,
+                                                            this);
+                this.stalls.add(parkingSpace);
+                return parkingSpace;
+            }
         }
         return null;
+    }
+
+    /**
+     * Find the x position of a gap which can fit the entire width of the specified space
+     * @param spaceWidth The width of the space we are trying to fit into the stack
+     * @param searchFromTop True if you want to search for a gap from top of the stall stack, False if you don't
+     * @return the x position of the gap found, or -1 if a gap wasn't found
+     */
+    private double findSpace(double spaceWidth, boolean searchFromTop){
+        Collections.sort(stalls, ManualStall.StallYComparater);
+        if (stalls.size() == 0){
+            return searchFromTop ? getBounds().getMinY() : getBounds().getMaxY() - spaceWidth;
+        }
+
+        if (searchFromTop){
+            double lastSpaceYPosition = 0;
+            for (int i = 0; i < stalls.size(); i++){
+                if (lastSpaceYPosition != stalls.get(i).getMinY()){
+                    if (lastSpaceYPosition + spaceWidth <= stalls.get(i).getMinY()){
+                        return lastSpaceYPosition;
+                    }
+                }
+                if (i == stalls.size()-1){
+                    // If this is the last stall, check there is enough space in the end of the stall
+                    if (stalls.get(i).getMaxY() + spaceWidth <= boundingBox.getMaxY()){
+                        return stalls.get(i).getMaxY();
+                    }
+                }
+                lastSpaceYPosition = stalls.get(i).getMaxY();
+            }
+        }else{
+            double lastSpaceYPosition = boundingBox.getMaxY();
+            for (int i = stalls.size()-1; i >= 0; i--){
+                if (lastSpaceYPosition != stalls.get(i).getMaxY()){
+                    if (lastSpaceYPosition - spaceWidth >= stalls.get(i).getMaxY()){
+                        return lastSpaceYPosition - spaceWidth;
+                    }
+                }
+                if (i == 0){
+                    // If this is the last stall, check there is enough space in the stall
+                    if (stalls.get(i).getMinY() - spaceWidth >= boundingBox.getMinY()){
+                        return stalls.get(i).getMinY() - spaceWidth;
+                    }
+                }
+                lastSpaceYPosition = stalls.get(i).getMinY();
+            }
+        }
+        return -1;
     }
 
     /**
@@ -76,11 +163,20 @@ public class StallStack {
             // If this is the last space in the last stall stack, set the length of this stall stack to 0
 
             boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
-                                                this.boundingBox.getY(),
-                                                this.boundingBox.getHeight(),
-                                                0);
+                                                 this.boundingBox.getY(),
+                                                 this.boundingBox.getHeight(),
+                                                 0);
             idealStallWidth = 0;
         }
+        ManualStall stallToRemove = null;
+        for (ManualStall stall:stalls){
+            if (stall.getStallID() == stallID) {
+                stallToRemove = stall;
+                break;
+            }
+        }
+        if (stallToRemove != null)
+        stalls.remove(stallToRemove);
         // TODO ED removeManualStall
     }
 

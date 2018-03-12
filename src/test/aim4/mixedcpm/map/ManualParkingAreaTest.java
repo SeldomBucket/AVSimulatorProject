@@ -1,9 +1,12 @@
 package aim4.mixedcpm.map;
 
 import aim4.map.Road;
+import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.parking.*;
 import aim4.map.mixedcpm.testmaps.ManualCPMMapTest;
 import org.junit.*;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 
@@ -155,6 +158,24 @@ public class ManualParkingAreaTest {
         assertEquals(road1RightStack.getBounds().getMaxX(), road2LeftStack.getBounds().getMinX(), 0);
     }
 
+    @Test
+    public void testRemoveEmptyParkingRoad(){
+        String roadName = "testRoad";
+        int initialStackSize = 5;
+        testArea.addNewParkingRoad(roadName, initialStackSize);
+        ManualParkingRoad manualParkingRoad = testArea.getParkingRoadByName(roadName);
+        Road centreRoad = manualParkingRoad.getCentreRoad();
+        ArrayList<Junction> junctions = manualParkingRoad.getCentreRoad().getJunctions();
+
+        assertNotNull(manualParkingRoad);
+
+        testArea.removeParkingRoad(manualParkingRoad);
+    }
+
+
+    // TODO ED Make these tests
+    // Test junctions are set up correctly when adding manual parking road
+    // Test removeParkingRoad when it has some spaces - make sure the spaces roads are all removed too
 
     @After
     public void testTearDown(){

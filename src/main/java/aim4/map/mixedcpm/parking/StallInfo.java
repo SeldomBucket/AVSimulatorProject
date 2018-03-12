@@ -39,7 +39,9 @@ public class StallInfo {
      */
     public StallInfo(StallInfo stallInfo)
     {
-        this(stallInfo.getWidth(), stallInfo.getLength(),stallInfo.getType());
+        this.width = stallInfo.getWidth();
+        this.length = stallInfo.getLength();
+        this.type = stallInfo.getType();
     }
 
     /**

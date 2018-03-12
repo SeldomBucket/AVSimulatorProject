@@ -6,6 +6,7 @@ import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.map.mixedcpm.parking.StallInfo;
 import aim4.map.mixedcpm.parking.StallStack;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public interface IManualParkingRoad {
@@ -16,4 +17,6 @@ public interface IManualParkingRoad {
     public void setLastRoad(boolean lastRoad);
     public ManualStall findNewSpace(StallInfo stallInfo, aim4.map.mixedcpm.parking.ManualParkingRoad.SearchParameter searchType);
     public StallStack[] getStallStackPair();
+    public Point2D getStartPoint();
+    public ArrayList<Road> getRoads();
 }

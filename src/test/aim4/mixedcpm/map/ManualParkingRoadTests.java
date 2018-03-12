@@ -16,6 +16,23 @@ public class ManualParkingRoadTests {
      */
 
     /**
-     * Test that when a ManualStall is added, the stall stacks adjust accordingly
+     * Test that when a ManualStall is added:
+     *      the centre road of the ManualStall is set up correctly
+     *      the stall stacks adjust accordingly
+     *      the junctions are set up correctly
      */
+
+    /**
+     * Test that when a ManualStall is removed:
+     *
+     */
+
+    /**
+     * Test filling both stall stacks results in a rejected request for a ManualStall
+     */
+
+    /**
+     *
+     */
+
 }

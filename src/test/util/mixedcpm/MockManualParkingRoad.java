@@ -3,9 +3,17 @@ package util.mixedcpm;
 import aim4.map.Road;
 import aim4.map.mixedcpm.parking.*;
 
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class MockManualParkingRoad implements IManualParkingRoad {
+
+    double x;
+
+    public MockManualParkingRoad(double x){
+        this.x = x;
+    }
+
     @Override
     public ArrayList<ManualStall> getParkingSpaces() {
         return null;
@@ -39,5 +47,10 @@ public class MockManualParkingRoad implements IManualParkingRoad {
     @Override
     public StallStack[] getStallStackPair() {
         return new StallStack[0];
+    }
+
+    @Override
+    public Point2D getStartPoint() {
+        return new Point2D.Double(x,0);
     }
 }
