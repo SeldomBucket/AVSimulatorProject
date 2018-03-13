@@ -204,7 +204,6 @@ public class ManualParkingAreaTest {
     }
 
     // TODO ED Make these tests
-    // Test junctions are set up correctly when adding manual parking road
     // Test removeParkingRoad when it has some spaces - make sure the spaces roads are all removed too
 
     @After

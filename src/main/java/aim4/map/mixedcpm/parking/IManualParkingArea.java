@@ -1,0 +1,16 @@
+package aim4.map.mixedcpm.parking;
+
+import aim4.map.RoadMap;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
+
+import java.util.ArrayList;
+
+public interface IManualParkingArea extends RoadMap{
+    public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle);
+    public ManualStall findSpace(StallInfo stallInfo);
+    public ManualParkingRoad getParkingRoadByName(String parkingRoadName);
+    public void update();
+    public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth);
+    public void removeParkingRoad(ManualParkingRoad road);
+    public ArrayList<ManualParkingRoad> getParkingRoads();
+}

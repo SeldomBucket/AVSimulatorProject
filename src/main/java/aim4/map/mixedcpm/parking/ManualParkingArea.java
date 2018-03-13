@@ -15,7 +15,7 @@ import java.util.UUID;
  *
  * Manages the parking area for manual vehicles
  */
-public class ManualParkingArea extends MixedCPMRoadMap {
+public class ManualParkingArea extends MixedCPMRoadMap implements IManualParkingArea {
     private ArrayList<ManualParkingRoad> parkingRoads;
     private Road entryRoad;
     private Road exitRoad;

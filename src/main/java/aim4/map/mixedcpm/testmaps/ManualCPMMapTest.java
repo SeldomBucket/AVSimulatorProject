@@ -27,6 +27,7 @@ public class ManualCPMMapTest extends MixedCPMBasicMap {
                                                 this.dimensions.getHeight() - BORDER,
                                                 this.dimensions.getWidth()- BORDER,
                                                 this.dimensions.getHeight() - BORDER);
+
         this.manualParkingArea = new ManualParkingArea(topRoad, bottomRoad, this, new Rectangle2D.Double(BORDER, BORDER, width, height));
     }
 
