@@ -46,11 +46,16 @@ public class MockManualParkingRoad implements IManualParkingRoad {
 
     @Override
     public StallStack[] getStallStackPair() {
-        return new StallStack[0];
+        return new StallStack[2];
     }
 
     @Override
     public Point2D getStartPoint() {
         return new Point2D.Double(x,0);
+    }
+
+    @Override
+    public ArrayList<Road> getRoads() {
+        return null;
     }
 }

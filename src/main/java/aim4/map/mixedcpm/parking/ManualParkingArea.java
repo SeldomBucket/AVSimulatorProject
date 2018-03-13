@@ -16,7 +16,7 @@ import java.util.UUID;
  * Manages the parking area for manual vehicles
  */
 public class ManualParkingArea extends MixedCPMRoadMap {
-    private List<ManualParkingRoad> parkingRoads;
+    private ArrayList<ManualParkingRoad> parkingRoads;
     private Road entryRoad;
     private Road exitRoad;
     private MixedCPMBasicMap map;
@@ -223,5 +223,9 @@ public class ManualParkingArea extends MixedCPMRoadMap {
                 break;
             }
         }
+    }
+
+    public ArrayList<ManualParkingRoad> getParkingRoads(){
+        return parkingRoads;
     }
 }

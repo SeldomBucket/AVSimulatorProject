@@ -17,6 +17,7 @@ public class ManualParkingAreaTest {
 
     ManualCPMMapTest testMap;
     ManualParkingArea testArea;
+    Road topRoad, bottomRoad;
     static final double AREA_HEIGHT = 20;
     static final double AREA_WIDTH = 50;
     static final double LANE_WIDTH = 3;
@@ -36,6 +37,8 @@ public class ManualParkingAreaTest {
                                         SPEED_LIMIT,
                                         INIT_TIME);
         testArea = testMap.getManualParkingArea();
+        topRoad = testMap.getRoadByName("topRoad");
+        bottomRoad = testMap.getRoadByName("bottomRoad");
     }
 
     /**
@@ -43,8 +46,8 @@ public class ManualParkingAreaTest {
      */
     @Test
     public void testManualParkingAreaEntryAndExitRoads(){
-        assertEquals(testMap.getRoadByName("topRoad"), testArea.getRoadByName("topRoad"));
-        assertEquals(testMap.getRoadByName("bottomRoad"), testArea.getRoadByName("bottomRoad"));
+        assertEquals(topRoad, testArea.getRoadByName("topRoad"));
+        assertEquals(bottomRoad, testArea.getRoadByName("bottomRoad"));
     }
 
     /**
@@ -59,8 +62,6 @@ public class ManualParkingAreaTest {
 
         testArea.addNewParkingRoad(roadName, initialStackWidth);
         Road road = testArea.getRoadByName(roadName);
-        Road topRoad = testArea.getRoadByName("topRoad");
-        Road bottomRoad = testArea.getRoadByName("bottomRoad");
         ManualParkingRoad manualParkingRoad = testArea.getParkingRoadByName(roadName);
 
         // Check the road is in the map as well as the parking area
@@ -91,8 +92,6 @@ public class ManualParkingAreaTest {
         int initialStackSize = 5;
         testArea.addNewParkingRoad(roadName, initialStackSize);
         ManualParkingRoad manualParkingRoad = testArea.getParkingRoadByName(roadName);
-        Road topRoad = testArea.getRoadByName("topRoad");
-        Road bottomRoad = testArea.getRoadByName("bottomRoad");
         Road centreRoad = manualParkingRoad.getCentreRoad();
 
         StallStack leftStack = manualParkingRoad.getStallStackPair()[0];
@@ -160,18 +159,49 @@ public class ManualParkingAreaTest {
 
     @Test
     public void testRemoveEmptyParkingRoad(){
+
+        // TODO ED THIS TEST
         String roadName = "testRoad";
         int initialStackSize = 5;
         testArea.addNewParkingRoad(roadName, initialStackSize);
         ManualParkingRoad manualParkingRoad = testArea.getParkingRoadByName(roadName);
-        Road centreRoad = manualParkingRoad.getCentreRoad();
-        ArrayList<Junction> junctions = manualParkingRoad.getCentreRoad().getJunctions();
-
-        assertNotNull(manualParkingRoad);
+        Junction topRoadJunction = topRoad.getJunctions().get(0);
+        Junction bottomRoadJunction = bottomRoad.getJunctions().get(0);
 
         testArea.removeParkingRoad(manualParkingRoad);
+
+        ArrayList<Junction> junctions = new ArrayList<>(testArea.getJunctions());
+
+        assertEquals(0, topRoad.getJunctions().size());
+        assertEquals(0, bottomRoad.getJunctions().size());
+
+        assertFalse(junctions.contains(topRoadJunction));
+        assertFalse(junctions.contains(bottomRoadJunction));
+
+        assertFalse(testArea.getParkingRoads().contains(manualParkingRoad));
     }
 
+    @Test
+    public void testJunctionsOnNewParkingRoad(){
+
+        // TODO ED THIS TEST
+        String roadName = "testRoad";
+        int initialStackSize = 5;
+        ManualParkingRoad manualParkingRoad = testArea.addNewParkingRoad(roadName, initialStackSize);
+        Road centreRoad = manualParkingRoad.getCentreRoad();
+        ArrayList<Junction> junctions = centreRoad.getJunctions();
+        Junction topRoadJunction = topRoad.getJunctions().get(0);
+        Junction bottomRoadJunction = bottomRoad.getJunctions().get(0);
+
+        assertTrue(junctions.contains(topRoadJunction));
+        assertTrue(junctions.contains(bottomRoadJunction));
+
+        assertTrue(topRoadJunction.getRoads().contains(centreRoad));
+        assertTrue(bottomRoadJunction.getRoads().contains(centreRoad));
+
+        assertTrue(centreRoad.getJunctions().contains(topRoadJunction));
+        assertTrue(centreRoad.getJunctions().contains(bottomRoadJunction));
+    }
 
     // TODO ED Make these tests
     // Test junctions are set up correctly when adding manual parking road

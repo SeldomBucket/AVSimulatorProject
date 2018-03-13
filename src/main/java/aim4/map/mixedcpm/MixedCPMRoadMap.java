@@ -193,7 +193,9 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         // Find all the roads attached to this road, and delete the corresponding junction
         for (Junction junction : road.getJunctions()){
             for (Road connectedRoad : junction.getRoads()){
-                connectedRoad.removeJunction(junction);
+                if (!connectedRoad.equals(road)) {
+                    connectedRoad.removeJunction(junction);
+                }
             }
         }
         this.junctions.removeAll(road.getJunctions());
@@ -201,7 +203,9 @@ public abstract class MixedCPMRoadMap implements RoadMap {
         // Find all the roads attached to this road, and delete the corresponding intersection
         for (SimpleIntersection intersection : road.getIntersections()){
             for (Road connectedRoad : intersection.getRoads()){
-                connectedRoad.removeSimpleIntersection(intersection);
+                if (!connectedRoad.equals(road)) {
+                    connectedRoad.removeSimpleIntersection(intersection);
+                }
             }
         }
         this.intersections.removeAll(road.getIntersections());

@@ -26,7 +26,7 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
         stallID = UUID.randomUUID();
         boundingBox = new Rectangle2D.Double(x,y,stallInfo.getLength(), stallInfo.getWidth());
         this.stallStack = stallStack;
-        // TODO Road for parking in
+        // TODO ED Road for parking in
     }
 
     public double getMinX(){
