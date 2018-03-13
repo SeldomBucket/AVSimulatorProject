@@ -102,6 +102,7 @@ public class ManualParkingRoadTests {
         Road stallRoad = stall.getRoad();
 
         assertTrue(stallRoad.getJunctions().get(0).getRoads().contains(centreRoad));
+        assertEquals(stallRoad.getJunctions().get(0), stall.getJunction());
     }
 
     /**

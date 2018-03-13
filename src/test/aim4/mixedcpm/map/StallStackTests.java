@@ -5,6 +5,7 @@ import aim4.map.mixedcpm.parking.StallInfo;
 import aim4.map.mixedcpm.parking.StallStack;
 
 import aim4.map.mixedcpm.parking.StallTypes;
+import util.mixedcpm.MockManualParkingArea;
 import util.mixedcpm.MockManualParkingRoad;
 
 import org.junit.*;
@@ -19,6 +20,8 @@ public class StallStackTests {
 
     private double stallStackHeight = 10;
     private double maxStallLength = 5;
+    private double laneWidth = 3;
+    private double speedLimit = 10;
 
     @BeforeClass
     public static void classSetUp(){
@@ -30,27 +33,31 @@ public class StallStackTests {
 
         MockManualParkingRoad parkingRoadLeft = new MockManualParkingRoad(-1);
         MockManualParkingRoad parkingRoadRight = new MockManualParkingRoad(maxStallLength +1);
+        MockManualParkingArea mockManualParkingArea = new MockManualParkingArea(laneWidth, speedLimit);
 
         noLengthStallStack = new StallStack(0,
                                             0,
                                             stallStackHeight,
                                             0,
                                             false,
-                                            parkingRoadLeft);
+                                            parkingRoadLeft,
+                                            mockManualParkingArea);
 
         existingLengthStallStack = new StallStack(0,
                                                   0,
                                                   stallStackHeight,
                                                   maxStallLength,
                                                   false,
-                                                  parkingRoadLeft);
+                                                  parkingRoadLeft,
+                                                  mockManualParkingArea);
 
-        existingLengthStallStackRoadRight = new StallStack( 0,
-                                                            0,
-                                                            stallStackHeight,
-                                                            maxStallLength,
-                                                            false,
-                                                            parkingRoadRight);
+        existingLengthStallStackRoadRight = new StallStack(0,
+                                                           0,
+                                                           stallStackHeight,
+                                                           maxStallLength,
+                                                           false,
+                                                           parkingRoadRight,
+                                                           mockManualParkingArea);
 
     }
 

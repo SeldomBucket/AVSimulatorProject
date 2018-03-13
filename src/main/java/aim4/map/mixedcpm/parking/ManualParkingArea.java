@@ -1,14 +1,13 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.map.Road;
+import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.MixedCPMRoadMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
 
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * ManualParkingArea
@@ -159,6 +158,16 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         }else {
             return null;
         }
+    }
+
+    @Override
+    public List<Junction> getJunctions() {
+        HashSet<Junction> junctions = new HashSet<>(super.getJunctions());
+
+        for (ManualParkingRoad parkingRoad:parkingRoads){
+            junctions.addAll(parkingRoad.getJunctions());
+        }
+        return new ArrayList<>(junctions);
     }
 
     /**

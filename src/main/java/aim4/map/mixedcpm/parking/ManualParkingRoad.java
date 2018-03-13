@@ -1,6 +1,7 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.map.Road;
+import aim4.map.connections.Junction;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
@@ -45,13 +46,15 @@ public class ManualParkingRoad implements IManualParkingRoad {
                                                     this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
                                                     firstStackLength,
                                                     false,
-                                                    this),
+                                                    this,
+                                                    this.parkingArea),
                                     new StallStack( road.getOnlyLane().getShape().getBounds2D().getMaxX(),
                                                     topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
                                                     this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
                                                     0,
                                                     false,
-                                                    this)
+                                                    this,
+                                                    this.parkingArea)
                 };
         this.parkingArea = parkingArea;
         this.parkingArea.update();
@@ -115,24 +118,28 @@ public class ManualParkingRoad implements IManualParkingRoad {
      * @return the stall if it was found, null if not
      */
     public ManualStall findNewSpace(StallInfo stallInfo, SearchParameter searchType) {
+        ManualStall returnStall = null;
         for (StallStack stack:stallStackPair) {
             switch (searchType) {
                 case anyFreeSpace:
                 case exactSize:
                     if (stallInfo.getLength() == stack.getMaxStallLength() &&
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
-                        stack.addManualStall(stallInfo);
+                        returnStall = stack.addManualStall(stallInfo);
                     }
+                    if (returnStall != null) { return returnStall; }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 case correctLength:
                     if (stallInfo.getLength() == stack.getMaxStallLength()){
-                        stack.addManualStall(stallInfo);
+                        returnStall = stack.addManualStall(stallInfo);
                     }
+                    if (returnStall != null) { return returnStall; }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 case emptyStack:
                     if (0 == stack.getMaxStallLength()){
-                        stack.addManualStall(stallInfo);
+                        returnStall = stack.addManualStall(stallInfo);
                     }
+                    if (returnStall != null) { return returnStall; }
                     if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
                 default:
 
@@ -162,6 +169,10 @@ public class ManualParkingRoad implements IManualParkingRoad {
             returnList.add(stall.getRoad());
         }
         return returnList;
+    }
+
+    public ArrayList<Junction> getJunctions(){
+        return centreRoad.getJunctions();
     }
 }
 

@@ -1,10 +1,14 @@
 package aim4.map.mixedcpm.parking;
 
 
+import aim4.map.RoadMap;
+import aim4.map.connections.Junction;
+
 import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import static aim4.map.mixedcpm.parking.ManualStall.StallYComparater;
@@ -20,6 +24,7 @@ public class StallStack {
     /** The parking road this stall stack belongs to */
     private IManualParkingRoad parkingRoad;
     private boolean roadOnLeft;
+    private RoadMap map;
 
     /**
      * Constructor for a stall stack
@@ -35,12 +40,14 @@ public class StallStack {
                       double stallStackHeight,
                       double maxStallLength,
                       boolean lastStallStack,
-                      IManualParkingRoad parkingRoad){
+                      IManualParkingRoad parkingRoad,
+                      RoadMap map){
         stalls = new ArrayList<>();
         this.lastStallStack = lastStallStack;
         boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
         this.parkingRoad = parkingRoad;
         this.roadOnLeft = parkingRoad.getStartPoint().getX() < x;
+        this.map = map;
     }
 
     // Public Methods
@@ -75,7 +82,9 @@ public class StallStack {
             ManualStall parkingSpace =  new ManualStall(xPosition,
                                                         this.boundingBox.getMinY(),
                                                         stallInfo,
-                                                        this);
+                                                        this,
+                                                        this.parkingRoad,
+                                                        this.map);
             this.stalls.add(parkingSpace);
             return parkingSpace;
         } else if (getMaxStallLength() >= stallInfo.getLength()){
@@ -98,7 +107,9 @@ public class StallStack {
                 ManualStall parkingSpace = new ManualStall( xPosition,
                                                             yPosition,
                                                             stallInfo,
-                                                            this);
+                                                            this,
+                                                            this.parkingRoad,
+                                                            this.map);
                 this.stalls.add(parkingSpace);
                 return parkingSpace;
             }
@@ -202,6 +213,14 @@ public class StallStack {
      */
     public Rectangle2D getBounds() {
         return boundingBox;
+    }
+
+    public ArrayList<Junction> getJunctions(){
+        ArrayList<Junction> junctions = new ArrayList<>();
+        for (ManualStall stall : stalls){
+            junctions.add(stall.getJunction());
+        }
+        return junctions;
     }
 
     // Private methods
