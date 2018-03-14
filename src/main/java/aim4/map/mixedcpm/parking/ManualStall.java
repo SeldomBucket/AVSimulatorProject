@@ -38,11 +38,11 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
             boolean roadIsToLeft = parkingRoad.getStartPoint().getX() < x;
             double roadStartXPosition, roadYPosition, roadEndXPosition;
             if (roadIsToLeft) {
-                roadStartXPosition = x - centreRoad.getOnlyLane().getWidth();
+                roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMinX();
                 roadEndXPosition = x + stallInfo.getLength();
             } else {
                 roadStartXPosition = x;
-                roadEndXPosition = x + stallInfo.getLength() + centreRoad.getOnlyLane().getWidth();
+                roadEndXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMaxX();
             }
             roadYPosition = y + stallInfo.getWidth() / 2;
 

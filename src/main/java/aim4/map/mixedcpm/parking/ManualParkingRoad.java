@@ -23,7 +23,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
         exactSize,
         correctLength,
         emptyStack,
-        anyFreeSpace
+        anyGap
     }
 
     // Public Methods
@@ -121,28 +121,29 @@ public class ManualParkingRoad implements IManualParkingRoad {
         ManualStall returnStall = null;
         for (StallStack stack:stallStackPair) {
             switch (searchType) {
-                case anyFreeSpace:
+                case anyGap:
                 case exactSize:
                     if (stallInfo.getLength() == stack.getMaxStallLength() &&
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
                     if (returnStall != null) { return returnStall; }
-                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
+                    if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case correctLength:
                     if (stallInfo.getLength() == stack.getMaxStallLength()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
                     if (returnStall != null) { return returnStall; }
-                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
+                    if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case emptyStack:
                     if (0 == stack.getMaxStallLength()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
                     if (returnStall != null) { return returnStall; }
-                    if (!searchType.equals(SearchParameter.anyFreeSpace)) {break;}
+                    if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 default:
-
+                    returnStall = stack.addManualStall(stallInfo);
+                    if (returnStall != null) { return returnStall; }
             }
         }
         return null;

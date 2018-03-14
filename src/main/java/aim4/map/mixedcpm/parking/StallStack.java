@@ -1,6 +1,7 @@
 package aim4.map.mixedcpm.parking;
 
 
+import aim4.map.Road;
 import aim4.map.RoadMap;
 import aim4.map.connections.Junction;
 
@@ -130,7 +131,7 @@ public class StallStack {
         }
 
         if (searchFromTop){
-            double lastSpaceYPosition = 0;
+            double lastSpaceYPosition = boundingBox.getMinY();
             for (int i = 0; i < stalls.size(); i++){
                 if (lastSpaceYPosition != stalls.get(i).getMinY()){
                     if (lastSpaceYPosition + spaceWidth <= stalls.get(i).getMinY()){
@@ -186,9 +187,17 @@ public class StallStack {
                 break;
             }
         }
-        if (stallToRemove != null)
-        stalls.remove(stallToRemove);
-        // TODO ED removeManualStall
+        if (stallToRemove != null) {
+            if (stallToRemove.getJunction() != null){
+                for (Road road : stallToRemove.getJunction().getRoads()){
+                    if (road != stallToRemove.getRoad()){
+                        road.removeJunction(stallToRemove.getJunction());
+                    }
+                }
+                stallToRemove.getRoad().removeJunction(stallToRemove.getJunction());
+            }
+            stalls.remove(stallToRemove);
+        }
     }
 
     /**
