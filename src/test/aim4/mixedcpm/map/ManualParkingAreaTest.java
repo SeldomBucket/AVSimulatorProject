@@ -138,7 +138,7 @@ public class ManualParkingAreaTest {
         StallStack road1RightStack = manualParkingRoad1.getStallStackPair()[1];
 
         //Set the right stack of road 1 to have a stack size of 5
-        road1RightStack.addManualStall(new StallInfo(1, initialStackSize, StallTypes.NoPaddingTest));
+        road1RightStack.addManualStall(new StallInfo(1, initialStackSize, StallType.NoPaddingTest));
 
         testArea.addNewParkingRoad(roadName2, initialStackSize);
         ManualParkingRoad manualParkingRoad2 = testArea.getParkingRoadByName(roadName2);
@@ -159,8 +159,6 @@ public class ManualParkingAreaTest {
 
     @Test
     public void testRemoveEmptyParkingRoad(){
-
-        // TODO ED THIS TEST
         String roadName = "testRoad";
         int initialStackSize = 5;
         testArea.addNewParkingRoad(roadName, initialStackSize);
@@ -183,8 +181,6 @@ public class ManualParkingAreaTest {
 
     @Test
     public void testJunctionsOnNewParkingRoad(){
-
-        // TODO ED THIS TEST
         String roadName = "testRoad";
         int initialStackSize = 5;
         ManualParkingRoad manualParkingRoad = testArea.addNewParkingRoad(roadName, initialStackSize);
@@ -203,8 +199,171 @@ public class ManualParkingAreaTest {
         assertTrue(centreRoad.getJunctions().contains(bottomRoadJunction));
     }
 
+    @Test
+    public void testAddFirstStall(){
+        double stallHeight = testArea.getDimensions().getHeight()/5;
+        double stallWidth = 5;
+        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPaddingTest);
+        ManualStall testStall = testArea.findSpace(stallInfo);
+
+        assertNotNull(testStall);
+        assertEquals(1, testArea.getParkingRoads().size());
+
+        StallStack leftStallStack = testArea.getParkingRoads().get(0).getStallStackPair()[0];
+
+        assertEquals(1, leftStallStack.getManualStalls().size());
+        assertTrue(leftStallStack.getManualStalls().contains(testStall));
+
+        //Test junctions?
+    }
+
+    @Test
+    public void testAddTwoStallsSameSize(){
+        double stallHeight = testArea.getDimensions().getHeight()/5;
+        double stallWidth = 5;
+        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPaddingTest);
+        ManualStall testStall0 = testArea.findSpace(stallInfo);
+        ManualStall testStall1 = testArea.findSpace(stallInfo);
+
+        assertNotNull(testStall0);
+        assertNotNull(testStall1);
+        assertEquals(1, testArea.getParkingRoads().size());
+
+        StallStack leftStallStack = testArea.getParkingRoads().get(0).getStallStackPair()[0];
+
+        assertEquals(2, leftStallStack.getManualStalls().size());
+        assertTrue(leftStallStack.getManualStalls().contains(testStall0));
+        assertTrue(leftStallStack.getManualStalls().contains(testStall1));
+    }
+
+    @Test
+    public void testAddTwoStallsDifferentWidthsSameLength(){
+        double stallHeight = testArea.getDimensions().getHeight()/5;
+        double stallWidth0 = 5;
+        double stallWidth1 = 4;
+        StallInfo stallInfo0 = new StallInfo(stallWidth0, stallHeight, StallType.NoPaddingTest);
+        StallInfo stallInfo1 = new StallInfo(stallWidth1, stallHeight, StallType.NoPaddingTest);
+        ManualStall testStall0 = testArea.findSpace(stallInfo0);
+        ManualStall testStall1 = testArea.findSpace(stallInfo1);
+
+        assertNotNull(testStall0);
+        assertNotNull(testStall1);
+        assertEquals(1, testArea.getParkingRoads().size());
+
+        StallStack leftStallStack = testArea.getParkingRoads().get(0).getStallStackPair()[0];
+
+        assertEquals(2, leftStallStack.getManualStalls().size());
+        assertTrue(leftStallStack.getManualStalls().contains(testStall0));
+        assertTrue(leftStallStack.getManualStalls().contains(testStall1));
+
+        assertEquals(leftStallStack.getBounds().getMinY(), testStall0.getMinY(), 0);
+        assertEquals(leftStallStack.getBounds().getMaxY()-testStall1.getWidth(), testStall1.getMinY(), 0);
+    }
+
+    @Test
+    public void testAddMultipleStallsDifferentLengths(){
+        double stallLength0 = 5;
+        double stallLength1 = 4;
+        double stallLength2 = 3;
+        double stallLength3 = 2;
+        double stallWidth = 5;
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
+
+        ManualStall testStall0 = testArea.findSpace(stallInfo0);
+        ManualStall testStall1 = testArea.findSpace(stallInfo1);
+        ManualStall testStall2 = testArea.findSpace(stallInfo2);
+        ManualStall testStall3 = testArea.findSpace(stallInfo3);
+
+        assertNotNull(testStall0);
+        assertNotNull(testStall1);
+        assertNotNull(testStall2);
+        assertNotNull(testStall3);
+
+        assertEquals(2, testArea.getParkingRoads().size());
+
+        StallStack leftStallStackRoad1 = testArea.getParkingRoads().get(0).getStallStackPair()[0];
+        StallStack rightStallStackRoad1 = testArea.getParkingRoads().get(0).getStallStackPair()[1];
+        StallStack leftStallStackRoad2 = testArea.getParkingRoads().get(1).getStallStackPair()[0];
+        StallStack rightStallStackRoad2 = testArea.getParkingRoads().get(1).getStallStackPair()[1];
+
+        assertEquals(1, leftStallStackRoad1.getManualStalls().size());
+        assertEquals(1, rightStallStackRoad1.getManualStalls().size());
+        assertEquals(1, leftStallStackRoad2.getManualStalls().size());
+        assertEquals(1, rightStallStackRoad2.getManualStalls().size());
+
+        assertTrue(leftStallStackRoad1.getManualStalls().contains(testStall0));
+        assertTrue(rightStallStackRoad1.getManualStalls().contains(testStall1));
+        assertTrue(leftStallStackRoad2.getManualStalls().contains(testStall2));
+        assertTrue(rightStallStackRoad2.getManualStalls().contains(testStall3));
+
+        assertEquals(leftStallStackRoad1.getBounds().getMinY(), testStall0.getMinY(), 0);
+        assertEquals(rightStallStackRoad1.getBounds().getMinY(), testStall1.getMinY(), 0);
+        assertEquals(leftStallStackRoad2.getBounds().getMinY(), testStall0.getMinY(), 0);
+        assertEquals(rightStallStackRoad2.getBounds().getMinY(), testStall1.getMinY(), 0);
+    }
+
+    @Test
+    public void testAddStallsToOverfillWidthOfParkingArea(){
+        double stallLength0 = testArea.getDimensions().getWidth()/4;
+        double stallLength1 = testArea.getDimensions().getWidth()/4+1;
+        double stallLength2 = testArea.getDimensions().getWidth()/4+2;
+        double stallLength3 = testArea.getDimensions().getWidth()/4+3;
+        double stallWidth = 5;
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
+
+        ManualStall testStall0 = testArea.findSpace(stallInfo0);
+        ManualStall testStall1 = testArea.findSpace(stallInfo1);
+        ManualStall testStall2 = testArea.findSpace(stallInfo2);
+        ManualStall testStall3 = testArea.findSpace(stallInfo3);
+
+        assertEquals(2, testArea.getParkingRoads().size());
+
+        assertNotNull(testStall0);
+        assertNotNull(testStall1);
+        assertNotNull(testStall2);
+        assertNull(testStall3);
+    }
+
+    @Test
+    public void testTryToAddTooManyParkingRoads(){
+        double stallLength0 = testArea.getDimensions().getWidth()/4;
+        double stallLength1 = testArea.getDimensions().getWidth()/4-1;
+        double stallLength2 = testArea.getDimensions().getWidth()/4-2;
+        double stallLength3 = testArea.getDimensions().getWidth()/4-3;
+        double stallLength4 = testArea.getDimensions().getWidth()/4-4;
+        double stallWidth = 5;
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
+        StallInfo stallInfo4 = new StallInfo(stallWidth, stallLength4, StallType.NoPaddingTest);
+
+        ManualStall testStall0 = testArea.findSpace(stallInfo0);
+        ManualStall testStall1 = testArea.findSpace(stallInfo1);
+        ManualStall testStall2 = testArea.findSpace(stallInfo2);
+        ManualStall testStall3 = testArea.findSpace(stallInfo3);
+        ManualStall testStall4 = testArea.findSpace(stallInfo4);
+
+        assertEquals(2, testArea.getParkingRoads().size());
+
+        assertNotNull(testStall0);
+        assertNotNull(testStall1);
+        assertNotNull(testStall2);
+        assertNotNull(testStall3);
+        assertNull(testStall4);
+    }
+
     // TODO ED Make these tests
     // Test removeParkingRoad when it has some spaces - make sure the spaces roads are all removed too
+    // Test add new space - various orderings of space
+
+
 
     @After
     public void testTearDown(){

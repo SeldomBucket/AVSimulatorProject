@@ -11,19 +11,19 @@ public class StallInfo {
     /**
      * maps stall type to the padding around the edge of the stall
      */
-    private static final Map<StallTypes, Double[]> stallPadding;
+    private static final Map<StallType, Double[]> stallPadding;
     static
     {
         stallPadding = new HashMap<>();
 
         Double[] noPadding = {0.0, 0.0};
-        stallPadding.put(StallTypes.NoPaddingTest, noPadding);
+        stallPadding.put(StallType.NoPaddingTest, noPadding);
 
         Double[] standardPadding = {0.5, 0.5};
-        stallPadding.put(StallTypes.Standard, standardPadding);
+        stallPadding.put(StallType.Standard, standardPadding);
         
         Double[] disabledPadding = {1.0, 1.0};
-        stallPadding.put(StallTypes.Disabled, disabledPadding);
+        stallPadding.put(StallType.Disabled, disabledPadding);
     }
 
     /** width of the stall */
@@ -31,7 +31,7 @@ public class StallInfo {
     /** length of the stall */
     private double length;
     /** type of the stall */
-    private StallTypes type;
+    private StallType type;
 
     /**
      * constructor for StallInfo from another StallInfo
@@ -50,7 +50,7 @@ public class StallInfo {
      * @param vehicleLength the length of the vehicle to park in the stall
      * @param type the type of stall
      */
-    public StallInfo(double vehicleWidth, double vehicleLength, StallTypes type){
+    public StallInfo(double vehicleWidth, double vehicleLength, StallType type){
         this.type = type;
         this.width = vehicleWidth + stallPadding.get(type)[0];
         this.length = vehicleLength + stallPadding.get(type)[1];
@@ -76,7 +76,7 @@ public class StallInfo {
      * gets the type of the stall
      * @return the type of the stall
      */
-    public StallTypes getType(){
+    public StallType getType(){
         return type;
     }
 

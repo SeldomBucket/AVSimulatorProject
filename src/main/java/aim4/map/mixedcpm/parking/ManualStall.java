@@ -96,6 +96,10 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
         return junction;
     }
 
+    public void delete(){
+        stallStack.removeManualStall(this.stallID);
+    }
+
     @Override
     public int compareTo(ManualStall manualStall) {
         Double minY = this.getMinY();

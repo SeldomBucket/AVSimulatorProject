@@ -65,38 +65,68 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         ManualStall tempStall;
 
         String roadName = UUID.randomUUID().toString();
-        if (parkingRoads.size() == 0){
-
-            return addNewParkingRoadAndFindSpace(roadName, stallInfo);
-        }
 
         // Find a space for the vehicle
         // Search parkingRoads for a suitable space and add if possible
+        if (parkingRoads.size() == 0){
+            tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    tempStall.delete();
+                    return null;
+                }
+                return tempStall;
+            }
+        }
 
         //        First search for stack with correct height & same ideal width
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
                                    ManualParkingRoad.SearchParameter.exactSize);
-            if (tempStall != null){ return tempStall; }
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    tempStall.delete();
+                    return null;
+                }
+                return tempStall;
+            }
         }
 
         //        Next, search for stack with correct height only
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
                                ManualParkingRoad.SearchParameter.correctLength);
-            if (tempStall != null){ return tempStall; }
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    tempStall.delete();
+                    return null;
+                }
+                return tempStall;
+            }
         }
 
         //       Next, search for empty stacks
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
                                   ManualParkingRoad.SearchParameter.emptyStack);
-            if (tempStall != null){ return tempStall; }
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    tempStall.delete();
+                    return null;
+                }
+                return tempStall;
+            }
         }
 
         //        Next, add new road and use that
         tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
-        if (tempStall != null){ return tempStall; }
+        if (tempStall != null){
+            if (tempStall.getMaxX() > dimensions.getMaxX()){
+                tempStall.delete();
+                return null;
+            }
+            return tempStall;
+        }
 
         //      Next, extend the last stack to allow for longer vehicles
 
@@ -154,7 +184,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                                                     stallInfo.getLength());
         if (road != null){
             return road.findNewSpace(stallInfo,
-                                    ManualParkingRoad.SearchParameter.exactSize);
+                                    ManualParkingRoad.SearchParameter.correctLength);
         }else {
             return null;
         }
@@ -191,7 +221,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     public ManualParkingRoad addNewParkingRoad(String roadName,
                                                double initialStackWidth) {
         double spacePointer = getEmptySpacePointer();
-        // Don't add if it can't fit
+        // Don't add if it can't fit in the space
         if (this.dimensions.getWidth() <
                 spacePointer + initialStackWidth + this.laneWidth){
             return null;
