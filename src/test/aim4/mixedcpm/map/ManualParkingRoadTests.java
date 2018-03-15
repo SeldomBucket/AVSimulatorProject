@@ -292,7 +292,7 @@ public class ManualParkingRoadTests {
 
     @After
     public void testTearDown(){
-
+        manualParkingRoad = null;
     }
 
     @AfterClass

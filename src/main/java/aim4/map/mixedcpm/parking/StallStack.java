@@ -9,10 +9,7 @@ import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.UUID;
-
-import static aim4.map.mixedcpm.parking.ManualStall.StallYComparater;
 
 public class StallStack {
     /** The parkingSpaces in this stall stack */
@@ -176,17 +173,13 @@ public class StallStack {
 
             boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
                                                  this.boundingBox.getY(),
-                                                 this.boundingBox.getHeight(),
-                                                 0);
+                                                 0,
+                                                 this.boundingBox.getHeight());
             idealStallWidth = 0;
         }
-        ManualStall stallToRemove = null;
-        for (ManualStall stall:stalls){
-            if (stall.getStallID() == stallID) {
-                stallToRemove = stall;
-                break;
-            }
-        }
+
+        ManualStall stallToRemove = getManualStallByID(stallID);
+
         if (stallToRemove != null) {
             if (stallToRemove.getJunction() != null){
                 for (Road road : stallToRemove.getJunction().getRoads()){
@@ -197,7 +190,19 @@ public class StallStack {
                 stallToRemove.getRoad().removeJunction(stallToRemove.getJunction());
             }
             stalls.remove(stallToRemove);
+            if (parkingRoad.getManualStalls().size() == 0){
+                parkingRoad.deleteFromMap();
+            }
         }
+    }
+
+    public ManualStall getManualStallByID(UUID stallID){
+        for (ManualStall stall:stalls){
+            if (stall.getStallID() == stallID) {
+                return stall;
+            }
+        }
+        return null;
     }
 
     /**

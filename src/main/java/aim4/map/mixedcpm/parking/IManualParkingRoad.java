@@ -10,7 +10,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public interface IManualParkingRoad {
-    public ArrayList<ManualStall> getParkingSpaces();
+    public ArrayList<ManualStall> getManualStalls();
     public Road getCentreRoad();
     public double getEntireWidth();
     public String getName();
@@ -19,4 +19,5 @@ public interface IManualParkingRoad {
     public StallStack[] getStallStackPair();
     public Point2D getStartPoint();
     public ArrayList<Road> getRoads();
+    public void deleteFromMap();
 }

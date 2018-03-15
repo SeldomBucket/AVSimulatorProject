@@ -314,9 +314,6 @@ public class StallStackTests {
 
     @Test
     public void testFillEmptyStallStackExactlyWithDifferentWidthsExactLength(){
-        // 2 width 2
-        // 2 width 3
-        // Exact length
         double vehicleWidth0 = 2;
         double vehicleWidth1 = 3;
         double vehicleLength = maxStallLength;

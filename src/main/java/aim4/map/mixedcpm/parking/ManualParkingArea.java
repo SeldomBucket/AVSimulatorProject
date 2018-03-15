@@ -144,23 +144,83 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     }
 
     /**
+     * add a new parking road
+     * @param roadName the name of the new road
+     * @param initialStackWidth the initial width of the left stack
+     * @return the ManualParkingRoad if it was possible, null otherwise
+     */
+    public ManualParkingRoad addNewParkingRoad(String roadName,
+                                               double initialStackWidth) {
+        double spacePointer = getEmptySpacePointer();
+        // Don't add if it can't fit in the space
+        if (this.dimensions.getWidth() <
+                spacePointer + initialStackWidth + this.laneWidth){
+            return null;
+        }
+
+        double roadX = this.entryRoad.getOnlyLane().getStartPoint().getX() +
+                this.halfLaneWidth +
+                spacePointer +
+                initialStackWidth;
+        Road road = this.makeRoadWithOneLane(
+                roadName,
+                roadX,
+                this.entryRoad.getOnlyLane().getShape().getBounds2D().getMinY(),
+                roadX,
+                this.exitRoad.getOnlyLane().getShape().getBounds2D().getMaxY());
+
+        this.makeJunction(this.entryRoad, road);
+        this.makeJunction(this.exitRoad, road);
+
+        ManualParkingRoad parkingRoad = new ManualParkingRoad(road,
+                this,
+                initialStackWidth);
+
+        this.parkingRoads.add(parkingRoad);
+        updateLastParkingLane();
+        return parkingRoad;
+    }
+
+    /**
+     * remove a parking road and all junctions/references to it
+     * @param road the ParkingRoad to remove
+     */
+    public void removeParkingRoad(ManualParkingRoad road) {
+        for (ManualParkingRoad parkingRoad: parkingRoads) {
+            if (parkingRoad == road){
+                this.removeRoad(parkingRoad.getCentreRoad());
+                parkingRoads.remove(parkingRoad);
+                break;
+            }
+        }
+        updateLastParkingLane();
+    }
+
+    public void removeManualStall(UUID stallID){
+        ManualStall stallToRemove = getManualStallByID(stallID);
+        if(stallToRemove != null){
+            stallToRemove.delete();
+        }
+    }
+
+    public ManualStall getManualStallByID(UUID stallID){
+        ManualStall returnStall;
+        for (ManualParkingRoad parkingRoad : parkingRoads){
+            returnStall = parkingRoad.getManualStallByID(stallID);
+            if (returnStall != null){
+                return returnStall;
+            }
+        }
+        return null;
+    }
+
+    /**
      * update the parking roads and make sure the last one is labelled properly
      */
     public void update(){
-        for (int i = parkingRoads.size()-1; i >= 0; i--){
-            ManualParkingRoad currentRoad = parkingRoads.get(i);
-            if (i == parkingRoads.size()){
-                currentRoad.setLastRoad(true);
-                if (currentRoad.getParkingSpaces().size() == 0){
-                    removeParkingRoad(currentRoad);
-                }
-            }else{
-                currentRoad.setLastRoad(true);
-            }
-        }
-
         map.update();
     }
+
 
 
     //////////////////////////////
@@ -212,56 +272,19 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         return sum;
     }
 
-    /**
-     * add a new parking road
-     * @param roadName the name of the new road
-     * @param initialStackWidth the initial width of the left stack
-     * @return the ManualParkingRoad if it was possible, null otherwise
-     */
-    public ManualParkingRoad addNewParkingRoad(String roadName,
-                                               double initialStackWidth) {
-        double spacePointer = getEmptySpacePointer();
-        // Don't add if it can't fit in the space
-        if (this.dimensions.getWidth() <
-                spacePointer + initialStackWidth + this.laneWidth){
-            return null;
-        }
-
-        double roadX = this.entryRoad.getOnlyLane().getStartPoint().getX() +
-                        this.halfLaneWidth +
-                        spacePointer +
-                        initialStackWidth;
-        Road road = this.makeRoadWithOneLane(
-                roadName,
-                roadX,
-                this.entryRoad.getOnlyLane().getShape().getBounds2D().getMinY(),
-                roadX,
-                this.exitRoad.getOnlyLane().getShape().getBounds2D().getMaxY());
-
-        this.makeJunction(this.entryRoad, road);
-        this.makeJunction(this.exitRoad, road);
-
-        ManualParkingRoad parkingRoad = new ManualParkingRoad(road,
-                                                             this,
-                                                             initialStackWidth);
-
-        this.parkingRoads.add(parkingRoad);
-
-        return parkingRoad;
-    }
-
-    /**
-     * remove a parking road and all junctions/references to it
-     * @param road the ParkingRoad to remove
-     */
-    public void removeParkingRoad(ManualParkingRoad road) {
-        for (ManualParkingRoad parkingRoad: parkingRoads) {
-            if (parkingRoad == road){
-                this.removeRoad(parkingRoad.getCentreRoad());
-                parkingRoads.remove(parkingRoad);
-                break;
+    private void updateLastParkingLane(){
+        for (int i = parkingRoads.size()-1; i >= 0; i--){
+            ManualParkingRoad currentRoad = parkingRoads.get(i);
+            if (i == parkingRoads.size()){
+                currentRoad.setLastRoad(true);
+                if (currentRoad.getManualStalls().size() == 0){
+                    removeParkingRoad(currentRoad);
+                }
+            }else{
+                currentRoad.setLastRoad(true);
             }
         }
+
     }
 
     public ArrayList<ManualParkingRoad> getParkingRoads(){

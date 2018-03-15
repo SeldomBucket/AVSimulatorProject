@@ -15,8 +15,8 @@ public class MockManualParkingRoad implements IManualParkingRoad {
     }
 
     @Override
-    public ArrayList<ManualStall> getParkingSpaces() {
-        return null;
+    public ArrayList<ManualStall> getManualStalls() {
+        return new ArrayList<>();
     }
 
     @Override
@@ -31,7 +31,7 @@ public class MockManualParkingRoad implements IManualParkingRoad {
 
     @Override
     public String getName() {
-        return null;
+        return "MockManualParkingRoad";
     }
 
     @Override
@@ -57,5 +57,11 @@ public class MockManualParkingRoad implements IManualParkingRoad {
     @Override
     public ArrayList<Road> getRoads() {
         return null;
+    }
+
+    @Override
+    public void deleteFromMap() {
+
+
     }
 }

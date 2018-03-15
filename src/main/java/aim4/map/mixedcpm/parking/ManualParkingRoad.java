@@ -5,6 +5,7 @@ import aim4.map.connections.Junction;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class ManualParkingRoad implements IManualParkingRoad {
 
@@ -64,7 +65,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
      * get parking spaces from both stall stacks
      * @return list of parking spaces
      */
-    public ArrayList<ManualStall> getParkingSpaces(){
+    public ArrayList<ManualStall> getManualStalls(){
         ArrayList<ManualStall> returnList = stallStackPair[0].getManualStalls();
         returnList.addAll(stallStackPair[1].getManualStalls());
         return returnList;
@@ -149,6 +150,18 @@ public class ManualParkingRoad implements IManualParkingRoad {
         return null;
     }
 
+    public ManualStall getManualStallByID(UUID stallID){
+        ManualStall returnStall = stallStackPair[0].getManualStallByID(stallID);
+        if (returnStall == null){
+            returnStall = stallStackPair[1].getManualStallByID(stallID);
+        }
+        return returnStall;
+    }
+
+    public void deleteFromMap() {
+        parkingArea.removeParkingRoad(this);
+    }
+
     /**
      * Returns the stall stack
      * @return the pair of stall stacks
@@ -157,16 +170,14 @@ public class ManualParkingRoad implements IManualParkingRoad {
         return stallStackPair;
     }
 
-    @Override
     public Point2D getStartPoint() {
         return centreRoad.getOnlyLane().getStartPoint();
     }
 
-    @Override
     public ArrayList<Road> getRoads() {
         ArrayList<Road> returnList = new ArrayList<>();
         returnList.add(centreRoad);
-        for (ManualStall stall: getParkingSpaces()) {
+        for (ManualStall stall: getManualStalls()) {
             returnList.add(stall.getRoad());
         }
         return returnList;
