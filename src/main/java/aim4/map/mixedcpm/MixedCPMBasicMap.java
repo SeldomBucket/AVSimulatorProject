@@ -5,14 +5,13 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;
-import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.*;
-import java.util.stream.Stream;
 
 /**
  * The base class for all Mixed CPM Maps.
@@ -39,7 +38,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /** The data collection lines */
     protected List<DataCollectionLine> dataCollectionLines;
     /** The vehicles currently on this map. */
-    private List<MixedCPMBasicAutoVehicle> vehicles = new ArrayList<MixedCPMBasicAutoVehicle>();
+    private List<MixedCPMBasicManualVehicle> vehicles = new ArrayList<MixedCPMBasicManualVehicle>();
 
 
     // spawn points
@@ -115,7 +114,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Add a vehicle to this map
      * @param vehicle the vehicle to add
      */
-    public void addVehicleToMap(MixedCPMBasicAutoVehicle vehicle) {
+    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle) {
         vehicles.add(vehicle);
     }
 
@@ -123,7 +122,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Remove a vehicle from the map
      * @param vehicle the vehicle to remove
      */
-    public void removeCompletedVehicle(MixedCPMBasicAutoVehicle vehicle) {
+    public void removeCompletedVehicle(MixedCPMBasicManualVehicle vehicle) {
         vehicles.remove(vehicle);
     }
 
@@ -145,7 +144,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Returns the vehicles in this map
      * @return the vehicles
      */
-    public List<MixedCPMBasicAutoVehicle> getVehicles() { return vehicles; }
+    public List<MixedCPMBasicManualVehicle> getVehicles() { return vehicles; }
 
     /**
      * prints the data from the data collection lines to a file

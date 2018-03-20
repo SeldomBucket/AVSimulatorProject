@@ -52,6 +52,8 @@ public class StallInfo {
      */
     public StallInfo(double vehicleWidth, double vehicleLength, StallType type){
         this.type = type;
+        // TODO Quantize vehicle width and length to specific sizes of space, maybe?
+        // Might give a more efficient packing if there's a bit of leeway
         this.width = vehicleWidth + stallPadding.get(type)[0];
         this.length = vehicleLength + stallPadding.get(type)[1];
     }

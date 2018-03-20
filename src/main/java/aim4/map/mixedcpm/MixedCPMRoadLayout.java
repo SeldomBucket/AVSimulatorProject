@@ -4,8 +4,8 @@ import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
-import aim4.map.lane.LineSegmentLane;
-import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+
 import java.util.List;
 
 /**
@@ -16,7 +16,7 @@ public interface MixedCPMRoadLayout {
     public List<Corner> getCorners();
     public List<Junction> getJunctions();
     public List<SimpleIntersection> getIntersections();
-    public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle);
-    public List<MixedCPMBasicVehicleModel> getVehicles();
+    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle);
+    public List<MixedCPMBasicManualVehicle> getVehicles();
 
 }

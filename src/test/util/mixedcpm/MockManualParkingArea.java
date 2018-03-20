@@ -5,7 +5,7 @@ import aim4.map.mixedcpm.parking.IManualParkingArea;
 import aim4.map.mixedcpm.parking.ManualParkingRoad;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.map.mixedcpm.parking.StallInfo;
-import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.util.ArrayList;
 
@@ -16,7 +16,7 @@ public class MockManualParkingArea extends MixedCPMRoadMap implements IManualPar
     }
 
     @Override
-    public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle) {
+    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle) {
 
     }
 

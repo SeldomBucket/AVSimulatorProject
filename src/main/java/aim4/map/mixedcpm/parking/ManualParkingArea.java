@@ -4,7 +4,7 @@ import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.MixedCPMRoadMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
-import aim4.vehicle.mixedcpm.MixedCPMBasicVehicleModel;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Rectangle2D;
 import java.util.*;
@@ -51,7 +51,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
      * add a vehicle to the map, finding a stall for them
      * @param vehicle the vehicle to be added
      */
-    public void addVehicleToMap(MixedCPMBasicVehicleModel vehicle){
+    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle){
         // TODO ED call findSpaceForVehicle and give the location of that space
 
     }

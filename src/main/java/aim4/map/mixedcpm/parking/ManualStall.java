@@ -92,6 +92,10 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
         return stallRoad;
     }
 
+    public Lane getLane(){
+        return stallRoad.getOnlyLane();
+    }
+
     public Junction getJunction(){
         return junction;
     }
