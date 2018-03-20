@@ -33,13 +33,6 @@ public class MixedCPMManualCoordinator implements Coordinator {
          * now making their way to a parking lane to park.*/
         PARKING,
 
-        /** The vehicle is relocating - they leave the parking lane and reenter
-         * the car park, allowing a vehicle it was blocking to exit. If a vehicle
-         * is blocking it, then it will send it a message telling it to RELOCATE.
-         * On reentry,the vehicle is given a new parking lane and go back to PARKING.
-         * */
-        RELOCATING,
-
         /**
          * The vehicle is being retrieved and should exit the car park.
          * If it is blocked by the vehicle in front, it will send it a
@@ -204,18 +197,15 @@ public class MixedCPMManualCoordinator implements Coordinator {
      */
     private void processI2Vinbox() {
         ManualStall I2Vinbox = vehicle.getMessagesFromI2VInbox();
-        if ((I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.WAITING) ||
-                (I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.RELOCATING) ) {
-            // We have been granted access to the car park and know where to park
-            System.out.println("Changing status to PARKING.");
-            setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.PARKING);
-            vehicle.setTargetStall(I2Vinbox);
-            vehicle.clearI2Vinbox();
-            System.out.println("Finding space on " + I2Vinbox.getRoad().getName());
-            if (!vehicle.hasEnteredCarPark()) {
+        if (this.vehicle.getTargetStall() == null) {
+            if ((I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.WAITING)) {
+                // We have been granted access to the car park and know where to park
+                System.out.println("Changing status to PARKING.");
+                setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.PARKING);
+                vehicle.setTargetStall(I2Vinbox);
+                vehicle.clearI2Vinbox();
+                System.out.println("Finding space on " + I2Vinbox.getRoad().getName());
                 vehicle.setHasEntered();
-            } else {
-                vehicle.increaseNumberOfReEntries();
             }
         }
     }
@@ -225,7 +215,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
      */
     private void processV2Vinbox() {
         MixedCPMManualCoordinator.ParkingStatus V2Vinbox = vehicle.getMessagesFromV2VInbox();
-        if ((V2Vinbox == MixedCPMManualCoordinator.ParkingStatus.RELOCATING && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING)) {
+        if (parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING) {
             // The vehicle behind us needs to exit, so change our parking status
             System.out.println("Changing status to " + V2Vinbox.toString());
             setParkingStatus(V2Vinbox);
@@ -454,7 +444,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
         public boolean perform() {
             // First check that we are still on a parking lane
             assert(driver != null);
-            if (!driver.inParkingLane() || parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT){
+            if (!driver.isParked() || parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT){
                 System.out.println("Driver is now leaving the parking lane.");
                 // Find out which state to be in next
                 // Find out if we need to change state
@@ -469,7 +459,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 }
             }
             if (vehicle.getTargetStall().getRoad().getOnlyLane() ==
-                    driver.getParkingLaneCurrentlyIn()){
+                    driver.getCurrentLane()){
                 System.out.println("Reached target parking lane");
                 vehicle.clearTargetParkingLane();
             }

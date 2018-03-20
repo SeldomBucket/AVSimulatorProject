@@ -3,17 +3,20 @@ package aim4.driver.mixedcpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
+import aim4.map.Road;
 import aim4.map.SpawnPoint;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
-import aim4.map.cpm.CPMSpawnPoint;
-import aim4.map.cpm.parking.ParkingLane;
+import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.MixedCPMMap;
+import aim4.map.mixedcpm.MixedCPMSpawnPoint;
+import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.AutoVehicleDriverModel;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Area;
+import java.util.ArrayList;
 
 public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
 
@@ -32,7 +35,10 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
     protected MixedCPMMap map;
 
     /** Where this DriverAgent is coming from. */
-    protected CPMSpawnPoint spawnPoint;
+    protected MixedCPMSpawnPoint spawnPoint;
+
+    /** path the vehicle has to follow to get to the target stall*/
+    protected ArrayList<Lane> pathToTargetStall;
 
     /////////////////////////////////
     // CONSTRUCTORS
@@ -42,6 +48,16 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         this.vehicle = vehicle;
         this.map = map;
         coordinator = null;
+
+        this.pathToTargetStall = new ArrayList<>();
+        for (Road road : this.vehicle.getTargetStall().getJunction().getRoads()){
+            if (road.getOnlyLane() != this.vehicle.getTargetStall().getLane()){
+                pathToTargetStall.add(0, map.getTopRoad().getOnlyLane());               // Top Road
+                pathToTargetStall.add(1, road.getOnlyLane());                           // Parking Road Lane
+                pathToTargetStall.add(2, this.vehicle.getTargetStall().getLane());      // Manual Stall Lane
+                break;
+            }
+        }
     }
 
     /////////////////////////////////
@@ -81,7 +97,7 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
      *
      * @param spawnPoint the spawn point that generated the driver
      */
-    public void setSpawnPoint(CPMSpawnPoint spawnPoint) {
+    public void setSpawnPoint(MixedCPMSpawnPoint spawnPoint) {
         this.spawnPoint = spawnPoint;
     }
 
@@ -172,16 +188,19 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         return null;
     }
 
-    public boolean inParkingLane() {
-        if (currentLane instanceof ParkingLane) {
-            return true;
+    public Lane getNextLane(){
+        for (int i = 0; i < pathToTargetStall.size(); i++){
+            if(pathToTargetStall.get(i) == getCurrentLane()){
+                if (i<pathToTargetStall.size()-1){
+                    return pathToTargetStall.get(i+1);
+                }
+            }
         }
-        return false;
+        return null;
     }
 
-    public ParkingLane getParkingLaneCurrentlyIn(){
-        assert(currentLane instanceof ParkingLane);
-        return (ParkingLane) currentLane;
+    public boolean isParked(){
+        return currentLane == vehicle.getTargetStall().getLane();
     }
 
     @Override

@@ -1,6 +1,5 @@
 package aim4.map.mixedcpm.testmaps;
 
-import aim4.map.Road;
 import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
@@ -17,16 +16,9 @@ public class ManualCPMMapTest extends MixedCPMBasicMap {
 
         this.dimensions = new Rectangle2D.Double(0.0,0.0,width + BORDER*2,height + BORDER*2);
 
-        Road topRoad = makeRoadWithOneLane("topRoad",
-                                                BORDER,
-                                                BORDER,
-                                                this.dimensions.getWidth()- BORDER,
-                                                BORDER);
-        Road bottomRoad = makeRoadWithOneLane("bottomRoad",
-                                                BORDER,
-                                                this.dimensions.getHeight() - BORDER,
-                                                this.dimensions.getWidth()- BORDER,
-                                                this.dimensions.getHeight() - BORDER);
+        initializeTopAndBottomRoads();
+
+        this.spawnPoints.add(makeSpawnPoint(initTime, topRoad.getOnlyLane()));
 
         this.manualParkingArea = new ManualParkingArea(topRoad, bottomRoad, this, new Rectangle2D.Double(BORDER, BORDER, width, height));
     }
@@ -40,12 +32,4 @@ public class ManualCPMMapTest extends MixedCPMBasicMap {
         return null;
     }
 
-    /**
-     * Gets the manual parking area of this map
-     * @return the manual parking area
-     */
-    @Override
-    public ManualParkingArea getManualParkingArea() {
-        return manualParkingArea;
-    }
 }

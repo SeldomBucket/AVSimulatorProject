@@ -2,6 +2,7 @@ package aim4.map.mixedcpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.cpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;
@@ -31,6 +32,8 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * */
     protected static final double BORDER = 10.0;
 
+    /** The Top and Bottom Roads of the Map */
+    protected Road topRoad, bottomRoad;
     /** The Manual Parking Area */
     protected ManualParkingArea manualParkingArea;
     /**The initial time*/
@@ -110,6 +113,22 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         spawnPoints.addAll(horizontalSpawnPoints);
     }
 
+
+    public void initializeTopAndBottomRoads(){
+
+        this.topRoad = makeRoadWithOneLane("topRoad",
+                BORDER,
+                BORDER,
+                this.dimensions.getWidth()- BORDER,
+                BORDER);
+
+        this.bottomRoad = makeRoadWithOneLane("bottomRoad",
+                BORDER,
+                this.dimensions.getHeight() - BORDER,
+                this.dimensions.getWidth()- BORDER,
+                this.dimensions.getHeight() - BORDER);
+    }
+
     /**
      * Add a vehicle to this map
      * @param vehicle the vehicle to add
@@ -173,5 +192,25 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         }
 
         outfile.close();
+    }
+
+    @Override
+    public Road getTopRoad() {
+        return topRoad;
+    }
+
+    @Override
+    public Road getBottomRoad() {
+        return bottomRoad;
+    }
+
+    @Override
+    public StatusMonitor getStatusMonitor() {
+        return null;
+    }
+
+    @Override
+    public ManualParkingArea getManualParkingArea() {
+        return manualParkingArea;
     }
 }

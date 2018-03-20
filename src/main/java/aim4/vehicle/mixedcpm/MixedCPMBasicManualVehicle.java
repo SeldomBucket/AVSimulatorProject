@@ -4,12 +4,16 @@ import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
+import aim4.map.Road;
 import aim4.map.connections.BasicConnection;
+import aim4.map.lane.Lane;
+import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 
 public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
 
@@ -52,14 +56,6 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     protected double estimatedDistanceTravelled = 0;
 
     /**
-     * The number of times that this vehicle re-entered the car park.
-     * This is incremented each time the coordinator receives a parking lane
-     * from the Status Monitor, checking it has entered so we don't include
-     * the first message received.
-     */
-    protected int numberOfReEntries = 0;
-
-    /**
      * The last connection the vehicle traversed through.
      * This is used to calculate an estimation of the
      * distance travelled by the vehicle in the car park.
@@ -87,6 +83,12 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
      * park once its parking time had elapsed.
      */
     protected double retrievalTime;
+
+    /**
+     * The list of lanes in order which the vehicle will
+     * have to traverse to get to the target stall
+     */
+    protected ArrayList<Lane> pathToTargetStall;
 
     // messaging
 
@@ -134,7 +136,6 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         this.parkingTime = parkingTime;
         this.timeUntilExit = parkingTime;
         this.hasEntered = false;
-
         // Get parking space size needed
     }
 
@@ -167,7 +168,10 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     }
 
     public void setTargetStall(ManualStall targetStall) {
-        this.targetStall = targetStall;
+        if (this.targetStall == null) {
+            this.targetStall = targetStall;
+        }
+
     }
 
     public void clearTargetParkingLane(){
@@ -177,12 +181,6 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     public double getEstimatedDistanceTravelled() { return estimatedDistanceTravelled; }
 
     public BasicConnection getLastConnection() { return lastConnection; }
-
-    public int getNumberOfReEntries() { return numberOfReEntries; }
-
-    public void increaseNumberOfReEntries() {
-        this.numberOfReEntries++;
-    }
 
     public double getExitTime() {
         return exitTime;
@@ -226,7 +224,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         V2Vinbox = null;
     }
 
-    public void updateTimeToExit(double timeStep) {
+    public void updateTimeUntilExit(double timeStep) {
         if (timeUntilExit > 0) {
             timeUntilExit -= timeStep;
         }
