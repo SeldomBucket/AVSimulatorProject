@@ -9,7 +9,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.List;
 
 /**
- * A SpawnPoint for CPM simulations.
+ * A SpawnPoint for MixedCPM simulations.
  */
 public class MixedCPMSpawnPoint extends SpawnPoint {
 
@@ -18,7 +18,7 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
     /////////////////////////////////
 
     /** The specification of a spawn */
-    public static class CPMSpawnSpec extends SpawnSpec {
+    public static class MixedCPMSpawnSpec extends SpawnSpec {
 
         double parkingTime;
 
@@ -28,7 +28,7 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
          * @param spawnTime       the spawn time
          * @param vehicleSpec     the vehicle specification
          */
-        public CPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec, double parkingTime) {
+        public MixedCPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec, double parkingTime) {
             super(spawnTime, vehicleSpec);
             this.parkingTime = parkingTime;
         }
@@ -40,7 +40,7 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
      * The interface of the spawn specification generator.
      */
     public static interface MixedCPMSpawnSpecGenerator {
-        List<CPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timestep);
+        List<MixedCPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timestep);
         double generateParkingTime();
     }
 
@@ -109,9 +109,9 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
      * @param timeStep  the time step
      * @return The list of spawn spec generated in this time step
      */
-    public List<CPMSpawnSpec> act(double timeStep) {
+    public List<MixedCPMSpawnSpec> act(double timeStep) {
         assert vehicleSpecChooser != null;
-        List<CPMSpawnSpec> spawnSpecs = vehicleSpecChooser.act(this, timeStep);
+        List<MixedCPMSpawnSpec> spawnSpecs = vehicleSpecChooser.act(this, timeStep);
         currentTime += timeStep;
         return spawnSpecs;
     }
