@@ -206,6 +206,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 vehicle.clearI2Vinbox();
                 System.out.println("Finding space on " + I2Vinbox.getRoad().getName());
                 vehicle.setHasEntered();
+                driver.updatePathToTargetStall();
             }
         }
     }
@@ -215,14 +216,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
      */
     private void processV2Vinbox() {
         MixedCPMManualCoordinator.ParkingStatus V2Vinbox = vehicle.getMessagesFromV2VInbox();
-        if (parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING) {
-            // The vehicle behind us needs to exit, so change our parking status
-            System.out.println("Changing status to " + V2Vinbox.toString());
-            setParkingStatus(V2Vinbox);
-            setDrivingState(MixedCPMManualCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
-            // If there is a vehicle in front, we need to send them the same message
-            vehicle.clearV2Vinbox();
-        }
+        // TODO ED Does this even need any V2V stuff?
     }
 
     /**
@@ -444,7 +438,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
         public boolean perform() {
             // First check that we are still on a parking lane
             assert(driver != null);
-            if (!driver.isParked() || parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT){
+            if (!driver.isInStall() || parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT){
                 System.out.println("Driver is now leaving the parking lane.");
                 // Find out which state to be in next
                 // Find out if we need to change state

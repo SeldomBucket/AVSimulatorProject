@@ -5,7 +5,7 @@ import aim4.map.connections.Junction;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.*;
 import org.junit.*;
-import util.mixedcpm.MockCPMMap;
+import util.mixedcpm.MockMixedCPMMap;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class ManualParkingRoadTests {
     @Before
     public void testSetup(){
 
-        MockCPMMap mockMap = new MockCPMMap(laneWidth, speedLimit);
+        MockMixedCPMMap mockMap = new MockMixedCPMMap(laneWidth, speedLimit);
 
         centreRoad = new Road("centreRoad", mockMap);
         topRoad = new Road("topRoad", mockMap);

@@ -9,6 +9,8 @@ import aim4.map.connections.BasicConnection;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.ManualStall;
+import aim4.map.mixedcpm.parking.StallInfo;
+import aim4.map.mixedcpm.parking.StallType;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
 
@@ -108,6 +110,8 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     protected MixedCPMManualCoordinator.ParkingStatus V2Vinbox;
 
 
+    protected StallInfo stallInfo;
+
     /**
      * Construct a vehicle
      *
@@ -136,7 +140,13 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         this.parkingTime = parkingTime;
         this.timeUntilExit = parkingTime;
         this.hasEntered = false;
-        // Get parking space size needed
+        // TODO Different types of vehicle
+        this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Standard);
+
+    }
+
+    public StallInfo getStallInfo(){
+        return this.stallInfo;
     }
 
     @Override

@@ -50,14 +50,6 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         coordinator = null;
 
         this.pathToTargetStall = new ArrayList<>();
-        for (Road road : this.vehicle.getTargetStall().getJunction().getRoads()){
-            if (road.getOnlyLane() != this.vehicle.getTargetStall().getLane()){
-                pathToTargetStall.add(0, map.getTopRoad().getOnlyLane());               // Top Road
-                pathToTargetStall.add(1, road.getOnlyLane());                           // Parking Road Lane
-                pathToTargetStall.add(2, this.vehicle.getTargetStall().getLane());      // Manual Stall Lane
-                break;
-            }
-        }
     }
 
     /////////////////////////////////
@@ -111,6 +103,18 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
             throw new RuntimeException("Driver is without origin!");
         }
         return spawnPoint;
+    }
+
+    public void updatePathToTargetStall() {
+
+        for (Road road : this.vehicle.getTargetStall().getJunction().getRoads()){
+            if (road.getOnlyLane() != this.vehicle.getTargetStall().getLane()){
+                pathToTargetStall.add(0, map.getTopRoad().getOnlyLane());               // Top Road
+                pathToTargetStall.add(1, road.getOnlyLane());                           // Parking Road Lane
+                pathToTargetStall.add(2, this.vehicle.getTargetStall().getLane());      // Manual Stall Lane
+                break;
+            }
+        }
     }
 
     /**
@@ -199,7 +203,7 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         return null;
     }
 
-    public boolean isParked(){
+    public boolean isInStall(){
         return currentLane == vehicle.getTargetStall().getLane();
     }
 

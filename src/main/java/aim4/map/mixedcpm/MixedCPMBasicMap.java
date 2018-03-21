@@ -2,7 +2,8 @@ package aim4.map.mixedcpm;
 
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
-import aim4.map.cpm.parking.StatusMonitor;
+import aim4.map.connections.Junction;
+import aim4.map.mixedcpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;
@@ -205,12 +206,17 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     }
 
     @Override
-    public StatusMonitor getStatusMonitor() {
-        return null;
+    public ManualParkingArea getManualParkingArea() {
+        return manualParkingArea;
     }
 
     @Override
-    public ManualParkingArea getManualParkingArea() {
-        return manualParkingArea;
+    public List<Junction> getJunctions() {
+
+        HashSet<Junction> set = new HashSet<>();
+        set.addAll(this.junctions);
+        set.addAll(this.manualParkingArea.junctions);
+        // TODO ED When have automated section of car park, add here
+        return new ArrayList<>(set);
     }
 }
