@@ -253,11 +253,19 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     @Override
     public List<Junction> getJunctions() {
         HashSet<Junction> junctions = new HashSet<>(super.getJunctions());
-
         for (ManualParkingRoad parkingRoad:parkingRoads){
             junctions.addAll(parkingRoad.getJunctions());
         }
         return new ArrayList<>(junctions);
+    }
+
+    @Override
+    public List<Road> getRoads() {
+        HashSet<Road> roads = new HashSet<>(super.getRoads());
+        for (ManualParkingRoad parkingRoad:parkingRoads){
+            roads.addAll(parkingRoad.getRoads());
+        }
+        return new ArrayList<>(roads);
     }
 
     /**

@@ -22,10 +22,6 @@ public class MixedCPMManualNavigator {
 
     private MixedCPMManualDriver driver;
 
-    private ArrayList<Lane> pathToSpace;
-
-    private ArrayList<Lane> pathToExit;
-
     public MixedCPMManualNavigator(MixedCPMBasicManualVehicle vehicle, MixedCPMManualDriver driver){
         this.driver = driver;
         this.vehicle = vehicle;

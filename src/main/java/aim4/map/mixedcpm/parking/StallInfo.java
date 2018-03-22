@@ -19,10 +19,10 @@ public class StallInfo {
         Double[] noPadding = {0.0, 0.0};
         stallPadding.put(StallType.NoPaddingTest, noPadding);
 
-        Double[] standardPadding = {0.5, 0.5};
+        Double[] standardPadding = {1.0, 1.0};
         stallPadding.put(StallType.Standard, standardPadding);
         
-        Double[] disabledPadding = {1.0, 1.0};
+        Double[] disabledPadding = {2.0, 2.0};
         stallPadding.put(StallType.Disabled, disabledPadding);
     }
 

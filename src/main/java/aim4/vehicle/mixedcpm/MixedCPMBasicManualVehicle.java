@@ -184,7 +184,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
 
     }
 
-    public void clearTargetParkingLane(){
+    public void clearTargetStall(){
         targetStall = null;
     }
 
@@ -238,6 +238,12 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         if (timeUntilExit > 0) {
             timeUntilExit -= timeStep;
         }
+    }
+
+    public double distanceToParkingEndPoint(){
+        Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
+        Point2D vehiclePosition = gaugePosition();
+        return vehiclePosition.distance(endPoint);
     }
 
     /**

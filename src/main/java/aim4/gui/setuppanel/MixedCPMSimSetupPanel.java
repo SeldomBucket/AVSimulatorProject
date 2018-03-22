@@ -16,7 +16,7 @@ import java.awt.event.ItemListener;
 public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener {
     private static final long serialVersionUID = 1L;
 
-    final static String CPM_AUTO_DRIVER_SETUP_PANEL = "CPM Protocol";
+    final static String MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY = "Mixed CPM Protocol (Manual area only)";
 
     /** The combox box */
     private JComboBox comboBox;
@@ -42,7 +42,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener
         comboBoxPane.setBackground(Color.WHITE);
 
         String comboBoxItems[] =
-                { CPM_AUTO_DRIVER_SETUP_PANEL };
+                {MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY};
         comboBox = new JComboBox(comboBoxItems);
         comboBox.setEditable(false);
         comboBox.addItemListener(this);
@@ -55,7 +55,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener
         // add the parameter panels
         autoDriverOnlySetupPanel =
                 new MixedCPMManualDriverParamPanel(simSetup);
-        addParamPanel(autoDriverOnlySetupPanel, CPM_AUTO_DRIVER_SETUP_PANEL);
+        addParamPanel(autoDriverOnlySetupPanel, MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY);
 
         // add the combo box pane and cards pane
         setLayout(new BorderLayout());

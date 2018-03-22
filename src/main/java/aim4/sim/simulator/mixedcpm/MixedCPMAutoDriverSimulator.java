@@ -490,7 +490,6 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
-
             MixedCPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
 
             // Check if we've gone through a data collection line

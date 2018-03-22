@@ -90,8 +90,8 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     @Override
     public List<Road> getRoads() {
         HashSet<Road> set = new HashSet<>();
-        set.addAll(this.roads);
-        set.addAll(this.manualParkingArea.roads);
+        set.addAll(super.getRoads());
+        set.addAll(this.manualParkingArea.getRoads());
         // TODO ED When have automated section of car park, add here
         return new ArrayList<>(set);
     }
@@ -214,8 +214,8 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     public List<Junction> getJunctions() {
 
         HashSet<Junction> set = new HashSet<>();
-        set.addAll(this.junctions);
-        set.addAll(this.manualParkingArea.junctions);
+        set.addAll(super.getJunctions());
+        set.addAll(this.manualParkingArea.getJunctions());
         // TODO ED When have automated section of car park, add here
         return new ArrayList<>(set);
     }

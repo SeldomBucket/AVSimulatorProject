@@ -112,17 +112,17 @@ public class MixedCPMManualPilot extends BasicPilot{
      * Here, we treat the parking end point like a vehicle so use following distance.
      */
     public void dontPassParkingEndPoint(ParkingStatus currentParkingStatus){
-        /*if (currentParkingStatus == ParkingStatus.PARKING) {
+        if (currentParkingStatus == ParkingStatus.PARKING) {
             double stoppingDistance =
                     VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
                             vehicle.getSpec().getMaxDeceleration());
 
             double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
-
-            if (vehicle.distanceToParkingEndPoint() < followingDistance) {
+            double distanceToEndPoint = vehicle.distanceToParkingEndPoint();
+            if (distanceToEndPoint < followingDistance) {
                 vehicle.slowToStop();
             }
-        }*/
+        }
     }
 
     /**

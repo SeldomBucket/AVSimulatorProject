@@ -17,6 +17,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
 
@@ -162,11 +163,13 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
      * or null if not in a junction.
      */
     public Junction inJunction() {
-        if (map.getJunctions() == null){
+        List<Junction> junctions = map.getJunctions();
+        if (junctions == null){
             return null;
         }
-        for (Junction junction : map.getJunctions()){
-            if (intersectsArea(vehicle, junction.getArea())){
+        for (Junction junction : junctions){
+            Area area = junction.getArea();
+            if (intersectsArea(vehicle, area)){
                 return junction;
             }
         }
@@ -204,7 +207,11 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
     }
 
     public boolean isInStall(){
-        return currentLane == vehicle.getTargetStall().getLane();
+        try {
+            return currentLane == vehicle.getTargetStall().getLane();
+        }catch (NullPointerException ex){
+            return false;
+        }
     }
 
     @Override

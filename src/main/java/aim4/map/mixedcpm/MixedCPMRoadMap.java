@@ -11,10 +11,7 @@ import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
 
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public abstract class MixedCPMRoadMap implements RoadMap {
 
@@ -44,10 +41,11 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     // road connections
     /** The set of corners */
     protected List<Corner> corners = new ArrayList<Corner>();
-    /** The set of junctions. */
-    protected List<Junction> junctions = new ArrayList<Junction>();
     /**The set of intersections */
     protected List<SimpleIntersection> intersections = new ArrayList<SimpleIntersection>();
+
+    /** The set of junctions. */
+    private List<Junction> junctions = new ArrayList<Junction>();
 
     /**
      * Constructor for the MixedCPMRoadMap
@@ -221,7 +219,10 @@ public abstract class MixedCPMRoadMap implements RoadMap {
     // GETTERS
 
     public List<Road> getRoads() {
-        return roads;
+        HashSet<Road> set = new HashSet<>();
+        set.addAll(this.roads);
+        // TODO ED When have automated section of car park, add here
+        return new ArrayList<>(set);
     }
 
     public Rectangle2D getDimensions() {

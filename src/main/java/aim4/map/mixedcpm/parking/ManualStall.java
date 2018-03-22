@@ -41,8 +41,8 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
                 roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMinX();
                 roadEndXPosition = x + stallInfo.getLength();
             } else {
-                roadStartXPosition = x;
-                roadEndXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMaxX();
+                roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMaxX();
+                roadEndXPosition = x;
             }
             roadYPosition = y + stallInfo.getWidth() / 2;
 

@@ -33,7 +33,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
 
         carParkWidthSlider =
                 new LabeledSlider(0.0, 100.0,
-                        simSetup.getLaneWidth(),
+                        simSetup.getCarParkWidth(),
                         10.0, 1.0,
                         "Width of car park: %.1f meters",
                         "%.1f");
@@ -41,7 +41,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
 
         carParkHeightSlider =
                 new LabeledSlider(0.0, 100.0,
-                        simSetup.getLaneWidth(),
+                        simSetup.getCarParkHeight(),
                         10.0, 1.0,
                         "Height of car park: %.1f meters",
                         "%.1f");
