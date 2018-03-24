@@ -88,6 +88,20 @@ public class DriverUtil {
                     vehicle.getDriver().getCurrentLane().getSpeedLimit());
   }
 
+  /**
+   * Determine the minimum velocity at which the Vehicle should travel
+   * given the Lane in which it is.
+   *
+   * @param vehicle  the vehicle
+   * @return the minimum velocity at which the Vehicle should travel
+   *         given the Lane in which it is
+   */
+  public static double calculateMaxFeasibleReverseVelocity(VehicleDriverModel vehicle) {
+    // TODO: should remove this function
+    // Whichever's larger - speed limit or max velocity of the vehicle
+    return Math.max(vehicle.getSpec().getMinVelocity(),
+            -vehicle.getDriver().getCurrentLane().getSpeedLimit());
+  }
 
   /////////////////////////////////
   // CONSTRUCTORS

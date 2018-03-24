@@ -12,6 +12,8 @@ import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator.*;
 
+import java.awt.geom.Point2D;
+
 
 /**
  * An agent that pilots an AutoVehicleDriverModel autonomously. This agent
@@ -36,6 +38,13 @@ public class MixedCPMManualPilot extends BasicPilot{
      */
     public static final double TRAVERSING_LANE_CHANGE_LEAD_TIME = 1.5; // sec
 
+    /**
+     * The tolerance for the vehicle in the parking space - the vehicle should
+     * be no more than 0.5m either side of the centre line of the lane.
+     * {@value} meters;
+     */
+    public static final double TOLERANCE_FOR_PARKING = 0.5; // meters
+
     // ///////////////////////////////
     // PRIVATE FIELDS
     // ///////////////////////////////
@@ -47,6 +56,8 @@ public class MixedCPMManualPilot extends BasicPilot{
     private MixedCPMManualNavigator navigator;
 
     private Lane connectionDepartureLane;
+
+    private boolean reversingInParkingLane = false;
 
     // ///////////////////////////////
     // CONSTRUCTORS
@@ -92,6 +103,14 @@ public class MixedCPMManualPilot extends BasicPilot{
     }
 
     /**
+     * The simple throttle action.
+     */
+    public void simpleThrottleActionReverse() {
+        cruiseReverse();
+        dontHitVehicleInFront();
+    }
+
+    /**
      * Stop before hitting the car in front of us.
      *
      */
@@ -106,10 +125,70 @@ public class MixedCPMManualPilot extends BasicPilot{
         }
     }
 
+    public void parkInLane(ParkingStatus currentParkingStatus){
+        Point2D pointBetweenFrontWheels = this.getVehicle().gaugePointBetweenFrontWheels();
+        Point2D currentLaneEndPoint = this.driver.getCurrentLane().getEndPoint();
+        if (currentParkingStatus == ParkingStatus.PARKING) {
+
+            double stoppingDistance =
+                    VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
+                            vehicle.getSpec().getMaxDeceleration());
+            double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
+
+            // if we're at the end of the stall stack
+
+            if (frontOfVehicleNearEndOfLane() && !reversingInParkingLane) {
+                if (pointBetweenFrontWheels.getY() >
+                        currentLaneEndPoint.getY() + TOLERANCE_FOR_PARKING ||
+                        pointBetweenFrontWheels.getY() <
+                        currentLaneEndPoint.getY() - TOLERANCE_FOR_PARKING) {
+                    // reverse straight for a bit
+
+                    simpleThrottleActionReverse();
+                    reversingInParkingLane = true;
+                }
+            }
+            if (middleOfVehiclePastStartOfLane() && reversingInParkingLane) {
+                // Follow lane as normal
+                followCurrentLane();
+                simpleThrottleAction();
+                reversingInParkingLane = false;
+            }
+
+        }
+    }
+
+    public boolean frontOfVehicleNearEndOfLane(){
+        Point2D centreOfVehicle = this.getVehicle().gaugePosition();
+        Point2D currentLaneEndPoint = this.driver.getCurrentLane().getEndPoint();
+        if (vehicle.getTargetStall().getLane().getStartPoint().getX()
+                < vehicle.getTargetStall().getLane().getEndPoint().getX()){
+            // If start point on left of end point
+            return centreOfVehicle.getX() >= currentLaneEndPoint.getX()-MINIMUM_FOLLOWING_DISTANCE;
+        }else{
+            // If start point on right of end point
+            return centreOfVehicle.getX() <= currentLaneEndPoint.getX()+MINIMUM_FOLLOWING_DISTANCE;
+        }
+    }
+
+    public boolean middleOfVehiclePastStartOfLane(){
+        Point2D pointBetweenFrontWheels = this.getVehicle().gaugePointBetweenFrontWheels();
+        Point2D currentLaneStartPoint = this.driver.getCurrentLane().getStartPoint();
+        if (vehicle.getTargetStall().getLane().getStartPoint().getX()
+                < vehicle.getTargetStall().getLane().getEndPoint().getX()){
+            // If start point on left of end point
+            return pointBetweenFrontWheels.getX() <= currentLaneStartPoint.getX();
+        }else{
+            // If start point on right of end point
+            return pointBetweenFrontWheels.getX() >= currentLaneStartPoint.getX();
+        }
+    }
+
     /**
      * If the end of the parking section is close, we need to slow to a stop
      * If we are PARKING.
      * Here, we treat the parking end point like a vehicle so use following distance.
+     * Makes sure the vehicle doesn't go past the end of the lane
      */
     public void dontPassParkingEndPoint(ParkingStatus currentParkingStatus){
         if (currentParkingStatus == ParkingStatus.PARKING) {
@@ -123,6 +202,15 @@ public class MixedCPMManualPilot extends BasicPilot{
                 vehicle.slowToStop();
             }
         }
+    }
+
+    public boolean isParked(){
+        double stoppingDistance =
+                VehicleUtil.calcDistanceToStop(vehicle.gaugeVelocity(),
+                        vehicle.getSpec().getMaxDeceleration());
+        double followingDistance = stoppingDistance + MINIMUM_FOLLOWING_DISTANCE;
+        double distanceToEndPoint = vehicle.distanceToParkingEndPoint();
+        return getVehicle().gaugeVelocity() == 0 && distanceToEndPoint < followingDistance;
     }
 
     /**

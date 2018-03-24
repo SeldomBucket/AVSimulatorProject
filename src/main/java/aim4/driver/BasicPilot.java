@@ -158,12 +158,30 @@ public abstract class BasicPilot {
     getVehicle().turnTowardPoint(aimPoint);
   }
 
+  private void reverseInCurrentLane(){
+
+    Driver driver = getVehicle().getDriver();
+
+    Point2D aimPoint;
+
+
+
+  }
+
   /**
    * Maintain a cruising speed.
    */
   protected void cruise() {
     getVehicle().setTargetVelocityWithMaxAccel(
         DriverUtil.calculateMaxFeasibleVelocity(getVehicle()));
+  }
+
+  /**
+   * Maintain a cruising in reverse.
+   */
+  protected void cruiseReverse() {
+    getVehicle().setTargetVelocityWithMaxAccel(
+            -DriverUtil.calculateMaxFeasibleReverseVelocity(getVehicle()));
   }
 
 

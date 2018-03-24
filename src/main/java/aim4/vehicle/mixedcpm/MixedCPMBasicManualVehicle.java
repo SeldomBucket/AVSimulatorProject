@@ -17,6 +17,8 @@ import aim4.vehicle.VehicleSpec;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import static java.lang.Math.abs;
+
 public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
 
     /////////////////////////////////
@@ -244,6 +246,12 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
         Point2D vehiclePosition = gaugePosition();
         return vehiclePosition.distance(endPoint);
+    }
+
+    public double horizontalDistanceToStallEndPoint(){
+        Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
+        Point2D vehiclePosition = gaugePosition();
+        return abs(vehiclePosition.getX() - endPoint.getX());
     }
 
     /**

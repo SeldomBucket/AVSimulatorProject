@@ -333,7 +333,7 @@ public class MixedCPMMapUtil {
                     if (Util.random.nextDouble() < spawnProbability) {
                         int i = Util.randomIndex(proportion);
                         VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
-                        double parkingTime = generateParkingTime();
+                        double parkingTime = Double.MAX_VALUE;//generateParkingTime(); // TODO ED use random times again
                         result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                                 vehicleSpec,
                                 parkingTime));

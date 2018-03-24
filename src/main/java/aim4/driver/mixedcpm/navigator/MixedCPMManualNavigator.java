@@ -41,9 +41,9 @@ public class MixedCPMManualNavigator {
                     // Check the next lane to drive on
 
                     Lane nextLane = driver.getNextLane();
-                    if (nextLane == null) {
+                    /*if (nextLane == null) {
                         throw new RuntimeException("Search for next lane failed unexpectedly");
-                    }
+                    }*/
                     if (connection.getExitLanes().contains(nextLane)) {
                         // Want to move to next lane if it's connected to this junction
                         return nextLane;

@@ -8,7 +8,6 @@ import aim4.driver.mixedcpm.pilot.MixedCPMManualPilot;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
-import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
@@ -85,11 +84,15 @@ public class MixedCPMManualCoordinator implements Coordinator {
          */
         TRAVERSING_INTERSECTION,
         /**
-         * The agent is parking in a parking stall. More or less the same
-         * behaviour as DEFAULT_DRIVING_BEHAVIOUR, but it ensures that
-         * it doesn't pass the end point of the stall.
+         * The agent is parking in a parking stall. Makes sure it's in line
+         * with the parking stall, and doesn't move past the end of it.
          */
         PARKING_IN_MANUAL_STALL,
+        /**
+         * The agent is parked in a stall. It doesn't move until it needs
+         * to exit.
+         */
+        PARKED_IN_MANUAL_STALL,
         /**
          * The agent is exiting a parking stall (reversing out of it).
          */
@@ -274,7 +277,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 new MixedCPMManualCoordinator.TraversingIntersectionStateHandler());
 
         stateHandlers.put(MixedCPMManualCoordinator.DrivingState.PARKING_IN_MANUAL_STALL,
-                new MixedCPMManualCoordinator.TraversingParkingLaneStateHandler());
+                new TraversingManualStallStateHandler());
 
         stateHandlers.put(MixedCPMManualCoordinator.DrivingState.TERMINAL_STATE,
                 terminalStateHandler);
@@ -323,7 +326,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
             }
             // If on EXIT or RELOCATING, we want default driving behaviour
             // so vehicle will drive past the parking end point
-            if (driver.getCurrentLane() instanceof LineSegmentLane
+            if (driver.isInStall()
                     && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING) {
                 System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
                 setDrivingState(MixedCPMManualCoordinator.DrivingState.PARKING_IN_MANUAL_STALL);
@@ -437,13 +440,13 @@ public class MixedCPMManualCoordinator implements Coordinator {
     /**
      * The state handler for the traversing parking lane state.
      */
-    private class TraversingParkingLaneStateHandler implements MixedCPMManualCoordinator.StateHandler {
+    private class TraversingManualStallStateHandler implements MixedCPMManualCoordinator.StateHandler {
         /**
          * {@inheritDoc}
          */
         @Override
         public boolean perform() {
-            // First check that we are still on a parking lane
+            // First check that we are still meant to be in a manual stall
             assert(driver != null);
             if (//!driver.isInStall() ||
                     parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT){
@@ -463,12 +466,15 @@ public class MixedCPMManualCoordinator implements Coordinator {
             if (vehicle.getTargetStall().getRoad().getOnlyLane() ==
                     driver.getCurrentLane()){
                 System.out.println("Reached target parking lane");
+                parkingStatus = ParkingStatus.PARKING;
                 //vehicle.clearTargetStall();
             }
-            // keep driving on the parking lane
-            pilot.followCurrentLane();
-            pilot.simpleThrottleAction();
+            // park
+            pilot.parkInLane(parkingStatus);
             pilot.dontPassParkingEndPoint(parkingStatus);
+            if(pilot.isParked()){
+                parkingStatus = ParkingStatus.PARKED;
+            }
             return false;
         }
     }

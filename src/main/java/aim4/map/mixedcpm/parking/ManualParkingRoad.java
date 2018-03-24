@@ -41,6 +41,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
         this.roadName = road.getName();
         centreRoad = road;
         Road topRoad = parkingArea.getRoadByName("topRoad");
+        this.parkingArea = parkingArea;
         stallStackPair =
                 new StallStack[] {  new StallStack( road.getOnlyLane().getShape().getBounds2D().getMinX()-firstStackLength,
                                                     topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
@@ -57,7 +58,6 @@ public class ManualParkingRoad implements IManualParkingRoad {
                                                     this,
                                                     this.parkingArea)
                 };
-        this.parkingArea = parkingArea;
         this.parkingArea.update();
     }
 
