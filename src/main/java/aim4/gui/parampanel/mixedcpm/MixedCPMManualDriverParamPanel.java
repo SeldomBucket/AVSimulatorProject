@@ -53,7 +53,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.1f meters",
                         "%.1f");
-        add(laneWidthSlider);
+        //add(laneWidthSlider);
 
 
         trafficRateSlider =

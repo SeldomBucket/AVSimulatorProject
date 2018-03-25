@@ -66,7 +66,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
      * @return list of parking spaces
      */
     public ArrayList<ManualStall> getManualStalls(){
-        ArrayList<ManualStall> returnList = stallStackPair[0].getManualStalls();
+        ArrayList<ManualStall> returnList = new ArrayList<>(stallStackPair[0].getManualStalls());
         returnList.addAll(stallStackPair[1].getManualStalls());
         return returnList;
     }
@@ -150,10 +150,10 @@ public class ManualParkingRoad implements IManualParkingRoad {
         return null;
     }
 
-    public ManualStall getManualStallByID(UUID stallID){
-        ManualStall returnStall = stallStackPair[0].getManualStallByID(stallID);
+    public ManualStall getManualStallByName(String stallName){
+        ManualStall returnStall = stallStackPair[0].getManualStallByName(stallName);
         if (returnStall == null){
-            returnStall = stallStackPair[1].getManualStallByID(stallID);
+            returnStall = stallStackPair[1].getManualStallByName(stallName);
         }
         return returnStall;
     }

@@ -219,7 +219,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     }
 
     public void clearI2Vinbox() {
-        System.out.println("I2V inbox cleared");
+        //System.out.println("I2V inbox cleared");
         I2Vinbox = null;
     }
 

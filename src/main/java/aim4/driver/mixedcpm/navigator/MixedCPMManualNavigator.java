@@ -46,6 +46,7 @@ public class MixedCPMManualNavigator {
                     }*/
                     if (connection.getExitLanes().contains(nextLane)) {
                         // Want to move to next lane if it's connected to this junction
+                        System.out.println("Vehicle " + vehicle.getVIN() + " exiting junction on next lane in list");
                         return nextLane;
                     } else {
                         // Otherwise we want to stay on the same road we're on

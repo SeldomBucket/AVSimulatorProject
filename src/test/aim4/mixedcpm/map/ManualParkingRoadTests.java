@@ -105,11 +105,11 @@ public class ManualParkingRoadTests {
         double stallRoadWidth = stallRoad.getOnlyLane().getWidth();
 
         // Check manual stall road initialised properly
-        assertEquals(manualParkingRoad.getStallStackPair()[0].getBounds().getMinX(),
+        assertEquals(manualParkingRoad.getCentreRoad().getOnlyLane().getShape().getBounds().getMaxX(),
                         stallRoad.getOnlyLane().getStartPoint().getX(),0);
         assertEquals(manualParkingRoad.getStallStackPair()[0].getBounds().getMinY() + stallRoadWidth/2,
                         stallRoad.getOnlyLane().getStartPoint().getY(),0);
-        assertEquals(manualParkingRoad.getCentreRoad().getOnlyLane().getShape().getBounds().getMaxX(),
+        assertEquals(manualParkingRoad.getStallStackPair()[0].getBounds().getMinX(),
                         stallRoad.getOnlyLane().getEndPoint().getX(),0);
         assertEquals(manualParkingRoad.getStallStackPair()[0].getBounds().getMinY() + stallRoadWidth/2,
                         stallRoad.getOnlyLane().getEndPoint().getY(),0);
@@ -173,7 +173,7 @@ public class ManualParkingRoadTests {
         assertEquals(1, junctions.size());
         assertTrue(junctions.contains(stallJunction));
 
-        manualParkingRoad.getStallStackPair()[0].removeManualStall(testStall.getStallID());
+        manualParkingRoad.getStallStackPair()[0].removeManualStall(testStall.getName());
 
         junctions = manualParkingRoad.getJunctions();
 
@@ -240,7 +240,7 @@ public class ManualParkingRoadTests {
      */
     @Test
     public void testAddManualStallsSearchParameterExactSize(){
-        double stallWidth = manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()/3;
+        double stallWidth = (manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()-1)/3;
         StallInfo stallInfoExactlyCorrect = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
         StallInfo stallInfoBothIncorrect = new StallInfo(stallWidth-1, stallLength-1, StallType.NoPaddingTest);
         StallInfo stallInfoLengthCorrect = new StallInfo(stallWidth-1, stallLength, StallType.NoPaddingTest);

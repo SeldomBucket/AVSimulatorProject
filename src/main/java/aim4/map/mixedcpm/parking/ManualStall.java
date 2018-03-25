@@ -16,11 +16,12 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
     //TODO ED ManualStall
 
     /** The ID of this manual stall */
-    private UUID stallID;
+    private String stallName;
     /** The stall stack this stall belongs to */
     private StallStack stallStack;
     private Rectangle2D boundingBox;
     private Road stallRoad;
+    private IManualParkingRoad parkingRoad;
     private Junction junction;
 
     /**
@@ -30,9 +31,10 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
      */
     ManualStall(double x, double y, StallInfo stallInfo, StallStack stallStack, IManualParkingRoad parkingRoad, RoadMap map) {
         super(stallInfo);
-        stallID = UUID.randomUUID();
+        stallName = "Stall:" + UUID.randomUUID();
         boundingBox = new Rectangle2D.Double(x,y,stallInfo.getLength(), stallInfo.getWidth());
         this.stallStack = stallStack;
+        this.parkingRoad = parkingRoad;
         Road centreRoad = parkingRoad.getCentreRoad();
         if (centreRoad != null) {
             boolean roadIsToLeft = parkingRoad.getStartPoint().getX() < x;
@@ -54,7 +56,7 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
                     3);
             ArrayList<Lane> lanes = new ArrayList<>();
             lanes.add(lane);
-            this.stallRoad = new Road(stallID.toString(), lanes, map);
+            this.stallRoad = new Road(stallName, lanes, map);
 
             List<Road> roadsForJunction = new ArrayList<Road>(2);
             roadsForJunction.add(this.stallRoad);
@@ -80,12 +82,9 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
     public double getMaxY(){
         return boundingBox.getMaxY();
     }
-    /**
-     * gets the ID of this stall
-     * @return the ID
-     */
-    public UUID getStallID() {
-        return stallID;
+
+    public String getName(){
+        return stallName;
     }
 
     public Road getRoad(){
@@ -101,7 +100,11 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
     }
 
     public void delete(){
-        stallStack.removeManualStall(this.stallID);
+        stallStack.removeManualStall(this.stallName);
+    }
+
+    public IManualParkingRoad getParkingRoad(){
+        return this.parkingRoad;
     }
 
     @Override

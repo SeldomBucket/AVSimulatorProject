@@ -382,7 +382,7 @@ public class ManualParkingAreaTest {
 
         assertEquals(stallLength1, lastStallStack.getBounds().getWidth(), 0);
 
-        testArea.removeManualStall(testStall1.getStallID());
+        testArea.removeManualStall(testStall1.getName());
 
         assertEquals(0, lastStallStack.getManualStalls().size(), 0);
         assertEquals(0, lastStallStack.getBounds().getWidth(), 0);
@@ -404,7 +404,7 @@ public class ManualParkingAreaTest {
 
         assertEquals(stallLength, stallStack.getBounds().getWidth(), 0);
 
-        testArea.removeManualStall(testStall.getStallID());
+        testArea.removeManualStall(testStall.getName());
 
         assertEquals(0, testArea.getParkingRoads().size());
     }

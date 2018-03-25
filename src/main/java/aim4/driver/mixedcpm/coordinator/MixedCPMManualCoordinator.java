@@ -12,6 +12,7 @@ import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.util.EnumMap;
+import java.util.HashSet;
 
 public class MixedCPMManualCoordinator implements Coordinator {
 
@@ -154,6 +155,13 @@ public class MixedCPMManualCoordinator implements Coordinator {
      */
     private EnumMap<MixedCPMManualCoordinator.DrivingState,MixedCPMManualCoordinator.StateHandler> stateHandlers;
 
+    private HashSet<Junction> junctionsAlreadyTraversed;
+
+    /**
+     * Whether we've printed the junction to the console already
+     */
+    private boolean debugPrintedThisJunctionAlready = false;
+
     /////////////////////////////////
     // CONSTRUCTORS
     /////////////////////////////////
@@ -178,6 +186,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
         setDrivingState(MixedCPMManualCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         // Set the initial parking status of the coordinator
         setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.WAITING);
+        junctionsAlreadyTraversed = new HashSet<>();
     }
 
     @Override
@@ -210,11 +219,11 @@ public class MixedCPMManualCoordinator implements Coordinator {
         if (this.vehicle.getTargetStall() == null) {
             if ((I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.WAITING)) {
                 // We have been granted access to the car park and know where to park
-                System.out.println("Changing status to PARKING.");
+                //System.out.println("Changing status to PARKING.");
                 setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.PARKING);
                 vehicle.setTargetStall(I2Vinbox);
                 vehicle.clearI2Vinbox();
-                System.out.println("Finding space on " + I2Vinbox.getRoad().getName());
+                System.out.println("Vehicle " + vehicle.getVIN() + " finding " + I2Vinbox.getRoad().getName() + " on parking lane " + I2Vinbox.getParkingRoad().getName());
                 vehicle.setHasEntered();
                 driver.updatePathToTargetStall();
             }
@@ -306,33 +315,34 @@ public class MixedCPMManualCoordinator implements Coordinator {
             // First check if we are in a Connection or ParkingLane.
             // If so, then switch to the relevant traversing mode.
             assert driver != null;
-            if (driver.inCorner() != null){
-                System.out.println("Entering corner.");
-                currentCorner = driver.inCorner();
-                vehicle.updateEstimatedDistanceTravelled(currentCorner);
-                setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_CORNER);
-            }
-            if (driver.inJunction() != null){
-                System.out.println("Entering junction.");
-                currentJunction = driver.inJunction();
-                vehicle.updateEstimatedDistanceTravelled(currentJunction);
-                setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_JUNCTION);
-            }
-            if (driver.inIntersection() != null){
-                System.out.println("Entering intersection.");
-                SimpleIntersection currentIntersection = driver.inIntersection();
-                vehicle.updateEstimatedDistanceTravelled(currentIntersection);
-                setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_INTERSECTION);
-            }
-            // If on EXIT or RELOCATING, we want default driving behaviour
-            // so vehicle will drive past the parking end point
+
             if (driver.isInStall()
                     && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING) {
-                System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
+                System.out.println("Vehicle " + vehicle.getVIN() + " parking in " + vehicle.getTargetStall().getName());
                 setDrivingState(MixedCPMManualCoordinator.DrivingState.PARKING_IN_MANUAL_STALL);
+            } else {
+                if (driver.inCorner() != null){
+                    System.out.println("Vehicle " + vehicle.getVIN() + " Entering corner.");
+                    currentCorner = driver.inCorner();
+                    vehicle.updateEstimatedDistanceTravelled(currentCorner);
+                    setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_CORNER);
+                }
+                if (driver.inJunction() != null){
+                    currentJunction = driver.inJunction();
+                    System.out.println("Vehicle " + vehicle.getVIN() + " Entering junction with roads " + currentJunction.getRoads().toString());
+                    junctionsAlreadyTraversed.add(currentJunction);
+                    vehicle.updateEstimatedDistanceTravelled(currentJunction);
+                    setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_JUNCTION);
+                }
+                if (driver.inIntersection() != null){
+                    System.out.println("Vehicle " + vehicle.getVIN() + " Entering intersection.");
+                    SimpleIntersection currentIntersection = driver.inIntersection();
+                    vehicle.updateEstimatedDistanceTravelled(currentIntersection);
+                    setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_INTERSECTION);
+                }
+                pilot.followCurrentLane();
+                pilot.simpleThrottleAction();
             }
-            pilot.followCurrentLane();
-            pilot.simpleThrottleAction();
             return false;
         }
     }
@@ -386,19 +396,32 @@ public class MixedCPMManualCoordinator implements Coordinator {
             assert driver != null;
             Junction junction = driver.inJunction();
             if (junction == null) {
-                System.out.println("Driver is now out of the junction.");
+                debugPrintedThisJunctionAlready = false;
                 // The vehicle is out of the junction.
-                // Go back to default driving behaviour
-                currentJunction = null;
+                // Go back to default driving behaviour if not in a manual stall
+                if (driver.getCurrentLane() == vehicle.getTargetStall().getLane())
+                {
+                    System.out.println("Vehicle " + vehicle.getVIN() + " has exited junction and is parking in " + vehicle.getTargetStall().getName());
+                    setDrivingState(DrivingState.PARKING_IN_MANUAL_STALL);
+                } else {
+                    System.out.println("Vehicle " + vehicle.getVIN() + " is now out of the junction on road " + driver.getCurrentLane().getId());
+                    setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                }
                 pilot.clearDepartureLane();
-                setDrivingState(MixedCPMManualCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                currentJunction = null;
             } else {
-                // if in a different junction, need to get a new departure lane
-                // and estimate the distance travelled.
-                if (junction != currentJunction) {
+                // if in a different junction and we're not parking, need to get
+                // a new departure lane and estimate the distance travelled.
+                if (currentJunction != junction
+                        && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane()) {
+                    System.out.println("Vehicle " + vehicle.getVIN() + " in new junction with roads " + junction.getRoads().toString());
                     currentJunction = junction;
                     vehicle.updateEstimatedDistanceTravelled(currentJunction);
                     pilot.clearDepartureLane();
+                }
+                if (!debugPrintedThisJunctionAlready){
+                    System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
+                    debugPrintedThisJunctionAlready = true;
                 }
                 // do nothing, keep going through the junction
                 pilot.takeSteeringActionForTraversing(junction, parkingStatus);
@@ -465,7 +488,6 @@ public class MixedCPMManualCoordinator implements Coordinator {
             }
             if (vehicle.getTargetStall().getRoad().getOnlyLane() ==
                     driver.getCurrentLane()){
-                System.out.println("Reached target parking lane");
                 parkingStatus = ParkingStatus.PARKING;
                 //vehicle.clearTargetStall();
             }
@@ -473,6 +495,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
             pilot.parkInLane(parkingStatus);
             pilot.dontPassParkingEndPoint(parkingStatus);
             if(pilot.isParked()){
+                System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
                 parkingStatus = ParkingStatus.PARKED;
             }
             return false;
@@ -498,6 +521,10 @@ public class MixedCPMManualCoordinator implements Coordinator {
      */
     public MixedCPMManualCoordinator.ParkingStatus getParkingStatus() {
         return parkingStatus;
+    }
+
+    public boolean hasBeenInJunctionAlready(Junction junction) {
+        return junctionsAlreadyTraversed.contains(junction);
     }
 
     private void setParkingStatus(MixedCPMManualCoordinator.ParkingStatus parkingStatus) {

@@ -64,7 +64,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     public ManualStall findSpace(StallInfo stallInfo){
         ManualStall tempStall;
 
-        String roadName = UUID.randomUUID().toString();
+        String roadName = "ParkingRoad:" + UUID.randomUUID().toString();
 
         // Find a space for the vehicle
         // Search parkingRoads for a suitable space and add if possible
@@ -79,7 +79,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
 
-        //        First search for stack with correct height & same ideal width
+        //        First search for stack with correct length & same ideal width
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
                                    ManualParkingRoad.SearchParameter.exactSize);
@@ -92,7 +92,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
 
-        //        Next, search for stack with correct height only
+        //        Next, search for stack with correct length only
         for (ManualParkingRoad road: parkingRoads) {
             tempStall = road.findNewSpace(stallInfo,
                                ManualParkingRoad.SearchParameter.correctLength);
@@ -196,17 +196,17 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         updateLastParkingLane();
     }
 
-    public void removeManualStall(UUID stallID){
-        ManualStall stallToRemove = getManualStallByID(stallID);
+    public void removeManualStall(String stallName){
+        ManualStall stallToRemove = getManualStallByName(stallName);
         if(stallToRemove != null){
             stallToRemove.delete();
         }
     }
 
-    public ManualStall getManualStallByID(UUID stallID){
+    public ManualStall getManualStallByName(String stallName){
         ManualStall returnStall;
         for (ManualParkingRoad parkingRoad : parkingRoads){
-            returnStall = parkingRoad.getManualStallByID(stallID);
+            returnStall = parkingRoad.getManualStallByName(stallName);
             if (returnStall != null){
                 return returnStall;
             }

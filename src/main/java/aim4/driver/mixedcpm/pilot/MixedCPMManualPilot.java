@@ -152,6 +152,7 @@ public class MixedCPMManualPilot extends BasicPilot{
                 // Follow lane as normal
                 followCurrentLane();
                 simpleThrottleAction();
+                dontPassParkingEndPoint(currentParkingStatus);
                 reversingInParkingLane = false;
             }
 

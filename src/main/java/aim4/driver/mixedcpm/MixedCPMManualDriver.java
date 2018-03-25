@@ -17,6 +17,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Area;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
@@ -163,15 +164,30 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
      * or null if not in a junction.
      */
     public Junction inJunction() {
-        List<Junction> junctions = map.getJunctions();
-        if (junctions == null){
-            return null;
-        }
-        for (Junction junction : junctions){
+        List<Junction> mapJunctions = map.getJunctions();//.getRoad(getCurrentLane().getId())
+        ArrayList<Junction> junctionsBeenInBefore = new ArrayList<>();
+        ArrayList<Junction> newJunction = new ArrayList<>();
+        for (Junction junction : mapJunctions){
             Area area = junction.getArea();
             if (intersectsArea(vehicle, area)){
-                return junction;
+                    if(coordinator.hasBeenInJunctionAlready(junction)){
+                        junctionsBeenInBefore.add(junction);
+                    }else{
+                        newJunction.add(junction);
+                    }
             }
+        }
+        if (newJunction.size() == 0 && junctionsBeenInBefore.size() != 0) {
+            // i.e. have been in all the junctions before
+            return junctionsBeenInBefore.get(0);
+        } else if(newJunction.size() != 0) {
+            for (Junction junction:newJunction){
+                if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())){
+                    // prioritise a junction with your parking space in it
+                    return junction;
+                }
+            }
+            return newJunction.get(0);
         }
         return null;
     }

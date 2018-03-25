@@ -42,7 +42,7 @@ public class StallStack {
                       RoadMap map){
         stalls = new ArrayList<>();
         this.lastStallStack = lastStallStack;
-        boundingBox = new Rectangle2D.Double(x,y+2,maxStallLength,stallStackHeight-2);
+        boundingBox = new Rectangle2D.Double(x,+1,maxStallLength,stallStackHeight-1);
         this.parkingRoad = parkingRoad;
         this.roadOnLeft = parkingRoad.getStartPoint().getX() < x;
         this.map = map;
@@ -165,9 +165,9 @@ public class StallStack {
 
     /**
      * Removes a manual stall, and if this is the last stall stack, sets its length to 0
-     * @param stallID the stall ID of the stall to be removed
+     * @param stallName the name of the stall to be removed
      */
-    public void removeManualStall(UUID stallID) {
+    public void removeManualStall(String stallName) {
         if (lastStallStack) {
             // If this is the last space in the last stall stack, set the length of this stall stack to 0
 
@@ -178,7 +178,7 @@ public class StallStack {
             idealStallWidth = 0;
         }
 
-        ManualStall stallToRemove = getManualStallByID(stallID);
+        ManualStall stallToRemove = getManualStallByName(stallName);
 
         if (stallToRemove != null) {
             if (stallToRemove.getJunction() != null){
@@ -196,9 +196,9 @@ public class StallStack {
         }
     }
 
-    public ManualStall getManualStallByID(UUID stallID){
+    public ManualStall getManualStallByName(String stallName){
         for (ManualStall stall:stalls){
-            if (stall.getStallID() == stallID) {
+            if (stall.getName() == stallName) {
                 return stall;
             }
         }

@@ -58,7 +58,7 @@ public class StatusMonitor {
         }
 
         // Allocate this parking lane to the vehicle by sending message
-        System.out.println("Status monitor sending parking lane to vehicle.");
+        //System.out.println("Status monitor sending parking lane to vehicle.");
         sendParkingLaneMessage(vehicle, allocatedStall);
 
         // Register the vehicle with the StatusMonitor, along with the

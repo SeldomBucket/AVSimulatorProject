@@ -359,7 +359,7 @@ public class CPMCoordinator implements Coordinator {
             // so vehicle will drive past the parking end point
             if (driver.getCurrentLane() instanceof ParkingLane
                     && parkingStatus == ParkingStatus.PARKING) {
-                System.out.println("Traversing Parking Lane" + driver.getCurrentLane());
+                System.out.println("Parking in stall " + ((ParkingLane) driver.getCurrentLane()).getRoadName());
                 setDrivingState(DrivingState.TRAVERSING_PARKING_LANE);
             }
             pilot.followCurrentLane();

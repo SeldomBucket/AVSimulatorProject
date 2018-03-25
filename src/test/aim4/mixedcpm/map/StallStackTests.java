@@ -231,7 +231,7 @@ public class StallStackTests {
         ManualStall testStall = existingLengthStallStack.addManualStall(stallInfo);
 
         assertTrue(existingLengthStallStack.getManualStalls().contains(testStall));
-        existingLengthStallStack.removeManualStall(testStall.getStallID());
+        existingLengthStallStack.removeManualStall(testStall.getName());
         assertFalse(existingLengthStallStack.getManualStalls().contains(testStall));
 
     }
@@ -248,7 +248,7 @@ public class StallStackTests {
         existingLengthStallStack.addManualStall(stallInfo);
 
         // Create gap
-        existingLengthStallStack.removeManualStall(stallToRemove.getStallID());
+        existingLengthStallStack.removeManualStall(stallToRemove.getName());
 
         ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfo);
 
@@ -275,8 +275,8 @@ public class StallStackTests {
         existingLengthStallStack.addManualStall(stallInfo);
 
         // Create gap
-        existingLengthStallStack.removeManualStall(stallToRemove0.getStallID());
-        existingLengthStallStack.removeManualStall(stallToRemove1.getStallID());
+        existingLengthStallStack.removeManualStall(stallToRemove0.getName());
+        existingLengthStallStack.removeManualStall(stallToRemove1.getName());
 
         ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfo);
 
@@ -305,7 +305,7 @@ public class StallStackTests {
         existingLengthStallStack.addManualStall(stallInfo);
 
         // Create gap
-        existingLengthStallStack.removeManualStall(stallToRemove0.getStallID());
+        existingLengthStallStack.removeManualStall(stallToRemove0.getName());
 
         ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfoTooWide);
 
