@@ -204,10 +204,11 @@ public class MixedCPMManualCoordinator implements Coordinator {
     private void checkTimeToExit() {
         if (vehicle.getTimeUntilExit() <= 0
                 && parkingStatus != MixedCPMManualCoordinator.ParkingStatus.EXIT) {
-            System.out.println("Parking time has elapsed, " +
+            // TODO ED Exiting car park
+            /*System.out.println("Parking time has elapsed, " +
                     "setting parking status to EXIT.");
             parkingStatus = MixedCPMManualCoordinator.ParkingStatus.EXIT;
-            drivingState = MixedCPMManualCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR;
+            drivingState = MixedCPMManualCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR;*/
         }
     }
 
@@ -286,7 +287,10 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 new MixedCPMManualCoordinator.TraversingIntersectionStateHandler());
 
         stateHandlers.put(MixedCPMManualCoordinator.DrivingState.PARKING_IN_MANUAL_STALL,
-                new TraversingManualStallStateHandler());
+                new ParkingInManualStallStateHandler());
+
+        stateHandlers.put(DrivingState.PARKED_IN_MANUAL_STALL,
+                new ParkedInManualStallStateHandler());
 
         stateHandlers.put(MixedCPMManualCoordinator.DrivingState.TERMINAL_STATE,
                 terminalStateHandler);
@@ -461,9 +465,37 @@ public class MixedCPMManualCoordinator implements Coordinator {
     }
 
     /**
-     * The state handler for the traversing parking lane state.
+     * The state handler for the traversing manual stall state.
      */
-    private class TraversingManualStallStateHandler implements MixedCPMManualCoordinator.StateHandler {
+    private class ParkingInManualStallStateHandler implements MixedCPMManualCoordinator.StateHandler {
+        /**
+         * {@inheritDoc}
+         */
+        @Override
+        public boolean perform() {
+            // First check that we are still meant to be in a manual stall
+            assert(driver != null);
+            if (vehicle.getTargetStall().getRoad().getOnlyLane() ==
+                    driver.getCurrentLane()){
+                parkingStatus = ParkingStatus.PARKING;
+                //vehicle.clearTargetStall();
+            }
+            // park
+            pilot.parkInLane(parkingStatus);
+            pilot.dontPassParkingEndPoint(parkingStatus);
+            if(pilot.linedUpWithStall()){
+                System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
+                parkingStatus = ParkingStatus.PARKED;
+                setDrivingState(DrivingState.PARKED_IN_MANUAL_STALL);
+            }
+            return false;
+        }
+    }
+
+    /**
+     * The state handler for the parked in manual stall state.
+     */
+    private class ParkedInManualStallStateHandler implements MixedCPMManualCoordinator.StateHandler {
         /**
          * {@inheritDoc}
          */
@@ -492,12 +524,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 //vehicle.clearTargetStall();
             }
             // park
-            pilot.parkInLane(parkingStatus);
             pilot.dontPassParkingEndPoint(parkingStatus);
-            if(pilot.isParked()){
-                System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
-                parkingStatus = ParkingStatus.PARKED;
-            }
             return false;
         }
     }

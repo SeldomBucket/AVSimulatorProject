@@ -23,6 +23,7 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
     private Road stallRoad;
     private IManualParkingRoad parkingRoad;
     private Junction junction;
+    private boolean isToLeftOfParkingRoad;
 
     /**
      * Constructor for ManualStall
@@ -37,14 +38,14 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
         this.parkingRoad = parkingRoad;
         Road centreRoad = parkingRoad.getCentreRoad();
         if (centreRoad != null) {
-            boolean roadIsToLeft = parkingRoad.getStartPoint().getX() < x;
+            this.isToLeftOfParkingRoad = x < parkingRoad.getStartPoint().getX();
             double roadStartXPosition, roadYPosition, roadEndXPosition;
-            if (roadIsToLeft) {
-                roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMinX();
-                roadEndXPosition = x + stallInfo.getLength();
-            } else {
+            if (isToLeftOfParkingRoad) {
                 roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMaxX();
                 roadEndXPosition = x;
+            } else {
+                roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMinX();
+                roadEndXPosition = x + stallInfo.getLength();
             }
             roadYPosition = y + stallInfo.getWidth() / 2;
 
@@ -53,7 +54,7 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
                     roadEndXPosition,
                     roadYPosition,
                     stallInfo.getWidth(),
-                    3);
+                    1);
             ArrayList<Lane> lanes = new ArrayList<>();
             lanes.add(lane);
             this.stallRoad = new Road(stallName, lanes, map);
@@ -97,6 +98,10 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
 
     public Junction getJunction(){
         return junction;
+    }
+
+    public boolean isLeftOfParkingRoad(){
+        return isToLeftOfParkingRoad;
     }
 
     public void delete(){
