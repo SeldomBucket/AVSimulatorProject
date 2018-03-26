@@ -97,10 +97,10 @@ public class DriverUtil {
    *         given the Lane in which it is
    */
   public static double calculateMaxFeasibleReverseVelocity(VehicleDriverModel vehicle) {
-    // TODO: should remove this function
-    // Whichever's larger - speed limit or max velocity of the vehicle
-    return Math.max(vehicle.getSpec().getMinVelocity(),
-            -vehicle.getDriver().getCurrentLane().getSpeedLimit());
+    // Whichever's larger - reverse speed limit or max reverse (min) velocity of the vehicle
+    double minVelocity = vehicle.getSpec().getMinVelocity();
+    double maxReverseSpeedLimit = -vehicle.getDriver().getCurrentLane().getSpeedLimit();
+    return Math.max(minVelocity,maxReverseSpeedLimit);
   }
 
   /////////////////////////////////

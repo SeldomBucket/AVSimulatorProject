@@ -42,7 +42,7 @@ public class StallStack {
                       RoadMap map){
         stalls = new ArrayList<>();
         this.lastStallStack = lastStallStack;
-        boundingBox = new Rectangle2D.Double(x,+1,maxStallLength,stallStackHeight-1);
+        boundingBox = new Rectangle2D.Double(x,y,maxStallLength,stallStackHeight);
         this.parkingRoad = parkingRoad;
         this.roadOnLeft = parkingRoad.getStartPoint().getX() < x;
         this.map = map;

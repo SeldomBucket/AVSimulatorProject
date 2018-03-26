@@ -134,7 +134,7 @@ public class ManualParkingRoadTests {
         StallInfo stallInfo1 = new StallInfo(stallWidth1, stallLength1, StallType.NoPaddingTest);
 
         manualParkingRoad.findNewSpace(stallInfo0, ManualParkingRoad.SearchParameter.anyGap);
-        ManualStall testStall = manualParkingRoad.findNewSpace(stallInfo1, ManualParkingRoad.SearchParameter.anyGap);
+        ManualStall testStall = manualParkingRoad.findNewSpace(stallInfo1, ManualParkingRoad.SearchParameter.emptyStack);
         Road stallRoad = testStall.getRoad();
         double stallRoadWidth = stallRoad.getOnlyLane().getWidth();
 

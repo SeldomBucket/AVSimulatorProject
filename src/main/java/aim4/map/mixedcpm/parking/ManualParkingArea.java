@@ -167,14 +167,15 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                 roadX,
                 this.entryRoad.getOnlyLane().getShape().getBounds2D().getMinY(),
                 roadX,
-                this.exitRoad.getOnlyLane().getShape().getBounds2D().getMaxY());
+                this.exitRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
+                laneWidth);
 
         this.makeJunction(this.entryRoad, road);
         this.makeJunction(this.exitRoad, road);
 
         ManualParkingRoad parkingRoad = new ManualParkingRoad(road,
-                this,
-                initialStackWidth);
+                                                              this,
+                                                              initialStackWidth);
 
         this.parkingRoads.add(parkingRoad);
         updateLastParkingLane();

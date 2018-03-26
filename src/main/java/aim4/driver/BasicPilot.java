@@ -181,7 +181,7 @@ public abstract class BasicPilot {
    */
   protected void cruiseReverse() {
     getVehicle().setTargetVelocityWithMaxAccel(
-            -DriverUtil.calculateMaxFeasibleReverseVelocity(getVehicle()));
+            DriverUtil.calculateMaxFeasibleReverseVelocity(getVehicle()));
   }
 
 

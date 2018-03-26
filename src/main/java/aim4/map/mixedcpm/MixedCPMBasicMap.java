@@ -121,13 +121,15 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
                 BORDER,
                 BORDER,
                 this.dimensions.getWidth()- BORDER,
-                BORDER);
+                BORDER,
+                laneWidth+1);
 
         this.bottomRoad = makeRoadWithOneLane("bottomRoad",
                 BORDER,
                 this.dimensions.getHeight() - BORDER,
                 this.dimensions.getWidth()- BORDER,
-                this.dimensions.getHeight() - BORDER);
+                this.dimensions.getHeight() - BORDER,
+                laneWidth);
     }
 
     /**

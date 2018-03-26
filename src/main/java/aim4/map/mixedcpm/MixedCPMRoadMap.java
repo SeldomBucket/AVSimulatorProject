@@ -78,7 +78,8 @@ public abstract class MixedCPMRoadMap implements RoadMap {
      * @return
      */
     protected Road makeRoadWithOneLane(String roadName, double x1,
-                                       double y1, double x2, double y2){
+                                       double y1, double x2, double y2,
+                                       double laneWidth){
         // Create the road
         Road road = new Road(roadName, this);
         // Add a lane to the road

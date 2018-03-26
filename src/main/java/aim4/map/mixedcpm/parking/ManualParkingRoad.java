@@ -4,6 +4,7 @@ import aim4.map.Road;
 import aim4.map.connections.Junction;
 
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -39,20 +40,26 @@ public class ManualParkingRoad implements IManualParkingRoad {
                              ManualParkingArea parkingArea,
                              Double firstStackLength) {
         this.roadName = road.getName();
-        centreRoad = road;
+        this.centreRoad = road;
+
         Road topRoad = parkingArea.getRoadByName("topRoad");
+        Road bottomRoad = parkingArea.getRoadByName("bottomRoad");
+        Rectangle2D roadShape = road.getOnlyLane().getShape().getBounds2D();
+        Rectangle2D topRoadShape = topRoad.getOnlyLane().getShape().getBounds2D();
+        Rectangle2D bottomRoadShape = bottomRoad.getOnlyLane().getShape().getBounds2D();
+
         this.parkingArea = parkingArea;
-        stallStackPair =
-                new StallStack[] {  new StallStack( road.getOnlyLane().getShape().getBounds2D().getMinX()-firstStackLength,
-                                                    topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
-                                                    this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
+        this.stallStackPair =
+                new StallStack[] {  new StallStack( roadShape.getMinX()-firstStackLength,
+                                                    topRoadShape.getMaxY(),
+                                                    bottomRoadShape.getMinY()-topRoadShape.getMaxY(),
                                                     firstStackLength,
                                                     false,
                                                     this,
                                                     this.parkingArea),
-                                    new StallStack( road.getOnlyLane().getShape().getBounds2D().getMaxX(),
-                                                    topRoad.getOnlyLane().getShape().getBounds2D().getMaxY(),
-                                                    this.centreRoad.getOnlyLane().getLength() - parkingArea.getLaneWidth()*2,
+                                    new StallStack( roadShape.getMaxX(),
+                                                    topRoadShape.getMaxY(),
+                                                    bottomRoadShape.getMinY()-topRoadShape.getMaxY(),
                                                     0,
                                                     false,
                                                     this,
