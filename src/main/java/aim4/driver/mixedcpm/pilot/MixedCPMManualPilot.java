@@ -212,49 +212,6 @@ public class MixedCPMManualPilot extends BasicPilot{
                         }
                         break;
                 }
-
-
-                /*
-                if (frontOfVehicleNearOrPastEndOfLane() && !reversingInParkingLane) {
-                    if (!vehicleEntirelyInsideStall()) {
-                        // if Y alignment is out
-                        // reverse for a bit
-                        if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
-                            if (heading < vehicle.getTargetStall().getLane().getInitialHeading()){
-                                setWheelsFullLeft();
-                            }else{
-                                setWheelsFullRight();
-                            }
-                        } else {
-                            if (heading < vehicle.getTargetStall().getLane().getInitialHeading()){
-                                setWheelsFullRight();
-                            }else{
-                                setWheelsFullLeft();
-                            }
-                        }
-                        simpleThrottleActionReverse();
-                        reversingInParkingLane = true;
-                    }
-                } else if (vehiclePastStartOfLane() && reversingInParkingLane) {// vehiclePastStartOfLane()
-                    // Reversed out of lane, follow lane
-                    followCurrentLane();
-                    simpleThrottleAction();
-                    dontPassParkingEndPoint(currentParkingStatus);
-                    reversingInParkingLane = false;
-                } else if (vehicleHeadingMatchesLane()) {
-                    // When the heading is correct, follow lane
-                    followCurrentLane();
-                    simpleThrottleAction();
-                    dontPassParkingEndPoint(currentParkingStatus);
-                    reversingInParkingLane = false;
-                } else if (!reversingInParkingLane) {
-                    turnWheelsFullyTowardsStall();
-                    simpleThrottleAction();
-                    dontPassParkingEndPoint(currentParkingStatus);
-                } else if (reversingInParkingLane) {
-                    simpleThrottleActionReverse();
-                }
-*/
             }else{
                 // PHASE 2 - line up correctly in lane
 
