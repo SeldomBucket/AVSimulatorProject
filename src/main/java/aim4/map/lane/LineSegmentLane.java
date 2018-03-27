@@ -241,7 +241,6 @@ public class LineSegmentLane extends AbstractLane {
                               pp.getY() + leadDist * Math.sin(heading));
   }
 
-
   // distance along lane
 
   /**

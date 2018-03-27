@@ -18,6 +18,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import java.awt.geom.Area;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
@@ -71,6 +72,30 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         // As a quick check, see if the front or rear point is in the area
         // Most of the time this should work
         if(area.contains(vehicle.gaugePosition()) || area.contains(vehicle.gaugePointAtRear())){
+            return true;
+        } else {
+            // We actually have to check to see if the Area of the
+            // Vehicle and the given Area have a nonempty intersection
+            Area vehicleArea = new Area(vehicle.gaugeShape());
+            // Important that it is in this order, as it is destructive to the caller
+            vehicleArea.intersect(area);
+            return !vehicleArea.isEmpty();
+        }
+    }
+
+    /**
+     * Determine whether the given Vehicle is currently inside an area
+     *
+     * @param vehicle     the vehicle
+     * @param area        the area
+     * @return            whether the Vehicle is currently in the area
+     */
+    protected static boolean frontIntersectsArea(AutoVehicleDriverModel vehicle, Area area) {
+        // TODO: move this function to somewhere else.
+
+        // As a quick check, see if the front or rear point is in the area
+        // Most of the time this should work
+        if(area.contains(vehicle.gaugePointBetweenFrontWheels()) || area.contains(vehicle.gaugePointAtRear())){
             return true;
         } else {
             // We actually have to check to see if the Area of the
@@ -164,17 +189,23 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
      * or null if not in a junction.
      */
     public Junction inJunction() {
-        List<Junction> mapJunctions = map.getJunctions();//.getRoad(getCurrentLane().getId())
+        List<Junction> mapJunctions = map.getJunctions();
+        List<Junction> stallJunctions = map.getStallJunctions();
+
         ArrayList<Junction> junctionsBeenInBefore = new ArrayList<>();
         ArrayList<Junction> newJunction = new ArrayList<>();
+
         for (Junction junction : mapJunctions){
             Area area = junction.getArea();
-            if (intersectsArea(vehicle, area)){
-                    if(coordinator.hasBeenInJunctionAlready(junction)){
-                        junctionsBeenInBefore.add(junction);
-                    }else{
-                        newJunction.add(junction);
-                    }
+            if (!stallJunctions.contains(junction) && intersectsArea(vehicle, area) ||
+                    stallJunctions.contains(junction) &&  frontIntersectsArea(vehicle, area)){
+                // if centre of vehicle intersects a non-stall junction OR
+                // the front of the vehicle intersects the stall junction (to give the vehicle enough time to turn)
+                if(coordinator.hasBeenInJunctionAlready(junction)){
+                    junctionsBeenInBefore.add(junction);
+                }else{
+                    newJunction.add(junction);
+                }
             }
         }
         if (newJunction.size() == 0 && junctionsBeenInBefore.size() != 0) {
@@ -182,7 +213,7 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
             return junctionsBeenInBefore.get(0);
         } else if(newJunction.size() != 0) {
             for (Junction junction:newJunction){
-                if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())){
+                if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())) {
                     // prioritise a junction with your parking space in it
                     return junction;
                 }

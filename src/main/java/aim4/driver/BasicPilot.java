@@ -74,6 +74,42 @@ public abstract class BasicPilot {
     followCurrentLane(DriverUtil.DEFAULT_LEAD_TIME);
   }
 
+  public void setWheelsFullLeft() {
+    double leadDist = 10;
+    Point2D pp = getDriver().getVehicle().gaugePosition();
+    double heading = getVehicle().gaugeHeading()+(Math.PI/2);
+    Point2D aimPoint =  new Point2D.Double(pp.getX() + leadDist * Math.cos(heading),
+            pp.getY() + leadDist * Math.sin(heading));
+    getVehicle().turnTowardPoint(aimPoint);
+  }
+
+  public void setWheelsFullRight() {
+    double leadDist = 10;
+    Point2D pp = getDriver().getVehicle().gaugePosition();
+    double heading = getVehicle().gaugeHeading()-(Math.PI/2);
+    Point2D aimPoint =  new Point2D.Double(pp.getX() - leadDist * Math.cos(heading),
+            pp.getY() - leadDist * Math.sin(heading));
+    getVehicle().turnTowardPoint(aimPoint);
+  }
+
+  public void setWheelsStraight() {
+    double leadDist = DriverUtil.getLeadDistance(getVehicle());
+    Point2D pp = getDriver().getVehicle().gaugePointBetweenFrontWheels();
+    double heading = getVehicle().gaugeHeading();
+    Point2D aimPoint =  new Point2D.Double(pp.getX() + leadDist * Math.cos(heading),
+                        pp.getY() + leadDist * Math.sin(heading));
+    getVehicle().turnTowardPoint(aimPoint);
+  }
+
+  public void reverseInCurrentLane(){
+
+    double leadDist = DriverUtil.getLeadDistance(getVehicle());
+    //Point2D aimPoint = getDriver().getCurrentLane().getLeadPointReverse(getVehicle().gaugePosition(), leadDist);
+
+    //getVehicle().turnTowardPoint(aimPoint);
+
+  }
+
   /**
    * Turn the wheel to shift to the target lane of the vehicle.
    */
@@ -158,15 +194,6 @@ public abstract class BasicPilot {
     getVehicle().turnTowardPoint(aimPoint);
   }
 
-  private void reverseInCurrentLane(){
-
-    Driver driver = getVehicle().getDriver();
-
-    Point2D aimPoint;
-
-
-
-  }
 
   /**
    * Maintain a cruising speed.

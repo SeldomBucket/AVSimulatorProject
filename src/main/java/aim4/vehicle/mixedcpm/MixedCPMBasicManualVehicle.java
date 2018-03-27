@@ -244,14 +244,15 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
 
     public double distanceToParkingEndPoint(){
         Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
-        Point2D vehiclePosition = gaugePosition();
+        Point2D vehiclePosition = gaugePointAtMiddleFront(0);
         return vehiclePosition.distance(endPoint);
     }
 
     public double horizontalDistanceToStallEndPoint(){
         Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
         Point2D vehiclePosition = gaugePosition();
-        return abs(vehiclePosition.getX() - endPoint.getX());
+        double distance = abs(vehiclePosition.getX() - endPoint.getX());
+        return distance;
     }
 
     /**

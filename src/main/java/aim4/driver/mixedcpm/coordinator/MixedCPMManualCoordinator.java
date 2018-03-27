@@ -482,7 +482,6 @@ public class MixedCPMManualCoordinator implements Coordinator {
             }
             // park
             pilot.parkInLane(parkingStatus);
-            pilot.dontPassParkingEndPoint(parkingStatus);
             if(pilot.linedUpWithStall()){
                 System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
                 parkingStatus = ParkingStatus.PARKED;

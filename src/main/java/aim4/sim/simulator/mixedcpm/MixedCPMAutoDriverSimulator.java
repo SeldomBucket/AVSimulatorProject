@@ -158,6 +158,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
         Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
         for(MixedCPMBasicManualVehicle vehicle : vinToVehicles.values()) {
+            double heading = vehicle.getHeading();
             if (vehicle.getShape().intersects(noVehicleZone)) {
                 return false;
             }

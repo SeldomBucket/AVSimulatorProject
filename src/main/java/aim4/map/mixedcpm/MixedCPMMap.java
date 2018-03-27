@@ -5,6 +5,7 @@ import aim4.map.Road;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.mixedcpm.parking.ManualParkingRoad;
 import aim4.map.mixedcpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
@@ -22,6 +23,7 @@ public interface MixedCPMMap extends BasicMap {
     public double getLaneWidth();
     public List<Corner> getCorners();
     public List<Junction> getJunctions();
+    public List<Junction> getStallJunctions();
     public List<SimpleIntersection> getIntersections();
     public List<MixedCPMSpawnPoint> getSpawnPoints();
     public StatusMonitor getStatusMonitor();

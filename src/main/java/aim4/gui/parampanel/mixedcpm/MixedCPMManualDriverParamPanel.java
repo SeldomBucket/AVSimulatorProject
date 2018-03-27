@@ -48,7 +48,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         add(carParkHeightSlider);
 
         laneWidthSlider =
-                new LabeledSlider(1.0, 5.0,
+                new LabeledSlider(1.0, 100.0,
                         simSetup.getLaneWidth(),
                         1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.1f meters",
