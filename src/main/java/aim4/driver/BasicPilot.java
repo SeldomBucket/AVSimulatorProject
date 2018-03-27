@@ -77,7 +77,8 @@ public abstract class BasicPilot {
   public void setWheelsFullLeft() {
     double leadDist = 10;
     Point2D pp = getDriver().getVehicle().gaugePosition();
-    double heading = getVehicle().gaugeHeading()+(Math.PI/2);
+    double vehicleHeading = getVehicle().gaugeHeading();
+    double heading = getVehicle().gaugeHeading()-(Math.PI/2);
     Point2D aimPoint =  new Point2D.Double(pp.getX() + leadDist * Math.cos(heading),
             pp.getY() + leadDist * Math.sin(heading));
     getVehicle().turnTowardPoint(aimPoint);
@@ -85,15 +86,16 @@ public abstract class BasicPilot {
 
   public void setWheelsFullRight() {
     double leadDist = 10;
+    double vehicleHeading = getVehicle().gaugeHeading();
     Point2D pp = getDriver().getVehicle().gaugePosition();
-    double heading = getVehicle().gaugeHeading()-(Math.PI/2);
-    Point2D aimPoint =  new Point2D.Double(pp.getX() - leadDist * Math.cos(heading),
-            pp.getY() - leadDist * Math.sin(heading));
+    double heading = getVehicle().gaugeHeading()+(Math.PI/2);
+    Point2D aimPoint =  new Point2D.Double(pp.getX() + leadDist * Math.cos(heading),
+            pp.getY() + leadDist * Math.sin(heading));
     getVehicle().turnTowardPoint(aimPoint);
   }
 
   public void setWheelsStraight() {
-    double leadDist = DriverUtil.getLeadDistance(getVehicle());
+    double leadDist = 10;
     Point2D pp = getDriver().getVehicle().gaugePointBetweenFrontWheels();
     double heading = getVehicle().gaugeHeading();
     Point2D aimPoint =  new Point2D.Double(pp.getX() + leadDist * Math.cos(heading),

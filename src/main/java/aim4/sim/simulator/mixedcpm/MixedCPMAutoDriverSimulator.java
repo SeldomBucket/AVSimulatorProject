@@ -130,13 +130,13 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     if (parkingLaneWidth < (vehicleWidth+MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
-                        // Only create the vehicle if there is room in the car park
                         double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                            MixedCPMBasicManualVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                        MixedCPMBasicManualVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+
+                        if (map.getStatusMonitor().addNewVehicle(vehicle)) {
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
                             map.addVehicleToMap(vehicle);
-                        if (map.getStatusMonitor().addNewVehicle(vehicle)) {
                             break; // only handle the first spawn vehicle
                         } else {
                             System.out.println("Spawned vehicle discarded: not enough room.");
