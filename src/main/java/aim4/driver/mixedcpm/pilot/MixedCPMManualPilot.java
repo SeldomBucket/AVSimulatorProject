@@ -200,7 +200,6 @@ public class MixedCPMManualPilot extends BasicPilot{
                         }else{
                             setWheelsStraight();
                             simpleThrottleActionReverse();
-                            dontPassParkingEndPoint(currentParkingStatus);
                         }
                         break;
                     case 4:
