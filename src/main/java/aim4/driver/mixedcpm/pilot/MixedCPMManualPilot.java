@@ -184,11 +184,11 @@ public class MixedCPMManualPilot extends BasicPilot{
                                 }
                             } else {
                                 if (heading < vehicle.getTargetStall().getLane().getInitialHeading()) {
-                                    // Under rotated and on right
-                                    setWheelsFullRight();
+                                    // Over rotated and on right
+                                    setWheelsFullLeft();
                                 } else {
                                     // Under rotated and on right
-                                    setWheelsFullLeft();
+                                    setWheelsFullRight();
                                 }
                             }
                             simpleThrottleActionReverse();
