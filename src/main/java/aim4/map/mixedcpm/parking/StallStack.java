@@ -190,9 +190,11 @@ public class StallStack {
                 stallToRemove.getRoad().removeJunction(stallToRemove.getJunction());
             }
             stalls.remove(stallToRemove);
+            /*
             if (parkingRoad.getManualStalls().size() == 0){
                 parkingRoad.deleteFromMap();
             }
+            */
         }
     }
 

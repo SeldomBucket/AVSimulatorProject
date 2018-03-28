@@ -580,8 +580,11 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             if(!vehicle.getShape().intersects(mapBoundary)) {
                 // Process anything we need to from this vehicle
                 // TODO CPM Do we need to get anything? Maybe distance travelled
+                vehicle.getTargetStall().delete();
+                vehicle.clearTargetStall();
                 map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
+                System.out.println("Vehicle " + vin + " exited car park and deleted");
             }
         }
         // Remove the marked vehicles

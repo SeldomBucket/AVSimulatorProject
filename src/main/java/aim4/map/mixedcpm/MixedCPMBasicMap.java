@@ -131,6 +131,9 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
                 this.dimensions.getWidth()- BORDER,
                 this.dimensions.getHeight() - BORDER,
                 laneWidth);
+
+        this.entranceLane = this.topRoad.getOnlyLane();
+        this.exitLanes.add(this.bottomRoad.getOnlyLane());
     }
 
     /**

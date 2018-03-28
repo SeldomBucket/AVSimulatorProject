@@ -179,6 +179,13 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         return targetStall;
     }
 
+    public boolean inInTargetStall(){
+        if (targetStall != null && driver.getCurrentLane() == targetStall.getLane()) {
+            return true;
+        }
+        return false;
+    }
+
     public void setTargetStall(ManualStall targetStall) {
         if (this.targetStall == null) {
             this.targetStall = targetStall;

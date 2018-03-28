@@ -212,10 +212,12 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
             // i.e. have been in all the junctions before
             return junctionsBeenInBefore.get(0);
         } else if(newJunction.size() != 0) {
-            for (Junction junction:newJunction){
-                if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())) {
-                    // prioritise a junction with your parking space in it
-                    return junction;
+            if (vehicle.getTargetStall() != null) {
+                for (Junction junction:newJunction){
+                    if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())) {
+                        // prioritise a junction with your parking space in it
+                        return junction;
+                    }
                 }
             }
             return newJunction.get(0);

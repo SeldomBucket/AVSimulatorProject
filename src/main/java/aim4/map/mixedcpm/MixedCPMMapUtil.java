@@ -124,7 +124,7 @@ public class MixedCPMMapUtil {
             for(double time = initTime; time < initTime + timeStep;
                 time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < spawnProbability) {
-                    double parkingTime = generateParkingTime();
+                    double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
                     result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                     System.out.println("Vehicle spawned!");
                 }
@@ -333,7 +333,7 @@ public class MixedCPMMapUtil {
                     if (Util.random.nextDouble() < spawnProbability) {
                         int i = Util.randomIndex(proportion);
                         VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
-                        double parkingTime = Double.MAX_VALUE;//generateParkingTime(); // TODO ED use random times again
+                        double parkingTime = generateParkingTime();
                         result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                                 vehicleSpec,
                                 parkingTime));

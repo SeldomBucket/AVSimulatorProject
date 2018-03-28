@@ -150,14 +150,9 @@ public class MixedCPMManualPilot extends BasicPilot{
     }
 
     public void parkInLane(ParkingStatus currentParkingStatus){
-
-        double steeringAngle = vehicle.getSteeringAngle();
-        double heading = vehicle.getHeading();
-        Point2D rear = vehicle.gaugePointAtRear();
-        Point2D front = vehicle.gaugePosition();
-
         if (currentParkingStatus == ParkingStatus.PARKING) {
 
+            double heading = vehicle.getHeading();
 
             if (vehicleHeadingMatchesLane()
                     && !vehicleOutsideStartOfLane()
@@ -301,6 +296,21 @@ public class MixedCPMManualPilot extends BasicPilot{
                     break;
             }
         }
+    }
+
+    public void reverseOutOfStall() {
+        driver.setCurrentLane(vehicle.getTargetStall().getParkingRoad().getCentreRoad().getOnlyLane());
+        if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
+            setWheelsFullRight();
+        } else {
+            setWheelsFullLeft();
+        }
+        simpleThrottleActionReverse();
+    }
+
+    public boolean reversedOutOfStall(){
+        boolean currentLaneIsManualStall = vehicle.getTargetStall().getParkingRoad().getCentreRoad().getOnlyLane() == driver.getCurrentLane();
+        return currentLaneIsManualStall && vehicleOutsideStartOfLane();
     }
 
     private boolean vehicleEntirelyInsideStall(){
