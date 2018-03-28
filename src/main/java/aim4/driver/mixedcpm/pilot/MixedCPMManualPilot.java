@@ -58,15 +58,29 @@ public class MixedCPMManualPilot extends BasicPilot{
 
     private Lane connectionDepartureLane;
 
-    private boolean reversingInParkingLane = false;
-
     private boolean vehicleBelowCentreOfStallPhase2;
 
-    private boolean parkingPhase1Completed = false;
-
-    private int phase1Phase = 0;
-
-    private int phase2Phase = 0;
+    /**
+     * State of the vehicle when lining up and parking with the stall
+     *
+     * Phase 1: Making sure the heading of the vehicle is
+     *          the same as the heading of the stall
+     *      0  -  ENTER_STALL_INITIALLY,
+     *      1  -  STOP_AT_END_OF_STALL,
+     *      2  -  TURN_WHEELS_AND_REVERSE_TO_LINE_UP_HEADING,
+     *      3  -  REVERSE_STRAIGHT_AFTER_LINING_UP_HEADING,
+     *      4  -  GO_TO_END_OF_STALL_WITH_CORRECT_HEADING,
+     *
+     * Phase 2: Moving vehicle to be completely inside stall
+     *          (by lining up the y position)
+     *      5  -  TURN_WHEELS_TO_LINE_UP_Y,
+     *      6  -  REVERSE_TO_LINE_UP_Y,
+     *      7  -  TURN_WHEELS_TO_STRAIGHTEN_VEHICLE,
+     *      8  -  REVERSE_TO_LINE_UP_HEADING_AGAIN,
+     *      9  -  REENTER_STALL_WITH_CORRECT_Y_AND_HEADING,
+     *      10 -  CHECK_ENTIRELY_INSIDE_STALL
+     */
+    private int parkingMechanicsState = 0;
 
 
     // ///////////////////////////////
@@ -145,153 +159,146 @@ public class MixedCPMManualPilot extends BasicPilot{
         if (currentParkingStatus == ParkingStatus.PARKING) {
 
 
-            if (!parkingPhase1Completed) {
-                // PHASE 1 - Forward and reverse until heading is correct for stall
-                // First, get it near enough in the stall
+            if (vehicleHeadingMatchesLane()
+                    && !vehicleOutsideStartOfLane()
+                    && !frontOfVehicleNearOrPastEndOfLane()
+                    && parkingMechanicsState < 5) {
+                // Move to phase 2 if vehicle is lined up and between beginning and end of stall
+                parkingMechanicsState = 5;
+            }
 
-                if (vehicleHeadingMatchesLane() && !vehiclePastStartOfLane() && !frontOfVehicleNearOrPastEndOfLane()){
-                    parkingPhase1Completed = true;
-                }
-
-                switch (phase1Phase){
-                    case 0:
-                        if (frontOfVehicleNearOrPastEndOfLane()) {
-                            phase1Phase = 1;
-                        }else{
-                            turnWheelsFullyTowardsStall();
-                            simpleThrottleAction();
-                            dontPassParkingEndPoint(currentParkingStatus);
-                        }
-                        break;
-                    case 1:
-                        if (Math.abs(vehicle.getVelocity()) < 0.01) {
-                            phase1Phase = 2;
-                        }else{
-                            vehicle.slowToStop();
-                        }
-                        break;
-                    case 2:
-                        if (vehicleHeadingMatchesLane()) {
-                            phase1Phase = 3;
-                        }else {
-                            if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
-                                if (heading < vehicle.getTargetStall().getLane().getInitialHeading()) {
-                                    // Under rotated and on left
-                                    setWheelsFullLeft();
-                                } else {
-                                    // Over rotated and on left
-                                    setWheelsFullRight();
-                                }
-                            } else {
-                                if (heading < vehicle.getTargetStall().getLane().getInitialHeading()) {
-                                    // Over rotated and on right
-                                    setWheelsFullLeft();
-                                } else {
-                                    // Under rotated and on right
-                                    setWheelsFullRight();
-                                }
-                            }
-                            simpleThrottleActionReverse();
-                        }
-                        break;
-                    case 3:
-                        if (!frontOfVehicleNearOrPastEndOfLane()) {
-                            phase1Phase = 4;
-                        }else{
-                            setWheelsStraight();
-                            simpleThrottleActionReverse();
-                        }
-                        break;
-                    case 4:
-                        if (frontOfVehicleNearOrPastEndOfLane()) {
-                            phase1Phase = 0;
-                        }else{
-                            setWheelsStraight();
-                            simpleThrottleAction();
-                            dontPassParkingEndPoint(currentParkingStatus);
-                        }
-                        break;
-                }
-            }else{
-                // PHASE 2 - line up correctly in lane
-
-                switch (phase2Phase){
-                    case 0:
-                        vehicleBelowCentreOfStallPhase2 = vehicle.gaugePointAtRear().getY() > this.driver.getCurrentLane().getEndPoint().getY();
-
+            // See parkingMechanicsState comment for description of this switch case
+            switch (parkingMechanicsState){
+                case 0:
+                    if (frontOfVehicleNearOrPastEndOfLane()) {
+                        parkingMechanicsState = 1;
+                    }else{
+                        turnWheelsFullyTowardsStall();
+                        simpleThrottleAction();
+                        dontPassParkingEndPoint(currentParkingStatus);
+                    }
+                    break;
+                case 1:
+                    if (Math.abs(vehicle.getVelocity()) < 0.01) {
+                        parkingMechanicsState = 2;
+                    }else{
+                        vehicle.slowToStop();
+                    }
+                    break;
+                case 2:
+                    if (vehicleHeadingMatchesLane()) {
+                        parkingMechanicsState = 3;
+                    }else {
                         if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
-                            if (vehicleBelowCentreOfStallPhase2) {
-                                // Below centre and on left
-                                setWheelsFullRight();
-                            } else {
-                                // Above centre and on left
+                            if (heading < vehicle.getTargetStall().getLane().getInitialHeading()) {
+                                // Under rotated and on left
                                 setWheelsFullLeft();
+                            } else {
+                                // Over rotated and on left
+                                setWheelsFullRight();
                             }
                         } else {
-                            if (vehicleBelowCentreOfStallPhase2) {
-                                // Below centre and on right
+                            if (heading < vehicle.getTargetStall().getLane().getInitialHeading()) {
+                                // Over rotated and on right
                                 setWheelsFullLeft();
                             } else {
-                                // Above centre and on right
+                                // Under rotated and on right
                                 setWheelsFullRight();
                             }
                         }
+                        simpleThrottleActionReverse();
+                    }
+                    break;
+                case 3:
+                    if (!frontOfVehicleNearOrPastEndOfLane()) {
+                        parkingMechanicsState = 4;
+                    }else{
+                        setWheelsStraight();
+                        simpleThrottleActionReverse();
+                    }
+                    break;
+                case 4:
+                    if (frontOfVehicleNearOrPastEndOfLane()) {
+                        parkingMechanicsState = 0;
+                    }else{
+                        setWheelsStraight();
+                        simpleThrottleAction();
+                        dontPassParkingEndPoint(currentParkingStatus);
+                    }
+                    break;
+                case 5:
+                    vehicleBelowCentreOfStallPhase2 = vehicle.gaugePointAtRear().getY() > this.driver.getCurrentLane().getEndPoint().getY();
 
-                        double steeringAngle2 = vehicle.getSteeringAngle();
-                        phase2Phase = 1;
-                        break;
-                    case 1:
-                        if (rearOfVehicleInYTolerance()) {
-                            phase2Phase = 2;
+                    if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
+                        if (vehicleBelowCentreOfStallPhase2) {
+                            // Below centre and on left
+                            setWheelsFullRight();
                         } else {
-                            simpleThrottleActionReverse();
+                            // Above centre and on left
+                            setWheelsFullLeft();
                         }
-                        break;
-                    case 2:
-                        if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
-                            if (!vehicleBelowCentreOfStallPhase2) {
-                                // Below centre and on left
-                                setWheelsFullRight();
-                            } else {
-                                // Above centre and on left
-                                setWheelsFullLeft();
-                            }
+                    } else {
+                        if (vehicleBelowCentreOfStallPhase2) {
+                            // Below centre and on right
+                            setWheelsFullLeft();
                         } else {
-                            if (!vehicleBelowCentreOfStallPhase2) {
-                                // Below centre and on right
-                                setWheelsFullLeft();
-                            } else {
-                                // Above centre and on right
-                                setWheelsFullRight();
-                            }
+                            // Above centre and on right
+                            setWheelsFullRight();
                         }
-                        phase2Phase = 3;
-                        break;
-                    case 3:
-                        if (vehicleHeadingMatchesLane()){
-                            phase2Phase = 4;
-                        }else {
-                            simpleThrottleActionReverse();
+                    }
+                    parkingMechanicsState = 6;
+                    break;
+                case 6:
+                    if (rearOfVehicleInYTolerance()) {
+                        parkingMechanicsState = 7;
+                    } else {
+                        simpleThrottleActionReverse();
+                    }
+                    break;
+                case 7:
+                    if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
+                        if (!vehicleBelowCentreOfStallPhase2) {
+                            // Below centre and on left
+                            setWheelsFullRight();
+                        } else {
+                            // Above centre and on left
+                            setWheelsFullLeft();
                         }
-                        break;
-                    case 4:
-                        if (frontOfVehicleNearOrPastEndOfLane()) {
-                            phase2Phase = 5;
-                        }else {
-                            followCurrentLane();
-                            //setWheelsStraight();
-                            simpleThrottleAction();
-                            dontPassParkingEndPoint(currentParkingStatus);
+                    } else {
+                        if (!vehicleBelowCentreOfStallPhase2) {
+                            // Below centre and on right
+                            setWheelsFullLeft();
+                        } else {
+                            // Above centre and on right
+                            setWheelsFullRight();
                         }
-                    case 5:
-                        if (frontOfVehicleNearOrPastEndOfLane())
-                        {
-                            if (!vehicleEntirelyInsideStall()) {
-                                phase2Phase = 0;
-                            }
+                    }
+                    parkingMechanicsState = 8;
+                    break;
+                case 8:
+                    if (vehicleHeadingMatchesLane()){
+                        parkingMechanicsState = 9;
+                    }else {
+                        simpleThrottleActionReverse();
+                    }
+                    break;
+                case 9:
+                    if (frontOfVehicleNearOrPastEndOfLane()) {
+                        parkingMechanicsState = 10;
+                    }else {
+                        followCurrentLane();
+                        //setWheelsStraight();
+                        simpleThrottleAction();
+                        dontPassParkingEndPoint(currentParkingStatus);
+                    }
+                case 10:
+                    if (frontOfVehicleNearOrPastEndOfLane())
+                    {
+                        if (!vehicleEntirelyInsideStall()) {
+                            parkingMechanicsState = 5;
                         }
-                        break;
-                }
+                    }
+                    break;
             }
         }
     }
@@ -348,7 +355,7 @@ public class MixedCPMManualPilot extends BasicPilot{
         }
     }
 
-    private boolean vehiclePastStartOfLane(){
+    private boolean vehicleOutsideStartOfLane(){
         Point2D pointBetweenFrontWheels = this.getVehicle().gaugePosition();
         Point2D currentLaneStartPoint = this.driver.getCurrentLane().getStartPoint();
 
