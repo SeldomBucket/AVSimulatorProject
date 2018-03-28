@@ -6,6 +6,7 @@ import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import javafx.util.Pair;
 
 import java.awt.geom.Point2D;
@@ -124,7 +125,7 @@ public class MixedCPMMapUtil {
             for(double time = initTime; time < initTime + timeStep;
                 time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < spawnProbability) {
-                    double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
+                    double parkingTime = 300;//generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
                     result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
                     System.out.println("Vehicle spawned!");
                 }
@@ -684,7 +685,8 @@ public class MixedCPMMapUtil {
      * */
     public static void checkVehicleStillOnMap(MixedCPMMap map,
                                               Point2D vehiclePosition,
-                                              Lane currentLane){
+                                              Lane currentLane,
+                                              MixedCPMBasicManualVehicle vehicle){
         // For this map, should only drive off the map when it has
         // finished following the exit lane
         double x = vehiclePosition.getX();
@@ -694,7 +696,7 @@ public class MixedCPMMapUtil {
         if (!map.getDimensions().contains(new Point2D.Double(x, y))){
             // And the vehicle is not on the exit lane
             if (!map.getExitLanes().contains(currentLane)) {
-                throw new RuntimeException("Vehicle has driven off the map! Vehicle position " + vehiclePosition
+                throw new RuntimeException("Vehicle " + vehicle.getVIN() + " has driven off the map! Vehicle position " + vehiclePosition
                         + ", map dimensions " + map.getDimensions().getMaxX() + "," + map.getDimensions().getMaxY());
             }
         }

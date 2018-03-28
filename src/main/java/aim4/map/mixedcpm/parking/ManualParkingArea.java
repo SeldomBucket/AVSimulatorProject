@@ -219,7 +219,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
      * update the parking roads and make sure the last one is labelled properly
      */
     public void update(){
-        map.update();
+        //map.update();
+        for (int i = parkingRoads.size()-1; i>=0; i--){
+            if (parkingRoads.get(i).isToBeDeleted() && !map.vehicleIsInRoad(parkingRoads.get(i).getCentreRoad())) {
+                removeParkingRoad(parkingRoads.get(i));
+            }
+        }
     }
 
 

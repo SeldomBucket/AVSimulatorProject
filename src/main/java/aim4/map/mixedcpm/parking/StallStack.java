@@ -9,7 +9,6 @@ import java.awt.geom.Rectangle2D;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.UUID;
 
 public class StallStack {
     /** The parkingSpaces in this stall stack */
@@ -168,7 +167,7 @@ public class StallStack {
      * @param stallName the name of the stall to be removed
      */
     public void removeManualStall(String stallName) {
-        if (lastStallStack) {
+        if (lastStallStack && getManualStalls().size() == 1) {
             // If this is the last space in the last stall stack, set the length of this stall stack to 0
 
             boundingBox = new Rectangle2D.Double(this.boundingBox.getX(),
@@ -190,11 +189,9 @@ public class StallStack {
                 stallToRemove.getRoad().removeJunction(stallToRemove.getJunction());
             }
             stalls.remove(stallToRemove);
-            /*
             if (parkingRoad.getManualStalls().size() == 0){
-                parkingRoad.deleteFromMap();
+                parkingRoad.markForDelete();
             }
-            */
         }
     }
 

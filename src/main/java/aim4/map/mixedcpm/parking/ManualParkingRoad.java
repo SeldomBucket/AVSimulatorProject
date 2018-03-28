@@ -14,6 +14,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
     private StallStack stallStackPair[];
     private boolean lastRoad;
     private String roadName;
+    private boolean toBeDeleted;
 
     /** Parking area this road belongs to */
     private ManualParkingArea parkingArea;
@@ -135,23 +136,35 @@ public class ManualParkingRoad implements IManualParkingRoad {
                             stallInfo.getWidth() == stack.getIdealStallWidth()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
-                    if (returnStall != null) { return returnStall; }
+                    if (returnStall != null) {
+                        this.toBeDeleted = false;
+                        return returnStall;
+                    }
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case correctLength:
                     if (stallInfo.getLength() == stack.getMaxStallLength()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
-                    if (returnStall != null) { return returnStall; }
+                    if (returnStall != null) {
+                        this.toBeDeleted = false;
+                        return returnStall;
+                    }
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case emptyStack:
                     if (0 == stack.getMaxStallLength()){
                         returnStall = stack.addManualStall(stallInfo);
                     }
-                    if (returnStall != null) { return returnStall; }
+                    if (returnStall != null) {
+                        this.toBeDeleted = false;
+                        return returnStall;
+                    }
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 default:
                     returnStall = stack.addManualStall(stallInfo);
-                    if (returnStall != null) { return returnStall; }
+                    if (returnStall != null) {
+                        this.toBeDeleted = false;
+                        return returnStall;
+                    }
             }
         }
         return null;
@@ -165,8 +178,12 @@ public class ManualParkingRoad implements IManualParkingRoad {
         return returnStall;
     }
 
-    public void deleteFromMap() {
-        parkingArea.removeParkingRoad(this);
+    public void markForDelete() {
+        this.toBeDeleted = true;
+    }
+
+    public boolean isToBeDeleted(){
+        return this.toBeDeleted;
     }
 
     /**

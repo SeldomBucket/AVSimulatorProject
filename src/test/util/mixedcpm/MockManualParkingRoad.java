@@ -60,8 +60,12 @@ public class MockManualParkingRoad implements IManualParkingRoad {
     }
 
     @Override
-    public void deleteFromMap() {
+    public void markForDelete() {
 
+    }
 
+    @Override
+    public boolean isToBeDeleted() {
+        return false;
     }
 }

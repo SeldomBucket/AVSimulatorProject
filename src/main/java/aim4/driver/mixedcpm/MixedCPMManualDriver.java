@@ -263,6 +263,10 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         }
     }
 
+    public boolean isParked(){
+        return coordinator.getParkingStatus() == MixedCPMManualCoordinator.ParkingStatus.PARKED;
+    }
+
     @Override
     public MixedCPMBasicManualVehicle getVehicle() {
         return vehicle;

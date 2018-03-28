@@ -26,7 +26,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /////////////////////////////////
 
     /** The length of the no vehicle zone */
-    protected static final double NO_VEHICLE_ZONE_LENGTH = 28.0;
+    protected static final double NO_VEHICLE_ZONE_LENGTH = 10.0;
 
     /** The length of the map border, used for
      * space between map edge and elements, distance
@@ -99,6 +99,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
     @Override
     public void update(){
+        manualParkingArea.update();
         // TODO ED maybe...?
     }
 
@@ -234,5 +235,19 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         set.removeAll(topRoad.getJunctions());
         set.removeAll(bottomRoad.getJunctions());
         return new ArrayList<>(set);
+    }
+
+    @Override
+    public double getTotalCarParkArea() {
+        return dimensions.getWidth()*dimensions.getHeight();
+    }
+
+    public boolean vehicleIsInRoad(Road road){
+        for (MixedCPMBasicManualVehicle vehicle : vehicles){
+            if (getRoad(vehicle.getDriver().getCurrentLane()) == road){
+                return true;
+            }
+        }
+        return false;
     }
 }

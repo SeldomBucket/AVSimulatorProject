@@ -1,6 +1,7 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.driver.cpm.CPMV2VDriver;
+import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.lane.Lane;
 import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
 import aim4.vehicle.cpm.CPMBasicAutoVehicle;
@@ -26,9 +27,11 @@ public class StatusMonitor {
     private int numberOfAllowedEntries;
     /** The most number of vehicles that have been in the car park at any one time during simulation.*/
     private int mostNumberOfVehicles;
+    /** The most number of vehicles that have been parked in the car park at any one time during simulation.*/
+    private int mostNumberOfParkedVehicles;
 
     /**
-     * Create a StatusMonitor to record the status of the car park.
+     * Create a StatusMonitor to record the status of the parking area.
      * @param parkingArea The parking area to record the status of.
      */
     public StatusMonitor(ManualParkingArea parkingArea) {
@@ -59,6 +62,8 @@ public class StatusMonitor {
 
         // Allocate this parking lane to the vehicle by sending message
         //System.out.println("Status monitor sending parking lane to vehicle.");
+//        ManualStall allocatedStall2 = parkingArea.findSpace(vehicle.getStallInfo());
+//        allocatedStall2.delete();
         sendParkingLaneMessage(vehicle, allocatedStall);
 
         // Register the vehicle with the StatusMonitor, along with the
@@ -66,6 +71,16 @@ public class StatusMonitor {
         vehicles.put(vehicle, allocatedStall);
         numberOfAllowedEntries++;
         return true;
+    }
+
+
+    /**
+     * Update capacity when a vehicle exits the car park.
+     * @param vehicle The vehicle exiting the car park.
+     */
+    public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
+        // Remove the vehicle from the status monitor's records
+        vehicles.remove(vehicle);
     }
 
 
@@ -78,12 +93,29 @@ public class StatusMonitor {
         return vehicles;
     }
 
+    public int getNoOfParkedVehicles(){
+        int noOfParkedVehicles = 0;
+        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+            if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
+                noOfParkedVehicles++;
+            }
+        }
+        return noOfParkedVehicles;
+    }
+
     public void updateMostNumberOfVehicles(){
         int currentNumberOfVehicles = vehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
             mostNumberOfVehicles = currentNumberOfVehicles;
         }
+
+        int currentNumberOfParkedVehicles = getNoOfParkedVehicles();
+        if (currentNumberOfParkedVehicles > mostNumberOfParkedVehicles) {
+            mostNumberOfParkedVehicles = currentNumberOfParkedVehicles;
+        }
     }
+
+    public int getMostNumberOfParkedVehicles() { return mostNumberOfParkedVehicles; }
 
     public int getNumberOfDeniedEntries() { return numberOfDeniedEntries; }
 

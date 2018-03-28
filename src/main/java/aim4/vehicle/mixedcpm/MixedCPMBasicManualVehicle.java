@@ -180,10 +180,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     }
 
     public boolean inInTargetStall(){
-        if (targetStall != null && driver.getCurrentLane() == targetStall.getLane()) {
-            return true;
-        }
-        return false;
+        return this.driver.isInStall();
     }
 
     public void setTargetStall(ManualStall targetStall) {

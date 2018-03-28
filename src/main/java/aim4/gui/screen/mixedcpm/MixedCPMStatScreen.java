@@ -2,7 +2,7 @@ package aim4.gui.screen.mixedcpm;
 
 import aim4.gui.Viewer;
 import aim4.gui.screen.StatScreen;
-import aim4.gui.screen.mixedcpm.components.MixedCPMStatScreenComponent;
+import aim4.gui.screen.mixedcpm.components.*;
 import aim4.gui.setuppanel.MixedCPMSimSetupPanel;
 import aim4.gui.viewer.MixedCPMSimViewer;
 import aim4.sim.Simulator;
@@ -74,25 +74,25 @@ public class MixedCPMStatScreen extends StatScreen {
         generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         SimConfigSummary simConfigSummary = new SimConfigSummary(setupPanel);
-        simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));
+        simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));*/
 
-        CarParkStats carParkStats = new CarParkStats();
-        carParkStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+        ManualParkingAreaStats manualParkingAreaStats = new ManualParkingAreaStats();
+        manualParkingAreaStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
-        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
+        /*CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
+        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));*/
 
 
         setLayout(new FlowLayout());
-        add(generalInfo);
-        add(simConfigSummary);
-        add(carParkStats);
-        add(completedVehiclesTable);
+        //add(generalInfo);
+        //add(simConfigSummary);
+        add(manualParkingAreaStats);
+        //add(completedVehiclesTable);
 
 
-        componentsToUpdate.add(generalInfo);
-        componentsToUpdate.add(simConfigSummary);
-        componentsToUpdate.add(carParkStats);
-        componentsToUpdate.add(completedVehiclesTable);*/
+        //componentsToUpdate.add(generalInfo);
+        //componentsToUpdate.add(simConfigSummary);
+        componentsToUpdate.add(manualParkingAreaStats);
+        //componentsToUpdate.add(completedVehiclesTable);
     }
 }

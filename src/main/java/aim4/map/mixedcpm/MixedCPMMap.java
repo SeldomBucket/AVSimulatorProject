@@ -30,6 +30,7 @@ public interface MixedCPMMap extends BasicMap {
     public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle);
     public List<MixedCPMBasicManualVehicle> getVehicles();
     public ManualParkingArea getManualParkingArea();
+    public double getTotalCarParkArea();
     public void update();
 
 }

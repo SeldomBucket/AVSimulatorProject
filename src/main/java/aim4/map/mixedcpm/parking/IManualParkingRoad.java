@@ -19,5 +19,6 @@ public interface IManualParkingRoad {
     public StallStack[] getStallStackPair();
     public Point2D getStartPoint();
     public ArrayList<Road> getRoads();
-    public void deleteFromMap();
+    public void markForDelete();
+    public boolean isToBeDeleted();
 }

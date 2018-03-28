@@ -99,6 +99,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
     @Override
     public SimStepResult step(double timeStep) {
+        this.map.update();
         spawnVehicles(timeStep);
         provideSensorInput();
         letDriversAct();
@@ -252,7 +253,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                 // Now find how far along the lane it is.
                 double dst = lane.distanceAlongLane(vehicle.getPosition());
                 // Now add it to the map.
-                vehicleLists.get(lane).put(dst, vehicle);
+                if (vehicleLists.containsKey(lane)) {
+                    vehicleLists.get(lane).put(dst, vehicle);
+                }
             }
         }
         // Now consolidate the lists based on lanes
@@ -491,7 +494,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
-            MixedCPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane());
+            MixedCPMMapUtil.checkVehicleStillOnMap(map, p2, vehicle.getDriver().getCurrentLane(), vehicle);
 
             // Check if we've gone through a data collection line
             for(DataCollectionLine line : map.getDataCollectionLines()) {
@@ -580,8 +583,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             if(!vehicle.getShape().intersects(mapBoundary)) {
                 // Process anything we need to from this vehicle
                 // TODO CPM Do we need to get anything? Maybe distance travelled
-                vehicle.getTargetStall().delete();
-                vehicle.clearTargetStall();
+                map.getStatusMonitor().vehicleOnExit(vehicle);
                 map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
                 System.out.println("Vehicle " + vin + " exited car park and deleted");

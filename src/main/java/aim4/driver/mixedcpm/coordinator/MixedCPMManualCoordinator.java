@@ -339,6 +339,8 @@ public class MixedCPMManualCoordinator implements Coordinator {
                         junctionsAlreadyTraversed.add(currentJunction);
                         vehicle.updateEstimatedDistanceTravelled(currentJunction);
                         setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_JUNCTION);
+                    }else{
+                        int i = 0;
                     }
                 }
                 if (driver.inIntersection() != null){
@@ -420,23 +422,23 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 // if in a different junction and we're not parking, need to get
                 // a new departure lane and estimate the distance travelled.
                 if (!junctionsAlreadyTraversed.contains(junction)) {
-                    if (currentJunction != junction && vehicle.getTargetStall() != null
-                            && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane()) {
+                    if (currentJunction != junction || (vehicle.getTargetStall() != null
+                            && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane())) {
                         System.out.println("Vehicle " + vehicle.getVIN() + " in new junction with roads " + junction.getRoads().toString());
                         currentJunction = junction;
                         junctionsAlreadyTraversed.add(currentJunction);
                         vehicle.updateEstimatedDistanceTravelled(currentJunction);
                         pilot.clearDepartureLane();
                     }
+                    if (!debugPrintedThisJunctionAlready) {
+                        System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
+                        debugPrintedThisJunctionAlready = true;
+                    }
+                    // do nothing, keep going through the junction
+                    // TODO: CPM Have we considered AccelerationProfiles yet? Should we
+                    // pilot.followAccelerationProfile(rparameter);
                 }
-                if (!debugPrintedThisJunctionAlready){
-                    System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
-                    debugPrintedThisJunctionAlready = true;
-                }
-                // do nothing, keep going through the junction
                 pilot.takeSteeringActionForTraversing(junction, parkingStatus);
-                // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                // pilot.followAccelerationProfile(rparameter);
             }
             return false;
         }
@@ -533,6 +535,9 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 if (pilot.reversedOutOfStall()) {
                     // If we're back on the parking road, follow the flow until the exit, and delete stall to free up the space
                     setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                    driver.setCurrentLane(vehicle.getTargetStall().getParkingRoad().getCentreRoad().getOnlyLane());
+                    vehicle.getTargetStall().delete();
+                    vehicle.clearTargetStall();
                 }
             }
             return false;
