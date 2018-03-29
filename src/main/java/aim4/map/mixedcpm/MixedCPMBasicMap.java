@@ -3,6 +3,7 @@ package aim4.map.mixedcpm;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
+import aim4.map.mixedcpm.parking.IManualParkingRoad;
 import aim4.map.mixedcpm.parking.ManualParkingRoad;
 import aim4.map.mixedcpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
@@ -242,9 +243,12 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         return dimensions.getWidth()*dimensions.getHeight();
     }
 
-    public boolean vehicleIsInRoad(Road road){
+    public boolean vehicleIsInRoad(IManualParkingRoad road){
         for (MixedCPMBasicManualVehicle vehicle : vehicles){
-            if (getRoad(vehicle.getDriver().getCurrentLane()) == road){
+            if (vehicle.getDriver().getCurrentLane() != road.getCentreRoad().getOnlyLane()
+                    && vehicle.getTargetStall() != null
+                    && vehicle.getTargetStall().getParkingRoad() != road
+                    || vehicle.getDriver().getCurrentLane() != vehicle.getTargetStall().getLane()){
                 return true;
             }
         }

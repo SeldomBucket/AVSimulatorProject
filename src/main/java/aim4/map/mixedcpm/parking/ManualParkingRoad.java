@@ -113,6 +113,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
     public void setLastRoad(boolean lastRoad){
         this.lastRoad = lastRoad;
         if (lastRoad){
+            stallStackPair[0].setLastStallStack(false);
             stallStackPair[1].setLastStallStack(true);
         } else {
             stallStackPair[0].setLastStallStack(false);

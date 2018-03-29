@@ -221,7 +221,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     public void update(){
         //map.update();
         for (int i = parkingRoads.size()-1; i>=0; i--){
-            if (parkingRoads.get(i).isToBeDeleted() && !map.vehicleIsInRoad(parkingRoads.get(i).getCentreRoad())) {
+            if (parkingRoads.get(i).isToBeDeleted() && !map.vehicleIsInRoad(parkingRoads.get(i))) {
                 removeParkingRoad(parkingRoads.get(i));
             }
         }
@@ -289,13 +289,10 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     private void updateLastParkingLane(){
         for (int i = parkingRoads.size()-1; i >= 0; i--){
             ManualParkingRoad currentRoad = parkingRoads.get(i);
-            if (i == parkingRoads.size()){
+            if (i == parkingRoads.size()-1){
                 currentRoad.setLastRoad(true);
-                if (currentRoad.getManualStalls().size() == 0){
-                    removeParkingRoad(currentRoad);
-                }
             }else{
-                currentRoad.setLastRoad(true);
+                currentRoad.setLastRoad(false);
             }
         }
 

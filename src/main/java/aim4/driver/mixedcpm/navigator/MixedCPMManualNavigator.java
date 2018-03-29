@@ -33,10 +33,12 @@ public class MixedCPMManualNavigator {
         if (connection instanceof Junction) {
             // Could have 1 or 2 exits
             if (connection.getExitLanes().size() == 1) {
+                //System.out.println("Vehicle " + vehicle.getVIN() + " Junction One Exit Lane");
                 return connection.getExitLanes().get(0);
             } else {
                 // If there are 2 exit lanes, we are either looking for the next lane
                 // or we are exiting/relocating
+                //System.out.println("Vehicle " + vehicle.getVIN() + " Junction Multiple Exit Lane " + ((Junction)connection).getRoads().toString());
                 if (parkingStatus == ParkingStatus.PARKING) {
                     // Check the next lane to drive on
 

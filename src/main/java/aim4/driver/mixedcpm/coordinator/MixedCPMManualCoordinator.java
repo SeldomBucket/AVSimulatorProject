@@ -321,6 +321,9 @@ public class MixedCPMManualCoordinator implements Coordinator {
             // If so, then switch to the relevant traversing mode.
             assert driver != null;
 
+            junctionsAlreadyTraversed.clear();
+            junctionsAlreadyTraversed.add((Junction)vehicle.getLastConnection());
+
             if (driver.isInStall()
                     && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.PARKING) {
                 System.out.println("Vehicle " + vehicle.getVIN() + " parking in " + vehicle.getTargetStall().getName());
@@ -340,7 +343,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
                         vehicle.updateEstimatedDistanceTravelled(currentJunction);
                         setDrivingState(MixedCPMManualCoordinator.DrivingState.TRAVERSING_JUNCTION);
                     }else{
-                        int i = 0;
+                        //System.out.println("Vehicle " + vehicle.getVIN() + " junction already traversed " + driver.inJunction().getRoads().toString());
                     }
                 }
                 if (driver.inIntersection() != null){
@@ -408,12 +411,15 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 debugPrintedThisJunctionAlready = false;
                 // The vehicle is out of the junction.
                 // Go back to default driving behaviour if not in a manual stall
+                junctionsAlreadyTraversed.clear();
                 if (vehicle.inInTargetStall())
                 {
                     System.out.println("Vehicle " + vehicle.getVIN() + " has exited junction and is parking in " + vehicle.getTargetStall().getName());
                     setDrivingState(DrivingState.PARKING_IN_MANUAL_STALL);
                 } else {
                     System.out.println("Vehicle " + vehicle.getVIN() + " is now out of the junction on road " + driver.getCurrentLane().getId());
+                    //System.out.println("Vehicle " + vehicle.getVIN() + " Junction (x,y) " + junction.getCentroid().toString());
+                    //System.out.println("Vehicle " + vehicle.getVIN() + " Vehicle  (x,y) " + vehicle.gaugePosition().toString());
                     setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
                 }
                 pilot.clearDepartureLane();
@@ -422,7 +428,9 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 // if in a different junction and we're not parking, need to get
                 // a new departure lane and estimate the distance travelled.
                 if (!junctionsAlreadyTraversed.contains(junction)) {
-                    if (currentJunction != junction || (vehicle.getTargetStall() != null
+                    if (currentJunction != junction && parkingStatus == ParkingStatus.EXIT
+                        || (parkingStatus == ParkingStatus.PARKING
+                            && vehicle.getTargetStall() != null
                             && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane())) {
                         System.out.println("Vehicle " + vehicle.getVIN() + " in new junction with roads " + junction.getRoads().toString());
                         currentJunction = junction;
@@ -438,7 +446,16 @@ public class MixedCPMManualCoordinator implements Coordinator {
                     // TODO: CPM Have we considered AccelerationProfiles yet? Should we
                     // pilot.followAccelerationProfile(rparameter);
                 }
-                pilot.takeSteeringActionForTraversing(junction, parkingStatus);
+                //System.out.println("Vehicle " + vehicle.getVIN() + " actual junction is " + currentJunction.getRoads().toString());
+                /*if (pilot.getConnectionDepartureLane() != null) {
+                    System.out.println("Vehicle " + vehicle.getVIN() + " existing departure lane " + pilot.getConnectionDepartureLane().getStartPoint().toString());
+                }else{
+                    System.out.println("Vehicle " + vehicle.getVIN() + " existing departure lane null");
+
+                }*/
+
+                pilot.takeSteeringActionForTraversing(currentJunction, parkingStatus);
+                pilot.simpleThrottleAction();
             }
             return false;
         }
@@ -491,6 +508,8 @@ public class MixedCPMManualCoordinator implements Coordinator {
             // park
             pilot.parkInLane(parkingStatus);
             if(pilot.linedUpWithStall()){
+                junctionsAlreadyTraversed.clear();
+                junctionsAlreadyTraversed.add(vehicle.getTargetStall().getJunction());
                 System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
                 parkingStatus = ParkingStatus.PARKED;
                 setDrivingState(DrivingState.PARKED_IN_MANUAL_STALL);
@@ -530,14 +549,21 @@ public class MixedCPMManualCoordinator implements Coordinator {
             // First check that we are still meant to be in a manual stall
             assert(driver != null);
             if (parkingStatus == MixedCPMManualCoordinator.ParkingStatus.EXIT) {
-                pilot.reverseOutOfStall();
-
                 if (pilot.reversedOutOfStall()) {
                     // If we're back on the parking road, follow the flow until the exit, and delete stall to free up the space
-                    setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
-                    driver.setCurrentLane(vehicle.getTargetStall().getParkingRoad().getCentreRoad().getOnlyLane());
-                    vehicle.getTargetStall().delete();
-                    vehicle.clearTargetStall();
+
+                    if (vehicle.gaugeVelocity() > 0) {
+                        vehicle.getTargetStall().delete();
+                        setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
+                        return true;
+                    } else {
+                        pilot.followCurrentLane();
+                        //pilot.setWheelsStraight();
+                        pilot.simpleThrottleAction();
+                    }
+
+                }else{
+                    pilot.reverseOutOfStall();
                 }
             }
             return false;

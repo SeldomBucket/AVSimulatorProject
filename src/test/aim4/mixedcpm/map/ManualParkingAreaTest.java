@@ -406,6 +406,8 @@ public class ManualParkingAreaTest {
 
         testArea.removeManualStall(testStall.getName());
 
+        testArea.update();
+
         assertEquals(0, testArea.getParkingRoads().size());
     }
 
