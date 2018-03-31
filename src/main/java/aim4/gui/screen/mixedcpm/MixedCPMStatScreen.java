@@ -82,22 +82,23 @@ public class MixedCPMStatScreen extends StatScreen {
         manualParkingAreaVehicleStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
 
-        /*CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
-        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));*/
+        CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
+        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
 
         setLayout(new FlowLayout());
 
         JPanel statsPanel = new JPanel();
-        statsPanel.setLayout(new BoxLayout(statsPanel, 3));
+        statsPanel.setLayout(new BoxLayout(statsPanel, 1));
 
         statsPanel.add("config", manualParkingAreaConfig);
         statsPanel.add("simStats", manualParkingAreaSimulationStat);
         statsPanel.add("vehicleStats", manualParkingAreaVehicleStats);
 
         add(statsPanel);
+        add(completedVehiclesTable);
 
         componentsToUpdate.add(manualParkingAreaSimulationStat);
         componentsToUpdate.add(manualParkingAreaVehicleStats);
-        //componentsToUpdate.add(completedVehiclesTable);
+        componentsToUpdate.add(completedVehiclesTable);
     }
 }

@@ -137,6 +137,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                         if (map.getStatusMonitor().addNewVehicle(vehicle)) {
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
+                            vehicle.setEntryTime(getSimulationTime());
                             map.addVehicleToMap(vehicle);
                             break; // only handle the first spawn vehicle
                         } else {
@@ -588,6 +589,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     vehicle.clearTargetStall();
                 }
                 vehicle.clearTargetStall();
+                vehicle.setExitTime(getSimulationTime());
                 map.getStatusMonitor().vehicleOnExit(vehicle);
                 map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
