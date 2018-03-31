@@ -25,10 +25,20 @@ public class StatusMonitor {
     private int numberOfDeniedEntries;
     /** The number of vehicles allowed entry as there is enough room.*/
     private int numberOfAllowedEntries;
+    /** The number of vehicles exited the car park*/
+    private int numberOfCompletedVehicles;
     /** The most number of vehicles that have been in the car park at any one time during simulation.*/
     private int mostNumberOfVehicles;
     /** The most number of vehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
+    /** The max space efficiency of the parking area */
+    private double maxEfficiency;
+    /** The current space efficiency of the parking area */
+    private double currentEfficiency;
+    /** The current area per vehicle the parking area */
+    private double areaPerVehicle;
+    /** The minimum area per vehicle the parking area */
+    private double minAreaPerVehicle;
 
     /**
      * Create a StatusMonitor to record the status of the parking area.
@@ -39,6 +49,11 @@ public class StatusMonitor {
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
+        numberOfCompletedVehicles = 0;
+        maxEfficiency = 0;
+        currentEfficiency = 0;
+        areaPerVehicle = Double.MAX_VALUE;
+        minAreaPerVehicle = Double.MAX_VALUE;
     }
 
     /**
@@ -61,9 +76,6 @@ public class StatusMonitor {
         }
 
         // Allocate this parking lane to the vehicle by sending message
-        //System.out.println("Status monitor sending parking lane to vehicle.");
-//        ManualStall allocatedStall2 = parkingArea.findSpace(vehicle.getStallInfo());
-//        allocatedStall2.delete();
         sendParkingLaneMessage(vehicle, allocatedStall);
 
         // Register the vehicle with the StatusMonitor, along with the
@@ -81,6 +93,7 @@ public class StatusMonitor {
     public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicles.remove(vehicle);
+        numberOfCompletedVehicles++;
     }
 
 
@@ -91,6 +104,18 @@ public class StatusMonitor {
 
     public Map<MixedCPMBasicManualVehicle, ManualStall> getVehicles() {
         return vehicles;
+    }
+
+    public double getTotalAreaOfParkedVehicles(){
+        double totalVehicleArea = 0;
+        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+            if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
+                totalVehicleArea = totalVehicleArea +
+                                    (vehicle.getSpec().getWidth() *
+                                     vehicle.getSpec().getWidth());
+            }
+        }
+        return totalVehicleArea;
     }
 
     public int getNoOfParkedVehicles(){
@@ -114,6 +139,33 @@ public class StatusMonitor {
             mostNumberOfParkedVehicles = currentNumberOfParkedVehicles;
         }
     }
+
+    public void updateEfficiencyMeasurements(){
+        double areaOfCarPark = (parkingArea.getDimensions().getWidth() *
+                                parkingArea.getDimensions().getHeight());
+        double areaOfVehicles = getTotalAreaOfParkedVehicles();
+
+        areaPerVehicle = areaOfCarPark/getNoOfParkedVehicles();
+        currentEfficiency =  areaOfVehicles / areaOfCarPark;
+
+        if (currentEfficiency > maxEfficiency){
+            maxEfficiency = currentEfficiency;
+        }
+
+        if (areaPerVehicle < minAreaPerVehicle){
+            minAreaPerVehicle = areaPerVehicle;
+        }
+    }
+
+    public double getCurrentEfficiency(){ return currentEfficiency; }
+
+    public double getMaxEfficiency(){ return maxEfficiency; }
+
+    public double getAreaPerVehicle() { return areaPerVehicle; }
+
+    public double getMinAreaPerVehicle() { return minAreaPerVehicle; }
+
+    public int getNumberOfCompletedVehicles() { return numberOfCompletedVehicles; }
 
     public int getMostNumberOfParkedVehicles() { return mostNumberOfParkedVehicles; }
 

@@ -561,6 +561,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
     protected void observeNumberOfVehiclesInCarPark() {
         if (map.getStatusMonitor() != null) {
             map.getStatusMonitor().updateMostNumberOfVehicles();
+            map.getStatusMonitor().updateEfficiencyMeasurements();
         }
     }
 

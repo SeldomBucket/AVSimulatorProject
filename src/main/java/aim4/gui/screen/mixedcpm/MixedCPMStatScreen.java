@@ -12,6 +12,7 @@ import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator.*;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -70,29 +71,33 @@ public class MixedCPMStatScreen extends StatScreen {
     }
 
     private void setupScreen(){
-        /*GeneralInfo generalInfo = new GeneralInfo();
-        generalInfo.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        SimConfigSummary simConfigSummary = new SimConfigSummary(setupPanel);
-        simConfigSummary.setBorder(new EmptyBorder(10, 10, 10, 10));*/
+        ManualParkingAreaConfig manualParkingAreaConfig = new ManualParkingAreaConfig(setupPanel);
+        manualParkingAreaConfig.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        ManualParkingAreaStats manualParkingAreaStats = new ManualParkingAreaStats();
-        manualParkingAreaStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+        ManualParkingAreaSimulationStats manualParkingAreaSimulationStat = new ManualParkingAreaSimulationStats();
+        manualParkingAreaSimulationStat.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        ManualParkingAreaStats manualParkingAreaVehicleStats = new ManualParkingAreaStats();
+        manualParkingAreaVehicleStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+
 
         /*CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
         completedVehiclesTable.setMaximumSize(new Dimension(60, 60));*/
 
-
         setLayout(new FlowLayout());
-        //add(generalInfo);
-        //add(simConfigSummary);
-        add(manualParkingAreaStats);
-        //add(completedVehiclesTable);
 
+        JPanel statsPanel = new JPanel();
+        statsPanel.setLayout(new BoxLayout(statsPanel, 3));
 
-        //componentsToUpdate.add(generalInfo);
-        //componentsToUpdate.add(simConfigSummary);
-        componentsToUpdate.add(manualParkingAreaStats);
+        statsPanel.add("config", manualParkingAreaConfig);
+        statsPanel.add("simStats", manualParkingAreaSimulationStat);
+        statsPanel.add("vehicleStats", manualParkingAreaVehicleStats);
+
+        add(statsPanel);
+
+        componentsToUpdate.add(manualParkingAreaSimulationStat);
+        componentsToUpdate.add(manualParkingAreaVehicleStats);
         //componentsToUpdate.add(completedVehiclesTable);
     }
 }
