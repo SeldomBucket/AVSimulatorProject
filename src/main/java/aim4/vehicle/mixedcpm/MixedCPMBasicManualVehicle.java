@@ -4,10 +4,8 @@ import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
-import aim4.map.Road;
 import aim4.map.connections.BasicConnection;
 import aim4.map.lane.Lane;
-import aim4.map.lane.LineSegmentLane;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.map.mixedcpm.parking.StallInfo;
 import aim4.map.mixedcpm.parking.StallType;
@@ -83,10 +81,9 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     protected double exitTime;
 
     /**
-     * The time it took for the vehicle to exit the car
-     * park once its parking time had elapsed.
+     * Whether this vehicle is disabled or not
      */
-    protected double retrievalTime;
+    protected boolean disabledVehicle;
 
     /**
      * The list of lanes in order which the vehicle will
@@ -126,6 +123,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
      * @param acceleration    the initial acceleration of the Vehicle
      * @param currentTime     the current time
      * @param parkingTime     how long the vehicle will park for
+     * @param disabledVehicle if the vehicle is a disabled vehicle
      */
     public MixedCPMBasicManualVehicle(VehicleSpec spec,
                                       Point2D pos,
@@ -135,15 +133,21 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
                                       double targetVelocity,
                                       double acceleration,
                                       double currentTime,
-                                      double parkingTime) {
+                                      double parkingTime,
+                                      boolean disabledVehicle) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration,
                 targetVelocity, currentTime);
         this.targetStall = null;
         this.parkingTime = parkingTime;
         this.timeUntilExit = parkingTime;
         this.hasEntered = false;
-        // TODO Different types of vehicle
-        this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Standard);
+        this.disabledVehicle = disabledVehicle;
+
+        if (disabledVehicle){
+            this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Disabled);
+        }else {
+            this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Standard);
+        }
 
     }
 
@@ -212,6 +216,10 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
 
     public void setEntryTime(double entryTime) {
         this.entryTime = entryTime;
+    }
+
+    public boolean isDisabledVehicle() {
+        return disabledVehicle;
     }
 
     public void sendMessageToI2VInbox(ManualStall manualStall) {

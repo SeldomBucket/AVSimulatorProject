@@ -280,6 +280,7 @@ public class MixedCPMMapUtil {
         }
     }
 
+
     /**
      * The spec generator that generates a finite number of vehicles,
      * randomly selecting the spec of each one.
@@ -357,6 +358,8 @@ public class MixedCPMMapUtil {
     public static class InfiniteSpawnRandomSpecGenerator implements MixedCPMSpawnSpecGenerator {
         /** The proportion of each spec */
         private List<Double> proportion;
+        /** The probability of a vehicle being a disabled vehicle */
+        private double probabilityOfVehicleBeingDisabled = 0.048;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
 
@@ -389,10 +392,20 @@ public class MixedCPMMapUtil {
                 if (Util.random.nextDouble() < spawnProbability) {
                     int i = Util.randomIndex(proportion);
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
+
                     double parkingTime = generateParkingTime();
-                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
-                            vehicleSpec,
-                            parkingTime));
+
+                    if(Util.random.nextDouble() < probabilityOfVehicleBeingDisabled){
+                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
+                                vehicleSpec,
+                                parkingTime,
+                                true));
+                    }else{
+                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
+                                vehicleSpec,
+                                parkingTime));
+                    }
+
 
                     // TODO ED Re-add this, maybe?
                     //System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");

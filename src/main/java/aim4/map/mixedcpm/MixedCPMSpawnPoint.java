@@ -21,6 +21,7 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
     public static class MixedCPMSpawnSpec extends SpawnSpec {
 
         double parkingTime;
+        boolean disabledVehicle;
 
         /**
          * Create a spawn specification.
@@ -31,9 +32,27 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
         public MixedCPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec, double parkingTime) {
             super(spawnTime, vehicleSpec);
             this.parkingTime = parkingTime;
+            this.disabledVehicle = false;
+        }
+
+        /**
+         * Create a spawn specification.
+         *
+         * @param spawnTime       the spawn time
+         * @param vehicleSpec     the vehicle specification
+         * @param disabledVehicle whether this vehicle is a disabled vehicle
+         */
+        public MixedCPMSpawnSpec(double spawnTime, VehicleSpec vehicleSpec, double parkingTime, boolean disabledVehicle) {
+            super(spawnTime, vehicleSpec);
+            this.parkingTime = parkingTime;
+            this.disabledVehicle = disabledVehicle;
         }
 
         public double getParkingTime() { return parkingTime; }
+
+        public boolean isDisabledVehicle() {
+            return disabledVehicle;
+        }
     }
 
     /**

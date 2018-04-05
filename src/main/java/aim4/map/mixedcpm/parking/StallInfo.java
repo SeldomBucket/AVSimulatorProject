@@ -23,8 +23,9 @@ public class StallInfo {
 
         Double[] standardPadding = {1.0, 1.0};
         stallPadding.put(StallType.Standard, standardPadding);
-        
-        Double[] disabledPadding = {3.0, 3.0};
+
+        // 1 metre buffer on outside compared to standard stall
+        Double[] disabledPadding = {2.0, 2.0};
         stallPadding.put(StallType.Disabled, disabledPadding);
     }
 

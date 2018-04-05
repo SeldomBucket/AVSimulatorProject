@@ -140,6 +140,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             vehicle.setEntryTime(getSimulationTime());
                             map.addVehicleToMap(vehicle);
                             System.out.println("Vehicle " + vehicle.getVIN() + " Spec " + vehicle.getSpec().getName() + " spawned at time " + currentTime);
+                            if (vehicle.isDisabledVehicle()){
+                                System.out.println("Vehicle " + vehicle.getVIN() + " is a disabled vehicle");
+                            }
                             break; // only handle the first spawn vehicle
                         } else {
                             // TODO ED Re-add this maybe?
@@ -198,7 +201,8 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                         initVelocity,  // target velocity
                         spawnPoint.getAcceleration(),
                         spawnSpec.getSpawnTime(),
-                        spawnSpec.getParkingTime());
+                        spawnSpec.getParkingTime(),
+                        spawnSpec.isDisabledVehicle());
         // Set the driver
         MixedCPMManualDriver driver = new MixedCPMManualDriver(vehicle, map);
         driver.setCurrentLane(lane);
