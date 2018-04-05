@@ -155,7 +155,7 @@ public class MixedCPMManualPilot extends BasicPilot{
             double heading = vehicle.getHeading();
 
             if (vehicleHeadingMatchesLane()
-                    && !vehicleOutsideStartOfLane()
+                    && !vehicleOutsideStartOfStall()
                     && !frontOfVehicleNearOrPastEndOfLane()
                     && parkingMechanicsState < 5) {
                 // Move to phase 2 if vehicle is lined up and between beginning and end of stall
@@ -310,7 +310,7 @@ public class MixedCPMManualPilot extends BasicPilot{
 
     public boolean reversedOutOfStall(){
         boolean currentLaneIsManualStall = vehicle.getTargetStall().getParkingRoad().getCentreRoad().getOnlyLane() == driver.getCurrentLane();
-        return currentLaneIsManualStall && vehicleOutsideStartOfLane();
+        return currentLaneIsManualStall && vehicleOutsideStartOfStall();
     }
 
     private boolean vehicleEntirelyInsideStall(){
@@ -365,14 +365,13 @@ public class MixedCPMManualPilot extends BasicPilot{
         }
     }
 
-    private boolean vehicleOutsideStartOfLane(){
-        Point2D pointBetweenFrontWheels = this.getVehicle().gaugePosition();
-        Point2D currentLaneStartPoint = this.driver.getCurrentLane().getStartPoint();
+    private boolean vehicleOutsideStartOfStall(){
+        Point2D pointBetweenFrontWheels = vehicle.gaugePosition();
 
         if (vehicle.getTargetStall().isLeftOfParkingRoad()) {
-            return pointBetweenFrontWheels.getX() >= currentLaneStartPoint.getX();
+            return pointBetweenFrontWheels.getX() >= vehicle.getTargetStall().getMaxX();
         } else {
-            return pointBetweenFrontWheels.getX() <= currentLaneStartPoint.getX();
+            return pointBetweenFrontWheels.getX() <= vehicle.getTargetStall().getMinX();
         }
     }
 

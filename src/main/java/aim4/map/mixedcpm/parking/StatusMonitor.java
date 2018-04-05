@@ -124,6 +124,7 @@ public class StatusMonitor {
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 noOfParkedVehicles++;
             }else{
+                //here
                 noOfParkedVehicles = noOfParkedVehicles;
             }
         }

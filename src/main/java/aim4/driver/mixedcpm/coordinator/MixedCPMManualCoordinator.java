@@ -241,6 +241,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
      * The main loop for calling the state handlers
      */
     private void callStateHandlers() {
+        //here
         boolean shouldContinue = true;
         while(shouldContinue) {
             if (stateHandlers.containsKey(drivingState)) {
