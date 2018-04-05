@@ -120,12 +120,25 @@ public class StatusMonitor {
 
     public int getNoOfParkedVehicles(){
         int noOfParkedVehicles = 0;
+        int noOfVansNotParked = 0;
+        int noOfNonVansNotParked = 0;
+        int noOfVansParked = 0;
+        int noOfNonVansParked = 0;
         for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 noOfParkedVehicles++;
+                if (vehicle.getSpec().getName() == "VAN"){
+                    noOfVansParked++;
+                }else{
+                    noOfNonVansParked++;
+                }
             }else{
                 //here
-                noOfParkedVehicles = noOfParkedVehicles;
+                if (vehicle.getSpec().getName() == "VAN"){
+                    noOfVansNotParked++;
+                }else{
+                    noOfNonVansNotParked++;
+                }
             }
         }
         return noOfParkedVehicles;

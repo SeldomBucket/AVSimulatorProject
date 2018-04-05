@@ -86,7 +86,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     /**
      * Preferred maximum width for the canvas, in pixels. {@value} pixels.
      */
-    private static final int PREF_MAX_CANVAS_WIDTH = 650;
+    private static final int PREF_MAX_CANVAS_WIDTH = 1000;
     /**
      * Preferred maximum height for the canvas, in pixels. {@value} pixels.
      */

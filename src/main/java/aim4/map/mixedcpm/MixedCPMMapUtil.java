@@ -393,7 +393,9 @@ public class MixedCPMMapUtil {
                     result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                             vehicleSpec,
                             parkingTime));
-                    System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
+
+                    // TODO ED Re-add this, maybe?
+                    //System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                 }
             }
 

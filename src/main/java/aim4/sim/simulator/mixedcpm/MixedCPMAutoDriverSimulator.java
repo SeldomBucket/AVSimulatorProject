@@ -139,9 +139,11 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             vinToVehicles.put(vehicle.getVIN(), vehicle);
                             vehicle.setEntryTime(getSimulationTime());
                             map.addVehicleToMap(vehicle);
+                            System.out.println("Vehicle " + vehicle.getVIN() + " Spec " + vehicle.getSpec().getName() + " spawned at time " + currentTime);
                             break; // only handle the first spawn vehicle
                         } else {
-                            System.out.println("Spawned vehicle discarded: not enough room.");
+                            // TODO ED Re-add this maybe?
+                            // System.out.println("Spawned vehicle discarded: not enough room.");
                         }
                     }
                 }
@@ -501,31 +503,6 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             for(DataCollectionLine line : map.getDataCollectionLines()) {
                 line.intersect(vehicle, currentTime, p1, p2);
             }
-
-            // Check if we've gone through a sensored line
-            // TODO CPM try remove the need for this assertion
-            /*
-            assert map instanceof MixedCPMCarParkWithStatus;
-            for (SensoredLine line : ((CPMCarParkWithStatus) map).getSensoredLines()) {
-                if (line.intersect(vehicle, currentTime, p1, p2)) {
-                    StatusMonitor statusMonitor = map.getStatusMonitor();
-                    if (line.getType() == SensoredLine.SensoredLineType.ENTRY) {
-                        System.out.println("Vehicle is entering.");
-                        vehicle.setEntryTime(currentTime);
-                        statusMonitor.vehicleOnEntry(vehicle);
-                    }
-                    if (line.getType() == SensoredLine.SensoredLineType.REENTRY) {
-                        System.out.println("Vehicle is re-entering.");
-                        statusMonitor.vehicleOnReEntry(vehicle);
-                    }
-                    if (line.getType() == SensoredLine.SensoredLineType.EXIT) {
-                        System.out.println("Vehicle is exiting.");
-                        vehicle.setExitTime(currentTime);
-                        statusMonitor.vehicleOnExit(vehicle);
-                    }
-                }
-            }
-            */
 
             // Update the time left for the vehicle to be parked.
             if (vehicle.hasEnteredCarPark()) {
