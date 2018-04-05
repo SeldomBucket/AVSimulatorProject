@@ -6,6 +6,7 @@ import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator.*;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.List;
 
 /**
@@ -15,6 +16,7 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
     private MapKeyTableModel model; // TODO CPM Move this class out of merge
     private JTable table;
     private JScrollPane scrollPane;
+    private JLabel title;
 
     public CompletedVehiclesTable() {
         this.model = new MapKeyTableModel( new String[]{
@@ -25,9 +27,14 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
                 "Exit time"
         });
 
+        this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+
+        this.title = new JLabel("Completed Vehicles Table:");
+        this.title.setOpaque(true);
         this.table = new JTable(model);
         scrollPane = new JScrollPane(table);
         scrollPane.setVisible(true);
+        this.add(title);
         this.add(scrollPane);
     }
 
@@ -45,12 +52,7 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
                 });
             }
         }
-    }
-
-    private double calculateRetrievalTime(MixedCPMBasicManualVehicle vehicle) {
-        double timeRetrieved = vehicle.getEntryTime() + vehicle.getParkingTime();
-        double timeTakenToRetrieve = vehicle.getExitTime() - timeRetrieved;
-        return timeTakenToRetrieve;
+        scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
     }
 
 }

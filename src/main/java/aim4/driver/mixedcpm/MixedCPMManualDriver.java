@@ -280,6 +280,10 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         return coordinator.getParkingStatus() == MixedCPMManualCoordinator.ParkingStatus.PARKED;
     }
 
+    public boolean isOnBottomRoad(){
+        return map.getBottomRoad().getOnlyLane() == this.getCurrentLane();
+    }
+
     @Override
     public MixedCPMBasicManualVehicle getVehicle() {
         return vehicle;

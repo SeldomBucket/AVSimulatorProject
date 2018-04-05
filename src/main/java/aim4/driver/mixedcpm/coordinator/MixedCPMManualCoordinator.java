@@ -429,23 +429,27 @@ public class MixedCPMManualCoordinator implements Coordinator {
                 // if in a different junction and we're not parking, need to get
                 // a new departure lane and estimate the distance travelled.
                 if (!junctionsAlreadyTraversed.contains(junction)) {
-                    if (currentJunction != junction && parkingStatus == ParkingStatus.EXIT
-                        || (parkingStatus == ParkingStatus.PARKING
-                            && vehicle.getTargetStall() != null
-                            && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane())) {
-                        System.out.println("Vehicle " + vehicle.getVIN() + " in new junction with roads " + junction.getRoads().toString());
-                        currentJunction = junction;
-                        junctionsAlreadyTraversed.add(currentJunction);
-                        vehicle.updateEstimatedDistanceTravelled(currentJunction);
-                        pilot.clearDepartureLane();
+
+                    // if we're not already in the junction with the final road
+                    if (!currentJunction.getExitRoads().get(0).getName().equals("bottomRoad")) {
+                        if (currentJunction != junction && parkingStatus == ParkingStatus.EXIT
+                                || (parkingStatus == ParkingStatus.PARKING
+                                && vehicle.getTargetStall() != null
+                                && pilot.getConnectionDepartureLane() != vehicle.getTargetStall().getLane())) {
+                            System.out.println("Vehicle " + vehicle.getVIN() + " in new junction with roads " + junction.getRoads().toString());
+                            currentJunction = junction;
+                            junctionsAlreadyTraversed.add(currentJunction);
+                            vehicle.updateEstimatedDistanceTravelled(currentJunction);
+                            pilot.clearDepartureLane();
+                        }
+                        if (!debugPrintedThisJunctionAlready) {
+                            System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
+                            debugPrintedThisJunctionAlready = true;
+                        }
+                        // do nothing, keep going through the junction
+                        // TODO: CPM Have we considered AccelerationProfiles yet? Should we
+                        // pilot.followAccelerationProfile(rparameter);
                     }
-                    if (!debugPrintedThisJunctionAlready) {
-                        System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
-                        debugPrintedThisJunctionAlready = true;
-                    }
-                    // do nothing, keep going through the junction
-                    // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                    // pilot.followAccelerationProfile(rparameter);
                 }
                 //System.out.println("Vehicle " + vehicle.getVIN() + " actual junction is " + currentJunction.getRoads().toString());
                 /*if (pilot.getConnectionDepartureLane() != null) {
