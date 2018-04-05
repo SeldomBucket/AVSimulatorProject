@@ -221,7 +221,7 @@ public abstract class BasicConnection implements RoadConnection {
                                                     lane1MeasurementPoint,
                                                     lane2MeasurementPoint,
                                                     intersectionPoint);
-        double angleInDegrees = Math.toDegrees(angleInRadians);
+        double angleInDegrees = Math.round(Math.toDegrees(angleInRadians));
         if (Math.abs(angleInDegrees) == 90.0 || Math.abs(angleInDegrees) == 270.0) {
             return true;
         }

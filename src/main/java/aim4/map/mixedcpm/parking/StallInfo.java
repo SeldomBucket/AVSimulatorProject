@@ -1,5 +1,7 @@
 package aim4.map.mixedcpm.parking;
 
+import aim4.util.Util;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -52,10 +54,9 @@ public class StallInfo {
      */
     public StallInfo(double vehicleWidth, double vehicleLength, StallType type){
         this.type = type;
-        // TODO Quantize vehicle width and length to specific sizes of space, maybe?
-        // Might give a more efficient packing if there's a bit of leeway
-        this.width = vehicleWidth + stallPadding.get(type)[0];
-        this.length = vehicleLength + stallPadding.get(type)[1];
+        // Round space size to nearest 10cm and add the padding needed for the vehicle
+        this.width = Util.roundToDecimalPlaces(vehicleWidth, 1) + stallPadding.get(type)[0];
+        this.length = Util.roundToDecimalPlaces(vehicleLength, 1) + stallPadding.get(type)[1];
     }
 
     /**

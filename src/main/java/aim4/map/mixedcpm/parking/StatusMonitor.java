@@ -123,6 +123,8 @@ public class StatusMonitor {
         for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 noOfParkedVehicles++;
+            }else{
+                noOfParkedVehicles = noOfParkedVehicles;
             }
         }
         return noOfParkedVehicles;

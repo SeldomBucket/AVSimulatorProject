@@ -33,24 +33,23 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
                 speedLimit,
                 currentTime);
 
-        if (spawnSpecType == MixedCPMMapUtil.SpawnSpecType.SINGLE)
-            // Set up the correct spawn point
-            switch(spawnSpecType) {
-                case SINGLE:
-                    if (!useCSVFile.getKey()){
-                        MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
-                    } else {
-                        MixedCPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
-                    }
-                    break;
-                case RANDOM:
-                    if (!useCSVFile.getKey()){
-                        MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
-                    } else {
-                        MixedCPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
-                    }
-                    break;
-            }
+        // Set up the correct spawn point
+        switch(spawnSpecType) {
+            case SINGLE:
+                if (!useCSVFile.getKey()){
+                    MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    MixedCPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
+                break;
+            case RANDOM:
+                if (!useCSVFile.getKey()){
+                    MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                } else {
+                    MixedCPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
+                }
+                break;
+        }
 
         return new MixedCPMAutoDriverSimulator(layout);
     }

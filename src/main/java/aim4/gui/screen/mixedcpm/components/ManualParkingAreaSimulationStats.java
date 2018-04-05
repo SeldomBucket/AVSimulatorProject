@@ -1,6 +1,7 @@
 package aim4.gui.screen.mixedcpm.components;
 
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
+import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -69,15 +70,8 @@ public class ManualParkingAreaSimulationStats extends JPanel implements MixedCPM
         // Split the text so we can remove the old value and reuse the label
         String[] labelSplit = labelText.split(":");
         String labelOnly = labelSplit [0];
-        label.setText(labelOnly + ": " + round(newValue,2));
+        label.setText(labelOnly + ": " + Util.roundToDecimalPlaces(newValue,2));
     }
 
-    public static double round(double value, int places) {
-        if (places < 0) throw new IllegalArgumentException();
 
-        long factor = (long) Math.pow(10, places);
-        value = value * factor;
-        long tmp = Math.round(value);
-        return (double) tmp / factor;
-    }
 }

@@ -367,6 +367,21 @@ public class Util {
     return new ArrayList<String>(result);
   }
 
+  /**
+   * Rounds a double value to a specified number of decimal places
+   * @param value Value to round
+   * @param places Number of decimal places to round that value to
+   * @return the value rounded to the specified number of decimal places
+   */
+  public static double roundToDecimalPlaces(double value, int places) {
+    if (places < 0) throw new IllegalArgumentException();
+
+    long factor = (long) Math.pow(10, places);
+    value = value * factor;
+    long tmp = Math.round(value);
+    return (double) tmp / factor;
+  }
+
   /////////////////////////////////
   // CLASS CONSTRUCTORS
   /////////////////////////////////
