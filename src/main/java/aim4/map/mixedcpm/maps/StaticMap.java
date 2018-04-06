@@ -77,15 +77,17 @@ public class StaticMap extends MixedCPMBasicMap {
         }
 
         stalls.clear();
+        manualParkingArea.update();
 
         // Create the correct number of disabled spaces
         for (int i = 0; i < noOfDisabledSpaces; i++){
-            manualParkingArea.findSpace(disabledStallInfo);
+            stalls.add(manualParkingArea.findSpace(disabledStallInfo));
         }
 
         // Fill the rest with standard stalls
         do{
             newStall = manualParkingArea.findSpace(standardStallInfo);
+            stalls.add(newStall);
         }while (newStall != null);
 
         newStall = null;
