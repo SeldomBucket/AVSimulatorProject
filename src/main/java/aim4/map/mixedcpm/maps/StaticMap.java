@@ -67,7 +67,7 @@ public class StaticMap extends MixedCPMBasicMap {
         int noOfDisabledSpaces;
 
         if (totalCapacity < 200){
-            noOfDisabledSpaces = Math.max(3, (int)(totalCapacity*0.06));
+            noOfDisabledSpaces = Math.round(Math.max(3, (int)(totalCapacity*0.06)));
         }else{
             noOfDisabledSpaces = 4 + (int)(totalCapacity*0.04);
         }

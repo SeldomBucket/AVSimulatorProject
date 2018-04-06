@@ -47,6 +47,8 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
                 break;
         }
 
+        MixedCPMAutoDriverSimulator.setMapType(mapType);
+
 
 
         // Set up the correct spawn point

@@ -7,6 +7,8 @@ import aim4.driver.mixedcpm.navigator.MixedCPMManualNavigator;
 import aim4.map.connections.BasicConnection;
 import aim4.map.connections.Corner;
 import aim4.map.lane.Lane;
+import aim4.map.mixedcpm.MixedCPMMapUtil;
+import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
 import aim4.vehicle.VehicleDriverModel;
 import aim4.vehicle.VehicleUtil;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
@@ -314,13 +316,19 @@ public class MixedCPMManualPilot extends BasicPilot{
     }
 
     private boolean vehicleEntirelyInsideStall(){
+
         Rectangle2D vehicleShape = this.getVehicle().gaugeShape().getBounds2D();
         boolean linedUpWithBottom = vehicleShape.getMaxY() <= this.vehicle.getTargetStall().getMaxY();
         boolean linedUpWithTop = vehicleShape.getMinY() >= this.vehicle.getTargetStall().getMinY();
         boolean linedUpWithLeft = vehicleShape.getMaxX() <= this.vehicle.getTargetStall().getMaxX();
         boolean linedUpWithRight = vehicleShape.getMinX() >= this.vehicle.getTargetStall().getMinX();
 
-        return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
+        if (MixedCPMAutoDriverSimulator.mapType() == MixedCPMMapUtil.MapType.STATIC) {
+            return frontOfVehicleNearOrPastEndOfLane();
+
+        }else{
+            return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
+        }
     }
 
     private boolean frontOfVehicleInYTolerance(){
@@ -343,7 +351,13 @@ public class MixedCPMManualPilot extends BasicPilot{
         Point2D currentLaneEndPoint = this.driver.getCurrentLane().getEndPoint();
         Rectangle2D laneShape = this.driver.getCurrentLane().getShape().getBounds2D();
 
-        double tolerance = Math.abs(laneShape.getHeight()-vehicle.getSpec().getWidth())/2-TOLERANCE_FOR_PARKING;
+//        double minY = vehicle.getTargetStall().getMaxY() - vehicle.getSpec().getWidth()/2;
+//        double maxY = vehicle.getTargetStall().getMaxY() + vehicle.getSpec().getWidth()/2;
+//        double tolerance;
+//
+//        tolerance = Math.abs(maxY-minY)/2;
+
+        double tolerance = Math.abs(vehicle.getTargetStall().getWidth()-vehicle.getSpec().getWidth())/2-TOLERANCE_FOR_PARKING;
 
         boolean rearInPosition = pointBetweenRearWheels.getY() > currentLaneEndPoint.getY() - tolerance &&
                 pointBetweenRearWheels.getY() < currentLaneEndPoint.getY() + tolerance;
@@ -397,7 +411,7 @@ public class MixedCPMManualPilot extends BasicPilot{
     }
 
     public boolean linedUpWithStall(){
-        return vehicleEntirelyInsideStall() && !frontOfVehicleNearOrPastEndOfLane();
+        return vehicleEntirelyInsideStall();// && !frontOfVehicleNearOrPastEndOfLane();
     }
 
     /**

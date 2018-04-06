@@ -118,6 +118,21 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
 
     public void initializeTopAndBottomRoads(){
+//
+//        this.topRoad = makeRoadWithOneLane("topRoad",
+//                BORDER,
+//                BORDER+(laneWidth/2),
+//                this.dimensions.getWidth() - BORDER,
+//                BORDER+(laneWidth/2),
+//                laneWidth);
+//
+//        this.bottomRoad = makeRoadWithOneLane("bottomRoad",
+//                BORDER,
+//                this.dimensions.getHeight() - (BORDER+(laneWidth/2)),
+//                this.dimensions.getWidth() - BORDER,
+//                this.dimensions.getHeight() - (BORDER+(laneWidth/2)),
+//                laneWidth);
+
 
         this.topRoad = makeRoadWithOneLane("topRoad",
                 BORDER,

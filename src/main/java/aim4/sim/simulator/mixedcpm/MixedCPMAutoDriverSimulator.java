@@ -31,6 +31,22 @@ import java.util.List;
  * The simulator of AVs in an AV specific car park which are self-organising.
  */
 public class MixedCPMAutoDriverSimulator implements Simulator {
+
+
+    //////////////////////////////////////////////
+    // STATE VARIABLES FOR SIMULATION BEHAVIOUR
+    //////////////////////////////////////////////
+
+    private static MixedCPMMapUtil.MapType mapType;
+
+    public static MixedCPMMapUtil.MapType mapType(){
+        return mapType;
+    }
+
+    public static void setMapType(MixedCPMMapUtil.MapType type){
+        mapType = type;
+    }
+
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -145,7 +161,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             }
                             break; // only handle the first spawn vehicle
                         } else {
-                            // TODO ED Re-add this maybe?
+                            // TODO ED Re-add this if needed
                             // System.out.println("Spawned vehicle discarded: not enough room.");
                         }
                     }
