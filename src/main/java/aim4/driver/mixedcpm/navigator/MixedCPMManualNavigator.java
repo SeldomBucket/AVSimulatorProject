@@ -57,7 +57,6 @@ public class MixedCPMManualNavigator {
 
                 } else if (parkingStatus == ParkingStatus.EXIT) {
                     // Then we want to exit by staying on the same lane
-                    // TODO ED exit from parking space
                     return driver.getCurrentLane();
                 } else {
                     throw new RuntimeException("No behaviour defined for WAITING in junction.");

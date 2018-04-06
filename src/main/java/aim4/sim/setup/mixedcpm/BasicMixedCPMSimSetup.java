@@ -22,6 +22,8 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     protected double laneWidth;
     /** The type of spawn specification. */
     protected SpawnSpecType spawnSpecType;
+    /** The type of spawn specification. */
+    protected MapType mapType;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
 
@@ -37,6 +39,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
         this.carParkWidth = basicSimSetup.carParkWidth;
         this.carParkHeight = basicSimSetup.carParkHeight;
         this.spawnSpecType = basicSimSetup.spawnSpecType;
+        this.mapType = basicSimSetup.mapType;
         this.useCSVFile = basicSimSetup.useCSVFile;
     }
 
@@ -47,13 +50,14 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
      */
     public BasicMixedCPMSimSetup(double speedLimit, double trafficLevel,
                             double laneWidth, double carParkWidth, double carParkHeight,
-                            SpawnSpecType spawnSpecType, Pair<Boolean, String> useCSVFile) {
+                            SpawnSpecType spawnSpecType, MapType mapType, Pair<Boolean, String> useCSVFile) {
         this.speedLimit = speedLimit;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
         this.carParkWidth = carParkWidth;
         this.carParkHeight = carParkHeight;
         this.spawnSpecType = spawnSpecType;
+        this.mapType = mapType;
         this.useCSVFile = useCSVFile;
     }
 
@@ -103,7 +107,14 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     }
     public SpawnSpecType getSpawnSpecType() { return spawnSpecType; }
 
-    public void setSpawnSpecType(SpawnSpecType spawnSpecType) { this.spawnSpecType = spawnSpecType; }
+    public void setSpawnSpecType(SpawnSpecType spawnSpecType) {
+        this.spawnSpecType = spawnSpecType;
+    }
+
+    public void setMapType(MapType mapType) {
+        this.mapType = mapType;
+    }
+    public SpawnSpecType getMapType() { return spawnSpecType; }
 
     public Pair<Boolean, String> getUseCSVFile() {
         return useCSVFile;

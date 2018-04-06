@@ -34,6 +34,13 @@ public class MixedCPMMapUtil {
         RANDOM
     }
 
+    public enum MapType{
+        /** Static - like an existing car park, the spaces don't change */
+        STATIC,
+        /** Adjustable Manual - ManualParkingArea only, adjusts to new vehicles arriving */
+        ADJUSTABLE_MANUAL
+    }
+
     /////////////////////////////////
     // NESTED CLASSES
     /////////////////////////////////
@@ -127,7 +134,7 @@ public class MixedCPMMapUtil {
                 if (Util.random.nextDouble() < spawnProbability) {
                     double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
                     result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                    System.out.println("Vehicle spawned!");
+                    //System.out.println("Vehicle spawned!");
                 }
             }
             return result;

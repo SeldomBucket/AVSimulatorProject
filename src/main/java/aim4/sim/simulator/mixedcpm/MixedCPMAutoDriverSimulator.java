@@ -9,7 +9,7 @@ import aim4.map.mixedcpm.*;
 import aim4.map.mixedcpm.MixedCPMSpawnPoint.*;
 /*
 import aim4.map.mixedcpm.parking.SensoredLine;
-import aim4.map.mixedcpm.parking.StatusMonitor;
+import aim4.map.mixedcpm.parking.IStatusMonitor;
 */
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
@@ -569,9 +569,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                 if (map.getManualParkingArea().getManualStallByName(vehicle.getTargetStall().getName()) != null){
                     vehicle.clearTargetStall();
                 }
+                map.getStatusMonitor().vehicleOnExit(vehicle);
                 vehicle.clearTargetStall();
                 vehicle.setExitTime(getSimulationTime());
-                map.getStatusMonitor().vehicleOnExit(vehicle);
                 map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
                 System.out.println("Vehicle " + vin + " exited car park and deleted");

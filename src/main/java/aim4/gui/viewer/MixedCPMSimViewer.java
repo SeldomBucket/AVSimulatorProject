@@ -31,6 +31,7 @@ public class MixedCPMSimViewer extends SimViewer {
                 30, // carParkWidth
                 20, // carParkHeight,
                 SpawnSpecType.SINGLE, // spawn spec type
+                MapType.ADJUSTABLE_MANUAL,
                 new Pair<Boolean, String>(false, "")
         )), false);
     }

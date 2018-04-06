@@ -3,7 +3,7 @@ package aim4.mixedcpm.map;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.parking.*;
-import aim4.map.mixedcpm.testmaps.ManualCPMMapTest;
+import aim4.map.mixedcpm.maps.AdjustableManualCarPark;
 import org.junit.*;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
  */
 public class ManualParkingAreaTest {
 
-    ManualCPMMapTest testMap;
+    AdjustableManualCarPark testMap;
     ManualParkingArea testArea;
     Road topRoad, bottomRoad;
     static final double AREA_HEIGHT = 20;
@@ -31,7 +31,7 @@ public class ManualParkingAreaTest {
 
     @Before
     public void testSetup(){
-        testMap = new ManualCPMMapTest( AREA_HEIGHT,
+        testMap = new AdjustableManualCarPark( AREA_HEIGHT,
                                         AREA_WIDTH,
                                         LANE_WIDTH,
                                         SPEED_LIMIT,
@@ -138,7 +138,7 @@ public class ManualParkingAreaTest {
         StallStack road1RightStack = manualParkingRoad1.getStallStackPair()[1];
 
         //Set the right stack of road 1 to have a stack size of 5
-        road1RightStack.addManualStall(new StallInfo(1, initialStackSize, StallType.NoPaddingTest));
+        road1RightStack.addManualStall(new StallInfo(1, initialStackSize, StallType.NoPadding));
 
         testArea.addNewParkingRoad(roadName2, initialStackSize);
         ManualParkingRoad manualParkingRoad2 = testArea.getParkingRoadByName(roadName2);
@@ -203,7 +203,7 @@ public class ManualParkingAreaTest {
     public void testAddFirstStall(){
         double stallHeight = testArea.getDimensions().getHeight()/5;
         double stallWidth = 5;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPadding);
         ManualStall testStall = testArea.findSpace(stallInfo);
 
         assertNotNull(testStall);
@@ -221,7 +221,7 @@ public class ManualParkingAreaTest {
     public void testAddTwoStallsSameSize(){
         double stallHeight = testArea.getDimensions().getHeight()/5;
         double stallWidth = 5;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallHeight, StallType.NoPadding);
         ManualStall testStall0 = testArea.findSpace(stallInfo);
         ManualStall testStall1 = testArea.findSpace(stallInfo);
 
@@ -241,8 +241,8 @@ public class ManualParkingAreaTest {
         double stallHeight = testArea.getDimensions().getHeight()/5;
         double stallWidth0 = 5;
         double stallWidth1 = 4;
-        StallInfo stallInfo0 = new StallInfo(stallWidth0, stallHeight, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth1, stallHeight, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth0, stallHeight, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth1, stallHeight, StallType.NoPadding);
         ManualStall testStall0 = testArea.findSpace(stallInfo0);
         ManualStall testStall1 = testArea.findSpace(stallInfo1);
 
@@ -267,10 +267,10 @@ public class ManualParkingAreaTest {
         double stallLength2 = 3;
         double stallLength3 = 2;
         double stallWidth = 5;
-        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
-        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
-        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPadding);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPadding);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPadding);
 
         ManualStall testStall0 = testArea.findSpace(stallInfo0);
         ManualStall testStall1 = testArea.findSpace(stallInfo1);
@@ -314,10 +314,10 @@ public class ManualParkingAreaTest {
         double stallLength2 = testArea.getDimensions().getWidth()/4+2;
         double stallLength3 = testArea.getDimensions().getWidth()/4+3;
         double stallWidth = 5;
-        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
-        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
-        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPadding);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPadding);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPadding);
 
         ManualStall testStall0 = testArea.findSpace(stallInfo0);
         ManualStall testStall1 = testArea.findSpace(stallInfo1);
@@ -341,11 +341,11 @@ public class ManualParkingAreaTest {
         double stallLength3 = testArea.getDimensions().getWidth()/4-3;
         double stallLength4 = testArea.getDimensions().getWidth()/4-4;
         double stallWidth = 5;
-        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
-        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPaddingTest);
-        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPaddingTest);
-        StallInfo stallInfo4 = new StallInfo(stallWidth, stallLength4, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPadding);
+        StallInfo stallInfo2 = new StallInfo(stallWidth, stallLength2, StallType.NoPadding);
+        StallInfo stallInfo3 = new StallInfo(stallWidth, stallLength3, StallType.NoPadding);
+        StallInfo stallInfo4 = new StallInfo(stallWidth, stallLength4, StallType.NoPadding);
 
         ManualStall testStall0 = testArea.findSpace(stallInfo0);
         ManualStall testStall1 = testArea.findSpace(stallInfo1);
@@ -367,8 +367,8 @@ public class ManualParkingAreaTest {
         double stallLength0 = testArea.getDimensions().getWidth()/4;
         double stallLength1 = testArea.getDimensions().getWidth()/4-1;
         double stallWidth = 5;
-        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength0, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth, stallLength1, StallType.NoPadding);
 
         ManualStall testStall0 = testArea.findSpace(stallInfo0);
         ManualStall testStall1 = testArea.findSpace(stallInfo1);
@@ -392,7 +392,7 @@ public class ManualParkingAreaTest {
     public void testRemoveLastStallFromLastManualParkingRoad(){
         double stallLength = testArea.getDimensions().getWidth()/4;
         double stallWidth = 5;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
 
         ManualStall testStall = testArea.findSpace(stallInfo);
 

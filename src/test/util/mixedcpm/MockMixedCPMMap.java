@@ -1,15 +1,8 @@
 package util.mixedcpm;
 
-import aim4.map.Road;
-import aim4.map.RoadMap;
-import aim4.map.mixedcpm.parking.StatusMonitor;
-import aim4.map.lane.Lane;
+import aim4.map.mixedcpm.parking.IStatusMonitor;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
-import aim4.util.Registry;
-
-import java.awt.geom.Rectangle2D;
-import java.util.List;
 
 public class MockMixedCPMMap extends MixedCPMBasicMap {
 
@@ -18,7 +11,7 @@ public class MockMixedCPMMap extends MixedCPMBasicMap {
     }
 
     @Override
-    public StatusMonitor getStatusMonitor() {
+    public IStatusMonitor getStatusMonitor() {
         return null;
     }
 

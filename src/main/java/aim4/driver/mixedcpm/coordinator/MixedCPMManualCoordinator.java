@@ -211,7 +211,7 @@ public class MixedCPMManualCoordinator implements Coordinator {
     }
 
     /**
-     * Process any messages in the I2V inbox, from the StatusMonitor.
+     * Process any messages in the I2V inbox, from the IStatusMonitor.
      */
     private void processI2Vinbox() {
         ManualStall I2Vinbox = vehicle.getMessagesFromI2VInbox();

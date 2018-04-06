@@ -25,6 +25,7 @@ public class ManualParkingAreaConfig extends JPanel {
     private JLabel carParkHeightLabel;
     private JLabel carParkWidthLabel;
     private JLabel spawnTypeLabel;
+    private JLabel mapTypeLabel;
     private JLabel trafficLevelLabel;
 
     public ManualParkingAreaConfig(MixedCPMSimSetupPanel setupPanel) {
@@ -56,6 +57,10 @@ public class ManualParkingAreaConfig extends JPanel {
         spawnTypeLabel = new JLabel("Spawn Type: " + spawnType);
         spawnTypeLabel.setOpaque(true);
 
+        String mapType = setup.getSpawnSpecType().name();
+        mapTypeLabel = new JLabel("Map Type: " + mapType);
+        mapTypeLabel.setOpaque(true);
+
         this.setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
         this.add(title);
 
@@ -64,6 +69,7 @@ public class ManualParkingAreaConfig extends JPanel {
         this.add(carParkAreaLabel);
         this.add(trafficLevelLabel);
         this.add(spawnTypeLabel);
+        this.add(mapTypeLabel);
 
 
         updateLabel(carParkHeight, carParkHeightLabel);

@@ -99,7 +99,7 @@ public class ManualParkingRoadTests {
     @Test
     public void testAddManualStallLeftStack(){
         double stallWidth = stallLength;
-        StallInfo stallInfo = new StallInfo(stallLength , stallWidth, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallLength , stallWidth, StallType.NoPadding);
         ManualStall stall = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.anyGap);
         Road stallRoad = stall.getRoad();
         double stallRoadWidth = stallRoad.getOnlyLane().getWidth();
@@ -130,8 +130,8 @@ public class ManualParkingRoadTests {
         double stallWidth = stallLength;
         double stallLength1 = stallLength/2;
         double stallWidth1 = stallLength/2;
-        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
-        StallInfo stallInfo1 = new StallInfo(stallWidth1, stallLength1, StallType.NoPaddingTest);
+        StallInfo stallInfo0 = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
+        StallInfo stallInfo1 = new StallInfo(stallWidth1, stallLength1, StallType.NoPadding);
 
         manualParkingRoad.findNewSpace(stallInfo0, ManualParkingRoad.SearchParameter.anyGap);
         ManualStall testStall = manualParkingRoad.findNewSpace(stallInfo1, ManualParkingRoad.SearchParameter.emptyStack);
@@ -160,7 +160,7 @@ public class ManualParkingRoadTests {
     @Test
     public void testRemoveManualStall(){
         double stallWidth = manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()/3;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
 
         ManualStall testStall = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.anyGap);
 
@@ -189,7 +189,7 @@ public class ManualParkingRoadTests {
     @Test
     public void testAddManualStallsSearchParameterEmptyStack(){
         double stallWidth = manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()/3;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
 
         ManualStall testStall0 = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.emptyStack);
         ManualStall testStall1 = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.emptyStack);
@@ -210,10 +210,10 @@ public class ManualParkingRoadTests {
     @Test
     public void testAddManualStallsSearchParameterCorrectLength(){
         double stallWidth = manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()/3;
-        StallInfo stallInfoExactlyCorrect = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
-        StallInfo stallInfoCorrectLength = new StallInfo(stallWidth-1, stallLength, StallType.NoPaddingTest);
-        StallInfo stallInfoCorrectWidth = new StallInfo(stallWidth, stallLength-1, StallType.NoPaddingTest);
-        StallInfo stallInfoBothIncorrect = new StallInfo(stallWidth-1, stallLength-1, StallType.NoPaddingTest);
+        StallInfo stallInfoExactlyCorrect = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
+        StallInfo stallInfoCorrectLength = new StallInfo(stallWidth-1, stallLength, StallType.NoPadding);
+        StallInfo stallInfoCorrectWidth = new StallInfo(stallWidth, stallLength-1, StallType.NoPadding);
+        StallInfo stallInfoBothIncorrect = new StallInfo(stallWidth-1, stallLength-1, StallType.NoPadding);
 
         // First stall is to set the ideal stall width
         ManualStall testStall0 = manualParkingRoad.findNewSpace(stallInfoExactlyCorrect, ManualParkingRoad.SearchParameter.correctLength);
@@ -241,10 +241,10 @@ public class ManualParkingRoadTests {
     @Test
     public void testAddManualStallsSearchParameterExactSize(){
         double stallWidth = (manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()-1)/3;
-        StallInfo stallInfoExactlyCorrect = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
-        StallInfo stallInfoBothIncorrect = new StallInfo(stallWidth-1, stallLength-1, StallType.NoPaddingTest);
-        StallInfo stallInfoLengthCorrect = new StallInfo(stallWidth-1, stallLength, StallType.NoPaddingTest);
-        StallInfo stallInfoWidthCorrect = new StallInfo(stallWidth, stallLength-1, StallType.NoPaddingTest);
+        StallInfo stallInfoExactlyCorrect = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
+        StallInfo stallInfoBothIncorrect = new StallInfo(stallWidth-1, stallLength-1, StallType.NoPadding);
+        StallInfo stallInfoLengthCorrect = new StallInfo(stallWidth-1, stallLength, StallType.NoPadding);
+        StallInfo stallInfoWidthCorrect = new StallInfo(stallWidth, stallLength-1, StallType.NoPadding);
 
         // First stall is to set the ideal stall width
         ManualStall testStall0 = manualParkingRoad.findNewSpace(stallInfoExactlyCorrect, ManualParkingRoad.SearchParameter.anyGap);
@@ -273,7 +273,7 @@ public class ManualParkingRoadTests {
     @Test
     public void testFillBothStacksAndAddNewStall(){
         double stallWidth = manualParkingRoad.getStallStackPair()[0].getBounds().getHeight()/2;
-        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPaddingTest);
+        StallInfo stallInfo = new StallInfo(stallWidth, stallLength, StallType.NoPadding);
         ManualStall testStall0 = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.anyGap);
         ManualStall testStall1 = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.anyGap);
         ManualStall testStall2 = manualParkingRoad.findNewSpace(stallInfo, ManualParkingRoad.SearchParameter.anyGap);

@@ -13,13 +13,11 @@ import java.awt.event.ItemListener;
 /**
  * The SetupPanel for CPM.
  */
-public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener {
+public class MixedCPMSimSetupPanel extends SimSetupPanel{
     private static final long serialVersionUID = 1L;
 
     final static String MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY = "Mixed CPM Protocol (Manual area only)";
 
-    /** The combox box */
-    private JComboBox comboBox;
     /** The card panel */
     private JPanel cards; //a panel that uses CardLayout
     /** The card layout */
@@ -37,16 +35,6 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener
     public MixedCPMSimSetupPanel(BasicMixedCPMSimSetup initSimSetup) {
         this.simSetup = initSimSetup;
 
-        // create the combo box pane
-        JPanel comboBoxPane = new JPanel(); //use FlowLayout
-        comboBoxPane.setBackground(Color.WHITE);
-
-        String comboBoxItems[] =
-                {MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY};
-        comboBox = new JComboBox(comboBoxItems);
-        comboBox.setEditable(false);
-        comboBox.addItemListener(this);
-        comboBoxPane.add(comboBox);
 
         // create the cards pane
         cardLayout = new CardLayout();
@@ -59,7 +47,6 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener
 
         // add the combo box pane and cards pane
         setLayout(new BorderLayout());
-        add(comboBoxPane, BorderLayout.PAGE_START);
         add(cards, BorderLayout.CENTER);
     }
 
@@ -77,23 +64,14 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel implements ItemListener
 
     @Override
     public SimSetup getSimSetup() {
-        if (comboBox.getSelectedIndex() == 0) {
-            MixedCPMAutoDriverSimSetup newSimSetup = new MixedCPMAutoDriverSimSetup(simSetup);
-            newSimSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
-            newSimSetup.setLaneWidth(autoDriverOnlySetupPanel.getLaneWidth());
-            newSimSetup.setCarParkHeight(autoDriverOnlySetupPanel.getCarParkHeight());
-            newSimSetup.setCarParkWidth(autoDriverOnlySetupPanel.getCarParkWidth());
-            newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
-            return newSimSetup;
-        } else {
-            throw new RuntimeException(
-                    "SimSetupPane::getSimSetup(): not implemented yet");
-        }
-
-    }
-
-    @Override
-    public void itemStateChanged(ItemEvent e) {
+        MixedCPMAutoDriverSimSetup newSimSetup = new MixedCPMAutoDriverSimSetup(simSetup);
+        newSimSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
+        newSimSetup.setLaneWidth(autoDriverOnlySetupPanel.getLaneWidth());
+        newSimSetup.setCarParkHeight(autoDriverOnlySetupPanel.getCarParkHeight());
+        newSimSetup.setCarParkWidth(autoDriverOnlySetupPanel.getCarParkWidth());
+        newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
+        newSimSetup.setMapType(autoDriverOnlySetupPanel.getMapType());
+        return newSimSetup;
 
     }
 }

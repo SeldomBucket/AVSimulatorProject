@@ -1,6 +1,7 @@
 package aim4.gui.parampanel.mixedcpm;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.component.MixedCPMMapTypeRadioButtons;
 import aim4.gui.component.MixedCPMSpawnSpecRadioButtons;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
@@ -19,6 +20,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     LabeledSlider laneWidthSlider;
     LabeledSlider trafficRateSlider;
     MixedCPMSpawnSpecRadioButtons spawnSpecRadioButtons;
+    MixedCPMMapTypeRadioButtons mapTypeRadioButtons;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -67,6 +69,10 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         spawnSpecRadioButtons = new MixedCPMSpawnSpecRadioButtons();
         add(spawnSpecRadioButtons);
 
+
+        mapTypeRadioButtons = new MixedCPMMapTypeRadioButtons();
+        add(mapTypeRadioButtons);
+
     }
 
     public double getCarParkWidth() {
@@ -88,6 +94,10 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
 
     public SpawnSpecType getSpawnSpecType() {
         return SpawnSpecType.valueOf(spawnSpecRadioButtons.getSelected().getActionCommand());
+    }
+
+    public MapType getMapType(){
+        return MapType.valueOf(mapTypeRadioButtons.getSelected().getActionCommand());
     }
 
 }

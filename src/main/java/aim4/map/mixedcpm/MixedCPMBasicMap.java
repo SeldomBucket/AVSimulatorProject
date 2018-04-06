@@ -5,7 +5,6 @@ import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.parking.IManualParkingRoad;
 import aim4.map.mixedcpm.parking.ManualParkingRoad;
-import aim4.map.mixedcpm.parking.StatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;

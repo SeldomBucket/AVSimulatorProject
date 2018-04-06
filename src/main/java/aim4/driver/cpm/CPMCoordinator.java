@@ -13,7 +13,7 @@ import java.util.EnumMap;
 /**
  * The Coordinator is responsible for handling the messages
  * between vehicles (V2VCommunication), and with the
- * StatusMonitor (I2VCommunication.
+ * IStatusMonitor (I2VCommunication.
  * The two agents (Coordinator and Pilot) communicate by setting
  * the DrivingState and ParkingStatus in this class.
  */
@@ -224,7 +224,7 @@ public class CPMCoordinator implements Coordinator {
     }
 
     /**
-     * Process any messages in the I2V inbox, from the StatusMonitor.
+     * Process any messages in the I2V inbox, from the IStatusMonitor.
      */
     private void processI2Vinbox() {
         ParkingLane I2Vinbox = vehicle.getMessagesFromI2VInbox();

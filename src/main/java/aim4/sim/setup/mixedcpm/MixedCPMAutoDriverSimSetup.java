@@ -2,7 +2,8 @@ package aim4.sim.setup.mixedcpm;
 
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.MixedCPMMapUtil;
-import aim4.map.mixedcpm.testmaps.ManualCPMMapTest;
+import aim4.map.mixedcpm.maps.AdjustableManualCarPark;
+import aim4.map.mixedcpm.maps.StaticMap;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
 
@@ -27,11 +28,26 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
     public Simulator getSimulator() {
         double currentTime = 0.0;
 
-        MixedCPMBasicMap layout = new ManualCPMMapTest(carParkHeight, 
-                carParkWidth, 
-                laneWidth,
-                speedLimit,
-                currentTime);
+        MixedCPMBasicMap layout = null;
+
+        switch (mapType){
+            case STATIC:
+                layout = new StaticMap(carParkHeight,
+                                       carParkWidth,
+                                       6.0, // From essex2009parking
+                                       speedLimit,
+                                       currentTime);
+                break;
+            case ADJUSTABLE_MANUAL:
+                layout = new AdjustableManualCarPark(carParkHeight,
+                                                    carParkWidth,
+                                                    laneWidth,
+                                                    speedLimit,
+                                                    currentTime);
+                break;
+        }
+
+
 
         // Set up the correct spawn point
         switch(spawnSpecType) {

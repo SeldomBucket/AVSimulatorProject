@@ -31,7 +31,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
     private ParkingArea parkingArea;
     /** The status monitor recording the status of this car park. */
     private StatusMonitor statusMonitor;
-    /** A list of sensored lines used by the StatusMonitor. */
+    /** A list of sensored lines used by the IStatusMonitor. */
     private List<SensoredLine> sensoredLines;
     /** The exit data collection line. */
     private CPMExitDataCollectionLine exitDataCollectionLine;
@@ -67,7 +67,7 @@ public class CPMCarParkWithStatus extends CPMBasicMap {
         this.parkingArea = new ParkingArea(startPoint, this, numberOfParkingLanes,
                 parkingLength, laneWidth, accessLength);
 
-        // Create the StatusMonitor
+        // Create the IStatusMonitor
         this.statusMonitor = new StatusMonitor(parkingArea);
 
         // Add all roads/lanes from parking area to the map's records

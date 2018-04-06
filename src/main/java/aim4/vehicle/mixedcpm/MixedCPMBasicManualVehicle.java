@@ -94,7 +94,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     // messaging
 
     /**
-     * The inbox for messages from the car park StatusMonitor.
+     * The inbox for messages from the car park IStatusMonitor.
      * There will only ever be one message, which will be a
      * ManualStall (or null, if no room for vehicle to park).
      */

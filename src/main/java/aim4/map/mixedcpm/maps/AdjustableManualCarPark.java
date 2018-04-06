@@ -1,6 +1,7 @@
-package aim4.map.mixedcpm.testmaps;
+package aim4.map.mixedcpm.maps;
 
-import aim4.map.mixedcpm.parking.StatusMonitor;
+import aim4.map.mixedcpm.parking.AdjustableManualStatusMonitor;
+import aim4.map.mixedcpm.parking.IStatusMonitor;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 
@@ -10,11 +11,11 @@ import java.util.ArrayList;
 /**
  * Test map which is just a standard manual car park (for testing the spaces)
  */
-public class ManualCPMMapTest extends MixedCPMBasicMap {
+public class AdjustableManualCarPark extends MixedCPMBasicMap {
 
-    StatusMonitor statusMonitor;
+    IStatusMonitor statusMonitor;
 
-    public ManualCPMMapTest(double height, double width, double laneWidth, double speedLimit, double initTime){
+    public AdjustableManualCarPark(double height, double width, double laneWidth, double speedLimit, double initTime){
         super(laneWidth,speedLimit,initTime);
 
         this.dimensions = new Rectangle2D.Double(0.0,0.0,width + BORDER*2,height + BORDER*2);
@@ -29,11 +30,11 @@ public class ManualCPMMapTest extends MixedCPMBasicMap {
 
         this.manualParkingArea = new ManualParkingArea(topRoad, bottomRoad, this, new Rectangle2D.Double(BORDER, BORDER, width, height));
 
-        statusMonitor = new StatusMonitor(manualParkingArea);
+        statusMonitor = new AdjustableManualStatusMonitor(manualParkingArea);
     }
 
     @Override
-    public StatusMonitor getStatusMonitor() {
+    public IStatusMonitor getStatusMonitor() {
         return statusMonitor;
     }
 
