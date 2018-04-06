@@ -4,6 +4,7 @@ import aim4.gui.parampanel.mixedcpm.MixedCPMManualDriverParamPanel;
 import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
 import aim4.sim.setup.mixedcpm.MixedCPMAutoDriverSimSetup;
+import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
@@ -71,6 +72,8 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
         newSimSetup.setCarParkWidth(autoDriverOnlySetupPanel.getCarParkWidth());
         newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
         newSimSetup.setMapType(autoDriverOnlySetupPanel.getMapType());
+        newSimSetup.setUseCSVFile(new Pair<>(autoDriverOnlySetupPanel.getUseCsv(),
+                                             autoDriverOnlySetupPanel.getCsvFilename()));
         return newSimSetup;
 
     }

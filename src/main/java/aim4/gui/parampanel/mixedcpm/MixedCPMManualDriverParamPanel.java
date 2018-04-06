@@ -3,6 +3,7 @@ package aim4.gui.parampanel.mixedcpm;
 import aim4.gui.component.LabeledSlider;
 import aim4.gui.component.MixedCPMMapTypeRadioButtons;
 import aim4.gui.component.MixedCPMSpawnSpecRadioButtons;
+import aim4.gui.component.MixedCPMUseCSVFileRadioButtons;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
 import javafx.util.Pair;
@@ -21,6 +22,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     LabeledSlider trafficRateSlider;
     MixedCPMSpawnSpecRadioButtons spawnSpecRadioButtons;
     MixedCPMMapTypeRadioButtons mapTypeRadioButtons;
+    MixedCPMUseCSVFileRadioButtons useCsvFileRadioButtons;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -73,6 +75,9 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         mapTypeRadioButtons = new MixedCPMMapTypeRadioButtons();
         add(mapTypeRadioButtons);
 
+        useCsvFileRadioButtons = new MixedCPMUseCSVFileRadioButtons();
+        add(useCsvFileRadioButtons);
+
     }
 
     public double getCarParkWidth() {
@@ -98,6 +103,14 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
 
     public MapType getMapType(){
         return MapType.valueOf(mapTypeRadioButtons.getSelected().getActionCommand());
+    }
+
+    public boolean getUseCsv(){
+        return useCsvFileRadioButtons.getSelected().getActionCommand().equals("TRUE");
+    }
+
+    public String getCsvFilename(){
+        return useCsvFileRadioButtons.getFileLocation();
     }
 
 }
