@@ -3,10 +3,8 @@ package aim4.gui.parampanel.mixedcpm;
 import aim4.gui.component.LabeledSlider;
 import aim4.gui.component.MixedCPMMapTypeRadioButtons;
 import aim4.gui.component.MixedCPMSpawnSpecRadioButtons;
-import aim4.gui.component.MixedCPMUseCSVFileRadioButtons;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
-import javafx.util.Pair;
 
 import javax.swing.*;
 
@@ -22,7 +20,6 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     LabeledSlider trafficRateSlider;
     MixedCPMSpawnSpecRadioButtons spawnSpecRadioButtons;
     MixedCPMMapTypeRadioButtons mapTypeRadioButtons;
-    MixedCPMUseCSVFileRadioButtons useCsvFileRadioButtons;
 
     /**
      * Create the autonomous driver only simulation parameter panel.
@@ -52,31 +49,28 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         add(carParkHeightSlider);
 
         laneWidthSlider =
-                new LabeledSlider(1.0, 100.0,
+                new LabeledSlider(1.0, 10.0,
                         simSetup.getLaneWidth(),
                         1.0, 0.5,
-                        "Width of Lanes (parking lanes and roads): %.1f meters",
+                        "Width of Lanes (parking lanes and roads): %.1f meters \r\n (not used in static car park type)",
                         "%.1f");
-        //add(laneWidthSlider);
+        add(laneWidthSlider);
 
 
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
                         simSetup.getTrafficLevel() * 3600.0,
                         500.0, 100.0,
-                        "Traffic Level: %.0f vehicles/hour",
+                        "Traffic Level: %.0f vehicles/hour \r\n (not used when spawning vehicles from a csv file)",
                         "%.0f");
         add(trafficRateSlider);
-
-        spawnSpecRadioButtons = new MixedCPMSpawnSpecRadioButtons();
-        add(spawnSpecRadioButtons);
-
 
         mapTypeRadioButtons = new MixedCPMMapTypeRadioButtons();
         add(mapTypeRadioButtons);
 
-        useCsvFileRadioButtons = new MixedCPMUseCSVFileRadioButtons();
-        add(useCsvFileRadioButtons);
+        spawnSpecRadioButtons = new MixedCPMSpawnSpecRadioButtons();
+        add(spawnSpecRadioButtons);
+
 
     }
 
@@ -106,11 +100,11 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     }
 
     public boolean getUseCsv(){
-        return useCsvFileRadioButtons.getSelected().getActionCommand().equals("TRUE");
+        return spawnSpecRadioButtons.getSelected().getActionCommand().equals("CSV");
     }
 
     public String getCsvFilename(){
-        return useCsvFileRadioButtons.getFileLocation();
+        return spawnSpecRadioButtons.getFileLocation();
     }
 
 }

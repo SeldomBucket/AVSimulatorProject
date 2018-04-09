@@ -27,9 +27,9 @@ public class MixedCPMSimViewer extends SimViewer {
         super(statusPanel, viewer, new MixedCPMSimSetupPanel(new BasicMixedCPMSimSetup(
                 2.7, // speedLimit - approx 6mph
                 0.28, // trafficLevel
-                2.5, // laneWidth
-                30, // carParkWidth
-                20, // carParkHeight,
+                6.0, // laneWidth
+                60, // carParkWidth
+                40, // carParkHeight,
                 SpawnSpecType.SINGLE, // spawn spec type
                 MapType.ADJUSTABLE_MANUAL,
                 new Pair<Boolean, String>(false, "")

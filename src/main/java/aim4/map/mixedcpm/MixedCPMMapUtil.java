@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -31,7 +32,9 @@ public class MixedCPMMapUtil {
         /** Single - all vehicles spawned will have the same specification */
         SINGLE,
         /** Random - all vehicles spawned will have a randomly selected specification */
-        RANDOM
+        RANDOM,
+        /** CSV - vehicles are spawned in a specific order, described by a csv file */
+        CSV
     }
 
     public enum MapType{
@@ -149,144 +152,6 @@ public class MixedCPMMapUtil {
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
     }
-
-    /**
-     * The spec generator that generates vehicles of the same spec, using a CSV file to
-     * specify the spawn times and parking times.
-     */
-    public static class SpecificSpawnSingleSpecGenerator implements MixedCPMSpawnSpecGenerator {
-        /** The vehicle specification */
-        private VehicleSpec vehicleSpec;
-        /** A list of entry time and parking time pairs */
-        private List<Pair<Double, Double>> spawnTimes = new ArrayList<Pair<Double, Double>>();
-        /** Whether the spawn point has finished spawning vehicles */
-        private boolean isDone = false;
-
-
-        /**
-         * Create a spec generator that infinitely generates vehicles of the same spec.
-         */
-        public SpecificSpawnSingleSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            processCSV(useCSVFilePair);
-        }
-
-        private void processCSV(Pair<Boolean, String> useCSVFilePair){
-            // Ensure we are meant to be using a file
-            boolean useCSV = useCSVFilePair.getKey();
-            assert useCSV;
-
-            // Ensure the given location is valid
-            // TODO MixedCPM this check should be done way before now so user can try again.
-            String filepath = useCSVFilePair.getValue();
-            File file = new File(filepath);
-            if (!file.exists()){
-                throw new RuntimeException("This file doesn't exist.");
-            }
-            if (!file.canRead()) {
-                throw new RuntimeException("This file cannot be read.");
-            }
-
-            try {
-                readCSV(filepath);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
-
-        /**
-         * Read the CSV file, adding the entry time and parking time as a pair to spawnTimes.
-         * The CSV file should either give the times in seconds, or in the format hh:mm:ss.
-         * The CSV file should be ordered by increasing entry time.
-         * @param filepath for the CSV file
-         * @throws FileNotFoundException
-         */
-        private void readCSV(String filepath) throws FileNotFoundException {
-            try {
-
-                CsvReader csvFile = new CsvReader(filepath);
-
-                try {
-                    csvFile.readHeaders();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                while (csvFile.readRecord())
-                {
-                    String entryString = csvFile.get("Entry");
-                    String parkingString = csvFile.get("Parking");
-
-                    Double entry;
-                    Double parking;
-                    try {
-                        entry = Double.parseDouble(entryString);
-                    } catch (NumberFormatException e) {
-                        entry = convertTimeToSeconds(entryString);
-                    }
-                    try {
-                        parking = Double.parseDouble(parkingString);
-                    } catch (NumberFormatException e) {
-                        parking = convertTimeToSeconds(parkingString);
-                    }
-
-                    Pair<Double, Double> pair = new Pair<Double, Double>(entry, parking);
-                    spawnTimes.add(pair);
-                }
-
-                csvFile.close();
-
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-
-        private Double convertTimeToSeconds(String timeString){
-            String[] data = timeString.split(":");
-            double hours = Double.parseDouble(data[0]);
-            double minutes = Double.parseDouble(data[1]);
-            double seconds = Double.parseDouble(data[2]);
-            double totalSeconds = (3600*hours) + (60*minutes) + seconds;
-            return totalSeconds;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public List<MixedCPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timeStep) {
-            List<MixedCPMSpawnSpec> result = new ArrayList<MixedCPMSpawnSpec>(1);
-
-            if (spawnTimes.isEmpty()) {
-                isDone = true;
-            }
-
-            double initTime = spawnPoint.getCurrentTime();
-            if (!isDone) {
-                if (spawnTimes.get(0).getKey() < initTime) {
-                    double parkingTime = spawnTimes.get(0).getValue();
-                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
-                    spawnTimes.remove(0);
-                    System.out.println("Vehicle spawned at time: " + initTime);
-                }
-            }
-
-            return result;
-        }
-
-        @Override
-        public double generateParkingTime() {
-            // Returns a random double
-            double rangeMin = 2000.0;
-            double rangeMax = 20000.0;
-            Random r = new Random();
-            return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-        }
-    }
-
 
     /**
      * The spec generator that generates a finite number of vehicles,
@@ -433,30 +298,51 @@ public class MixedCPMMapUtil {
     }
 
     /**
-     * The spec generator that generates vehicles of the a random spec, using a CSV file to
-     * specify the spawn times and parking times.
+     * The spec generator that generates vehicles using a CSV file to
+     * specify the spawn times, parking times, and spec.
      */
-    public static class SpecificSpawnRandomSpecGenerator implements MixedCPMSpawnSpecGenerator {
-        /** A list of entry time and parking time pairs */
-        private List<Pair<Double, Double>> spawnTimes = new ArrayList<Pair<Double, Double>>();
+    public static class SpecificSpawnSpecGenerator implements MixedCPMSpawnSpecGenerator {
+        /** A map of entry times to spawn specifications for the vehicles */
+        private ArrayList<SpawnSpecification> spawnSpecificationMap = new ArrayList<>();
         /** Whether the spawn point has finished spawning vehicles */
         private boolean isDone = false;
-        /** The proportion of each spec */
-        private List<Double> proportion;
+
+        public class SpawnSpecification{
+            double spawnTime;
+            double parkingTime;
+            VehicleSpec vehicleSpec;
+            boolean isDisabled;
+
+            public SpawnSpecification(double spawnTime, double parkingTime, String specName, boolean isDisabled){
+                this.spawnTime = spawnTime;
+                this.parkingTime = parkingTime;
+                this.vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(specName);
+                this.isDisabled = isDisabled;
+            }
+
+            public double getSpawnTime() {
+                return spawnTime;
+            }
+
+            public double getParkingTime() {
+                return parkingTime;
+            }
+
+            public VehicleSpec getVehicleSpec() {
+                return vehicleSpec;
+            }
+
+            public boolean isDisabled() {
+                return isDisabled;
+            }
+        }
 
 
         /**
-         * Create a spec generator that infinitely generates vehicles of the same spec.
+         * Create a spec generator that generates vehicles based on a csv file.
          */
-        public SpecificSpawnRandomSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
+        public SpecificSpawnSpecGenerator(Pair<Boolean, String> useCSVFilePair) {
             processCSV(useCSVFilePair);
-
-            int n = VehicleSpecDatabase.getNumOfSpec();
-            proportion = new ArrayList<Double>(n);
-            double p = 1.0 / n;
-            for(int i=0; i<n; i++) {
-                proportion.add(p);
-            }
         }
 
         private void processCSV(Pair<Boolean, String> useCSVFilePair){
@@ -483,7 +369,7 @@ public class MixedCPMMapUtil {
         }
 
         /**
-         * Read the CSV file, adding the entry time and parking time as a pair to spawnTimes.
+         * Read the CSV file, adding the entry time and parking time as a pair to spawnSpecificationMap.
          * The CSV file should either give the times in seconds, or in the format hh:mm:ss.
          * The CSV file should be ordered by increasing entry time.
          * @param filepath for the CSV file
@@ -502,9 +388,12 @@ public class MixedCPMMapUtil {
 
                 while (csvFile.readRecord())
                 {
+                    String specString = csvFile.get("Spec");
+                    boolean isDisabled = csvFile.get("Disabled").equals("Y");
                     String entryString = csvFile.get("Entry");
                     String parkingString = csvFile.get("Parking");
 
+                    // Parse spawn times
                     Double entry;
                     Double parking;
                     try {
@@ -516,8 +405,9 @@ public class MixedCPMMapUtil {
 
                     }
 
-                    Pair<Double, Double> pair = new Pair<Double, Double>(entry, parking);
-                    spawnTimes.add(pair);
+                    SpawnSpecification spec = new SpawnSpecification(entry, parking, specString, isDisabled);
+                    spawnSpecificationMap.add(spec);
+
                 }
 
                 csvFile.close();
@@ -546,19 +436,17 @@ public class MixedCPMMapUtil {
         public List<MixedCPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timeStep) {
             List<MixedCPMSpawnSpec> result = new ArrayList<MixedCPMSpawnSpec>(1);
 
-            if (spawnTimes.isEmpty()) {
+            if (spawnSpecificationMap.isEmpty()) {
                 isDone = true;
             }
 
             double initTime = spawnPoint.getCurrentTime();
             if (!isDone) {
-                if (spawnTimes.get(0).getKey() < initTime) {
-                    int i = Util.randomIndex(proportion);
-                    VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
-                    double parkingTime = spawnTimes.get(0).getValue();
+                if (spawnSpecificationMap.get(0).getSpawnTime() < initTime) {
+                    VehicleSpec vehicleSpec = spawnSpecificationMap.get(0).getVehicleSpec();
+                    double parkingTime = spawnSpecificationMap.get(0).getParkingTime();
                     result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
-                    spawnTimes.remove(0);
-                    System.out.println("Vehicle " + vehicleSpec.getName() +" spawned at time: " + initTime);
+                    spawnSpecificationMap.remove(0);
                 }
             }
 
@@ -572,70 +460,6 @@ public class MixedCPMMapUtil {
             double rangeMax = 20000.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
-        }
-    }
-
-    /**
-     * The spec generator that creates scenario where relocation is required.
-     * 2 vehicles of the same spec are spawned, where the 2nd will need to
-     * exit the car park before the first. This will require the first vehicle
-     * to relocate.
-     */
-    public static class SimpleRelocateSpawnSpecGenerator implements MixedCPMSpawnSpecGenerator {
-        /** The vehicle specification */
-        private VehicleSpec vehicleSpec;
-        /** The probability of generating a vehicle in each spawn time step */
-        private double spawnProbability;
-        /** Number of vehicles to be spawned. */
-        private int numberOfVehiclesToSpawn;
-        /** Number vehicles that have been spawned so far. */
-        private int numberOfSpawnedVehicles;
-        /** Whether the spec has been generated */
-        private boolean isDone;
-
-        /**
-         * Create a spec generator that creates a simple relocate scenario.
-         */
-        public SimpleRelocateSpawnSpecGenerator(double trafficLevel) {
-            this.numberOfVehiclesToSpawn = 2;
-            this.numberOfSpawnedVehicles = 0;
-            vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
-            spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP; // TODO MixedCPM should get trafficLevel from somewhere
-            // Cannot generate more than one vehicle in each spawn time step
-            assert spawnProbability <= 1.0;
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public List<MixedCPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timeStep) {
-            List<MixedCPMSpawnSpec> result = new ArrayList<MixedCPMSpawnSpec>(1);
-            if (numberOfSpawnedVehicles == numberOfVehiclesToSpawn) {
-                isDone = true;
-            }
-            if (!isDone) {
-                double initTime = spawnPoint.getCurrentTime();
-                for(double time = initTime; time < initTime + timeStep;
-                    time += SimConfig.SPAWN_TIME_STEP) {
-                    if (Util.random.nextDouble() < spawnProbability) {
-                        double parkingTime = generateParkingTime();
-                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
-                        System.out.println("Vehicle spawned!");
-                        numberOfSpawnedVehicles += 1;
-                    }
-                }
-            }
-            return result;
-        }
-
-        @Override
-        public double generateParkingTime() {
-            if (numberOfSpawnedVehicles == 0) {
-                return 20000.0;
-            } else {
-                return 10000.0;
-            }
         }
     }
 
@@ -657,19 +481,11 @@ public class MixedCPMMapUtil {
         }
     }
 
-    public static void setUpSpecificSingleSpecVehicleSpawnPoint(MixedCPMMap map, Pair<Boolean, String> useCSVPair){
+    public static void setUpSpecificSpecVehicleSpawnPoint(MixedCPMMap map, Pair<Boolean, String> useCSVPair){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new SpecificSpawnSingleSpecGenerator(useCSVPair));
-        }
-    }
-
-    public static void setUpSpecificRandomSpecVehicleSpawnPoint(MixedCPMMap map, Pair<Boolean, String> useCSVPair){
-        // The spawn point will infinitely spawn vehicles of the same spec.
-        for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
-            sp.setVehicleSpecChooser(
-                    new SpecificSpawnRandomSpecGenerator(useCSVPair));
+                    new SpecificSpawnSpecGenerator(useCSVPair));
         }
     }
 
@@ -688,14 +504,6 @@ public class MixedCPMMapUtil {
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
                     new InfiniteSpawnRandomSpecGenerator(trafficLevel));
-        }
-    }
-
-    public static void setUpSimpleRelocateSpawnPoint(MixedCPMMap simpleMap, double trafficLevel){
-        // The spawn point will spawn 2 vehicles which will trigger a relocation scenario.
-        for(MixedCPMSpawnPoint sp : simpleMap.getSpawnPoints()) {
-            sp.setVehicleSpecChooser(
-                    new SimpleRelocateSpawnSpecGenerator(trafficLevel));
         }
     }
 

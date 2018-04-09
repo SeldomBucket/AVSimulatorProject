@@ -30,6 +30,7 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
 
         MixedCPMBasicMap layout = null;
 
+        // Set up map
         switch (mapType){
             case STATIC:
                 layout = new StaticMap(carParkHeight,
@@ -54,18 +55,13 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
         // Set up the correct spawn point
         switch(spawnSpecType) {
             case SINGLE:
-                if (!useCSVFile.getKey()){
-                    MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
-                } else {
-                    MixedCPMMapUtil.setUpSpecificSingleSpecVehicleSpawnPoint(layout, useCSVFile);
-                }
+                MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
                 break;
             case RANDOM:
-                if (!useCSVFile.getKey()){
-                    MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
-                } else {
-                    MixedCPMMapUtil.setUpSpecificRandomSpecVehicleSpawnPoint(layout, useCSVFile);
-                }
+                MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                break;
+            case CSV:
+                MixedCPMMapUtil.setUpSpecificSpecVehicleSpawnPoint(layout, useCSVFile);
                 break;
         }
 

@@ -14,6 +14,8 @@ public class MixedCPMSpawnSpecRadioButtons extends JPanel implements ChangeListe
     ButtonGroup group;
     /** The label of the group. */
     JLabel label;
+    /** A text field for the user to input the location of the csv file.*/
+    JTextField fileLocationField;
 
     public MixedCPMSpawnSpecRadioButtons(){
 
@@ -28,13 +30,22 @@ public class MixedCPMSpawnSpecRadioButtons extends JPanel implements ChangeListe
         singleSpecButton.setActionCommand("SINGLE");
         singleSpecButton.setSelected(true);
         this.add(singleSpecButton);
+
         JRadioButton randomSpecButton = new JRadioButton("Random", false);
         randomSpecButton.setActionCommand("RANDOM");
         this.add(randomSpecButton);
 
+        JRadioButton useCsvFileButton = new JRadioButton("Use CSV file ", false);
+        useCsvFileButton.setActionCommand("CSV");
+        this.add(useCsvFileButton);
+        fileLocationField = new JTextField(10);
+        this.add(fileLocationField);
+
         group = new ButtonGroup();
+
         group.add(singleSpecButton);
         group.add(randomSpecButton);
+        group.add(useCsvFileButton);
 
         this.setVisible(true);
 
@@ -42,6 +53,10 @@ public class MixedCPMSpawnSpecRadioButtons extends JPanel implements ChangeListe
 
     public ButtonModel getSelected(){
         return group.getSelection();
+    }
+
+    public String getFileLocation() {
+        return fileLocationField.getText();
     }
 
     @Override
