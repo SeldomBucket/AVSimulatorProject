@@ -213,6 +213,23 @@ public class VehicleSpecDatabase {
                                Math.PI/3,   // maxSteeringAngle (radian)
                                Math.PI/3)); // maxTurnPerSecond (radian)
 
+    /** A large vehicle with long wheelbase and moderate performance. */
+    registerSpec(new VehicleSpec("VAN",
+                                  3.83,      // maxAcceleration (m/s/s)
+                                  -39.0,       // maxDeceleration (m/s/s)
+                                  //-13.0,       // maxDeceleration (m/s/s)
+                                  52.0,       // maxVelocity (m/s)
+                                  -13.0,       // minVelocity (m/s)
+                                  5.385,     // length (meters)
+                                  2.014,     // width (meters)
+                                  1.18,      // frontAxleDisplacement (meters)
+                                  4.126,     // rearAxleDisplacement (meters)
+                                  (2.007-0.33)/2, // wheelSpan (meters)
+                                  0.375,     // wheelRadius (meters)
+                                  0.33,      // wheelWidth (meters)
+                                  Math.PI/3,   // maxSteeringAngle (radian)
+                                  Math.PI/3)); // maxTurnPerSecond (radian)
+
     /** A large vehicle with long wheelbase and poor performance. */
 //    registerSpec(new VehicleSpec("VAN",
 //                                 3.08,      // maxAcceleration (m/s/s)

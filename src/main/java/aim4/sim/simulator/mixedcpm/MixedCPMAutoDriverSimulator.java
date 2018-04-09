@@ -167,6 +167,11 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     }
                 }
             } // else ignore the spawnSpecs and do nothingSystem.out.println("No vehicle spawned: canSpawn = False.");
+            else{
+                Rectangle2D test = vinToVehicles.get(1000).gaugeShape().getBounds2D();
+                Rectangle2D test2 =spawnPoint.getNoVehicleZone().getBounds2D();
+                test.intersects(test2);
+            }
         }
     }
 

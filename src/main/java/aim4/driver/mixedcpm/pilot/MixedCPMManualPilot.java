@@ -327,6 +327,10 @@ public class MixedCPMManualPilot extends BasicPilot{
             return frontOfVehicleNearOrPastEndOfLane();
 
         }else{
+            if (linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight){
+                return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
+            }
+
             return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
         }
     }
@@ -411,7 +415,7 @@ public class MixedCPMManualPilot extends BasicPilot{
     }
 
     public boolean linedUpWithStall(){
-        return vehicleEntirelyInsideStall();// && !frontOfVehicleNearOrPastEndOfLane();
+        return vehicleEntirelyInsideStall() && vehicle.gaugeVelocity() < 0.01 ;// && !frontOfVehicleNearOrPastEndOfLane();
     }
 
     /**
