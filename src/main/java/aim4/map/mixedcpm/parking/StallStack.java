@@ -63,47 +63,47 @@ public class StallStack {
 
     /**
      * Attempts to add a manual stall
-     * @param stallInfo The information of the stall which is being added
+     * @param stallSpec The information of the stall which is being added
      * @return the ManualStall which was added, null if it wasn't possible
      */
-    public ManualStall addManualStall(StallInfo stallInfo){
+    public ManualStall addManualStall(StallSpec stallSpec){
         double xPosition = roadOnLeft ?
                                 this.boundingBox.getMinX():
-                                this.boundingBox.getMaxX()-stallInfo.getLength();
+                                this.boundingBox.getMaxX()- stallSpec.getLength();
         if (stalls.size() == 0){
-            this.idealStallWidth = stallInfo.getWidth();
+            this.idealStallWidth = stallSpec.getWidth();
         }
         if (getMaxStallLength() == 0){
             // Set up rectangle
-            setMaxStallLength(stallInfo.getLength());
+            setMaxStallLength(stallSpec.getLength());
             ManualStall parkingSpace =  new ManualStall(xPosition,
                                                         this.boundingBox.getMinY(),
-                                                        stallInfo,
+                    stallSpec,
                                                         this,
                                                         this.parkingRoad,
                                                         this.map);
             this.stalls.add(parkingSpace);
             return parkingSpace;
-        } else if (getMaxStallLength() >= stallInfo.getLength()){
+        } else if (getMaxStallLength() >= stallSpec.getLength()){
             double yPosition = -1;
-            if (stallInfo.getLength() == getMaxStallLength()){
-                if (stallInfo.getWidth() == idealStallWidth){
+            if (stallSpec.getLength() == getMaxStallLength()){
+                if (stallSpec.getWidth() == idealStallWidth){
                     //If length and ideal width match, search from top
-                    yPosition = findSpace(stallInfo.getWidth(), true);
+                    yPosition = findSpace(stallSpec.getWidth(), true);
                 }else{
                     //If length matches and ideal width doesn't, search from bottom
-                    yPosition = findSpace(stallInfo.getWidth(), false);
+                    yPosition = findSpace(stallSpec.getWidth(), false);
                 }
-            }else if(stallInfo.getLength() < getMaxStallLength()){
+            }else if(stallSpec.getLength() < getMaxStallLength()){
                 //If length doesn't match search from bottom
-                yPosition = findSpace(stallInfo.getWidth(), false);
+                yPosition = findSpace(stallSpec.getWidth(), false);
             }
 
             // Add parking space at position if a suitable gap was found
             if (-1 != yPosition) {
                 ManualStall parkingSpace = new ManualStall( xPosition,
                                                             yPosition,
-                                                            stallInfo,
+                        stallSpec,
                                                             this,
                                                             this.parkingRoad,
                                                             this.map);

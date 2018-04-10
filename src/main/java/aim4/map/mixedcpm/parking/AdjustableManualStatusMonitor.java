@@ -1,10 +1,6 @@
 package aim4.map.mixedcpm.parking;
 
-import aim4.driver.cpm.CPMV2VDriver;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
-import aim4.map.lane.Lane;
-import aim4.sim.simulator.cpm.CPMAutoDriverSimulator;
-import aim4.vehicle.cpm.CPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.util.*;
@@ -68,7 +64,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         }
 
         // Find a stall for the vehicle
-        ManualStall allocatedStall = parkingArea.findSpace(vehicle.getStallInfo());
+        ManualStall allocatedStall = parkingArea.findSpace(vehicle.getStallSpec());
 
         if (allocatedStall == null){
             numberOfDeniedEntries++;

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public interface IManualParkingArea extends RoadMap{
     public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle);
-    public ManualStall findSpace(StallInfo stallInfo);
+    public ManualStall findSpace(StallSpec stallSpec);
     public ManualParkingRoad getParkingRoadByName(String parkingRoadName);
     public void update();
     public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth);

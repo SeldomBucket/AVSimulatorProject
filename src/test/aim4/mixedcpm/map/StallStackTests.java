@@ -1,7 +1,7 @@
 package aim4.mixedcpm.map;
 
 import aim4.map.mixedcpm.parking.ManualStall;
-import aim4.map.mixedcpm.parking.StallInfo;
+import aim4.map.mixedcpm.parking.StallSpec;
 import aim4.map.mixedcpm.parking.StallStack;
 
 import aim4.map.mixedcpm.parking.StallType;
@@ -73,8 +73,8 @@ public class StallStackTests {
     public void testAddFirstSpaceExactLength(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = existingLengthStallStack.addManualStall(stallSpec);
         assertEquals(maxStallLength, testStall.getLength(),0);
         assertEquals(vehicleWidth, testStall.getMaxY(),0);
         assertEquals(0, testStall.getMinY(),0);
@@ -85,8 +85,8 @@ public class StallStackTests {
     public void testAddSpaceTooShortRoadLeft(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength/2;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = existingLengthStallStack.addManualStall(stallSpec);
         assertEquals(maxStallLength/2, testStall.getLength(),0);
         assertEquals(0, testStall.getMinX(), 0);
         assertEquals(existingLengthStallStack.getBounds().getMaxY(), testStall.getMaxY(),0);
@@ -97,8 +97,8 @@ public class StallStackTests {
     public void testAddSpaceTooShortRoadRight(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength/2;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = existingLengthStallStackRoadRight.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = existingLengthStallStackRoadRight.addManualStall(stallSpec);
         assertEquals(maxStallLength/2, testStall.getLength(),0);
         assertEquals(maxStallLength/2, testStall.getMinX(), 0);
         assertEquals(existingLengthStallStackRoadRight.getBounds().getMaxY(), testStall.getMaxY(),0);
@@ -109,8 +109,8 @@ public class StallStackTests {
     public void testAddSpaceTooLong(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength*2;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = existingLengthStallStack.addManualStall(stallSpec);
         assertEquals(null, testStall);
     }
 
@@ -118,8 +118,8 @@ public class StallStackTests {
     public void testAddFirstSpaceToEmptyStack(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = noLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = noLengthStallStack.addManualStall(stallSpec);
         assertEquals(maxStallLength, testStall.getLength(),0);
         assertEquals(maxStallLength, noLengthStallStack.getMaxStallLength(),0);
         assertEquals(0, testStall.getMinX(), 0);
@@ -131,13 +131,13 @@ public class StallStackTests {
     public void testFillStackAllSpacesSameSizeAndExactLength(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall5 = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall5 = existingLengthStallStack.addManualStall(stallSpec);
 
         assertEquals(maxStallLength, testStall0.getLength(),0);
         assertEquals(maxStallLength, testStall1.getLength(),0);
@@ -178,13 +178,13 @@ public class StallStackTests {
     public void testFillStackAllSpacesSameSizeAndTooShort(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength/2;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall testStall5 = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall testStall5 = existingLengthStallStack.addManualStall(stallSpec);
 
         assertEquals(vehicleLength, testStall0.getLength(),0);
         assertEquals(vehicleLength, testStall1.getLength(),0);
@@ -227,8 +227,8 @@ public class StallStackTests {
     public void testRemoveManualStall(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        ManualStall testStall = existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        ManualStall testStall = existingLengthStallStack.addManualStall(stallSpec);
 
         assertTrue(existingLengthStallStack.getManualStalls().contains(testStall));
         existingLengthStallStack.removeManualStall(testStall.getName());
@@ -240,17 +240,17 @@ public class StallStackTests {
     public void testFillGapExactInMiddleOfStackAllSpacesSameSizeAndExactLength(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall stallToRemove = existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall stallToRemove = existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
 
         // Create gap
         existingLengthStallStack.removeManualStall(stallToRemove.getName());
 
-        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfo);
+        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallSpec);
 
         assertEquals(maxStallLength, stallToFitInGap.getLength(),0);
 
@@ -267,18 +267,18 @@ public class StallStackTests {
     public void testFillGapLargeInMiddleOfStackAllSpacesSameSizeAndExactLength(){
         double vehicleWidth = stallStackHeight/5;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall stallToRemove0 = existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall stallToRemove1 = existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall stallToRemove0 = existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall stallToRemove1 = existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
 
         // Create gap
         existingLengthStallStack.removeManualStall(stallToRemove0.getName());
         existingLengthStallStack.removeManualStall(stallToRemove1.getName());
 
-        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfo);
+        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallSpec);
 
         assertEquals(maxStallLength, stallToFitInGap.getLength(),0);
 
@@ -296,18 +296,18 @@ public class StallStackTests {
         double vehicleWidth = stallStackHeight/5;
         double vehicleLargeWidth = stallStackHeight/4;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo = new StallInfo(vehicleWidth, vehicleLength, StallType.NoPadding);
-        StallInfo stallInfoTooWide = new StallInfo(vehicleLargeWidth, vehicleLength, StallType.NoPadding);
-        existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
-        ManualStall stallToRemove0 = existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
-        existingLengthStallStack.addManualStall(stallInfo);
+        StallSpec stallSpec = new StallSpec(vehicleWidth, vehicleLength, StallType.NoPadding);
+        StallSpec stallSpecTooWide = new StallSpec(vehicleLargeWidth, vehicleLength, StallType.NoPadding);
+        existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
+        ManualStall stallToRemove0 = existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
+        existingLengthStallStack.addManualStall(stallSpec);
 
         // Create gap
         existingLengthStallStack.removeManualStall(stallToRemove0.getName());
 
-        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallInfoTooWide);
+        ManualStall stallToFitInGap = existingLengthStallStack.addManualStall(stallSpecTooWide);
 
         assertEquals(null, stallToFitInGap);
     }
@@ -317,13 +317,13 @@ public class StallStackTests {
         double vehicleWidth0 = 2;
         double vehicleWidth1 = 3;
         double vehicleLength = maxStallLength;
-        StallInfo stallInfo0 = new StallInfo(vehicleWidth0, vehicleLength, StallType.NoPadding);
-        StallInfo stallInfo1 = new StallInfo(vehicleWidth1, vehicleLength, StallType.NoPadding);
-        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallInfo0);
-        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallInfo0);
-        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallInfo1);
-        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallInfo1);
-        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallInfo0);
+        StallSpec stallSpec0 = new StallSpec(vehicleWidth0, vehicleLength, StallType.NoPadding);
+        StallSpec stallSpec1 = new StallSpec(vehicleWidth1, vehicleLength, StallType.NoPadding);
+        ManualStall testStall0 = existingLengthStallStack.addManualStall(stallSpec0);
+        ManualStall testStall1 = existingLengthStallStack.addManualStall(stallSpec0);
+        ManualStall testStall2 = existingLengthStallStack.addManualStall(stallSpec1);
+        ManualStall testStall3 = existingLengthStallStack.addManualStall(stallSpec1);
+        ManualStall testStall4 = existingLengthStallStack.addManualStall(stallSpec0);
 
         assertEquals(vehicleLength, testStall0.getLength(),0);
         assertEquals(vehicleLength, testStall1.getLength(),0);

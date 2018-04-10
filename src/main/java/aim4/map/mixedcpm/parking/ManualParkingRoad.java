@@ -6,7 +6,6 @@ import aim4.map.connections.Junction;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.UUID;
 
 public class ManualParkingRoad implements IManualParkingRoad {
 
@@ -122,20 +121,20 @@ public class ManualParkingRoad implements IManualParkingRoad {
     }
 
     /**
-     * Finds a new space based on the size of the stallInfo
-     * @param stallInfo the parameters of the space to find
+     * Finds a new space based on the size of the stallSpec
+     * @param stallSpec the parameters of the space to find
      * @param searchType the way the space should be searched for
      * @return the stall if it was found, null if not
      */
-    public ManualStall findNewSpace(StallInfo stallInfo, SearchParameter searchType) {
+    public ManualStall findNewSpace(StallSpec stallSpec, SearchParameter searchType) {
         ManualStall returnStall = null;
         for (StallStack stack:stallStackPair) {
             switch (searchType) {
                 case anyGap:
                 case exactSize:
-                    if (stallInfo.getLength() == stack.getMaxStallLength() &&
-                            stallInfo.getWidth() == stack.getIdealStallWidth()){
-                        returnStall = stack.addManualStall(stallInfo);
+                    if (stallSpec.getLength() == stack.getMaxStallLength() &&
+                            stallSpec.getWidth() == stack.getIdealStallWidth()){
+                        returnStall = stack.addManualStall(stallSpec);
                     }
                     if (returnStall != null) {
                         this.toBeDeleted = false;
@@ -143,8 +142,8 @@ public class ManualParkingRoad implements IManualParkingRoad {
                     }
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case correctLength:
-                    if (stallInfo.getLength() == stack.getMaxStallLength()){
-                        returnStall = stack.addManualStall(stallInfo);
+                    if (stallSpec.getLength() == stack.getMaxStallLength()){
+                        returnStall = stack.addManualStall(stallSpec);
                     }
                     if (returnStall != null) {
                         this.toBeDeleted = false;
@@ -153,7 +152,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 case emptyStack:
                     if (0 == stack.getMaxStallLength()){
-                        returnStall = stack.addManualStall(stallInfo);
+                        returnStall = stack.addManualStall(stallSpec);
                     }
                     if (returnStall != null) {
                         this.toBeDeleted = false;
@@ -161,7 +160,7 @@ public class ManualParkingRoad implements IManualParkingRoad {
                     }
                     if (!searchType.equals(SearchParameter.anyGap)) {break;}
                 default:
-                    returnStall = stack.addManualStall(stallInfo);
+                    returnStall = stack.addManualStall(stallSpec);
                     if (returnStall != null) {
                         this.toBeDeleted = false;
                         return returnStall;

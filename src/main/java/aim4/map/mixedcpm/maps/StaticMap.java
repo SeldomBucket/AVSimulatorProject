@@ -5,7 +5,6 @@ import aim4.map.mixedcpm.parking.*;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
-import java.util.Map;
 
 /**
  * Test map which is just a standard manual car park (for testing the spaces)
@@ -48,13 +47,13 @@ public class StaticMap extends MixedCPMBasicMap {
         //          < 200 spaces:  3 bays or 6% of total capacity, whichever is greater
         //         >= 200 spaces:  4 bays plus 4% of total capacity
 
-        StallInfo standardStallInfo = new StallInfo(1.9, 4.5, StallType.Standard);
-        StallInfo disabledStallInfo = new StallInfo(1.9,4.5, StallType.Disabled);
+        StallSpec standardStallSpec = new StallSpec(1.9, 4.5, StallType.Standard);
+        StallSpec disabledStallSpec = new StallSpec(1.9,4.5, StallType.Disabled);
 
         ArrayList<ManualStall> stalls = new ArrayList<>();
         ManualStall newStall = null;
         do{
-            newStall = manualParkingArea.findSpace(standardStallInfo);
+            newStall = manualParkingArea.findSpace(standardStallSpec);
 
             if (newStall == null){
                 break;
@@ -81,12 +80,12 @@ public class StaticMap extends MixedCPMBasicMap {
 
         // Create the correct number of disabled spaces
         for (int i = 0; i < noOfDisabledSpaces; i++){
-            stalls.add(manualParkingArea.findSpace(disabledStallInfo));
+            stalls.add(manualParkingArea.findSpace(disabledStallSpec));
         }
 
         // Fill the rest with standard stalls
         do{
-            newStall = manualParkingArea.findSpace(standardStallInfo);
+            newStall = manualParkingArea.findSpace(standardStallSpec);
             stalls.add(newStall);
         }while (newStall != null);
 

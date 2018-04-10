@@ -6,9 +6,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * StallInfo describes a stall, without referring to a specific, existing stall
+ * StallSpec describes a stall, without referring to a specific, existing stall
  */
-public class StallInfo {
+public class StallSpec {
 
     /**
      * maps stall type to the padding around the edge of the stall
@@ -37,23 +37,23 @@ public class StallInfo {
     private StallType type;
 
     /**
-     * constructor for StallInfo from another StallInfo
-     * @param stallInfo StallInfo to copy
+     * constructor for StallSpec from another StallSpec
+     * @param stallSpec StallSpec to copy
      */
-    public StallInfo(StallInfo stallInfo)
+    public StallSpec(StallSpec stallSpec)
     {
-        this.width = stallInfo.getWidth();
-        this.length = stallInfo.getLength();
-        this.type = stallInfo.getType();
+        this.width = stallSpec.getWidth();
+        this.length = stallSpec.getLength();
+        this.type = stallSpec.getType();
     }
 
     /**
-     * Constructor for StallInfo
+     * Constructor for StallSpec
      * @param vehicleWidth the width of the vehicle to park in the stall
      * @param vehicleLength the length of the vehicle to park in the stall
      * @param type the type of stall
      */
-    public StallInfo(double vehicleWidth, double vehicleLength, StallType type){
+    public StallSpec(double vehicleWidth, double vehicleLength, StallType type){
         this.type = type;
         // Round space size to nearest 10cm and add the padding needed for the vehicle
         this.width = Util.roundToDecimalPlaces(vehicleWidth, 1) + stallPadding.get(type)[0];

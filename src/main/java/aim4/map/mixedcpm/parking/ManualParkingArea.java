@@ -57,11 +57,11 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     }
 
     /**
-     * Find a stall based on the stallInfo
-     * @param stallInfo the parameters of the stall to find the space
+     * Find a stall based on the stallSpec
+     * @param stallSpec the parameters of the stall to find the space
      * @return the ManualStall if it can fit, null otherwise
      */
-    public ManualStall findSpace(StallInfo stallInfo){
+    public ManualStall findSpace(StallSpec stallSpec){
         ManualStall tempStall;
 
         String roadName = "ParkingRoad:" + UUID.randomUUID().toString();
@@ -69,7 +69,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         // Find a space for the vehicle
         // Search parkingRoads for a suitable space and add if possible
         if (parkingRoads.size() == 0){
-            tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
+            tempStall = addNewParkingRoadAndFindSpace(roadName, stallSpec);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
                     tempStall.delete();
@@ -81,7 +81,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
 
         //        First search for stack with correct length & same ideal width
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo,
+            tempStall = road.findNewSpace(stallSpec,
                                    ManualParkingRoad.SearchParameter.exactSize);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
@@ -94,7 +94,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
 
         //        Next, search for stack with correct length only
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo,
+            tempStall = road.findNewSpace(stallSpec,
                                ManualParkingRoad.SearchParameter.correctLength);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
@@ -107,7 +107,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
 
         //       Next, search for empty stacks
         for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallInfo,
+            tempStall = road.findNewSpace(stallSpec,
                                   ManualParkingRoad.SearchParameter.emptyStack);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
@@ -119,7 +119,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         }
 
         //        Next, add new road and use that
-        tempStall = addNewParkingRoadAndFindSpace(roadName, stallInfo);
+        tempStall = addNewParkingRoadAndFindSpace(roadName, stallSpec);
         if (tempStall != null){
             if (tempStall.getMaxX() > dimensions.getMaxX()){
                 tempStall.delete();
@@ -236,20 +236,20 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     //////////////////////////////
 
     /**
-     * adds a new parking road and finds a space based on stallInfo
+     * adds a new parking road and finds a space based on stallSpec
      * @param roadName the name of the road
-     * @param stallInfo the parameters of the stall to find in the new road
+     * @param stallSpec the parameters of the stall to find in the new road
      * @return the Manual stall if it is found, null otherwise
      */
     private ManualStall addNewParkingRoadAndFindSpace(String roadName,
-                                                      StallInfo stallInfo){
+                                                      StallSpec stallSpec){
 
-        // Using new StallInfo, set up a new road (with the stall stack size
+        // Using new StallSpec, set up a new road (with the stall stack size
         // Set up connections to end roads
         ManualParkingRoad road = addNewParkingRoad(roadName,
-                                                    stallInfo.getLength());
+                                                    stallSpec.getLength());
         if (road != null){
-            return road.findNewSpace(stallInfo,
+            return road.findNewSpace(stallSpec,
                                     ManualParkingRoad.SearchParameter.correctLength);
         }else {
             return null;

@@ -37,8 +37,8 @@ public class StaticStatusMonitor implements IStatusMonitor {
     private List<ManualStall> unoccupiedStalls = new ArrayList<>();
     private List<ManualStall> occupiedStalls = new ArrayList<>();
 
-    private StallInfo standardStallInfo = new StallInfo(1.9, 4.5, StallType.Standard);
-    private StallInfo disabledStallInfo = new StallInfo(1.9,4.5, StallType.Disabled);
+    private StallSpec standardStallSpec = new StallSpec(1.9, 4.5, StallType.Standard);
+    private StallSpec disabledStallSpec = new StallSpec(1.9,4.5, StallType.Disabled);
 
     /**
      * Create a StaticStatusMonitor to record the status of the parking area.
@@ -111,9 +111,9 @@ public class StaticStatusMonitor implements IStatusMonitor {
         occupiedStalls.remove(vehicle.getTargetStall());
         // Replace the space deleted by this vehicle when it left
         if (vehicle.isDisabledVehicle()){
-            unoccupiedStalls.add(parkingArea.findSpace(disabledStallInfo));
+            unoccupiedStalls.add(parkingArea.findSpace(disabledStallSpec));
         }else{
-            unoccupiedStalls.add(parkingArea.findSpace(standardStallInfo));
+            unoccupiedStalls.add(parkingArea.findSpace(standardStallSpec));
         }
     }
 

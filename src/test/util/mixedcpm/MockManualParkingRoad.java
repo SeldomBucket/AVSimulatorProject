@@ -40,7 +40,7 @@ public class MockManualParkingRoad implements IManualParkingRoad {
     }
 
     @Override
-    public ManualStall findNewSpace(StallInfo stallInfo, ManualParkingRoad.SearchParameter searchType) {
+    public ManualStall findNewSpace(StallSpec stallSpec, ManualParkingRoad.SearchParameter searchType) {
         return null;
     }
 

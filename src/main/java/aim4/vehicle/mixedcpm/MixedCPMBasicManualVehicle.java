@@ -7,7 +7,7 @@ import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.connections.BasicConnection;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualStall;
-import aim4.map.mixedcpm.parking.StallInfo;
+import aim4.map.mixedcpm.parking.StallSpec;
 import aim4.map.mixedcpm.parking.StallType;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
@@ -109,7 +109,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
     protected MixedCPMManualCoordinator.ParkingStatus V2Vinbox;
 
 
-    protected StallInfo stallInfo;
+    protected StallSpec stallSpec;
 
     /**
      * Construct a vehicle
@@ -144,15 +144,15 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         this.disabledVehicle = disabledVehicle;
 
         if (disabledVehicle){
-            this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Disabled);
+            this.stallSpec = new StallSpec(spec.getWidth(), spec.getLength(), StallType.Disabled);
         }else {
-            this.stallInfo = new StallInfo(spec.getWidth(), spec.getLength(), StallType.Standard);
+            this.stallSpec = new StallSpec(spec.getWidth(), spec.getLength(), StallType.Standard);
         }
 
     }
 
-    public StallInfo getStallInfo(){
-        return this.stallInfo;
+    public StallSpec getStallSpec(){
+        return this.stallSpec;
     }
 
     @Override

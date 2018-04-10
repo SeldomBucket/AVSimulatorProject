@@ -12,7 +12,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
-public class ManualStall extends StallInfo implements Comparable<ManualStall>{
+public class ManualStall extends StallSpec implements Comparable<ManualStall>{
     //TODO ED ManualStall
 
     /** The ID of this manual stall */
@@ -27,13 +27,13 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
 
     /**
      * Constructor for ManualStall
-     * @param stallInfo the parameters of the stall
+     * @param stallSpec the parameters of the stall
      * @param stallStack the StallStack this belongs to
      */
-    ManualStall(double x, double y, StallInfo stallInfo, StallStack stallStack, IManualParkingRoad parkingRoad, RoadMap map) {
-        super(stallInfo);
+    ManualStall(double x, double y, StallSpec stallSpec, StallStack stallStack, IManualParkingRoad parkingRoad, RoadMap map) {
+        super(stallSpec);
         stallName = "Stall:" + UUID.randomUUID();
-        boundingBox = new Rectangle2D.Double(x,y,stallInfo.getLength(), stallInfo.getWidth());
+        boundingBox = new Rectangle2D.Double(x,y, stallSpec.getLength(), stallSpec.getWidth());
         this.stallStack = stallStack;
         this.parkingRoad = parkingRoad;
         Road centreRoad = parkingRoad.getCentreRoad();
@@ -45,15 +45,15 @@ public class ManualStall extends StallInfo implements Comparable<ManualStall>{
                 roadEndXPosition = x;
             } else {
                 roadStartXPosition = centreRoad.getOnlyLane().getShape().getBounds2D().getMinX();
-                roadEndXPosition = x + stallInfo.getLength();
+                roadEndXPosition = x + stallSpec.getLength();
             }
-            roadYPosition = y + stallInfo.getWidth() / 2;
+            roadYPosition = y + stallSpec.getWidth() / 2;
 
             LineSegmentLane lane = new LineSegmentLane(roadStartXPosition,
                     roadYPosition,
                     roadEndXPosition,
                     roadYPosition,
-                    stallInfo.getWidth(),
+                    stallSpec.getWidth(),
                     1);
             ArrayList<Lane> lanes = new ArrayList<>();
             lanes.add(lane);
