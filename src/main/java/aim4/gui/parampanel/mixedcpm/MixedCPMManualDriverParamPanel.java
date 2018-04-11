@@ -1,6 +1,7 @@
 package aim4.gui.parampanel.mixedcpm;
 
 import aim4.gui.component.LabeledSlider;
+import aim4.gui.component.MixedCPMLogFileRadioButtons;
 import aim4.gui.component.MixedCPMMapTypeRadioButtons;
 import aim4.gui.component.MixedCPMSpawnSpecRadioButtons;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
@@ -18,6 +19,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     LabeledSlider carParkHeightSlider;
     LabeledSlider laneWidthSlider;
     LabeledSlider trafficRateSlider;
+    MixedCPMLogFileRadioButtons logFileRadioButtons;
     MixedCPMSpawnSpecRadioButtons spawnSpecRadioButtons;
     MixedCPMMapTypeRadioButtons mapTypeRadioButtons;
 
@@ -65,6 +67,9 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         "%.0f");
         add(trafficRateSlider);
 
+        logFileRadioButtons = new MixedCPMLogFileRadioButtons();
+        add(logFileRadioButtons);
+
         mapTypeRadioButtons = new MixedCPMMapTypeRadioButtons();
         add(mapTypeRadioButtons);
 
@@ -105,6 +110,10 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
 
     public String getCsvFilename(){
         return spawnSpecRadioButtons.getFileLocation();
+    }
+
+    public boolean getUseLogFile(){
+        return logFileRadioButtons.getSelected();
     }
 
 }

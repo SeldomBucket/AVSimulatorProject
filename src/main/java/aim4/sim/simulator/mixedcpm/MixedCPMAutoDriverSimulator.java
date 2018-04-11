@@ -101,6 +101,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
     private int totalBitsTransmittedByCompletedVehicles;
     /** The total number of bits received by the completed vehicles */
     private int totalBitsReceivedByCompletedVehicles;
+    private boolean logToggle = true;
 
     public MixedCPMAutoDriverSimulator(MixedCPMBasicMap map){
         this.map = map;
@@ -125,6 +126,13 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         observeParkedVehicles();
         observeNumberOfVehiclesInCarPark();
         List<MixedCPMBasicManualVehicle> completedVehicles = cleanUpCompletedVehicles();
+
+        // Only log stats every other timestep
+        if (logToggle) {
+            Logging.logStats(map.getStatusMonitor());
+        }
+        logToggle = !logToggle;
+
         currentTime += timeStep;
         return new MixedCPMAutoDriverSimStepResult(completedVehicles);
     }

@@ -26,6 +26,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     protected MapType mapType;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
+    protected boolean logToFile;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -114,7 +115,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     public void setMapType(MapType mapType) {
         this.mapType = mapType;
     }
-    public SpawnSpecType getMapType() { return spawnSpecType; }
+    public MapType getMapType() { return mapType; }
 
     public Pair<Boolean, String> getUseCSVFile() {
         return useCSVFile;
@@ -122,5 +123,13 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
 
     public void setUseCSVFile(Pair<Boolean, String> useCSVFile) {
         this.useCSVFile = useCSVFile;
+    }
+
+    public boolean isLogToFile() {
+        return logToFile;
+    }
+
+    public void setLogToFile(boolean logToFile){
+        this.logToFile = logToFile;
     }
 }

@@ -74,6 +74,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
         newSimSetup.setMapType(autoDriverOnlySetupPanel.getMapType());
         newSimSetup.setUseCSVFile(new Pair<>(autoDriverOnlySetupPanel.getUseCsv(),
                                              autoDriverOnlySetupPanel.getCsvFilename()));
+        newSimSetup.setLogToFile(autoDriverOnlySetupPanel.getUseLogFile());
         return newSimSetup;
 
     }
