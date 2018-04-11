@@ -22,9 +22,9 @@ public final class Logging {
                 spawnLogFileWriter = new PrintWriter(spawnLogFilename, "UTF-8");
                 spawnLogFileWriter.println("Spec,Disabled,Entry,Parking");
 
-                String logFilename = "Log_" + timestamp.toString() + ".csv";
+                String logFilename = "Log_" + timestamp.toString() + ".txt";
                 logFileWriter = new PrintWriter(logFilename, "UTF-8");
-                spawnLogFileWriter.println("Timestamp,Efficiency,AreaPerVehicle,AllowedEntries,DeniedEntries,CompletedVehicles,ParkedVehicles");
+                spawnLogFileWriter.println("Timestamp\tEfficiency\tAreaPerVehicle\tAllowedEntries\tDeniedEntries\tCompletedVehicles\tParkedVehicles");
 
             } catch (FileNotFoundException ex){ }
             catch (UnsupportedEncodingException ex) { }
@@ -49,19 +49,32 @@ public final class Logging {
         if (logFileWriter != null) {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             String logLine = timestamp.toString();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getCurrentEfficiency();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getAreaPerVehicle();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getNumberOfAllowedEntries();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getNumberOfDeniedEntries();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getNumberOfCompletedVehicles();
-            logLine += ",";
+            logLine += "\t";
             logLine += monitor.getNoOfParkedVehicles();
             logFileWriter.println(logLine);
+        }
+    }
+
+    public static void logFinalStats(IStatusMonitor monitor){
+        if (logFileWriter != null) {
+            logFileWriter.println();
+            logFileWriter.println("FINAL STATISTICS");
+            logFileWriter.println("Max Efficiency:\t" + String.valueOf(monitor.getMaxEfficiency()));
+            logFileWriter.println("Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerVehicle()));
+            logFileWriter.println("Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedVehicles()));
+            logFileWriter.println("No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedEntries()));
+            logFileWriter.println("No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedEntries()));
+            logFileWriter.println("No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedVehicles()));
         }
     }
 

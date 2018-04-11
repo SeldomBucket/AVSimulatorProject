@@ -32,8 +32,10 @@ package aim4.gui;
 
 import aim4.config.Debug;
 import aim4.gui.viewer.*;
+import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.sim.Simulator;
 import aim4.util.Logging;
+import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -225,6 +227,9 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                         JOptionPane.YES_NO_OPTION);
 
                 if (result == JOptionPane.YES_OPTION) {
+                    if (getSelectedSimulator().getMap() instanceof MixedCPMBasicMap) {
+                        Logging.logFinalStats((((MixedCPMBasicMap) getSelectedSimulator().getMap()).getStatusMonitor()));
+                    }
                     Logging.closeLogFiles();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
                 }
