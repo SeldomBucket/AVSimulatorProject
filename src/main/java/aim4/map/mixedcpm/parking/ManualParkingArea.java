@@ -129,6 +129,21 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         }
 
         //      Next, extend the last stack to allow for longer vehicles
+        for (ManualParkingRoad road: parkingRoads) {
+            if (road.isLastRoad()){
+                if(road.getStallStackPair()[1].tryChangeLength(stallSpec.getLength())) {
+                    tempStall = road.findNewSpace(stallSpec,
+                            ManualParkingRoad.SearchParameter.emptyStack);
+                    if (tempStall != null) {
+                        if (tempStall.getMaxX() > dimensions.getMaxX()) {
+                            tempStall.delete();
+                            return null;
+                        }
+                        return tempStall;
+                    }
+                }
+            }
+        }
 
         return null;
     }

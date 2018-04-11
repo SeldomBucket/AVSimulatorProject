@@ -243,4 +243,17 @@ public class StallStack {
                 maxStallLength,
                 this.boundingBox.getHeight());
     }
+
+    public boolean tryChangeLength(double length){
+        if (length > boundingBox.getWidth()){
+            if (boundingBox.getMinX() + length <= map.getDimensions().getMaxX()){
+                boundingBox.setRect(new Rectangle2D.Double(boundingBox.getX(),
+                                                           boundingBox.getY(),
+                                                           length,
+                                                           boundingBox.getHeight()));
+                return true;
+            }
+        }
+        return false;
+    }
 }

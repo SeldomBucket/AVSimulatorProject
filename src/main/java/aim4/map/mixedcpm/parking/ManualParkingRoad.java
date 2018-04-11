@@ -120,6 +120,10 @@ public class ManualParkingRoad implements IManualParkingRoad {
         }
     }
 
+    public boolean isLastRoad(){
+        return this.lastRoad;
+    }
+
     /**
      * Finds a new space based on the size of the stallSpec
      * @param stallSpec the parameters of the space to find
