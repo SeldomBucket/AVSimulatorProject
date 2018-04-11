@@ -1,7 +1,10 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
+import aim4.map.Road;
+import aim4.map.lane.Lane;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import javafx.util.Pair;
 
 import java.util.*;
 
@@ -71,8 +74,19 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
             return false;
         }
 
+
+        ArrayList<Lane> pathToTargetStall = new ArrayList<>();
+        for (Road road : allocatedStall.getJunction().getRoads()){
+            if (road.getOnlyLane() != allocatedStall.getLane()){
+                pathToTargetStall.add(0, parkingArea.getRoadByName("topRoad").getOnlyLane()); // Top Road
+                pathToTargetStall.add(1, road.getOnlyLane());                                           // Parking Road Lane
+                pathToTargetStall.add(2, allocatedStall.getLane());                                     // Manual Stall Lane
+                break;
+            }
+        }
+
         // Allocate this parking lane to the vehicle by sending message
-        sendParkingLaneMessage(vehicle, allocatedStall);
+        sendParkingLaneMessage(vehicle, allocatedStall, pathToTargetStall);
 
         // Register the vehicle with the AdjustableManualStatusMonitor, along with the
         // parking lane it has been allocated
@@ -88,13 +102,14 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
      */
     public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
+        vehicle.getTargetStall().delete();
         vehicles.remove(vehicle);
         numberOfCompletedVehicles++;
     }
 
 
-    private void sendParkingLaneMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall) {
-        vehicle.sendMessageToI2VInbox(manualStall);
+    private void sendParkingLaneMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall, List<Lane> path) {
+        vehicle.sendMessageToI2VInbox(new Pair<>(manualStall, path));
     }
 
 

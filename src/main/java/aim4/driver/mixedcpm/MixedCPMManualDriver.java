@@ -132,16 +132,8 @@ public class MixedCPMManualDriver extends BasicDriver implements AutoDriver {
         return spawnPoint;
     }
 
-    public void updatePathToTargetStall() {
-
-        for (Road road : this.vehicle.getTargetStall().getJunction().getRoads()){
-            if (road.getOnlyLane() != this.vehicle.getTargetStall().getLane()){
-                pathToTargetStall.add(0, map.getTopRoad().getOnlyLane());               // Top Road
-                pathToTargetStall.add(1, road.getOnlyLane());                           // Parking Road Lane
-                pathToTargetStall.add(2, this.vehicle.getTargetStall().getLane());      // Manual Stall Lane
-                break;
-            }
-        }
+    public void updatePathToTargetStall(List<Lane> path) {
+        this.pathToTargetStall = new ArrayList<>(path);
     }
 
     /**

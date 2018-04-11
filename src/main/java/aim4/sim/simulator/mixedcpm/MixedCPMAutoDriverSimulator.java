@@ -596,9 +596,6 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
             if(!vehicle.getShape().intersects(mapBoundary)) {
                 // Process anything we need to from this vehicle
                 // TODO CPM Do we need to get anything? Maybe distance travelled
-                if (map.getManualParkingArea().getManualStallByName(vehicle.getTargetStall().getName()) != null){
-                    vehicle.clearTargetStall();
-                }
                 map.getStatusMonitor().vehicleOnExit(vehicle);
                 vehicle.clearTargetStall();
                 vehicle.setExitTime(getSimulationTime());

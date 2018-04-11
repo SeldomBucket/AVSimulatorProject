@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.sql.Timestamp;
 
-public class Logging {
+public final class Logging {
 
     private static PrintWriter spawnLogFileWriter = null;
     private static PrintWriter logFileWriter = null;

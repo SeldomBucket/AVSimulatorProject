@@ -1,7 +1,10 @@
 package aim4.map.mixedcpm.parking;
 
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
+import aim4.map.Road;
+import aim4.map.lane.Lane;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import javafx.util.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -89,8 +92,19 @@ public class StaticStatusMonitor implements IStatusMonitor {
         unoccupiedStalls.remove(allocatedStall);
         occupiedStalls.add(allocatedStall);
 
+
+        ArrayList<Lane> pathToTargetStall = new ArrayList<>();
+        for (Road road : allocatedStall.getJunction().getRoads()){
+            if (road.getOnlyLane() != allocatedStall.getLane()){
+                pathToTargetStall.add(0, parkingArea.getRoadByName("topRoad").getOnlyLane()); // Top Road
+                pathToTargetStall.add(1, road.getOnlyLane());                                           // Parking Road Lane
+                pathToTargetStall.add(2, allocatedStall.getLane());                                     // Manual Stall Lane
+                break;
+            }
+        }
+
         // Allocate this parking lane to the vehicle by sending message
-        sendManualStallMessage(vehicle, allocatedStall);
+        sendManualStallMessage(vehicle, allocatedStall, pathToTargetStall);
 
         // Register the vehicle with the AdjustableManualStatusMonitor, along with the
         // parking lane it has been allocated
@@ -111,15 +125,15 @@ public class StaticStatusMonitor implements IStatusMonitor {
         occupiedStalls.remove(vehicle.getTargetStall());
         // Replace the space deleted by this vehicle when it left
         if (vehicle.isDisabledVehicle()){
-            unoccupiedStalls.add(parkingArea.findSpace(disabledStallSpec));
+            unoccupiedStalls.add(vehicle.getTargetStall());
         }else{
-            unoccupiedStalls.add(parkingArea.findSpace(standardStallSpec));
+            unoccupiedStalls.add(vehicle.getTargetStall());
         }
     }
 
 
-    private void sendManualStallMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall) {
-        vehicle.sendMessageToI2VInbox(manualStall);
+    private void sendManualStallMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall, List<Lane> path) {
+        vehicle.sendMessageToI2VInbox(new Pair<>(manualStall, path));
     }
 
 

@@ -12,12 +12,12 @@ def main():
     args = parser.parse_args()
 
     f = open(args.fileName[0], "w")
-    f.write("Spec,Disabled,Entry,Parking\r\n")
+    f.write("Spec,Disabled,Entry,Parking\n")
 
-    print args
+    print(args)
 
     spawnTime = 10
-    for i in xrange(args.noOfVehicles[0]):
+    for i in range(args.noOfVehicles[0]):
         if (args.parkingTime[0] == 'r'):
             parkingTime = str(generate_parking_time())
         else:
@@ -26,8 +26,7 @@ def main():
         f.write(get_random_spec(args.specTypes) + "," +
                 get_is_disabled(float(args.disabledVehicles[0])/100) + "," +
                 str(spawnTime) + "," +
-                parkingTime +
-                "\r\n")
+                parkingTime + "\n")
         spawnTime+=10
     f.close()
 

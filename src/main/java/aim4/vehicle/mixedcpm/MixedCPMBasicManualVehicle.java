@@ -11,9 +11,11 @@ import aim4.map.mixedcpm.parking.StallSpec;
 import aim4.map.mixedcpm.parking.StallType;
 import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
+import javafx.util.Pair;
 
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.Math.abs;
 
@@ -98,7 +100,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
      * There will only ever be one message, which will be a
      * ManualStall (or null, if no room for vehicle to park).
      */
-    protected ManualStall I2Vinbox;
+    protected Pair<ManualStall,List<Lane>> I2Vinbox;
 
     /**
      * The inbox for messages from other vehicles. There will only ever
@@ -222,11 +224,11 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
         return disabledVehicle;
     }
 
-    public void sendMessageToI2VInbox(ManualStall manualStall) {
-        I2Vinbox = manualStall;
+    public void sendMessageToI2VInbox(Pair<ManualStall, List<Lane>> message) {
+        I2Vinbox = message;
     }
 
-    public ManualStall getMessagesFromI2VInbox() {
+    public Pair<ManualStall, List<Lane>> getMessagesFromI2VInbox() {
         return I2Vinbox;
     }
 

@@ -8,11 +8,14 @@ import aim4.driver.mixedcpm.pilot.MixedCPMManualPilot;
 import aim4.map.connections.Corner;
 import aim4.map.connections.Junction;
 import aim4.map.connections.SimpleIntersection;
+import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import javafx.util.Pair;
 
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.List;
 
 public class MixedCPMManualCoordinator implements Coordinator {
 
@@ -214,17 +217,21 @@ public class MixedCPMManualCoordinator implements Coordinator {
      * Process any messages in the I2V inbox, from the IStatusMonitor.
      */
     private void processI2Vinbox() {
-        ManualStall I2Vinbox = vehicle.getMessagesFromI2VInbox();
-        if (this.vehicle.getTargetStall() == null) {
-            if ((I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.WAITING)) {
-                // We have been granted access to the car park and know where to park
-                //System.out.println("Changing status to PARKING.");
-                setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.PARKING);
-                vehicle.setTargetStall(I2Vinbox);
-                vehicle.clearI2Vinbox();
-                System.out.println("Vehicle " + vehicle.getVIN() + " finding " + I2Vinbox.getRoad().getName() + " on parking lane " + I2Vinbox.getParkingRoad().getName());
-                vehicle.setHasEntered();
-                driver.updatePathToTargetStall();
+        Pair<ManualStall, List<Lane>> message = vehicle.getMessagesFromI2VInbox();
+        if (message!= null) {
+            ManualStall I2Vinbox = message.getKey();
+            List<Lane> path = message.getValue();
+            if (this.vehicle.getTargetStall() == null) {
+                if ((I2Vinbox != null && parkingStatus == MixedCPMManualCoordinator.ParkingStatus.WAITING)) {
+                    // We have been granted access to the car park and know where to park
+                    //System.out.println("Changing status to PARKING.");
+                    setParkingStatus(MixedCPMManualCoordinator.ParkingStatus.PARKING);
+                    vehicle.setTargetStall(I2Vinbox);
+                    vehicle.clearI2Vinbox();
+                    System.out.println("Vehicle " + vehicle.getVIN() + " finding " + I2Vinbox.getRoad().getName() + " on parking lane " + I2Vinbox.getParkingRoad().getName());
+                    vehicle.setHasEntered();
+                    driver.updatePathToTargetStall(path);
+                }
             }
         }
     }
@@ -558,7 +565,6 @@ public class MixedCPMManualCoordinator implements Coordinator {
                     // If we're back on the parking road, follow the flow until the exit, and delete stall to free up the space
 
                     if (vehicle.gaugeVelocity() > 0) {
-                        vehicle.getTargetStall().delete();
                         setDrivingState(DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
                         return true;
                     } else {
