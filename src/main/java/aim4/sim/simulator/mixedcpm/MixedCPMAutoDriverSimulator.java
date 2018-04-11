@@ -14,6 +14,7 @@ import aim4.map.mixedcpm.parking.IStatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;
 import aim4.sim.results.SimulatorResult;
+import aim4.util.Logging;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -46,6 +47,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
     public static void setMapType(MixedCPMMapUtil.MapType type){
         mapType = type;
     }
+
 
     /////////////////////////////////
     // NESTED CLASSES
@@ -156,6 +158,10 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             vehicle.setEntryTime(getSimulationTime());
                             map.addVehicleToMap(vehicle);
                             System.out.println("Vehicle " + vehicle.getVIN() + " Spec " + vehicle.getSpec().getName() + " spawned at time " + currentTime);
+
+                            // LOG TO CSV FILE
+                            Logging.logVehicleSpawn(vehicle);
+
                             if (vehicle.isDisabledVehicle()){
                                 System.out.println("Vehicle " + vehicle.getVIN() + " is a disabled vehicle");
                             }

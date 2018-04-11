@@ -6,6 +6,7 @@ import aim4.map.mixedcpm.maps.AdjustableManualCarPark;
 import aim4.map.mixedcpm.maps.StaticMap;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
+import aim4.util.Logging;
 
 /**
  * Setup for simulation of AVs in an AV specific car park which are self-organising.
@@ -50,15 +51,15 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
 
         MixedCPMAutoDriverSimulator.setMapType(mapType);
 
-
-
-        // Set up the correct spawn point
+        // Set up the correct spawn point (Don't log if reading from CSV)
         switch(spawnSpecType) {
             case SINGLE:
                 MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel);
+                Logging.initialiseLogWriters();
                 break;
             case RANDOM:
                 MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel);
+                Logging.initialiseLogWriters();
                 break;
             case CSV:
                 MixedCPMMapUtil.setUpSpecificSpecVehicleSpawnPoint(layout, useCSVFile);

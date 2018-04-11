@@ -33,6 +33,7 @@ package aim4.gui;
 import aim4.config.Debug;
 import aim4.gui.viewer.*;
 import aim4.sim.Simulator;
+import aim4.util.Logging;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -209,6 +210,26 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         pack(); // pick the layout and show it
         setVisible(true);
         initGUIsetting();
+
+
+        this.addWindowListener( new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e)
+            {
+                JFrame frame = (JFrame)e.getSource();
+
+                int result = JOptionPane.showConfirmDialog(
+                        frame,
+                        "Are you sure you want to exit the application?",
+                        "Exit Application,",
+                        JOptionPane.YES_NO_OPTION);
+
+                if (result == JOptionPane.YES_OPTION) {
+                    Logging.closeLogFiles();
+                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                }
+            }
+        });
 
         if (isRunNow) {
             startSimProcess();
@@ -822,5 +843,6 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     @Override
     public void keyTyped(KeyEvent e) {
     }
+
 
 }
