@@ -227,8 +227,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                         JOptionPane.YES_NO_OPTION);
 
                 if (result == JOptionPane.YES_OPTION) {
-                    if (getSelectedSimulator().getMap() instanceof MixedCPMBasicMap) {
-                        Logging.logFinalStats((((MixedCPMBasicMap) getSelectedSimulator().getMap()).getStatusMonitor()));
+                    if (getSelectedSimulator() != null) {
+                        if (getSelectedSimulator().getMap() instanceof MixedCPMBasicMap) {
+                            Logging.logFinalStats((((MixedCPMBasicMap) getSelectedSimulator().getMap()).getStatusMonitor()));
+                        }
                     }
                     Logging.closeLogFiles();
                     frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

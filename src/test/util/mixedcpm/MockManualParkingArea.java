@@ -67,6 +67,6 @@ public class MockManualParkingArea extends MixedCPMRoadMap implements IManualPar
 
     @Override
     public void removeManualStall(String stallName) {
-        
+
     }
 }

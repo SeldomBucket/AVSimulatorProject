@@ -33,6 +33,21 @@ public class AutomatedParkingArea implements IAutomatedParkingArea {
 
     @Override
     public boolean tryResize(double newMinX) {
+        if (newMinX > dimensions.getMinX()){
+            dimensions = new Rectangle2D.Double(newMinX,
+                                                dimensions.getY(),
+                                                dimensions.getMaxX() - newMinX,
+                                                dimensions.getHeight());
+            return true;
+        }else{
+            if (map.canResizeAutomatedArea(newMinX)) {
+                dimensions = new Rectangle2D.Double(newMinX,
+                                                    dimensions.getY(),
+                                                    dimensions.getMaxX() - newMinX,
+                                                    dimensions.getHeight());
+                return true;
+            }
+        }
         return false;
     }
 

@@ -3,8 +3,8 @@ package aim4.map.mixedcpm.statusmonitor;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
+import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.IManualParkingArea;
-import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import javafx.util.Pair;
@@ -18,6 +18,7 @@ import java.util.*;
  */
 public class AdjustableManualStatusMonitor implements IStatusMonitor {
 
+    private MixedCPMBasicMap map;
     /** The parking area that we are recording the status of. */
     private IManualParkingArea parkingArea;
     /** A list of vehicles which are currently in the car park,
@@ -44,10 +45,11 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
 
     /**
      * Create a AdjustableManualStatusMonitor to record the status of the parking area.
-     * @param parkingArea The parking area to record the status of.
+     * @param map The map to monitor.
      */
-    public AdjustableManualStatusMonitor(IManualParkingArea parkingArea) {
-        this.parkingArea = parkingArea;
+    public AdjustableManualStatusMonitor(MixedCPMBasicMap map) {
+        this.map = map;
+        this.parkingArea = map.getManualParkingArea();
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
@@ -171,8 +173,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     }
 
     public void updateEfficiencyMeasurements(){
-        double areaOfCarPark = (parkingArea.getDimensions().getWidth() *
-                                parkingArea.getDimensions().getHeight());
+        double areaOfCarPark = map.getAreaOfCarPark();
         double areaOfVehicles = getTotalAreaOfParkedVehicles();
 
         areaPerVehicle = areaOfCarPark/getNoOfParkedVehicles();

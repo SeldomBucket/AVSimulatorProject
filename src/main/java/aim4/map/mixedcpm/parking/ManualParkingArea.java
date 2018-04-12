@@ -6,7 +6,6 @@ import aim4.map.mixedcpm.MixedCPMRoadMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
-import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 

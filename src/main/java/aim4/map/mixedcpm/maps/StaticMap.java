@@ -30,7 +30,7 @@ public class StaticMap extends MixedCPMBasicMap {
 
         generateMap();
 
-        statusMonitor = new StaticStatusMonitor(manualParkingArea);
+        statusMonitor = new StaticStatusMonitor(this);
     }
 
     private void generateMap(){

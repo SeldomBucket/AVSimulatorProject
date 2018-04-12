@@ -28,7 +28,7 @@ public class AdjustableManualCarPark extends MixedCPMBasicMap {
 
         this.manualParkingArea = new ManualParkingArea(topRoad, bottomRoad, this, new Rectangle2D.Double(BORDER, BORDER, width, height));
 
-        statusMonitor = new AdjustableManualStatusMonitor(manualParkingArea);
+        statusMonitor = new AdjustableManualStatusMonitor(this);
     }
 
 

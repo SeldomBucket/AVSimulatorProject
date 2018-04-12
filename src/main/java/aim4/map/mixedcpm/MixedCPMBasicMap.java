@@ -46,6 +46,8 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /** The vehicles currently on this map. */
     private List<MixedCPMBasicManualVehicle> vehicles = new ArrayList<MixedCPMBasicManualVehicle>();
 
+    protected double areaOfCarPark;
+
 
     // spawn points
     /** The spawn points */
@@ -265,6 +267,10 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         return  dimensions.getMaxX()-BORDER >= maxX && BORDER <= maxX;
     }
 
+    public boolean canResizeAutomatedArea(double minX){
+        return  dimensions.getMaxX()-BORDER >= minX && BORDER <= minX;
+    }
+
     public boolean vehicleIsInRoad(IManualParkingRoad road){
         for (MixedCPMBasicManualVehicle vehicle : vehicles){
             if (vehicle.getDriver().getCurrentLane() != road.getCentreRoad().getOnlyLane()
@@ -281,5 +287,9 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     @Override
     public IStatusMonitor getStatusMonitor() {
         return statusMonitor;
+    }
+
+    public double getAreaOfCarPark(){
+        return (dimensions.getWidth()-(2*BORDER)) * (dimensions.getHeight()-(2*BORDER));
     }
 }
