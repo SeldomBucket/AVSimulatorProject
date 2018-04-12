@@ -4,9 +4,11 @@ import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
+import aim4.map.mixedcpm.parking.AutomatedParkingRoad;
+import aim4.map.mixedcpm.parking.IAutomatedParkingArea;
 import aim4.map.mixedcpm.parking.IManualParkingArea;
-import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.map.mixedcpm.parking.ManualStall;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import javafx.util.Pair;
 
@@ -20,8 +22,10 @@ import java.util.*;
 public class MixedStatusMonitor implements IStatusMonitor {
 
     private MixedCPMBasicMap map;
-    /** The parking area that we are recording the status of. */
-    private IManualParkingArea parkingArea;
+    /** The automated parking area that we are recording the status of. */
+    private IAutomatedParkingArea automatedParkingArea;
+    /** The manual parking area that we are recording the status of. */
+    private IManualParkingArea manualParkingArea;
     /** A list of vehicles which are currently in the car park,
      * and the lane they are parked in. */
     private Map<MixedCPMBasicManualVehicle, ManualStall> vehicles = new HashMap<>();
@@ -50,7 +54,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
      */
     public MixedStatusMonitor(MixedCPMBasicMap map) {
         this.map = map;
-        this.parkingArea = map.getManualParkingArea();
+        this.manualParkingArea = map.getManualParkingArea();
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
@@ -73,7 +77,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         }
 
         // Find a stall for the vehicle
-        ManualStall allocatedStall = parkingArea.findSpace(vehicle.getStallSpec());
+        ManualStall allocatedStall = manualParkingArea.findSpace(vehicle.getStallSpec());
 
         if (allocatedStall == null){
             numberOfDeniedEntries++;
@@ -84,7 +88,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         ArrayList<Lane> pathToTargetStall = new ArrayList<>();
         for (Road road : allocatedStall.getJunction().getRoads()){
             if (road.getOnlyLane() != allocatedStall.getLane()){
-                pathToTargetStall.add(0, parkingArea.getRoadByName("topRoad").getOnlyLane()); // Top Road
+                pathToTargetStall.add(0, manualParkingArea.getRoadByName("topRoad").getOnlyLane()); // Top Road
                 pathToTargetStall.add(1, road.getOnlyLane());                                           // Parking Road Lane
                 pathToTargetStall.add(2, allocatedStall.getLane());                                     // Manual Stall Lane
                 break;
@@ -103,9 +107,18 @@ public class MixedStatusMonitor implements IStatusMonitor {
 
 
     /**
-     * Update capacity when a vehicle exits the car park.
-     * @param vehicle The vehicle exiting the car park.
+     * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
+     * @param vehicle The vehicle entering the car park.
      */
+    public boolean addNewVehicle(MixedCPMBasicAutoVehicle vehicle) {
+        AutomatedParkingRoad allocatedLane = automatedParkingArea.findTargetLane(vehicle.getSpec());
+        return false;
+    }
+
+        /**
+         * Update capacity when a vehicle exits the car park.
+         * @param vehicle The vehicle exiting the car park.
+         */
     public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicle.getTargetStall().delete();

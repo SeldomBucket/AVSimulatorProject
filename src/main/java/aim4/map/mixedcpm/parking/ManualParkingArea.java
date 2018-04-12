@@ -48,15 +48,6 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     }
 
     /**
-     * add a vehicle to the map, finding a stall for them
-     * @param vehicle the vehicle to be added
-     */
-    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle){
-        // TODO ED call findSpaceForVehicle and give the location of that space
-
-    }
-
-    /**
      * Find a stall based on the stallSpec
      * @param stallSpec the parameters of the stall to find the space
      * @return the ManualStall if it can fit, null otherwise

@@ -2,6 +2,7 @@ package aim4.driver.mixedcpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
+import aim4.driver.mixedcpm.coordinator.MixedCPMAutoCoordinator;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
 import aim4.map.Road;
 import aim4.map.SpawnPoint;
@@ -11,9 +12,8 @@ import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.MixedCPMMap;
 import aim4.map.mixedcpm.MixedCPMSpawnPoint;
-import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.AutoVehicleDriverModel;
-import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 
 import java.awt.geom.Area;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-public class MixedCPMManualDriver extends MixedCPMDriver {
+public class MixedCPMAutoDriver extends MixedCPMDriver {
 
 
     /////////////////////////////////
@@ -29,10 +29,10 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
     /////////////////////////////////
 
     /** The vehicle this driver will control */
-    protected MixedCPMBasicManualVehicle vehicle;
+    protected MixedCPMBasicAutoVehicle vehicle;
 
     /** The sub-agent that controls coordination */
-    protected MixedCPMManualCoordinator coordinator;
+    protected MixedCPMAutoCoordinator coordinator;
 
     /** The map */
     protected MixedCPMMap map;
@@ -47,7 +47,7 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
     // CONSTRUCTORS
     /////////////////////////////////
 
-    public MixedCPMManualDriver(MixedCPMBasicManualVehicle vehicle, MixedCPMMap map) {
+    public MixedCPMAutoDriver(MixedCPMBasicAutoVehicle vehicle, MixedCPMMap map) {
         this.vehicle = vehicle;
         this.map = map;
         coordinator = null;
@@ -145,7 +145,7 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
         super.act();
         if (coordinator == null){
             // Create a new coordinator if the vehicle doesn't already have one.
-            coordinator = new MixedCPMManualCoordinator(vehicle, (MixedCPMManualDriver)vehicle.getDriver());
+            coordinator = new MixedCPMAutoCoordinator(vehicle, (MixedCPMAutoDriver)vehicle.getDriver());
         }
 
         // the newly created coordinator can be called immediately.
@@ -212,14 +212,14 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
             */
             return junctionsBeenInBefore.get(0);
         } else if(newJunction.size() != 0) {
-            if (vehicle.getTargetStall() != null) {
+            if (vehicle.getTargetLane() != null) {
                 for (Junction junction:newJunction){
                     /*if (junction.getExitRoads().get(0).getName() == "bottomRoad")
                     {
                         // prioritise a junction with the bottom road in it
                         return junction;
                     }*/
-                    if (junction.getRoads().contains(vehicle.getTargetStall().getRoad())) {
+                    if (junction.getRoads().contains(vehicle.getTargetLane())) {
                         // then prioritise a junction with your parking space in it
                         return junction;
                     }
@@ -262,14 +262,14 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
 
     public boolean isInStall(){
         try {
-            return currentLane == vehicle.getTargetStall().getLane();
+            return currentLane == vehicle.getTargetLane().getOnlyLane();
         }catch (NullPointerException ex){
             return false;
         }
     }
 
     public boolean isParked(){
-        return coordinator.getParkingStatus() == MixedCPMManualCoordinator.ParkingStatus.PARKED;
+        return coordinator.getParkingStatus() == MixedCPMAutoCoordinator.ParkingStatus.PARKED;
     }
 
     public boolean isOnBottomRoad(){
@@ -277,11 +277,11 @@ public class MixedCPMManualDriver extends MixedCPMDriver {
     }
 
     @Override
-    public MixedCPMBasicManualVehicle getVehicle() {
+    public MixedCPMBasicAutoVehicle getVehicle() {
         return vehicle;
     }
 
-    public MixedCPMManualCoordinator.ParkingStatus getParkingStatus() {
+    public MixedCPMAutoCoordinator.ParkingStatus getParkingStatus() {
         return coordinator.getParkingStatus();
     }
 }
