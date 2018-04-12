@@ -4,7 +4,7 @@ import aim4.driver.AutoDriver;
 import aim4.driver.BasicDriver;
 import aim4.vehicle.VehicleDriverModel;
 
-public class MixedCPMDriver extends BasicDriver implements AutoDriver {
+public abstract class MixedCPMDriver extends BasicDriver implements AutoDriver {
 
 
     @Override

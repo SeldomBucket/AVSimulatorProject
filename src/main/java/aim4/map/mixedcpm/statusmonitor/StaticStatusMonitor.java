@@ -6,6 +6,7 @@ import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.*;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
 
 import java.util.ArrayList;
@@ -67,8 +68,20 @@ public class StaticStatusMonitor implements IStatusMonitor {
         }
     }
 
-    @Override
-    public boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
+    public boolean addNewVehicle(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            return addNewVehicle((MixedCPMBasicManualVehicle)vehicle);
+        }
+        return false;
+    }
+
+    public void vehicleOnExit(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            vehicleOnExit((MixedCPMBasicManualVehicle)vehicle);
+        }
+    }
+
+    private boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
         // check that the vehicle has not already entered the car park
         if (vehicle.hasEnteredCarPark()) {
             throw new RuntimeException("The vehicle has already entered, should not be entering again.");
@@ -122,7 +135,7 @@ public class StaticStatusMonitor implements IStatusMonitor {
      * Update capacity when a vehicle exits the car park.
      * @param vehicle The vehicle exiting the car park.
      */
-    public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
+    private void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicles.remove(vehicle);
         numberOfCompletedVehicles++;
@@ -141,7 +154,7 @@ public class StaticStatusMonitor implements IStatusMonitor {
     }
 
 
-    public Map<MixedCPMBasicManualVehicle, ManualStall> getVehicles() {
+    public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
         return vehicles;
     }
 

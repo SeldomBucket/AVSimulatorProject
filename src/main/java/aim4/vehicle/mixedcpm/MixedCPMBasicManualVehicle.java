@@ -19,7 +19,7 @@ import java.util.List;
 
 import static java.lang.Math.abs;
 
-public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
+public class MixedCPMBasicManualVehicle extends MixedCPMBasicVehicle {
 
     /////////////////////////////////
     // PRIVATE FIELDS
@@ -138,7 +138,7 @@ public class MixedCPMBasicManualVehicle extends BasicAutoVehicle {
                                       double parkingTime,
                                       boolean disabledVehicle) {
         super(spec, pos, heading, velocity, steeringAngle, acceleration,
-                targetVelocity, currentTime);
+                targetVelocity, currentTime, parkingTime);
         this.targetStall = null;
         this.parkingTime = parkingTime;
         this.timeUntilExit = parkingTime;

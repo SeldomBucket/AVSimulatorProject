@@ -7,6 +7,7 @@ import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.IManualParkingArea;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -60,11 +61,26 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         minAreaPerVehicle = Double.MAX_VALUE;
     }
 
+
+
+    public boolean addNewVehicle(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            return addNewVehicle((MixedCPMBasicManualVehicle)vehicle);
+        }
+        return false;
+    }
+
+    public void vehicleOnExit(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            vehicleOnExit((MixedCPMBasicManualVehicle)vehicle);
+        }
+    }
+
     /**
      * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
      * @param vehicle The vehicle entering the car park.
      */
-    public boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
+    private boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
 
         // check that the vehicle has not already entered the car park
         if (vehicle.hasEnteredCarPark()) {
@@ -105,7 +121,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
      * Update capacity when a vehicle exits the car park.
      * @param vehicle The vehicle exiting the car park.
      */
-    public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
+    private void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicle.getTargetStall().delete();
         vehicles.remove(vehicle);
@@ -118,7 +134,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     }
 
 
-    public Map<MixedCPMBasicManualVehicle, ManualStall> getVehicles() {
+    public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
         return vehicles;
     }
 

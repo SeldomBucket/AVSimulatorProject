@@ -68,7 +68,7 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         int numberOfAllowedEntries = sim.getMap().getStatusMonitor().getNumberOfAllowedEntries();
         int numberOfCompletedVehicles = sim.getMap().getStatusMonitor().getNumberOfCompletedVehicles();
         int maxVehicles = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
-        int numOfVehicles = sim.getMap().getStatusMonitor().getVehicles().size();
+        int numOfVehicles = sim.getMap().getStatusMonitor().getManualVehicles().size();
         int numOfParkedVehicles = sim.getMap().getStatusMonitor().getNoOfParkedVehicles();
         int maxParkedVehicles = sim.getMap().getStatusMonitor().getMostNumberOfParkedVehicles();
 

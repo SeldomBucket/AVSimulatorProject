@@ -11,6 +11,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomatedParkingArea {
 
@@ -29,7 +30,19 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
     }
 
     public AutomatedParkingRoad findTargetLane(VehicleSpec spec){
+        for (AutomatedParkingRoad road: parkingRoads) {
+            if (road.addVehicle(spec)){
+                return road;
+            }
+        }
 
+        String roadName = "AutomatedParkingRoad:" + UUID.randomUUID().toString();
+        AutomatedParkingRoad road = addParkingRoad(roadName);
+        if (road != null){
+            return road;
+        }
+
+        return null;
     }
 
 

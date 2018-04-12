@@ -12,7 +12,7 @@ import java.awt.geom.Point2D;
 
 import static java.lang.Math.abs;
 
-public class MixedCPMBasicVehicle extends BasicAutoVehicle {
+public abstract class MixedCPMBasicVehicle extends BasicAutoVehicle {
 
     /**
      * The inbox for messages from other vehicles. There will only ever

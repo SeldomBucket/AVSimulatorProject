@@ -1,5 +1,6 @@
 package aim4.map.mixedcpm.statusmonitor;
 
+import aim4.driver.mixedcpm.MixedCPMAutoDriver;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.Road;
 import aim4.map.lane.Lane;
@@ -10,6 +11,7 @@ import aim4.map.mixedcpm.parking.IManualParkingArea;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
 
 import java.util.*;
@@ -26,18 +28,21 @@ public class MixedStatusMonitor implements IStatusMonitor {
     private IAutomatedParkingArea automatedParkingArea;
     /** The manual parking area that we are recording the status of. */
     private IManualParkingArea manualParkingArea;
-    /** A list of vehicles which are currently in the car park,
+    /** A list of manualVehicles which are currently in the car park,
      * and the lane they are parked in. */
-    private Map<MixedCPMBasicManualVehicle, ManualStall> vehicles = new HashMap<>();
-    /** The number of vehicles denied entry due to not enough room.*/
+    private Map<MixedCPMBasicManualVehicle, ManualStall> manualVehicles = new HashMap<>();
+    /** A list of manualVehicles which are currently in the car park,
+     * and the lane they are parked in. */
+    private Map<MixedCPMBasicAutoVehicle, AutomatedParkingRoad> autoVehicles = new HashMap<>();
+    /** The number of manualVehicles denied entry due to not enough room.*/
     private int numberOfDeniedEntries;
-    /** The number of vehicles allowed entry as there is enough room.*/
+    /** The number of manualVehicles allowed entry as there is enough room.*/
     private int numberOfAllowedEntries;
-    /** The number of vehicles exited the car park*/
+    /** The number of manualVehicles exited the car park*/
     private int numberOfCompletedVehicles;
-    /** The most number of vehicles that have been in the car park at any one time during simulation.*/
+    /** The most number of manualVehicles that have been in the car park at any one time during simulation.*/
     private int mostNumberOfVehicles;
-    /** The most number of vehicles that have been parked in the car park at any one time during simulation.*/
+    /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
     /** The max space efficiency of the parking area */
     private double maxEfficiency;
@@ -65,11 +70,31 @@ public class MixedStatusMonitor implements IStatusMonitor {
         minAreaPerVehicle = Double.MAX_VALUE;
     }
 
+
+    public boolean addNewVehicle(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            return addNewVehicle((MixedCPMBasicManualVehicle)vehicle);
+        }
+        if (vehicle instanceof MixedCPMBasicAutoVehicle){
+            return addNewVehicle((MixedCPMBasicAutoVehicle)vehicle);
+        }
+        return false;
+    }
+
+    public void vehicleOnExit(MixedCPMBasicVehicle vehicle) {
+        if (vehicle instanceof MixedCPMBasicManualVehicle){
+            vehicleOnExit((MixedCPMBasicManualVehicle)vehicle);
+        }
+        if (vehicle instanceof MixedCPMBasicAutoVehicle){
+            vehicleOnExit((MixedCPMBasicAutoVehicle)vehicle);
+        }
+    }
+
     /**
      * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
      * @param vehicle The vehicle entering the car park.
      */
-    public boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
+    private boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) {
 
         // check that the vehicle has not already entered the car park
         if (vehicle.hasEnteredCarPark()) {
@@ -96,11 +121,11 @@ public class MixedStatusMonitor implements IStatusMonitor {
         }
 
         // Allocate this parking lane to the vehicle by sending message
-        sendParkingLaneMessage(vehicle, allocatedStall, pathToTargetStall);
+        sendManualStallMessage(vehicle, allocatedStall, pathToTargetStall);
 
         // Register the vehicle with the AdjustableManualStatusMonitor, along with the
         // parking lane it has been allocated
-        vehicles.put(vehicle, allocatedStall);
+        manualVehicles.put(vehicle, allocatedStall);
         numberOfAllowedEntries++;
         return true;
     }
@@ -110,35 +135,58 @@ public class MixedStatusMonitor implements IStatusMonitor {
      * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
      * @param vehicle The vehicle entering the car park.
      */
-    public boolean addNewVehicle(MixedCPMBasicAutoVehicle vehicle) {
+    private boolean addNewVehicle(MixedCPMBasicAutoVehicle vehicle) {
         AutomatedParkingRoad allocatedLane = automatedParkingArea.findTargetLane(vehicle.getSpec());
-        return false;
+
+        if (allocatedLane == null) {
+            numberOfDeniedEntries++;
+            return false;
+        }
+
+        sendParkingLaneMessage(vehicle, allocatedLane);
+
+        autoVehicles.put(vehicle, allocatedLane);
+        numberOfAllowedEntries++;
+        return true;
     }
 
         /**
          * Update capacity when a vehicle exits the car park.
          * @param vehicle The vehicle exiting the car park.
          */
-    public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
+    private void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicle.getTargetStall().delete();
-        vehicles.remove(vehicle);
+        manualVehicles.remove(vehicle);
+        numberOfCompletedVehicles++;
+    }
+
+    /**
+     * Update capacity when a vehicle exits the car park.
+     * @param vehicle The vehicle exiting the car park.
+     */
+    private void vehicleOnExit(MixedCPMBasicAutoVehicle vehicle) {
+        // Remove the vehicle from the status monitor's records
+        autoVehicles.remove(vehicle);
         numberOfCompletedVehicles++;
     }
 
 
-    private void sendParkingLaneMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall, List<Lane> path) {
+    private void sendManualStallMessage(MixedCPMBasicManualVehicle vehicle, ManualStall manualStall, List<Lane> path) {
         vehicle.sendMessageToI2VInbox(new Pair<>(manualStall, path));
     }
 
+    private void sendParkingLaneMessage(MixedCPMBasicAutoVehicle vehicle, AutomatedParkingRoad message) {
+        vehicle.sendMessageToI2VInbox(message);
+    }
 
-    public Map<MixedCPMBasicManualVehicle, ManualStall> getVehicles() {
-        return vehicles;
+    public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
+        return manualVehicles;
     }
 
     public double getTotalAreaOfParkedVehicles(){
         double totalVehicleArea = 0;
-        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
                         (vehicle.getSpec().getWidth() *
@@ -154,7 +202,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         int noOfNonVansNotParked = 0;
         int noOfVansParked = 0;
         int noOfNonVansParked = 0;
-        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 noOfParkedVehicles++;
                 if (vehicle.getSpec().getName() == "VAN"){
@@ -175,7 +223,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
     }
 
     public void updateMostNumberOfVehicles(){
-        int currentNumberOfVehicles = vehicles.size();
+        int currentNumberOfVehicles = manualVehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
             mostNumberOfVehicles = currentNumberOfVehicles;
         }

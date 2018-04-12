@@ -3,6 +3,7 @@ package aim4.map.mixedcpm.statusmonitor;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,15 +14,13 @@ public interface IStatusMonitor {
          * Update capacity and allocate a parking lane to a vehicle on entry to the car park.
          * @param vehicle The vehicle entering the car park.
          */
-        public boolean addNewVehicle(MixedCPMBasicManualVehicle vehicle) ;
+        public boolean addNewVehicle(MixedCPMBasicVehicle vehicle) ;
 
         /**
          * Update capacity when a vehicle exits the car park.
          * @param vehicle The vehicle exiting the car park.
          */
-        public void vehicleOnExit(MixedCPMBasicManualVehicle vehicle);
-
-        public Map<MixedCPMBasicManualVehicle, ManualStall> getVehicles();
+        public void vehicleOnExit(MixedCPMBasicVehicle vehicle);
 
         public double getTotalAreaOfParkedVehicles();
 
