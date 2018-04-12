@@ -50,4 +50,23 @@ public class MockManualParkingArea extends MixedCPMRoadMap implements IManualPar
         return null;
     }
 
+    @Override
+    public boolean tryResize(double newMaxX) {
+        return false;
+    }
+
+    @Override
+    public ManualParkingRoad getLastParkingRoad() {
+        return null;
+    }
+
+    @Override
+    public ManualStall getManualStallByName(String stallName) {
+        return null;
+    }
+
+    @Override
+    public void removeManualStall(String stallName) {
+        
+    }
 }

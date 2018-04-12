@@ -3,11 +3,9 @@ package aim4.map.mixedcpm;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
-import aim4.map.mixedcpm.parking.IManualParkingRoad;
+import aim4.map.mixedcpm.parking.*;
 import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
-import aim4.map.mixedcpm.parking.ManualParkingRoad;
 import aim4.map.lane.Lane;
-import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
@@ -38,7 +36,9 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /** The Top and Bottom Roads of the Map */
     protected Road topRoad, bottomRoad;
     /** The Manual Parking Area */
-    protected ManualParkingArea manualParkingArea;
+    protected IManualParkingArea manualParkingArea;
+    /** The Automated Parking Area */
+    protected IAutomatedParkingArea automatedParkingArea;
     /**The initial time*/
     protected double initTime;
     /** The data collection lines */
@@ -232,7 +232,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     }
 
     @Override
-    public ManualParkingArea getManualParkingArea() {
+    public IManualParkingArea getManualParkingArea() {
         return manualParkingArea;
     }
 

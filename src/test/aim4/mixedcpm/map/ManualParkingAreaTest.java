@@ -16,7 +16,7 @@ import static org.junit.Assert.*;
 public class ManualParkingAreaTest {
 
     AdjustableManualCarPark testMap;
-    ManualParkingArea testArea;
+    IManualParkingArea testArea;
     Road topRoad, bottomRoad;
     static final double AREA_HEIGHT = 20;
     static final double AREA_WIDTH = 50;

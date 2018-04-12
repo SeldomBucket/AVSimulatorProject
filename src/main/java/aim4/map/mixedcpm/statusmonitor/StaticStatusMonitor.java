@@ -15,7 +15,7 @@ import java.util.Map;
 public class StaticStatusMonitor implements IStatusMonitor {
 
     /** The parking area that we are recording the status of. */
-    private ManualParkingArea parkingArea;
+    private IManualParkingArea parkingArea;
     /** A list of vehicles which are currently in the car park,
      * and the lane they are parked in. */
     private Map<MixedCPMBasicManualVehicle, ManualStall> vehicles = new HashMap<>();
@@ -48,7 +48,7 @@ public class StaticStatusMonitor implements IStatusMonitor {
      * Create a StaticStatusMonitor to record the status of the parking area.
      * @param parkingArea The parking area to record the status of.
      */
-    public StaticStatusMonitor(ManualParkingArea parkingArea) {
+    public StaticStatusMonitor(IManualParkingArea parkingArea) {
         this.parkingArea = parkingArea;
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
