@@ -9,7 +9,7 @@ import aim4.map.mixedcpm.*;
 import aim4.map.mixedcpm.MixedCPMSpawnPoint.*;
 /*
 import aim4.map.mixedcpm.parking.SensoredLine;
-import aim4.map.mixedcpm.parking.IStatusMonitor;
+import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 */
 import aim4.map.lane.Lane;
 import aim4.sim.Simulator;

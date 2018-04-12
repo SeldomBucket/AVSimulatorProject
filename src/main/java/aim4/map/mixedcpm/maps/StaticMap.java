@@ -2,6 +2,7 @@ package aim4.map.mixedcpm.maps;
 
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.*;
+import aim4.map.mixedcpm.statusmonitor.StaticStatusMonitor;
 
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -11,7 +12,6 @@ import java.util.ArrayList;
  */
 public class StaticMap extends MixedCPMBasicMap {
 
-    IStatusMonitor statusMonitor;
 
     public StaticMap(double height, double width, double laneWidth, double speedLimit, double initTime){
         super(laneWidth,speedLimit,initTime);
@@ -31,11 +31,6 @@ public class StaticMap extends MixedCPMBasicMap {
         generateMap();
 
         statusMonitor = new StaticStatusMonitor(manualParkingArea);
-    }
-
-    @Override
-    public IStatusMonitor getStatusMonitor() {
-        return statusMonitor;
     }
 
     private void generateMap(){

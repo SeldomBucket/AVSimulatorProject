@@ -1,6 +1,6 @@
 package util.mixedcpm;
 
-import aim4.map.mixedcpm.parking.IStatusMonitor;
+import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 

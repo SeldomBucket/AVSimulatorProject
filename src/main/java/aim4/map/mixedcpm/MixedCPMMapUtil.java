@@ -41,7 +41,9 @@ public class MixedCPMMapUtil {
         /** Static - like an existing car park, the spaces don't change */
         STATIC,
         /** Adjustable Manual - ManualParkingArea only, adjusts to new vehicles arriving */
-        ADJUSTABLE_MANUAL
+        ADJUSTABLE_MANUAL,
+        /** Adjustable Mixed - ManualParkingArea and AutomatedParkingArea */
+        ADJUSTABLE_MIXED
     }
 
     /////////////////////////////////

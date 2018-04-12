@@ -6,6 +6,7 @@ import aim4.map.mixedcpm.MixedCPMRoadMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
+import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.*;
 
@@ -72,8 +73,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             tempStall = addNewParkingRoadAndFindSpace(roadName, stallSpec);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
-                    tempStall.delete();
-                    return null;
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                        return null;
+                    }else{
+                        return tempStall;
+                    }
                 }
                 return tempStall;
             }
@@ -85,8 +90,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                                    ManualParkingRoad.SearchParameter.exactSize);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
-                    tempStall.delete();
-                    return null;
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                        return null;
+                    }else{
+                        return tempStall;
+                    }
                 }
                 return tempStall;
             }
@@ -98,8 +107,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                                ManualParkingRoad.SearchParameter.correctLength);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
-                    tempStall.delete();
-                    return null;
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                        return null;
+                    }else{
+                        return tempStall;
+                    }
                 }
                 return tempStall;
             }
@@ -111,8 +124,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                                   ManualParkingRoad.SearchParameter.emptyStack);
             if (tempStall != null){
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
-                    tempStall.delete();
-                    return null;
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                        return null;
+                    }else{
+                        return tempStall;
+                    }
                 }
                 return tempStall;
             }
@@ -122,8 +139,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         tempStall = addNewParkingRoadAndFindSpace(roadName, stallSpec);
         if (tempStall != null){
             if (tempStall.getMaxX() > dimensions.getMaxX()){
-                tempStall.delete();
-                return null;
+                if (!tryResize(tempStall.getMaxX())) {
+                    tempStall.delete();
+                    return null;
+                }else{
+                    return tempStall;
+                }
             }
             return tempStall;
         }
@@ -136,8 +157,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                             ManualParkingRoad.SearchParameter.emptyStack);
                     if (tempStall != null) {
                         if (tempStall.getMaxX() > dimensions.getMaxX()) {
-                            tempStall.delete();
-                            return null;
+                            if (!tryResize(tempStall.getMaxX())) {
+                                tempStall.delete();
+                                return null;
+                            }else{
+                                return tempStall;
+                            }
                         }
                         return tempStall;
                     }
@@ -170,7 +195,9 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         // Don't add if it can't fit in the space
         if (this.dimensions.getWidth() <
                 spacePointer + initialStackWidth + this.laneWidth){
-            return null;
+            if(!tryResize(this.dimensions.getMinX() + spacePointer + initialStackWidth + this.laneWidth)) {
+                return null;
+            }
         }
 
         double roadX = this.entryRoad.getOnlyLane().getStartPoint().getX() +
@@ -210,6 +237,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
         updateLastParkingLane();
+        tryResize(getLastParkingRoad().getStallStackPair()[1].getBounds().getMaxX());
     }
 
     public void removeManualStall(String stallName){
@@ -242,7 +270,35 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
         }
     }
 
+    public boolean tryResize(double newMaxX){
+        if (newMaxX < dimensions.getMaxX()){
+            if (getLastParkingRoad().getStallStackPair()[1].getBounds().getMaxX() >= newMaxX){
+                dimensions = new Rectangle2D.Double(dimensions.getX(),
+                                                    dimensions.getY(),
+                                                    newMaxX - dimensions.getX(),
+                                                    dimensions.getHeight());
+                return true;
+            }
+        }else{
+            if (map.canResizeManualArea(newMaxX)) {
+                dimensions = new Rectangle2D.Double(dimensions.getX(),
+                                                    dimensions.getY(),
+                                                newMaxX - dimensions.getX(),
+                                                    dimensions.getHeight());
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public ManualParkingRoad getLastParkingRoad(){
+        for (ManualParkingRoad road : parkingRoads){
+            if (road.isLastRoad()){
+                return road;
+            }
+        }
+        return null;
+    }
 
     //////////////////////////////
     //                          //

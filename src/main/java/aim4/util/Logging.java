@@ -1,6 +1,6 @@
 package aim4.util;
 
-import aim4.map.mixedcpm.parking.IStatusMonitor;
+import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.io.FileNotFoundException;

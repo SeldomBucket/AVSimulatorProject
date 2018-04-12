@@ -24,8 +24,8 @@ public class MixedCPMMapTypeRadioButtons extends JPanel implements ChangeListene
 
         JRadioButton adjustableMixedButton = new JRadioButton("Adjustable Car Park for Mixed Automated and Manual Vehicles", false);
         adjustableMixedButton.setActionCommand("ADJUSTABLE_MIXED");
-        //adjustableMixedButton.setSelected(true);
-        //this.add(adjustableMixedButton);
+        adjustableMixedButton.setSelected(true);
+        this.add(adjustableMixedButton);
 
         JRadioButton adjustableManualButton = new JRadioButton("Adjustable Car Park for Manual Cars Only", false);
         adjustableManualButton.setActionCommand("ADJUSTABLE_MANUAL");
@@ -37,7 +37,7 @@ public class MixedCPMMapTypeRadioButtons extends JPanel implements ChangeListene
         this.add(staticButton);
 
         group = new ButtonGroup();
-        //group.add(adjustableMixedButton);
+        group.add(adjustableMixedButton);
         group.add(adjustableManualButton);
         group.add(staticButton);
 

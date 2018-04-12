@@ -1,6 +1,7 @@
-package aim4.map.mixedcpm.parking;
+package aim4.map.mixedcpm.statusmonitor;
 
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
+import aim4.map.mixedcpm.parking.ManualStall;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.util.HashMap;

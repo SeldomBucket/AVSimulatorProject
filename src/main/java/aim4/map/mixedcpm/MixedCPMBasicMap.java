@@ -4,6 +4,7 @@ import aim4.map.DataCollectionLine;
 import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.parking.IManualParkingRoad;
+import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 import aim4.map.mixedcpm.parking.ManualParkingRoad;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
@@ -53,6 +54,9 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     protected List<MixedCPMSpawnPoint> horizontalSpawnPoints;
     /** The vertical spawn points */
     protected List<MixedCPMSpawnPoint> verticalSpawnPoints;
+
+    /** Status Monitor */
+    protected IStatusMonitor statusMonitor;
 
     /**
      * Constructor for MixedCPMBasicMap
@@ -257,6 +261,10 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         return dimensions.getWidth()*dimensions.getHeight();
     }
 
+    public boolean canResizeManualArea(double maxX){
+        return  dimensions.getMaxX()-BORDER >= maxX && BORDER <= maxX;
+    }
+
     public boolean vehicleIsInRoad(IManualParkingRoad road){
         for (MixedCPMBasicManualVehicle vehicle : vehicles){
             if (vehicle.getDriver().getCurrentLane() != road.getCentreRoad().getOnlyLane()
@@ -267,5 +275,11 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
             }
         }
         return false;
+    }
+
+
+    @Override
+    public IStatusMonitor getStatusMonitor() {
+        return statusMonitor;
     }
 }

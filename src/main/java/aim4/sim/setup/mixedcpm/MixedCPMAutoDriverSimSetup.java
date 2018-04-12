@@ -3,6 +3,7 @@ package aim4.sim.setup.mixedcpm;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.MixedCPMMapUtil;
 import aim4.map.mixedcpm.maps.AdjustableManualCarPark;
+import aim4.map.mixedcpm.maps.AdjustableMixedCarPark;
 import aim4.map.mixedcpm.maps.StaticMap;
 import aim4.sim.Simulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
@@ -42,6 +43,13 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
                 break;
             case ADJUSTABLE_MANUAL:
                 layout = new AdjustableManualCarPark(carParkHeight,
+                                                    carParkWidth,
+                                                    laneWidth,
+                                                    speedLimit,
+                                                    currentTime);
+                break;
+            case ADJUSTABLE_MIXED:
+                layout = new AdjustableMixedCarPark(carParkHeight,
                                                     carParkWidth,
                                                     laneWidth,
                                                     speedLimit,
