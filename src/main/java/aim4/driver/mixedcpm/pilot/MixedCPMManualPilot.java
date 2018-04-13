@@ -293,6 +293,8 @@ public class MixedCPMManualPilot extends BasicPilot{
                     {
                         if (!vehicleEntirelyInsideStall()) {
                             parkingMechanicsState = 5;
+                        }else{
+                            vehicle.slowToStop();
                         }
                     }
                     break;

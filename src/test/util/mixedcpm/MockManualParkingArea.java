@@ -15,7 +15,6 @@ public class MockManualParkingArea extends MixedCPMRoadMap implements IManualPar
         super(laneWidth,speedLimit);
     }
 
-    @Override
     public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle) {
 
     }

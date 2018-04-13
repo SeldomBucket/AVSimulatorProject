@@ -6,6 +6,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public interface IStatusMonitor {
@@ -21,6 +22,8 @@ public interface IStatusMonitor {
          * @param vehicle The vehicle exiting the car park.
          */
         public void vehicleOnExit(MixedCPMBasicVehicle vehicle);
+
+        public List<MixedCPMBasicVehicle> getVehicles();
 
         public double getTotalAreaOfParkedVehicles();
 

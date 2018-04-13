@@ -4,7 +4,6 @@ import aim4.map.Road;
 import aim4.map.connections.Junction;
 import aim4.map.mixedcpm.MixedCPMRoadMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
-import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 
 import java.awt.geom.Rectangle2D;
 import java.util.*;
@@ -65,12 +64,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
                     if (!tryResize(tempStall.getMaxX())) {
                         tempStall.delete();
-                        return null;
                     }else{
                         return tempStall;
                     }
+                }else {
+                    return tempStall;
                 }
-                return tempStall;
             }
         }
 
@@ -82,12 +81,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
                     if (!tryResize(tempStall.getMaxX())) {
                         tempStall.delete();
-                        return null;
                     }else{
                         return tempStall;
                     }
+                }else {
+                    return tempStall;
                 }
-                return tempStall;
             }
         }
 
@@ -99,12 +98,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
                     if (!tryResize(tempStall.getMaxX())) {
                         tempStall.delete();
-                        return null;
                     }else{
                         return tempStall;
                     }
-                }
+                }else{
                 return tempStall;
+                }
             }
         }
 
@@ -116,12 +115,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                 if (tempStall.getMaxX() > dimensions.getMaxX()){
                     if (!tryResize(tempStall.getMaxX())) {
                         tempStall.delete();
-                        return null;
                     }else{
                         return tempStall;
                     }
+                }else {
+                    return tempStall;
                 }
-                return tempStall;
             }
         }
 
@@ -131,12 +130,12 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             if (tempStall.getMaxX() > dimensions.getMaxX()){
                 if (!tryResize(tempStall.getMaxX())) {
                     tempStall.delete();
-                    return null;
                 }else{
                     return tempStall;
                 }
+            }else {
+                return tempStall;
             }
-            return tempStall;
         }
 
         //      Next, extend the last stack to allow for longer vehicles
@@ -149,13 +148,31 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
                         if (tempStall.getMaxX() > dimensions.getMaxX()) {
                             if (!tryResize(tempStall.getMaxX())) {
                                 tempStall.delete();
-                                return null;
                             }else{
                                 return tempStall;
                             }
+                        }else {
+                            return tempStall;
                         }
+                    }
+                }
+            }
+        }
+
+        // Finally, search for any space at all
+
+        for (ManualParkingRoad road: parkingRoads) {
+            tempStall = road.findNewSpace(stallSpec,
+                    ManualParkingRoad.SearchParameter.anyGap);
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                    }else{
                         return tempStall;
                     }
+                }else {
+                    return tempStall;
                 }
             }
         }
@@ -227,7 +244,9 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
         updateLastParkingLane();
-        tryResize(getLastParkingRoad().getStallStackPair()[1].getBounds().getMaxX());
+        if (parkingRoads.size() != 0){
+            tryResize(getLastParkingRoad().getStallStackPair()[1].getBounds().getMaxX());
+        }
     }
 
     public void removeManualStall(String stallName){
@@ -254,7 +273,7 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
     public void update(){
         //map.update();
         for (int i = parkingRoads.size()-1; i>=0; i--){
-            if (parkingRoads.get(i).isToBeDeleted() && !map.vehicleIsInRoad(parkingRoads.get(i))) {
+            if (parkingRoads.get(i).isToBeDeleted() && !map.vehicleIsInManualParkingRoad(parkingRoads.get(i))) {
                 removeParkingRoad(parkingRoads.get(i));
             }
         }

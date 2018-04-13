@@ -2,6 +2,7 @@ package aim4.sim.simulator.mixedcpm;
 
 import aim4.config.Debug;
 import aim4.config.DebugPoint;
+import aim4.driver.mixedcpm.MixedCPMAutoDriver;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
@@ -12,13 +13,17 @@ import aim4.map.mixedcpm.parking.SensoredLine;
 import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 */
 import aim4.map.lane.Lane;
+import aim4.map.mixedcpm.maps.AdjustableMixedCarPark;
 import aim4.sim.Simulator;
 import aim4.sim.results.SimulatorResult;
 import aim4.util.Logging;
+import aim4.util.Util;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.awt.*;
@@ -59,14 +64,14 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
     public static class MixedCPMAutoDriverSimStepResult implements SimStepResult {
 
         /** The VIN of the completed vehicles in this time step */
-        List<MixedCPMBasicManualVehicle> completedVehicles;
+        List<MixedCPMBasicVehicle> completedVehicles;
 
         /**
          * Create a result of a simulation step
          *
          * @param completedVehicles  the completed vehicles.
          */
-        public MixedCPMAutoDriverSimStepResult(List<MixedCPMBasicManualVehicle> completedVehicles) {
+        public MixedCPMAutoDriverSimStepResult(List<MixedCPMBasicVehicle> completedVehicles) {
             this.completedVehicles = completedVehicles;
         }
 
@@ -75,7 +80,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
          *
          * @return the list of completed vehicles.
          */
-        public List<MixedCPMBasicManualVehicle> getCompletedVehicles() {
+        public List<MixedCPMBasicVehicle> getCompletedVehicles() {
             return completedVehicles;
         }
     }
@@ -90,13 +95,13 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
     /** The map */
     protected MixedCPMBasicMap map;
     /** All active vehicles, in form of a map from VINs to vehicle objects. */
-    protected Map<Integer,MixedCPMBasicManualVehicle> vinToVehicles;
+    protected Map<Integer,MixedCPMBasicVehicle> vinToVehicles;
     /** The current time */
     protected double currentTime;
     /** The number of completed vehicles */
     protected int numOfCompletedVehicles;
     /** A list of parked vehicles */
-    protected List<MixedCPMBasicManualVehicle> parkedVehicles;
+    protected List<MixedCPMBasicVehicle> parkedVehicles;
     /** The total number of bits transmitted by the completed vehicles */
     private int totalBitsTransmittedByCompletedVehicles;
     /** The total number of bits received by the completed vehicles */
@@ -105,8 +110,8 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
     public MixedCPMAutoDriverSimulator(MixedCPMBasicMap map){
         this.map = map;
-        this.vinToVehicles = new HashMap<Integer,MixedCPMBasicManualVehicle>();
-        this.parkedVehicles = new ArrayList<MixedCPMBasicManualVehicle>();
+        this.vinToVehicles = new HashMap<Integer,MixedCPMBasicVehicle>();
+        this.parkedVehicles = new ArrayList<MixedCPMBasicVehicle>();
 
         currentTime = 0.0;
         numOfCompletedVehicles = 0;
@@ -125,7 +130,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         moveVehicles(timeStep);
         observeParkedVehicles();
         observeNumberOfVehiclesInCarPark();
-        List<MixedCPMBasicManualVehicle> completedVehicles = cleanUpCompletedVehicles();
+        List<MixedCPMBasicVehicle> completedVehicles = cleanUpCompletedVehicles();
 
         // Only log stats every other timestep
         if (logToggle) {
@@ -158,7 +163,15 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
                         double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                        MixedCPMBasicManualVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
+                        boolean manualVehicle = true;
+
+                        // Create automated vehicles if
+                        if (map instanceof AdjustableMixedCarPark && Util.random.nextDouble() < 0.5){
+                            manualVehicle = false;
+                        }
+
+
+                        MixedCPMBasicVehicle vehicle = makeVehicle(spawnPoint, spawnSpec, manualVehicle);
 
                         if (map.getStatusMonitor().addNewVehicle(vehicle)) {
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
@@ -170,8 +183,10 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             // LOG TO CSV FILE
                             Logging.logVehicleSpawn(vehicle);
 
-                            if (vehicle.isDisabledVehicle()){
-                                System.out.println("Vehicle " + vehicle.getVIN() + " is a disabled vehicle");
+                            if (vehicle instanceof MixedCPMBasicManualVehicle ){
+                                if (((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()) {
+                                    System.out.println("Vehicle " + vehicle.getVIN() + " is a disabled vehicle");
+                                }
                             }
                             break; // only handle the first spawn vehicle
                         } else {
@@ -194,7 +209,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         // TODO: can be made much faster.
         assert spawnPoint.getNoVehicleZone() instanceof Rectangle2D;
         Rectangle2D noVehicleZone = (Rectangle2D) spawnPoint.getNoVehicleZone();
-        for(MixedCPMBasicManualVehicle vehicle : vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle : vinToVehicles.values()) {
             double heading = vehicle.getHeading();
             if (vehicle.getShape().intersects(noVehicleZone)) {
                 return false;
@@ -210,8 +225,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @param spawnSpec   the spawn specification
      * @return the vehicle
      */
-    protected MixedCPMBasicManualVehicle makeVehicle(MixedCPMSpawnPoint spawnPoint,
-                                              MixedCPMSpawnSpec spawnSpec) {
+    protected MixedCPMBasicVehicle makeVehicle(MixedCPMSpawnPoint spawnPoint,
+                                               MixedCPMSpawnSpec spawnSpec,
+                                               boolean manual) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
         // Now just take the minimum of the max velocity of the vehicle, and
@@ -220,32 +236,52 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         // Generate a length of time that this car should park for
         // This is from entering to when the EXITING state is set.
 
+        if (manual) {
+            // Obtain a manually driven Vehicle
+            MixedCPMBasicManualVehicle vehicle =
+                    new MixedCPMBasicManualVehicle(spec,
+                            spawnPoint.getPosition(),
+                            spawnPoint.getHeading(),
+                            spawnPoint.getSteeringAngle(),
+                            initVelocity, // velocity
+                            initVelocity,  // target velocity
+                            spawnPoint.getAcceleration(),
+                            spawnSpec.getSpawnTime(),
+                            spawnSpec.getParkingTime(),
+                            spawnSpec.isDisabledVehicle());
+            // Set the driver
+            MixedCPMManualDriver driver = new MixedCPMManualDriver(vehicle, map);
+            driver.setCurrentLane(lane);
+            driver.setSpawnPoint(spawnPoint);
+            vehicle.setDriver(driver);
 
-        // Obtain a Vehicle
-        MixedCPMBasicManualVehicle vehicle =
-                new MixedCPMBasicManualVehicle(spec,
-                        spawnPoint.getPosition(),
-                        spawnPoint.getHeading(),
-                        spawnPoint.getSteeringAngle(),
-                        initVelocity, // velocity
-                        initVelocity,  // target velocity
-                        spawnPoint.getAcceleration(),
-                        spawnSpec.getSpawnTime(),
-                        spawnSpec.getParkingTime(),
-                        spawnSpec.isDisabledVehicle());
-        // Set the driver
-        MixedCPMManualDriver driver = new MixedCPMManualDriver(vehicle, map);
-        driver.setCurrentLane(lane);
-        driver.setSpawnPoint(spawnPoint);
-        vehicle.setDriver(driver);
+            return vehicle;
+        }else{
+            // Obtain an automated Vehicle
+            MixedCPMBasicAutoVehicle vehicle =
+                    new MixedCPMBasicAutoVehicle(spec,
+                            spawnPoint.getPosition(),
+                            spawnPoint.getHeading(),
+                            spawnPoint.getSteeringAngle(),
+                            initVelocity, // velocity
+                            initVelocity,  // target velocity
+                            spawnPoint.getAcceleration(),
+                            spawnSpec.getSpawnTime(),
+                            spawnSpec.getParkingTime());
+            // Set the driver
+            MixedCPMAutoDriver driver = new MixedCPMAutoDriver(vehicle, map);
+            driver.setCurrentLane(lane);
+            driver.setSpawnPoint(spawnPoint);
+            vehicle.setDriver(driver);
 
-        return vehicle;
+            return vehicle;
+
+        }
     }
 
     /////////////////////////////////
     // STEP 2
     /////////////////////////////////
-
     /**
      * Provide each vehicle with sensor information to allow it to make
      * decisions.  This works first by making an ordered list for each Lane of
@@ -256,9 +292,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * state of its sensors, we provide it with the appropriate sensor input.
      */
     protected void provideSensorInput() {
-        Map<Lane,SortedMap<Double,MixedCPMBasicManualVehicle>> vehicleLists =
+        Map<Lane,SortedMap<Double,MixedCPMBasicVehicle>> vehicleLists =
                 computeVehicleLists();
-        Map<MixedCPMBasicManualVehicle, MixedCPMBasicManualVehicle> nextVehicle =
+        Map<MixedCPMBasicVehicle, MixedCPMBasicVehicle> nextVehicle =
                 computeNextVehicle(vehicleLists);
 
         provideIntervalInfo(nextVehicle);
@@ -271,19 +307,19 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @return a mapping from lanes to lists of vehicles sorted by their
      *         distance on their lanes
      */
-    private Map<Lane,SortedMap<Double,MixedCPMBasicManualVehicle>> computeVehicleLists() {
+    private Map<Lane,SortedMap<Double,MixedCPMBasicVehicle>> computeVehicleLists() {
         // Set up the structure that will hold all the Vehicles as they are
         // currently ordered in the Lanes
-        Map<Lane,SortedMap<Double,MixedCPMBasicManualVehicle>> vehicleLists =
-                new HashMap<Lane,SortedMap<Double,MixedCPMBasicManualVehicle>>();
+        Map<Lane,SortedMap<Double,MixedCPMBasicVehicle>> vehicleLists =
+                new HashMap<>();
         for(Road road : map.getRoads()) {
             for(Lane lane : road.getLanes()) {
-                vehicleLists.put(lane, new TreeMap<Double,MixedCPMBasicManualVehicle>());
+                vehicleLists.put(lane, new TreeMap<Double,MixedCPMBasicVehicle>());
             }
         }
         // Now add each of the Vehicles, but make sure to exclude those that are
         // already inside (partially or entirely) the intersection
-        for(MixedCPMBasicManualVehicle vehicle : vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle : vinToVehicles.values()) {
             // Find out what lanes it is in.
             Set<Lane> lanes = vehicle.getDriver().getCurrentlyOccupiedLanes();
             for(Lane lane : lanes) {
@@ -322,19 +358,19 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      *                      their distance on their lanes
      * @return a mapping from vehicles to next vehicles
      */
-    private Map<MixedCPMBasicManualVehicle, MixedCPMBasicManualVehicle> computeNextVehicle(
-            Map<Lane,SortedMap<Double,MixedCPMBasicManualVehicle>> vehicleLists) {
+    private Map<MixedCPMBasicVehicle, MixedCPMBasicVehicle> computeNextVehicle(
+            Map<Lane,SortedMap<Double,MixedCPMBasicVehicle>> vehicleLists) {
         // At this point we should only have mappings for start Lanes, and they
         // should include all the Lanes they run into.  Now we need to turn this
         // into a hash map that maps Vehicles to the next vehicle in the Lane
         // or any Lane the Lane runs into
-        Map<MixedCPMBasicManualVehicle, MixedCPMBasicManualVehicle> nextVehicle =
-                new HashMap<MixedCPMBasicManualVehicle,MixedCPMBasicManualVehicle>();
+        Map<MixedCPMBasicVehicle, MixedCPMBasicVehicle> nextVehicle =
+                new HashMap<>();
         // For each of the ordered lists of vehicles
-        for(SortedMap<Double,MixedCPMBasicManualVehicle> vehicleList : vehicleLists.values()) {
-            MixedCPMBasicManualVehicle lastVehicle = null;
+        for(SortedMap<Double,MixedCPMBasicVehicle> vehicleList : vehicleLists.values()) {
+            MixedCPMBasicVehicle lastVehicle = null;
             // Go through the Vehicles in order of their position in the Lane
-            for(MixedCPMBasicManualVehicle currVehicle : vehicleList.values()) {
+            for(MixedCPMBasicVehicle currVehicle : vehicleList.values()) {
                 if(lastVehicle != null) {
                     // Create the mapping from the previous Vehicle to the current one
                     nextVehicle.put(lastVehicle,currVehicle);
@@ -352,11 +388,11 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @param nextVehicle  a mapping from vehicles to next vehicles
      */
     private void provideIntervalInfo(
-            Map<MixedCPMBasicManualVehicle, MixedCPMBasicManualVehicle> nextVehicle) {
+            Map<MixedCPMBasicVehicle, MixedCPMBasicVehicle> nextVehicle) {
 
         // Now that we have this list set up, let's provide input to all the
         // Vehicles.
-        for(MixedCPMBasicManualVehicle vehicle: vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle: vinToVehicles.values()) {
             // If the vehicle is autonomous
             if (vehicle != null) {
                 switch(vehicle.getLRFMode()) {
@@ -399,8 +435,8 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @param nextVehicle  the next vehicle
      * @return the distance between vehicle and the next vehicle on a lane
      */
-    private double calcInterval(MixedCPMBasicManualVehicle vehicle,
-                                MixedCPMBasicManualVehicle nextVehicle) {
+    private double calcInterval(MixedCPMBasicVehicle vehicle,
+                                MixedCPMBasicVehicle nextVehicle) {
         // From Chiu: Kurt, if you think this function is not okay, probably
         // we should talk to see what to do.
         Point2D pos = vehicle.getPosition();
@@ -426,15 +462,14 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      *                      their distance on their lanes
      */
     private void provideVehicleTrackingInfo(
-            Map<Lane, SortedMap<Double, MixedCPMBasicManualVehicle>> vehicleLists) {
+            Map<Lane, SortedMap<Double, MixedCPMBasicVehicle>> vehicleLists) {
         // Vehicle Tracking
-        for(MixedCPMBasicManualVehicle vehicle: vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle: vinToVehicles.values()) {
             // If the vehicle is autonomous
             if (vehicle != null) {
-                MixedCPMBasicManualVehicle autoVehicle = vehicle;
+                MixedCPMBasicVehicle autoVehicle = vehicle;
 
                 if (autoVehicle.isVehicleTracking()) {
-                    MixedCPMManualDriver driver = (MixedCPMManualDriver)autoVehicle.getDriver();
                     Lane targetLane = autoVehicle.getTargetLaneForVehicleTracking();
                     Point2D pos = autoVehicle.getPosition();
                     double dst = targetLane.distanceAlongLane(pos);
@@ -442,11 +477,11 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     // initialize the distances to infinity
                     double frontDst = Double.MAX_VALUE;
                     double rearDst = Double.MAX_VALUE;
-                    MixedCPMBasicManualVehicle frontVehicle = null ;
-                    MixedCPMBasicManualVehicle rearVehicle = null ;
+                    MixedCPMBasicVehicle frontVehicle = null ;
+                    MixedCPMBasicVehicle rearVehicle = null ;
 
                     // only consider the vehicles on the target lane
-                    SortedMap<Double,MixedCPMBasicManualVehicle> vehiclesOnTargetLane =
+                    SortedMap<Double,MixedCPMBasicVehicle> vehiclesOnTargetLane =
                             vehicleLists.get(targetLane);
 
                     // compute the distances and the corresponding vehicles
@@ -488,7 +523,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     }
 
                     // show the section on the viewer
-                    if (Debug.isTargetVIN(driver.getVehicle().getVIN())) {
+                    if (Debug.isTargetVIN(vehicle.getVIN())) {
                         Point2D p1 = targetLane.getPointAtNormalizedDistance(
                                 Math.max((dst-rearDst)/targetLane.getLength(),0.0));
                         Point2D p2 = targetLane.getPointAtNormalizedDistance(
@@ -502,6 +537,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
     }
 
+
     /////////////////////////////////
     // STEP 3
     /////////////////////////////////
@@ -511,7 +547,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * Allow each driver to act.
      */
     protected void letDriversAct() {
-        for(MixedCPMBasicManualVehicle vehicle : vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle : vinToVehicles.values()) {
             vehicle.getDriver().act();
         }
     }
@@ -527,7 +563,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @param timeStep  the time step
      */
     protected void moveVehicles(double timeStep) {
-        for(MixedCPMBasicManualVehicle vehicle : vinToVehicles.values()) {
+        for(MixedCPMBasicVehicle vehicle : vinToVehicles.values()) {
             Point2D p1 = vehicle.getPosition();
             vehicle.move(timeStep);
             Point2D p2 = vehicle.getPosition();
@@ -555,13 +591,21 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
     protected void observeParkedVehicles() {
         parkedVehicles.clear();
-        List<MixedCPMBasicManualVehicle> vehicles = map.getVehicles();
-        for (MixedCPMBasicManualVehicle vehicle : vehicles) {
+        List<MixedCPMBasicVehicle> vehicles = map.getVehicles();
+        for (MixedCPMBasicVehicle vehicle : vehicles) {
             // Check if the vehicle is in a parking lane.
-            MixedCPMManualDriver driver = (MixedCPMManualDriver) vehicle.getDriver();
-            // Check the vehicle is not moving.
-            if (driver.isInStall() && vehicle.getVelocity() == 0) {
-                parkedVehicles.add(vehicle);
+            if (vehicle instanceof MixedCPMBasicManualVehicle){
+                MixedCPMManualDriver driver = (MixedCPMManualDriver) vehicle.getDriver();
+                // Check the vehicle is not moving.
+                if (driver.isInStall() && vehicle.getVelocity() == 0) {
+                    parkedVehicles.add(vehicle);
+                }
+            }else if(vehicle instanceof MixedCPMBasicAutoVehicle){
+                MixedCPMAutoDriver driver = (MixedCPMAutoDriver) vehicle.getDriver();
+                // Check the vehicle is not moving.
+                if (driver.isParked()) {
+                    parkedVehicles.add(vehicle);
+                }
             }
         }
     }
@@ -586,18 +630,20 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      *
      * @return the VINs of the completed vehicles
      */
-    protected List<MixedCPMBasicManualVehicle> cleanUpCompletedVehicles() {
-        List<MixedCPMBasicManualVehicle> completedVehicles = new LinkedList<MixedCPMBasicManualVehicle>();
+    protected List<MixedCPMBasicVehicle> cleanUpCompletedVehicles() {
+        List<MixedCPMBasicVehicle> completedVehicles = new LinkedList<MixedCPMBasicVehicle>();
         Rectangle2D mapBoundary = map.getDimensions();
         List<Integer> removedVINs = new ArrayList<Integer>(vinToVehicles.size());
         for(int vin : vinToVehicles.keySet()) {
-            MixedCPMBasicManualVehicle vehicle = vinToVehicles.get(vin);
+            MixedCPMBasicVehicle vehicle = vinToVehicles.get(vin);
             // If the vehicle is no longer in the layout
             if(!vehicle.getShape().intersects(mapBoundary)) {
                 // Process anything we need to from this vehicle
                 // TODO CPM Do we need to get anything? Maybe distance travelled
                 map.getStatusMonitor().vehicleOnExit(vehicle);
-                vehicle.clearTargetStall();
+                if (vehicle instanceof MixedCPMBasicManualVehicle) {
+                    ((MixedCPMBasicManualVehicle)vehicle).clearTargetStall();
+                }
                 vehicle.setExitTime(getSimulationTime());
                 map.removeCompletedVehicle(vehicle);
                 removedVINs.add(vin);
@@ -629,7 +675,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         return numOfCompletedVehicles;
     }
 
-    public List<MixedCPMBasicManualVehicle> getParkedVehicles() { return parkedVehicles; }
+    public List<MixedCPMBasicVehicle> getParkedVehicles() { return parkedVehicles; }
 
     @Override
     public double getAvgBitsTransmittedByCompletedVehicles() {
@@ -646,7 +692,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         return null;
     }
 
-    public Map<Integer, MixedCPMBasicManualVehicle> getVinToVehicles() { return vinToVehicles; }
+    public Map<Integer, MixedCPMBasicVehicle> getVinToVehicles() { return vinToVehicles; }
 
     public String produceResultsCSV(){
         StringBuilder sb = new StringBuilder();

@@ -180,6 +180,13 @@ public class MixedStatusMonitor implements IStatusMonitor {
         vehicle.sendMessageToI2VInbox(message);
     }
 
+    @Override
+    public List<MixedCPMBasicVehicle> getVehicles() {
+        ArrayList<MixedCPMBasicVehicle> returnList = new ArrayList<>(manualVehicles.keySet());
+        returnList.addAll(autoVehicles.keySet());
+        return returnList;
+    }
+
     public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
         return manualVehicles;
     }

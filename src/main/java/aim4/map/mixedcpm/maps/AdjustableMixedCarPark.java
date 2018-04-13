@@ -34,6 +34,8 @@ public class AdjustableMixedCarPark extends MixedCPMBasicMap {
 
         this.automatedParkingArea = new AutomatedParkingArea(topRoad,
                                                              bottomRoad,
+                                                             laneWidth,
+                                                             speedLimit,
                                                              this,
                                                              new Rectangle2D.Double(dimensions.getWidth()-BORDER,
                                                                                      BORDER,

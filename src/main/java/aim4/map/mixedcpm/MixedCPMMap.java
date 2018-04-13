@@ -10,6 +10,7 @@ import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.ManualParkingArea;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import java.util.List;
 
@@ -27,8 +28,8 @@ public interface MixedCPMMap extends BasicMap {
     public List<SimpleIntersection> getIntersections();
     public List<MixedCPMSpawnPoint> getSpawnPoints();
     public IStatusMonitor getStatusMonitor();
-    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle);
-    public List<MixedCPMBasicManualVehicle> getVehicles();
+    public void addVehicleToMap(MixedCPMBasicVehicle vehicle);
+    public List<MixedCPMBasicVehicle> getVehicles();
     public IManualParkingArea getManualParkingArea();
     public double getTotalCarParkArea();
     public void update();

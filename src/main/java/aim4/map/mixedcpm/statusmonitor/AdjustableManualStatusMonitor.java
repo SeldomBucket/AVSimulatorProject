@@ -22,18 +22,18 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     private MixedCPMBasicMap map;
     /** The parking area that we are recording the status of. */
     private IManualParkingArea parkingArea;
-    /** A list of vehicles which are currently in the car park,
+    /** A list of manualVehicles which are currently in the car park,
      * and the lane they are parked in. */
-    private Map<MixedCPMBasicManualVehicle, ManualStall> vehicles = new HashMap<>();
-    /** The number of vehicles denied entry due to not enough room.*/
+    private Map<MixedCPMBasicManualVehicle, ManualStall> manualVehicles = new HashMap<>();
+    /** The number of manualVehicles denied entry due to not enough room.*/
     private int numberOfDeniedEntries;
-    /** The number of vehicles allowed entry as there is enough room.*/
+    /** The number of manualVehicles allowed entry as there is enough room.*/
     private int numberOfAllowedEntries;
-    /** The number of vehicles exited the car park*/
+    /** The number of manualVehicles exited the car park*/
     private int numberOfCompletedVehicles;
-    /** The most number of vehicles that have been in the car park at any one time during simulation.*/
+    /** The most number of manualVehicles that have been in the car park at any one time during simulation.*/
     private int mostNumberOfVehicles;
-    /** The most number of vehicles that have been parked in the car park at any one time during simulation.*/
+    /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
     /** The max space efficiency of the parking area */
     private double maxEfficiency;
@@ -111,7 +111,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
 
         // Register the vehicle with the AdjustableManualStatusMonitor, along with the
         // parking lane it has been allocated
-        vehicles.put(vehicle, allocatedStall);
+        manualVehicles.put(vehicle, allocatedStall);
         numberOfAllowedEntries++;
         return true;
     }
@@ -124,7 +124,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     private void vehicleOnExit(MixedCPMBasicManualVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
         vehicle.getTargetStall().delete();
-        vehicles.remove(vehicle);
+        manualVehicles.remove(vehicle);
         numberOfCompletedVehicles++;
     }
 
@@ -133,14 +133,18 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         vehicle.sendMessageToI2VInbox(new Pair<>(manualStall, path));
     }
 
+    @Override
+    public List<MixedCPMBasicVehicle> getVehicles() {
+        return new ArrayList<>(manualVehicles.keySet());
+    }
 
     public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
-        return vehicles;
+        return manualVehicles;
     }
 
     public double getTotalAreaOfParkedVehicles(){
         double totalVehicleArea = 0;
-        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
                                     (vehicle.getSpec().getWidth() *
@@ -156,7 +160,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         int noOfNonVansNotParked = 0;
         int noOfVansParked = 0;
         int noOfNonVansParked = 0;
-        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()){
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 noOfParkedVehicles++;
                 if (vehicle.getSpec().getName() == "VAN"){
@@ -177,7 +181,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     }
 
     public void updateMostNumberOfVehicles(){
-        int currentNumberOfVehicles = vehicles.size();
+        int currentNumberOfVehicles = manualVehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
             mostNumberOfVehicles = currentNumberOfVehicles;
         }

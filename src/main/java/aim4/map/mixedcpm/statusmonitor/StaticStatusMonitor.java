@@ -153,6 +153,9 @@ public class StaticStatusMonitor implements IStatusMonitor {
         vehicle.sendMessageToI2VInbox(new Pair<>(manualStall, path));
     }
 
+    public List<MixedCPMBasicVehicle> getVehicles() {
+        return new ArrayList<>(vehicles.keySet());
+    }
 
     public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
         return vehicles;

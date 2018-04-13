@@ -4,6 +4,7 @@ import aim4.gui.screen.merge.components.MapKeyTableModel;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator.*;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -42,7 +43,7 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
     public void update(MixedCPMAutoDriverSimulator sim,
                        List<MixedCPMAutoDriverSimStepResult> results) {
         for(MixedCPMAutoDriverSimStepResult stepResult : results) {
-            for (MixedCPMBasicManualVehicle vehicle : stepResult.getCompletedVehicles()) {
+            for (MixedCPMBasicVehicle vehicle : stepResult.getCompletedVehicles()) {
                 model.addOrUpdateRow(vehicle.getVIN(), new Object[]{
                         vehicle.getVIN(),
                         vehicle.getSpec().getName(),

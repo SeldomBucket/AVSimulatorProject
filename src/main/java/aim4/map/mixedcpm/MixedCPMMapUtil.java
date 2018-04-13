@@ -7,6 +7,7 @@ import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
 
 import java.awt.geom.Point2D;
@@ -518,7 +519,7 @@ public class MixedCPMMapUtil {
     public static void checkVehicleStillOnMap(MixedCPMMap map,
                                               Point2D vehiclePosition,
                                               Lane currentLane,
-                                              MixedCPMBasicManualVehicle vehicle){
+                                              MixedCPMBasicVehicle vehicle){
         // For this map, should only drive off the map when it has
         // finished following the exit lane
         double x = vehiclePosition.getX();

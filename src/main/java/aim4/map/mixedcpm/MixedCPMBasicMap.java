@@ -8,6 +8,7 @@ import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 import aim4.map.lane.Lane;
 import aim4.vehicle.VinRegistry;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -44,7 +45,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     /** The data collection lines */
     protected List<DataCollectionLine> dataCollectionLines;
     /** The vehicles currently on this map. */
-    private List<MixedCPMBasicManualVehicle> vehicles = new ArrayList<MixedCPMBasicManualVehicle>();
+    private List<MixedCPMBasicVehicle> vehicles = new ArrayList<MixedCPMBasicVehicle>();
 
     protected double areaOfCarPark;
 
@@ -162,7 +163,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Add a vehicle to this map
      * @param vehicle the vehicle to add
      */
-    public void addVehicleToMap(MixedCPMBasicManualVehicle vehicle) {
+    public void addVehicleToMap(MixedCPMBasicVehicle vehicle) {
         vehicles.add(vehicle);
     }
 
@@ -170,7 +171,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Remove a vehicle from the map
      * @param vehicle the vehicle to remove
      */
-    public void removeCompletedVehicle(MixedCPMBasicManualVehicle vehicle) {
+    public void removeCompletedVehicle(MixedCPMBasicVehicle vehicle) {
         vehicles.remove(vehicle);
     }
 
@@ -192,7 +193,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * Returns the vehicles in this map
      * @return the vehicles
      */
-    public List<MixedCPMBasicManualVehicle> getVehicles() { return vehicles; }
+    public List<MixedCPMBasicVehicle> getVehicles() { return vehicles; }
 
     /**
      * prints the data from the data collection lines to a file
@@ -271,13 +272,15 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         return  dimensions.getMaxX()-BORDER >= minX && BORDER <= minX;
     }
 
-    public boolean vehicleIsInRoad(IManualParkingRoad road){
-        for (MixedCPMBasicManualVehicle vehicle : vehicles){
-            if (vehicle.getDriver().getCurrentLane() != road.getCentreRoad().getOnlyLane()
-                    && vehicle.getTargetStall() != null
-                    && vehicle.getTargetStall().getParkingRoad() != road
-                    || vehicle.getDriver().getCurrentLane() != vehicle.getTargetStall().getLane()){
-                return true;
+    public boolean vehicleIsInManualParkingRoad(IManualParkingRoad road){
+        for (MixedCPMBasicVehicle vehicle : vehicles){
+            if (vehicle instanceof MixedCPMBasicManualVehicle) {
+                if (vehicle.getDriver().getCurrentLane() != road.getCentreRoad().getOnlyLane()
+                        && ((MixedCPMBasicManualVehicle)vehicle).getTargetStall() != null
+                        && ((MixedCPMBasicManualVehicle)vehicle).getTargetStall().getParkingRoad() != road
+                        || vehicle.getDriver().getCurrentLane() != ((MixedCPMBasicManualVehicle)vehicle).getTargetStall().getLane()) {
+                    return true;
+                }
             }
         }
         return false;

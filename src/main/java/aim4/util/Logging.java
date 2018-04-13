@@ -1,7 +1,9 @@
 package aim4.util;
 
 import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
+import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
@@ -31,17 +33,30 @@ public final class Logging {
         }
     }
 
-    public static void logVehicleSpawn(MixedCPMBasicManualVehicle vehicle){
+    public static void logVehicleSpawn(MixedCPMBasicVehicle vehicle){
         if (spawnLogFileWriter != null) {
-            String logLine = "";
-            logLine += vehicle.getSpec().getName();
-            logLine += ",";
-            logLine += vehicle.isDisabledVehicle() ? "Y" : "N";
-            logLine += ",";
-            logLine += Math.round(vehicle.getEntryTime());
-            logLine += ",";
-            logLine += Math.round(vehicle.getParkingTime());
-            spawnLogFileWriter.println(logLine);
+            if (vehicle instanceof MixedCPMBasicManualVehicle) {
+                String logLine = "";
+                logLine += vehicle.getSpec().getName();
+                logLine += ",";
+                logLine += ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle() ? "Y" : "N";
+                logLine += ",";
+                logLine += Math.round(vehicle.getEntryTime());
+                logLine += ",";
+                logLine += Math.round(vehicle.getParkingTime());
+                spawnLogFileWriter.println(logLine);
+            }else if (vehicle instanceof MixedCPMBasicAutoVehicle) {
+                String logLine = "";
+                logLine += vehicle.getSpec().getName();
+                logLine += ",";
+                logLine += "N";
+                logLine += ",";
+                logLine += Math.round(vehicle.getEntryTime());
+                logLine += ",";
+                logLine += Math.round(vehicle.getParkingTime());
+                spawnLogFileWriter.println(logLine);
+
+            }
         }
     }
 
