@@ -205,7 +205,7 @@ public class MixedCPMAutoCoordinator implements Coordinator {
                 && parkingStatus != MixedCPMAutoCoordinator.ParkingStatus.EXIT) {
             System.out.println("Vehicle " + vehicle.getVIN() +" parking time has elapsed: setting parking status to EXIT.");
             parkingStatus = MixedCPMAutoCoordinator.ParkingStatus.EXIT;
-            drivingState = MixedCPMAutoCoordinator.DrivingState.EXITING_LANE;
+            drivingState = DrivingState.DEFAULT_DRIVING_BEHAVIOUR;
         }
     }
 
@@ -281,9 +281,6 @@ public class MixedCPMAutoCoordinator implements Coordinator {
 
         stateHandlers.put(DrivingState.PARKED_IN_LANE,
                 new MixedCPMAutoCoordinator.ParkedInLaneStateHandler());
-
-        stateHandlers.put(DrivingState.EXITING_LANE,
-                new MixedCPMAutoCoordinator.ExitingLaneStateHandler());
 
         stateHandlers.put(MixedCPMAutoCoordinator.DrivingState.TERMINAL_STATE,
                 terminalStateHandler);
@@ -400,7 +397,7 @@ public class MixedCPMAutoCoordinator implements Coordinator {
                 // The vehicle is out of the junction.
                 // Go back to default driving behaviour if not in a manual stall
                 junctionsAlreadyTraversed.clear();
-                if (vehicle.inInTargetStall())
+                if (vehicle.isInTargetLane())
                 {
                     System.out.println("Vehicle " + vehicle.getVIN() + " has exited junction and is parking in " + vehicle.getTargetLane().getName());
                     setDrivingState(DrivingState.PARKING_IN_LANE);
@@ -415,6 +412,10 @@ public class MixedCPMAutoCoordinator implements Coordinator {
             } else {
                 // if in a different junction and we're not parking, need to get
                 // a new departure lane and estimate the distance travelled.
+
+                pilot.takeSteeringActionForTraversing(currentJunction, parkingStatus);
+                pilot.simpleThrottleAction();
+
                 if (!junctionsAlreadyTraversed.contains(junction)) {
 
                     // if we're not already in the junction with the final road
@@ -433,21 +434,9 @@ public class MixedCPMAutoCoordinator implements Coordinator {
                             System.out.println("Vehicle " + vehicle.getVIN() + " in junction with roads " + junction.getRoads().toString());
                             debugPrintedThisJunctionAlready = true;
                         }
-                        // do nothing, keep going through the junction
-                        // TODO: CPM Have we considered AccelerationProfiles yet? Should we
-                        // pilot.followAccelerationProfile(rparameter);
                     }
                 }
-                //System.out.println("Vehicle " + vehicle.getVIN() + " actual junction is " + currentJunction.getRoads().toString());
-                /*if (pilot.getConnectionDepartureLane() != null) {
-                    System.out.println("Vehicle " + vehicle.getVIN() + " existing departure lane " + pilot.getConnectionDepartureLane().getStartPoint().toString());
-                }else{
-                    System.out.println("Vehicle " + vehicle.getVIN() + " existing departure lane null");
 
-                }*/
-
-                pilot.takeSteeringActionForTraversing(currentJunction, parkingStatus);
-                pilot.simpleThrottleAction();
             }
             return false;
         }
@@ -499,13 +488,11 @@ public class MixedCPMAutoCoordinator implements Coordinator {
             }
             // park
             pilot.parkInLane(parkingStatus);
-            /*if(pilot.linedUpWithStall()){
-                junctionsAlreadyTraversed.clear();
-                junctionsAlreadyTraversed.add(vehicle.getTargetLane().getJunction());
+            if(pilot.parkedInLane()){
                 System.out.println(String.format("Vehicle VIN %d parked", vehicle.getVIN()));
                 parkingStatus = ParkingStatus.PARKED;
                 setDrivingState(DrivingState.PARKED_IN_LANE);
-            }*/
+            }
             return false;
         }
     }
@@ -526,25 +513,6 @@ public class MixedCPMAutoCoordinator implements Coordinator {
             return false;
         }
     }
-
-    /**
-     * The state handler for the parked in manual stall state.
-     */
-    private class ExitingLaneStateHandler implements MixedCPMAutoCoordinator.StateHandler {
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean perform() {
-            // First check that we are still meant to be in a manual stall
-            assert(driver != null);
-            // Do nothing as we're still parked.
-            pilot.dontPassParkingEndPoint(parkingStatus);
-            return false;
-        }
-    }
-
-
 
     /**
      * Set the driving state of this agent.

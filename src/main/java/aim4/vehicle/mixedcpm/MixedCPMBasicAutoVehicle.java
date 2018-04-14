@@ -82,7 +82,7 @@ public class MixedCPMBasicAutoVehicle extends MixedCPMBasicVehicle {
         return targetLane;
     }
 
-    public boolean inInTargetStall(){
+    public boolean isInTargetLane(){
         return this.driver.isInTargetLane();
     }
 

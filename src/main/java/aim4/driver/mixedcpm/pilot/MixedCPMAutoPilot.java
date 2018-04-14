@@ -129,14 +129,6 @@ public class MixedCPMAutoPilot extends BasicPilot{
     }
 
     /**
-     * The simple throttle action.
-     */
-    public void simpleThrottleActionReverse() {
-        cruiseReverse();
-        dontHitVehicleInFront();
-    }
-
-    /**
      * Stop before hitting the car in front of us.
      *
      */
@@ -153,10 +145,14 @@ public class MixedCPMAutoPilot extends BasicPilot{
 
     public void parkInLane(ParkingStatus currentParkingStatus){
         if (currentParkingStatus == ParkingStatus.PARKING) {
-
-            // TODO ED PARKINLANE
-
+            followCurrentLane();
+            simpleThrottleAction();
+            dontPassParkingEndPoint(currentParkingStatus);
         }
+    }
+
+    public boolean parkedInLane(){
+        return vehicle.gaugeVelocity() == 0;
     }
 
     private boolean frontOfVehicleNearOrPastEndOfLane(){
@@ -181,13 +177,6 @@ public class MixedCPMAutoPilot extends BasicPilot{
                 vehicle.slowToStop();
             }
         }
-    }
-
-    public boolean vehicleHeadingMatchesLane(){
-        double laneHeading = driver.getCurrentLane().getInitialHeading();
-        double vehicleHeading = vehicle.getHeading();
-        return vehicleHeading < laneHeading + 0.08 &&
-                vehicleHeading > laneHeading - 0.08;
     }
 
     /**

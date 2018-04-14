@@ -186,10 +186,15 @@ public class MixedCPMAutoDriver extends MixedCPMDriver {
             Area area = junction.getArea();
                 // if centre of vehicle intersects a non-stall junction OR
                 // the front of the vehicle intersects the stall junction (to give the vehicle enough time to turn)
-            if(coordinator.hasBeenInJunctionAlready(junction)){
-                junctionsBeenInBefore.add(junction);
-            }else{
-                newJunction.add(junction);
+
+            if (intersectsArea(vehicle, area)){
+                // if centre of vehicle intersects a non-stall junction OR
+                // the front of the vehicle intersects the stall junction (to give the vehicle enough time to turn)
+                if(coordinator.hasBeenInJunctionAlready(junction)){
+                    junctionsBeenInBefore.add(junction);
+                }else{
+                    newJunction.add(junction);
+                }
             }
         }
         if (newJunction.size() == 0 && junctionsBeenInBefore.size() != 0) {
