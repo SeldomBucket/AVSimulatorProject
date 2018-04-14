@@ -326,13 +326,9 @@ public class MixedCPMManualPilot extends BasicPilot{
         boolean linedUpWithRight = vehicleShape.getMinX() >= this.vehicle.getTargetStall().getMinX();
 
         if (MixedCPMAutoDriverSimulator.mapType() == MixedCPMMapUtil.MapType.STATIC) {
-            return frontOfVehicleNearOrPastEndOfLane();
+            return linedUpWithLeft && linedUpWithRight;//frontOfVehicleNearOrPastEndOfLane();
 
         }else{
-            if (linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight){
-                return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
-            }
-
             return linedUpWithBottom && linedUpWithLeft && linedUpWithTop && linedUpWithRight;
         }
     }
