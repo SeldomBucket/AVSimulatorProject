@@ -15,16 +15,18 @@ import java.util.UUID;
 
 public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomatedParkingArea {
 
-    Road entryRoad;
-    Road exitRoad;
-    Rectangle2D dimensions;
-    MixedCPMBasicMap map;
-    List<AutomatedParkingRoad> parkingRoads = new ArrayList<>();
+    private Road entryRoad;
+    private Road exitRoad;
+    private Rectangle2D dimensions;
+    private MixedCPMBasicMap map;
+    private List<AutomatedParkingRoad> parkingRoads = new ArrayList<>();
 
     public AutomatedParkingArea(Road topRoad, Road bottomRoad, double laneWidth, double speedLimit, MixedCPMBasicMap map, Rectangle2D dimensions){
         super(laneWidth, speedLimit);
         this.entryRoad = topRoad;
         this.exitRoad = bottomRoad;
+        this.roads.add(topRoad);
+        this.roads.add(bottomRoad);
         this.map = map;
         this.dimensions = dimensions;
     }
@@ -81,14 +83,13 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
         double spacePointer = dimensions.getMaxX() - (parkingRoads.size()*laneWidth);
 
         // Don't add if it can't fit in the space
-        if (this.dimensions.getWidth() <
-                spacePointer - this.laneWidth){
+        if (this.dimensions.getWidth() < spacePointer - this.laneWidth){
             if(!tryResize(this.dimensions.getMinX() - this.laneWidth)) {
                 return null;
             }
         }
 
-        double roadX = dimensions.getMaxX() - (this.halfLaneWidth + spacePointer);
+        double roadX = this.dimensions.getMinX() + (this.halfLaneWidth);
 
         AutomatedParkingRoad parkingRoad = this.makeParkingRoadWithOneLane(
                 roadName,
@@ -136,4 +137,11 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
         return road;
     }
 
+    public Road getEntryRoad() {
+        return entryRoad;
+    }
+
+    public Road getExitRoad() {
+        return exitRoad;
+    }
 }

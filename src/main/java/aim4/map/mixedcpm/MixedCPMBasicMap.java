@@ -239,6 +239,10 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         return manualParkingArea;
     }
 
+    public IAutomatedParkingArea getAutomatedParkingArea() {
+        return automatedParkingArea;
+    }
+
     @Override
     public List<Junction> getJunctions() {
 

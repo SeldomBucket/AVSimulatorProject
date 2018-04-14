@@ -21,8 +21,8 @@ public class AutomatedParkingRoad extends Road {
                                 IAutomatedParkingArea parkingArea) {
         super(roadName, parkingArea);
 
-        Road topRoad = parkingArea.getRoadByName("topRoad");
-        Road bottomRoad = parkingArea.getRoadByName("bottomRoad");
+        Road topRoad = parkingArea.getEntryRoad();
+        Road bottomRoad = parkingArea.getExitRoad();
 
         Rectangle2D topRoadShape = topRoad.getOnlyLane().getShape().getBounds2D();
         Rectangle2D bottomRoadShape = bottomRoad.getOnlyLane().getShape().getBounds2D();

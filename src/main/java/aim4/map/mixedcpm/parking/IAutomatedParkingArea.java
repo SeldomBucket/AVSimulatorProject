@@ -14,4 +14,6 @@ public interface IAutomatedParkingArea  extends RoadMap {
     public Road getRoadByName(String name);
     public AutomatedParkingRoad findTargetLane(VehicleSpec spec);
     public Rectangle2D getDimensions();
+    public Road getEntryRoad();
+    public Road getExitRoad();
 }

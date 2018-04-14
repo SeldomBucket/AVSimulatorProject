@@ -60,6 +60,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
     public MixedStatusMonitor(MixedCPMBasicMap map) {
         this.map = map;
         this.manualParkingArea = map.getManualParkingArea();
+        this.automatedParkingArea = map.getAutomatedParkingArea();
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;

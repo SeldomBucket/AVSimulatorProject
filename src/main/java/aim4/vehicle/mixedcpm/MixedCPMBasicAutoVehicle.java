@@ -2,6 +2,7 @@ package aim4.vehicle.mixedcpm;
 
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
+import aim4.driver.mixedcpm.MixedCPMAutoDriver;
 import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.connections.BasicConnection;
@@ -29,7 +30,7 @@ public class MixedCPMBasicAutoVehicle extends MixedCPMBasicVehicle {
     /**
      * The Driver controlling this vehicle.
      */
-    protected MixedCPMManualDriver driver;
+    protected MixedCPMAutoDriver driver;
 
     /**
      * The target stall for this vehicle, assigned
@@ -83,8 +84,8 @@ public class MixedCPMBasicAutoVehicle extends MixedCPMBasicVehicle {
 
     @Override
     public void setDriver(Driver driver) {
-        assert driver instanceof MixedCPMManualDriver;
-        this.driver = (MixedCPMManualDriver) driver;
+        assert driver instanceof MixedCPMAutoDriver;
+        this.driver = (MixedCPMAutoDriver) driver;
     }
 
 
@@ -105,13 +106,13 @@ public class MixedCPMBasicAutoVehicle extends MixedCPMBasicVehicle {
 
 
     public double distanceToParkingEndPoint(){
-        Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
+        Point2D endPoint = driver.getVehicle().getTargetLane().getOnlyLane().getEndPoint();
         Point2D vehiclePosition = gaugePointAtMiddleFront(0);
         return vehiclePosition.distance(endPoint);
     }
 
     public double horizontalDistanceToStallEndPoint(){
-        Point2D endPoint = driver.getVehicle().getTargetStall().getRoad().getOnlyLane().getEndPoint();
+        Point2D endPoint = driver.getVehicle().getTargetLane().getOnlyLane().getEndPoint();
         Point2D vehiclePosition = gaugePosition();
         double distance = abs(vehiclePosition.getX() - endPoint.getX());
         return distance;
