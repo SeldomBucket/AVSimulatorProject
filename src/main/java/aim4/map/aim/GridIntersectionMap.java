@@ -34,6 +34,9 @@ import aim4.config.Debug;
 import aim4.im.aim.IntersectionManager;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.map.lane.LineSegmentLane;
 import aim4.util.ArrayListRegistry;
@@ -668,4 +671,33 @@ public class GridIntersectionMap implements BasicIntersectionMap {
         outfile.close();
     }
 
+    @Override
+    public List<Lane> getExitLanes() {
+        return null;
+    }
+
+    @Override
+    public List<Corner> getCorners() {
+        return null;
+    }
+
+    @Override
+    public List<Junction> getJunctions() {
+        return null;
+    }
+
+    @Override
+    public List<SimpleIntersection> getIntersections() {
+        return null;
+    }
+
+    @Override
+    public Road getRoadByName(String name) {
+        return null;
+    }
+
+    @Override
+    public double getLaneWidth() {
+        return 0;
+    }
 }

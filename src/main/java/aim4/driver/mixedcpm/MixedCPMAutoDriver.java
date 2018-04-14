@@ -132,10 +132,6 @@ public class MixedCPMAutoDriver extends MixedCPMDriver {
         return spawnPoint;
     }
 
-    public void updatePathToTargetStall(List<Lane> path) {
-        this.pathToTargetStall = new ArrayList<>(path);
-    }
-
     /**
      * Take control actions for driving the agent's Vehicle.  This allows
      * both the Coordinator and the Pilot to act (in that order).
@@ -182,22 +178,18 @@ public class MixedCPMAutoDriver extends MixedCPMDriver {
      */
     public Junction inJunction() {
         List<Junction> mapJunctions = map.getJunctions();
-        List<Junction> stallJunctions = map.getStallJunctions();
 
         ArrayList<Junction> junctionsBeenInBefore = new ArrayList<>();
         ArrayList<Junction> newJunction = new ArrayList<>();
 
         for (Junction junction : mapJunctions){
             Area area = junction.getArea();
-            if (!stallJunctions.contains(junction) && intersectsArea(vehicle, area) ||
-                    stallJunctions.contains(junction) &&  frontIntersectsArea(vehicle, area)){
                 // if centre of vehicle intersects a non-stall junction OR
                 // the front of the vehicle intersects the stall junction (to give the vehicle enough time to turn)
-                if(coordinator.hasBeenInJunctionAlready(junction)){
-                    junctionsBeenInBefore.add(junction);
-                }else{
-                    newJunction.add(junction);
-                }
+            if(coordinator.hasBeenInJunctionAlready(junction)){
+                junctionsBeenInBefore.add(junction);
+            }else{
+                newJunction.add(junction);
             }
         }
         if (newJunction.size() == 0 && junctionsBeenInBefore.size() != 0) {
@@ -249,18 +241,7 @@ public class MixedCPMAutoDriver extends MixedCPMDriver {
         return null;
     }
 
-    public Lane getNextLane(){
-        for (int i = 0; i < pathToTargetStall.size(); i++){
-            if(pathToTargetStall.get(i) == getCurrentLane()){
-                if (i<pathToTargetStall.size()-1){
-                    return pathToTargetStall.get(i+1);
-                }
-            }
-        }
-        return null;
-    }
-
-    public boolean isInStall(){
+    public boolean isInTargetLane(){
         try {
             return currentLane == vehicle.getTargetLane().getOnlyLane();
         }catch (NullPointerException ex){

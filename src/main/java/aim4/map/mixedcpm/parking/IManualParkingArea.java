@@ -10,7 +10,6 @@ import java.util.List;
 
 public interface IManualParkingArea extends RoadMap{
     public ManualStall findSpace(StallSpec stallSpec);
-    public Road getRoadByName(String name);
     public ManualParkingRoad getParkingRoadByName(String parkingRoadName);
     public void update();
     public ManualParkingRoad addNewParkingRoad(String roadName, double initialStackWidth);
@@ -19,8 +18,6 @@ public interface IManualParkingArea extends RoadMap{
     public boolean tryResize(double newMaxX);
     public ManualParkingRoad getLastParkingRoad();
     public ManualStall getManualStallByName(String stallName);
-    public List<Junction> getJunctions();
-    public double getLaneWidth();
     public void removeManualStall(String stallName);
 
 }

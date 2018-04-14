@@ -38,20 +38,14 @@ public class MixedCPMAutoNavigator {
                 //System.out.println("Vehicle " + vehicle.getVIN() + " Junction One Exit Lane");
                 return connection.getExitLanes().get(0);
             } else {
-                // If there are 2 exit lanes, we are either looking for the next lane
-                // or we are exiting/relocating
-                //System.out.println("Vehicle " + vehicle.getVIN() + " Junction Multiple Exit Lane " + ((Junction)connection).getRoads().toString());
+                // If there are 2 exit lanes, we are looking for the next one
+                // System.out.println("Vehicle " + vehicle.getVIN() + " Junction Multiple Exit Lane " + ((Junction)connection).getRoads().toString());
                 if (parkingStatus == ParkingStatus.PARKING) {
-                    // Check the next lane to drive on
 
-                    Lane nextLane = driver.getNextLane();
-                    /*if (nextLane == null) {
-                        throw new RuntimeException("Search for next lane failed unexpectedly");
-                    }*/
-                    if (connection.getExitLanes().contains(nextLane)) {
+                    if (connection.getExitLanes().contains(vehicle.getTargetLane().getOnlyLane())) {
                         // Want to move to next lane if it's connected to this junction
-                        System.out.println("Vehicle " + vehicle.getVIN() + " exiting junction on next lane in list");
-                        return nextLane;
+                        System.out.println("Vehicle " + vehicle.getVIN() + " exiting junction on target AutomatedParkingRoad");
+                        return vehicle.getTargetLane().getOnlyLane();
                     } else {
                         // Otherwise we want to stay on the same road we're on
                         return driver.getCurrentLane();

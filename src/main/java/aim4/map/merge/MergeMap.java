@@ -4,7 +4,10 @@ import aim4.im.merge.MergeManager;
 import aim4.map.BasicMap;
 import aim4.map.DataCollectionLine;
 import aim4.map.Road;
+import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
 import aim4.map.connections.MergeConnection;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.util.ArrayListRegistry;
 import aim4.util.Registry;
@@ -298,5 +301,34 @@ public class MergeMap implements BasicMap {
                     lane.getStartPoint().getY() - yAdj
             );
         }
+    }
+
+    public double getLaneWidth() {
+        return LANE_WIDTH;
+    }
+
+    @Override
+    public List<Lane> getExitLanes() {
+        return null;
+    }
+
+    @Override
+    public List<Corner> getCorners() {
+        return null;
+    }
+
+    @Override
+    public List<Junction> getJunctions() {
+        return null;
+    }
+
+    @Override
+    public List<SimpleIntersection> getIntersections() {
+        return null;
+    }
+
+    @Override
+    public Road getRoadByName(String name) {
+        return null;
     }
 }

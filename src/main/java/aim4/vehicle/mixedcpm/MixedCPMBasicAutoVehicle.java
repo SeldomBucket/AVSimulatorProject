@@ -3,21 +3,10 @@ package aim4.vehicle.mixedcpm;
 import aim4.driver.AutoDriver;
 import aim4.driver.Driver;
 import aim4.driver.mixedcpm.MixedCPMAutoDriver;
-import aim4.driver.mixedcpm.coordinator.MixedCPMManualCoordinator;
-import aim4.driver.mixedcpm.MixedCPMManualDriver;
-import aim4.map.connections.BasicConnection;
-import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.parking.AutomatedParkingRoad;
-import aim4.map.mixedcpm.parking.ManualStall;
-import aim4.map.mixedcpm.parking.StallSpec;
-import aim4.map.mixedcpm.parking.StallType;
-import aim4.vehicle.BasicAutoVehicle;
 import aim4.vehicle.VehicleSpec;
-import javafx.util.Pair;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
-import java.util.List;
 
 import static java.lang.Math.abs;
 
@@ -94,7 +83,7 @@ public class MixedCPMBasicAutoVehicle extends MixedCPMBasicVehicle {
     }
 
     public boolean inInTargetStall(){
-        return this.driver.isInStall();
+        return this.driver.isInTargetLane();
     }
 
     public void setTargetLane(AutomatedParkingRoad targetLane) {

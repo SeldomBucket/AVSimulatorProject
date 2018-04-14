@@ -80,11 +80,15 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
 
 
     private AutomatedParkingRoad addParkingRoad(String roadName){
-        double spacePointer = dimensions.getMaxX() - (parkingRoads.size()*laneWidth);
+        double spacePointer = dimensions.getMaxX() - (parkingRoads.size() * laneWidth);
 
         // Don't add if it can't fit in the space
         if (this.dimensions.getWidth() < spacePointer - this.laneWidth){
-            if(!tryResize(this.dimensions.getMinX() - this.laneWidth)) {
+            if (parkingRoads.size() == 0){
+                if (!tryResize(this.dimensions.getMinX() - (this.laneWidth*2))){
+                    return null;
+                }
+            }else if (!tryResize(this.dimensions.getMinX() - this.laneWidth)) {
                 return null;
             }
         }
@@ -136,6 +140,8 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
 
         return road;
     }
+
+
 
     public Road getEntryRoad() {
         return entryRoad;

@@ -249,6 +249,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
         HashSet<Junction> set = new HashSet<>();
         set.addAll(super.getJunctions());
         set.addAll(this.manualParkingArea.getJunctions());
+        set.addAll(this.automatedParkingArea.getJunctions());
         // TODO ED When have automated section of car park, add here
         return new ArrayList<>(set);
     }

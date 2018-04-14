@@ -185,7 +185,7 @@ public class MixedCPMAutoCoordinator implements Coordinator {
         // Set the intial driving state of the coordinator
         setDrivingState(MixedCPMAutoCoordinator.DrivingState.DEFAULT_DRIVING_BEHAVIOUR);
         // Set the initial parking status of the coordinator
-        setParkingStatus(MixedCPMAutoCoordinator.ParkingStatus.WAITING);
+        setParkingStatus(ParkingStatus.WAITING);
         junctionsAlreadyTraversed = new HashSet<>();
     }
 
@@ -215,22 +215,17 @@ public class MixedCPMAutoCoordinator implements Coordinator {
     private void processI2Vinbox() {
         AutomatedParkingRoad message = vehicle.getMessagesFromI2VInbox();
         // TODO ED MixedCPMAutoCoordinator
-        /*if (message!= null) {
-            ManualStall I2Vinbox = message.getKey();
-            List<Lane> path = message.getValue();
-            if (this.vehicle.getTargetStall() == null) {
-                if ((I2Vinbox != null && parkingStatus == MixedCPMAutoCoordinator.ParkingStatus.WAITING)) {
-                    // We have been granted access to the car park and know where to park
-                    //System.out.println("Changing status to PARKING.");
-                    setParkingStatus(MixedCPMAutoCoordinator.ParkingStatus.PARKING);
-                    vehicle.setTargetStall(I2Vinbox);
-                    vehicle.clearI2Vinbox();
-                    System.out.println("Vehicle " + vehicle.getVIN() + " finding " + I2Vinbox.getRoad().getName() + " on parking lane " + I2Vinbox.getParkingRoad().getName());
-                    vehicle.setHasEntered();
-                    driver.updatePathToTargetStall(path);
-                }
+        if (message!= null) {
+            if (this.vehicle.getTargetLane() == null&&parkingStatus == MixedCPMAutoCoordinator.ParkingStatus.WAITING) {
+                // We have been granted access to the car park and know where to park
+                //System.out.println("Changing status to PARKING.");
+                setParkingStatus(MixedCPMAutoCoordinator.ParkingStatus.PARKING);
+                vehicle.setTargetLane(message);
+                vehicle.clearI2Vinbox();
+                System.out.println("Vehicle " + vehicle.getVIN() + " finding " + message.getName());
+                vehicle.setHasEntered();
             }
-        }*/
+        }
     }
 
     /**
@@ -321,7 +316,7 @@ public class MixedCPMAutoCoordinator implements Coordinator {
             junctionsAlreadyTraversed.clear();
             junctionsAlreadyTraversed.add((Junction)vehicle.getLastConnection());
 
-            if (driver.isInStall()
+            if (driver.isInTargetLane()
                     && parkingStatus == MixedCPMAutoCoordinator.ParkingStatus.PARKING) {
                 System.out.println("Vehicle " + vehicle.getVIN() + " parking in " + vehicle.getTargetLane().getName());
                 setDrivingState(MixedCPMAutoCoordinator.DrivingState.PARKING_IN_LANE);
@@ -333,15 +328,11 @@ public class MixedCPMAutoCoordinator implements Coordinator {
                     setDrivingState(MixedCPMAutoCoordinator.DrivingState.TRAVERSING_CORNER);
                 }
                 if (driver.inJunction() != null){
-                    if (!junctionsAlreadyTraversed.contains(driver.inJunction())) {
-                        currentJunction = driver.inJunction();
-                        System.out.println("Vehicle " + vehicle.getVIN() + " Entering junction with roads " + currentJunction.getRoads().toString());
-                        junctionsAlreadyTraversed.add(currentJunction);
-                        vehicle.updateEstimatedDistanceTravelled(currentJunction);
-                        setDrivingState(MixedCPMAutoCoordinator.DrivingState.TRAVERSING_JUNCTION);
-                    }else{
-                        //System.out.println("Vehicle " + vehicle.getVIN() + " junction already traversed " + driver.inJunction().getRoads().toString());
-                    }
+                    currentJunction = driver.inJunction();
+                    System.out.println("Vehicle " + vehicle.getVIN() + " Entering junction with roads " + currentJunction.getRoads().toString());
+                    junctionsAlreadyTraversed.add(currentJunction);
+                    vehicle.updateEstimatedDistanceTravelled(currentJunction);
+                    setDrivingState(MixedCPMAutoCoordinator.DrivingState.TRAVERSING_JUNCTION);
                 }
                 if (driver.inIntersection() != null){
                     System.out.println("Vehicle " + vehicle.getVIN() + " Entering intersection.");

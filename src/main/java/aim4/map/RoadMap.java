@@ -1,5 +1,8 @@
 package aim4.map;
 
+import aim4.map.connections.Corner;
+import aim4.map.connections.Junction;
+import aim4.map.connections.SimpleIntersection;
 import aim4.map.lane.Lane;
 import aim4.util.Registry;
 
@@ -52,4 +55,16 @@ public interface RoadMap {
      * @return       the Road of which the given Lane is a part.
      */
     Road getRoad(int laneID);
+
+    List<Lane> getExitLanes();
+
+    List<Corner> getCorners();
+
+    abstract List<Junction> getJunctions();
+
+    List<SimpleIntersection> getIntersections();
+
+    abstract Road getRoadByName(String name);
+
+    double getLaneWidth();
 }

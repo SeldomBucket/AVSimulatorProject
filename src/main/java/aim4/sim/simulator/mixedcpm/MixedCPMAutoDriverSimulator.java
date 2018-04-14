@@ -166,7 +166,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                         boolean manualVehicle = true;
 
                         // Create automated vehicles if
-                        if (map instanceof AdjustableMixedCarPark && Util.random.nextDouble() < 0.5){
+                        if (map instanceof AdjustableMixedCarPark && Util.random.nextDouble() < 1){
                             manualVehicle = false;
                         }
 
