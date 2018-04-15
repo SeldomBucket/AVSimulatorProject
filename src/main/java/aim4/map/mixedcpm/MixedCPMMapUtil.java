@@ -6,7 +6,6 @@ import aim4.map.lane.Lane;
 import aim4.util.Util;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VehicleSpecDatabase;
-import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
 
@@ -15,7 +14,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Random;
 
@@ -117,15 +115,19 @@ public class MixedCPMMapUtil {
         private VehicleSpec vehicleSpec;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
+        private double automatedProbability;
 
         /**
          * Create a spec generator that infinitely generates vehicles of the same spec.
          */
-        public InfiniteSpawnSingleSpecGenerator(double trafficLevel) {
+        public InfiniteSpawnSingleSpecGenerator(double trafficLevel, double automatedProbability) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
+            this.automatedProbability = automatedProbability;
+
             // Cannot generate more than one vehicle in each spawn time step
-            assert spawnProbability <= 1.0;
+            assert this.spawnProbability <= 1.0;
+            assert this.automatedProbability <= 1.0;
         }
 
         /**
@@ -139,7 +141,11 @@ public class MixedCPMMapUtil {
                 time += SimConfig.SPAWN_TIME_STEP) {
                 if (Util.random.nextDouble() < spawnProbability) {
                     double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
-                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
+                    boolean automated = false;
+                    if(Util.random.nextDouble() < automatedProbability){
+                        automated = true;
+                    }
+                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime, false, automated));
                     //System.out.println("Vehicle spawned!");
                 }
             }
@@ -234,15 +240,16 @@ public class MixedCPMMapUtil {
         /** The proportion of each spec */
         private List<Double> proportion;
         /** The probability of a vehicle being a disabled vehicle */
-        private double probabilityOfVehicleBeingDisabled = 0.048;
+        private double disabledProbability = 0.048;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
+        private double automatedProbability;
 
         /**
          * Create a spec generator that infinitely generates vehicles.
          * The vehicle spec is chosen at random.
          */
-        public InfiniteSpawnRandomSpecGenerator(double trafficLevel) {
+        public InfiniteSpawnRandomSpecGenerator(double trafficLevel, double disabledProbability, double automatedProbability) {
             int n = VehicleSpecDatabase.getNumOfSpec();
             proportion = new ArrayList<Double>(n);
             double p = 1.0 / n;
@@ -252,6 +259,9 @@ public class MixedCPMMapUtil {
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
+
+            this.disabledProbability = disabledProbability;
+            this.automatedProbability = automatedProbability;
         }
 
         /**
@@ -268,17 +278,24 @@ public class MixedCPMMapUtil {
                     int i = Util.randomIndex(proportion);
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
 
-                    double parkingTime = generateParkingTime();
+                    double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
+                    boolean automated = false;
+                    if(Util.random.nextDouble() < automatedProbability){
+                        automated = true;
+                    }
 
-                    if(Util.random.nextDouble() < probabilityOfVehicleBeingDisabled){
+                    if(Util.random.nextDouble() < disabledProbability){
                         result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                                 vehicleSpec,
                                 parkingTime,
-                                true));
+                                true,
+                                automated));
                     }else{
                         result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                                 vehicleSpec,
-                                parkingTime));
+                                parkingTime,
+                                false,
+                                automated));
                     }
 
 
@@ -315,12 +332,18 @@ public class MixedCPMMapUtil {
             double parkingTime;
             VehicleSpec vehicleSpec;
             boolean isDisabled;
+            boolean isAutomated;
 
-            public SpawnSpecification(double spawnTime, double parkingTime, String specName, boolean isDisabled){
+            public SpawnSpecification(double spawnTime,
+                                      double parkingTime,
+                                      String specName,
+                                      boolean isDisabled,
+                                      boolean isAutomated){
                 this.spawnTime = spawnTime;
                 this.parkingTime = parkingTime;
                 this.vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName(specName);
                 this.isDisabled = isDisabled;
+                this.isAutomated = isAutomated;
             }
 
             public double getSpawnTime() {
@@ -337,6 +360,10 @@ public class MixedCPMMapUtil {
 
             public boolean isDisabled() {
                 return isDisabled;
+            }
+
+            public boolean isAutomated() {
+                return isAutomated;
             }
         }
 
@@ -393,6 +420,7 @@ public class MixedCPMMapUtil {
                 {
                     String specString = csvFile.get("Spec");
                     boolean isDisabled = csvFile.get("Disabled").equals("Y");
+                    boolean isAutomated = csvFile.get("Automated").equals("Y");
                     String entryString = csvFile.get("Entry");
                     String parkingString = csvFile.get("Parking");
 
@@ -408,7 +436,7 @@ public class MixedCPMMapUtil {
 
                     }
 
-                    SpawnSpecification spec = new SpawnSpecification(entry, parking, specString, isDisabled);
+                    SpawnSpecification spec = new SpawnSpecification(entry, parking, specString, isDisabled, isAutomated);
                     spawnSpecificationMap.add(spec);
 
                 }
@@ -448,7 +476,13 @@ public class MixedCPMMapUtil {
                 if (spawnSpecificationMap.get(0).getSpawnTime() < initTime) {
                     VehicleSpec vehicleSpec = spawnSpecificationMap.get(0).getVehicleSpec();
                     double parkingTime = spawnSpecificationMap.get(0).getParkingTime();
-                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(), vehicleSpec, parkingTime));
+                    boolean isDisabled = spawnSpecificationMap.get(0).isDisabled();
+                    boolean isAutomated = spawnSpecificationMap.get(0).isAutomated();
+                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
+                                                     vehicleSpec,
+                                                     parkingTime,
+                                                     isDisabled,
+                                                     isAutomated));
                     spawnSpecificationMap.remove(0);
                 }
             }
@@ -476,11 +510,11 @@ public class MixedCPMMapUtil {
         }
     }
 
-    public static void setUpInfiniteSingleSpecVehicleSpawnPoint(MixedCPMMap map, double trafficLevel){
+    public static void setUpInfiniteSingleSpecVehicleSpawnPoint(MixedCPMMap map, double trafficLevel, double automatedProbability){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnSingleSpecGenerator(trafficLevel));
+                    new InfiniteSpawnSingleSpecGenerator(trafficLevel,automatedProbability));
         }
     }
 
@@ -502,11 +536,14 @@ public class MixedCPMMapUtil {
         }
     }
 
-    public static void setUpInfiniteRandomSpecVehicleSpawnPoint(MixedCPMMap map, double trafficLevel){
+    public static void setUpInfiniteRandomSpecVehicleSpawnPoint(MixedCPMMap map,
+                                                                double trafficLevel,
+                                                                double disabledProbability,
+                                                                double automatedProbability){
         // The spawn point will infinitely spawn vehicles of the same spec.
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new InfiniteSpawnRandomSpecGenerator(trafficLevel));
+                    new InfiniteSpawnRandomSpecGenerator(trafficLevel, disabledProbability, automatedProbability));
         }
     }
 

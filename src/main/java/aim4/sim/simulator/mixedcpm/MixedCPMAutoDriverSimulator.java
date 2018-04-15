@@ -162,16 +162,9 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                     if (parkingLaneWidth < (vehicleWidth+MIN_DISTANCE_BETWEEN_PARKED_VEHICLES)) {
                         System.out.println("Spawned vehicle discarded: car park doesn't cater for vehicles this wide.");
                     } else {
-                        double vehicleLength = spawnSpec.getVehicleSpec().getLength();
-                        boolean manualVehicle = true;
-
-                        // Create automated vehicles if
-                        if (map instanceof AdjustableMixedCarPark && Util.random.nextDouble() < 0.5){
-                            manualVehicle = false;
-                        }
 
 
-                        MixedCPMBasicVehicle vehicle = makeVehicle(spawnPoint, spawnSpec, manualVehicle);
+                        MixedCPMBasicVehicle vehicle = makeVehicle(spawnPoint, spawnSpec);
 
                         if (map.getStatusMonitor().addNewVehicle(vehicle)) {
                             VinRegistry.registerVehicle(vehicle); // Get vehicle a VIN number
@@ -184,9 +177,13 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
                             Logging.logVehicleSpawn(vehicle);
 
                             if (vehicle instanceof MixedCPMBasicManualVehicle ){
+                                System.out.println("Vehicle " + vehicle.getVIN() + " is a manual vehicle");
                                 if (((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()) {
+
                                     System.out.println("Vehicle " + vehicle.getVIN() + " is a disabled vehicle");
                                 }
+                            }else{
+                                System.out.println("Vehicle " + vehicle.getVIN() + " is an automated vehicle");
                             }
                             break; // only handle the first spawn vehicle
                         } else {
@@ -226,8 +223,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
      * @return the vehicle
      */
     protected MixedCPMBasicVehicle makeVehicle(MixedCPMSpawnPoint spawnPoint,
-                                               MixedCPMSpawnSpec spawnSpec,
-                                               boolean manual) {
+                                               MixedCPMSpawnSpec spawnSpec) {
         VehicleSpec spec = spawnSpec.getVehicleSpec();
         Lane lane = spawnPoint.getLane();
         // Now just take the minimum of the max velocity of the vehicle, and
@@ -236,27 +232,7 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         // Generate a length of time that this car should park for
         // This is from entering to when the EXITING state is set.
 
-        if (manual) {
-            // Obtain a manually driven Vehicle
-            MixedCPMBasicManualVehicle vehicle =
-                    new MixedCPMBasicManualVehicle(spec,
-                            spawnPoint.getPosition(),
-                            spawnPoint.getHeading(),
-                            spawnPoint.getSteeringAngle(),
-                            initVelocity, // velocity
-                            initVelocity,  // target velocity
-                            spawnPoint.getAcceleration(),
-                            spawnSpec.getSpawnTime(),
-                            spawnSpec.getParkingTime(),
-                            spawnSpec.isDisabledVehicle());
-            // Set the driver
-            MixedCPMManualDriver driver = new MixedCPMManualDriver(vehicle, map);
-            driver.setCurrentLane(lane);
-            driver.setSpawnPoint(spawnPoint);
-            vehicle.setDriver(driver);
-
-            return vehicle;
-        }else{
+        if (spawnSpec.isAutomatedVehicle()) {
             // Obtain an automated Vehicle
             MixedCPMBasicAutoVehicle vehicle =
                     new MixedCPMBasicAutoVehicle(spec,
@@ -276,6 +252,26 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
             return vehicle;
 
+        }else {
+            // Obtain a manually driven Vehicle
+            MixedCPMBasicManualVehicle vehicle =
+                    new MixedCPMBasicManualVehicle(spec,
+                            spawnPoint.getPosition(),
+                            spawnPoint.getHeading(),
+                            spawnPoint.getSteeringAngle(),
+                            initVelocity, // velocity
+                            initVelocity,  // target velocity
+                            spawnPoint.getAcceleration(),
+                            spawnSpec.getSpawnTime(),
+                            spawnSpec.getParkingTime(),
+                            spawnSpec.isDisabledVehicle());
+            // Set the driver
+            MixedCPMManualDriver driver = new MixedCPMManualDriver(vehicle, map);
+            driver.setCurrentLane(lane);
+            driver.setSpawnPoint(spawnPoint);
+            vehicle.setDriver(driver);
+
+            return vehicle;
         }
     }
 
