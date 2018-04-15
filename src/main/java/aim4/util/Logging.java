@@ -22,7 +22,7 @@ public final class Logging {
 
                 String spawnLogFilename = "vehicleSpawnLog_" + timestamp.toString() + ".csv";
                 spawnLogFileWriter = new PrintWriter(spawnLogFilename, "UTF-8");
-                spawnLogFileWriter.println("Spec,Disabled,Entry,Parking");
+                spawnLogFileWriter.println("Spec,Disabled,Automated,Entry,Parking");
 
                 String logFilename = "Log_" + timestamp.toString() + ".txt";
                 logFileWriter = new PrintWriter(logFilename, "UTF-8");
@@ -41,6 +41,8 @@ public final class Logging {
                 logLine += ",";
                 logLine += ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle() ? "Y" : "N";
                 logLine += ",";
+                logLine += "N";
+                logLine += ",";
                 logLine += Math.round(vehicle.getEntryTime());
                 logLine += ",";
                 logLine += Math.round(vehicle.getParkingTime());
@@ -50,6 +52,8 @@ public final class Logging {
                 logLine += vehicle.getSpec().getName();
                 logLine += ",";
                 logLine += "N";
+                logLine += ",";
+                logLine += "Y";
                 logLine += ",";
                 logLine += Math.round(vehicle.getEntryTime());
                 logLine += ",";
@@ -65,6 +69,8 @@ public final class Logging {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
             String logLine = timestamp.toString();
             logLine += "\t";
+            logLine += "Overall Stats";
+            logLine += "\t";
             logLine += monitor.getCurrentEfficiency();
             logLine += "\t";
             logLine += monitor.getAreaPerVehicle();
@@ -76,6 +82,40 @@ public final class Logging {
             logLine += monitor.getNumberOfCompletedVehicles();
             logLine += "\t";
             logLine += monitor.getNoOfParkedVehicles();
+            logFileWriter.println(logLine);
+            
+            logLine = timestamp.toString();
+            logLine += "\t";
+            logLine += "Manual Stats";
+            logLine += "\t";
+            logLine += monitor.getCurrentManualEfficiency();
+            logLine += "\t";
+            logLine += monitor.getAreaPerManualVehicle();
+            logLine += "\t";
+            logLine += monitor.getNumberOfAllowedManualEntries();
+            logLine += "\t";
+            logLine += monitor.getNumberOfDeniedManualEntries();
+            logLine += "\t";
+            logLine += monitor.getNumberOfCompletedManualVehicles();
+            logLine += "\t";
+            logLine += monitor.getNoOfParkedManualVehicles();
+            logFileWriter.println(logLine);
+
+            logLine = timestamp.toString();
+            logLine += "\t";
+            logLine += "Automated Stats";
+            logLine += "\t";
+            logLine += monitor.getCurrentAutoEfficiency();
+            logLine += "\t";
+            logLine += monitor.getAreaPerAutoVehicle();
+            logLine += "\t";
+            logLine += monitor.getNumberOfAllowedAutoEntries();
+            logLine += "\t";
+            logLine += monitor.getNumberOfDeniedAutoEntries();
+            logLine += "\t";
+            logLine += monitor.getNumberOfCompletedAutoVehicles();
+            logLine += "\t";
+            logLine += monitor.getNoOfParkedAutoVehicles();
             logFileWriter.println(logLine);
         }
     }

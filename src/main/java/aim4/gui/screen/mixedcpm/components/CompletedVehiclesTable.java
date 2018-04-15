@@ -49,8 +49,8 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
                 model.addOrUpdateRow(vehicle.getVIN(), new Object[]{
                         vehicle.getVIN(),
                         vehicle.getSpec().getName(),
-                        vehicle instanceof MixedCPMBasicManualVehicle?"Manual":"Automated",
-                        vehicle instanceof MixedCPMBasicManualVehicle? ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()?"Disabled":"Not Disabled":"N/A",
+                        vehicle instanceof MixedCPMBasicManualVehicle? "Manual":"Automated",
+                        vehicle instanceof MixedCPMBasicManualVehicle? ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()?"Y":"N":"N/A",
                         vehicle.getEntryTime(),
                         vehicle.getParkingTime(),
                         vehicle.getExitTime()

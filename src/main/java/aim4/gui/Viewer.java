@@ -218,23 +218,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         {
             public void windowClosing(WindowEvent e)
             {
-                JFrame frame = (JFrame)e.getSource();
-
-                int result = JOptionPane.showConfirmDialog(
-                        frame,
-                        "Are you sure you want to exit the application?",
-                        "Exit Application,",
-                        JOptionPane.YES_NO_OPTION);
-
-                if (result == JOptionPane.YES_OPTION) {
-                    if (getSelectedSimulator() != null) {
-                        if (getSelectedSimulator().getMap() instanceof MixedCPMBasicMap) {
-                            Logging.logFinalStats((((MixedCPMBasicMap) getSelectedSimulator().getMap()).getStatusMonitor()));
-                        }
-                    }
-                    Logging.closeLogFiles();
-                    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                }
+                Logging.closeLogFiles();
             }
         });
 
