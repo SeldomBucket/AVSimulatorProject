@@ -2,7 +2,6 @@ package aim4.gui.screen.mixedcpm.components;
 
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator.*;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
-import aim4.util.Util;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.util.Map;
 /**
  * A section displaying stats about the current state of the car park.
  */
-public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreenComponent{
+public class CarParkVehicleStats extends JPanel implements MixedCPMStatScreenComponent{
 
     private JLabel numberOfCarsDeniedEntryLabel;
     private JLabel numberOfCarsAllowedEntryLabel;
@@ -23,32 +22,32 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
     private JLabel maxVehiclesParkedInCarParkLabel;
     private JLabel numOfVehiclesParkedInCarParkLabel;
 
-    public ManualParkingAreaStats() {
-        JLabel title = new JLabel("Manual Parking Area Stats");
+    public CarParkVehicleStats() {
+        JLabel title = new JLabel("Car Park Stats");
         Font font = title.getFont();
         Map attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         title.setFont(font.deriveFont(attributes));
 
-        numberOfCarsDeniedEntryLabel = new JLabel("No of manual vehicles denied entry: ");
+        numberOfCarsDeniedEntryLabel = new JLabel("No of vehicles denied entry: ");
         numberOfCarsDeniedEntryLabel.setOpaque(true);
 
-        numberOfCarsAllowedEntryLabel = new JLabel("No of manual vehicles allowed entry: ");
+        numberOfCarsAllowedEntryLabel = new JLabel("No of vehicles allowed entry: ");
         numberOfCarsAllowedEntryLabel.setOpaque(true);
 
-        numberOfCompletedVehiclesLabel = new JLabel("No of completed manual vehicles: ");
+        numberOfCompletedVehiclesLabel = new JLabel("No of completed vehicles: ");
         numberOfCompletedVehiclesLabel.setOpaque(true);
 
-        numOfVehiclesInCarParkLabel = new JLabel("No of manual vehicles in car park: ");
+        numOfVehiclesInCarParkLabel = new JLabel("No of vehicles currently in car park: ");
         numOfVehiclesInCarParkLabel.setOpaque(true);
 
-        maxVehiclesInCarParkLabel = new JLabel("Max no of manual vehicles in car park: ");
+        maxVehiclesInCarParkLabel = new JLabel("Max no of vehicles in car park: ");
         maxVehiclesInCarParkLabel.setOpaque(true);
 
-        numOfVehiclesParkedInCarParkLabel = new JLabel("No of manual vehicles parked: ");
+        numOfVehiclesParkedInCarParkLabel = new JLabel("No of vehicles currently parked: ");
         numOfVehiclesParkedInCarParkLabel.setOpaque(true);
 
-        maxVehiclesParkedInCarParkLabel = new JLabel("Max no of manual vehicles parked: ");
+        maxVehiclesParkedInCarParkLabel = new JLabel("Max no of vehicles parked: ");
         maxVehiclesParkedInCarParkLabel.setOpaque(true);
 
 
@@ -65,13 +64,13 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
 
     @Override
     public void update(MixedCPMAutoDriverSimulator sim, List<MixedCPMAutoDriverSimStepResult> resultToProcess) {
-        int numberOfDeniedEntries = sim.getMap().getStatusMonitor().getNumberOfDeniedManualEntries();
-        int numberOfAllowedEntries = sim.getMap().getStatusMonitor().getNumberOfAllowedManualEntries();
-        int numberOfCompletedVehicles = sim.getMap().getStatusMonitor().getNumberOfCompletedManualVehicles();
-        int maxVehicles = sim.getMap().getStatusMonitor().getMostNumberOfManualVehicles();
-        int numOfVehicles = sim.getMap().getStatusMonitor().getManualVehicles().size();
-        int numOfParkedVehicles = sim.getMap().getStatusMonitor().getNoOfParkedManualVehicles();
-        int maxParkedVehicles = sim.getMap().getStatusMonitor().getMostNumberOfParkedManualVehicles();
+        int numberOfDeniedEntries = sim.getMap().getStatusMonitor().getNumberOfDeniedEntries();
+        int numberOfAllowedEntries = sim.getMap().getStatusMonitor().getNumberOfAllowedEntries();
+        int numberOfCompletedVehicles = sim.getMap().getStatusMonitor().getNumberOfCompletedVehicles();
+        int maxVehicles = sim.getMap().getStatusMonitor().getMostNumberOfVehicles();
+        int numOfVehicles = sim.getMap().getStatusMonitor().getVehicles().size();
+        int numOfParkedVehicles = sim.getMap().getStatusMonitor().getNoOfParkedVehicles();
+        int maxParkedVehicles = sim.getMap().getStatusMonitor().getMostNumberOfParkedVehicles();
 
         updateLabel(numberOfAllowedEntries, numberOfCarsAllowedEntryLabel);
         updateLabel(numberOfDeniedEntries, numberOfCarsDeniedEntryLabel);
@@ -89,5 +88,4 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         String labelOnly = labelSplit [0];
         label.setText(labelOnly + ": " + newValue);
     }
-
 }

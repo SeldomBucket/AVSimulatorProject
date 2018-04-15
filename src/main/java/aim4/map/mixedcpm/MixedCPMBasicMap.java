@@ -32,7 +32,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
      * space between map edge and elements, distance
      * of DCL from edge etc.
      * */
-    protected static final double BORDER = 10.0;
+    public static final double BORDER = 10.0;
 
     /** The Top and Bottom Roads of the Map */
     protected Road topRoad, bottomRoad;
@@ -99,7 +99,12 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
     public List<Road> getRoads() {
         HashSet<Road> set = new HashSet<>();
         set.addAll(super.getRoads());
-        set.addAll(this.manualParkingArea.getRoads());
+        if (this.manualParkingArea != null) {
+            set.addAll(this.manualParkingArea.getRoads());
+        }
+        if (this.automatedParkingArea != null) {
+            set.addAll(this.automatedParkingArea.getRoads());
+        }
         // TODO ED When have automated section of car park, add here
         return new ArrayList<>(set);
     }
@@ -248,8 +253,12 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
         HashSet<Junction> set = new HashSet<>();
         set.addAll(super.getJunctions());
-        set.addAll(this.manualParkingArea.getJunctions());
-        set.addAll(this.automatedParkingArea.getJunctions());
+        if (this.manualParkingArea != null) {
+            set.addAll(this.manualParkingArea.getJunctions());
+        }
+        if (this.automatedParkingArea != null) {
+            set.addAll(this.automatedParkingArea.getJunctions());
+        }
         // TODO ED When have automated section of car park, add here
         return new ArrayList<>(set);
     }
@@ -266,7 +275,7 @@ public abstract class MixedCPMBasicMap extends MixedCPMRoadMap implements MixedC
 
     @Override
     public double getTotalCarParkArea() {
-        return dimensions.getWidth()*dimensions.getHeight();
+        return (dimensions.getWidth()-BORDER*2)*(dimensions.getHeight()-BORDER*2);
     }
 
     public boolean canResizeManualArea(double maxX){

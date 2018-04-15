@@ -2,6 +2,7 @@ package aim4.map.mixedcpm.statusmonitor;
 
 import aim4.driver.mixedcpm.MixedCPMManualDriver;
 import aim4.map.mixedcpm.parking.ManualStall;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
@@ -25,13 +26,17 @@ public interface IStatusMonitor {
 
         public List<MixedCPMBasicVehicle> getVehicles();
 
-        public double getTotalAreaOfParkedVehicles();
+        public List<MixedCPMBasicManualVehicle> getManualVehicles();
 
-        public int getNoOfParkedVehicles();
+        public List<MixedCPMBasicAutoVehicle> getAutoVehicles();
 
         public void updateMostNumberOfVehicles();
 
         public void updateEfficiencyMeasurements();
+
+        // ALL VEHICLES STATS
+
+        public int getNoOfParkedVehicles();
 
         public double getCurrentEfficiency();
 
@@ -50,5 +55,49 @@ public interface IStatusMonitor {
         public int getNumberOfAllowedEntries() ;
 
         public int getMostNumberOfVehicles() ;
+
+        // MANUAL VEHICLES STATS
+
+        public double getCurrentManualEfficiency();
+
+        public double getMaxManualEfficiency();
+
+        public double getAreaPerManualVehicle();
+
+        public double getMinAreaPerManualVehicle() ;
+
+        public int getNoOfParkedManualVehicles();
+
+        public int getNumberOfCompletedManualVehicles() ;
+
+        public int getMostNumberOfParkedManualVehicles() ;
+
+        public int getNumberOfDeniedManualEntries() ;
+
+        public int getNumberOfAllowedManualEntries() ;
+
+        public int getMostNumberOfManualVehicles() ;
+
+        // AUTO VEHICLES STATS
+
+        public double getCurrentAutoEfficiency();
+
+        public double getMaxAutoEfficiency();
+
+        public double getAreaPerAutoVehicle();
+
+        public double getMinAreaPerAutoVehicle() ;
+        
+        public int getNoOfParkedAutoVehicles();
+
+        public int getNumberOfCompletedAutoVehicles() ;
+
+        public int getMostNumberOfParkedAutoVehicles() ;
+
+        public int getNumberOfDeniedAutoEntries() ;
+
+        public int getNumberOfAllowedAutoEntries() ;
+
+        public int getMostNumberOfAutoVehicles() ;
 
 }

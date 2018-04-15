@@ -5,14 +5,15 @@ import aim4.gui.screen.StatScreen;
 import aim4.gui.screen.mixedcpm.components.*;
 import aim4.gui.setuppanel.MixedCPMSimSetupPanel;
 import aim4.gui.viewer.MixedCPMSimViewer;
+import aim4.map.mixedcpm.MixedCPMMapUtil;
 import aim4.sim.Simulator;
+import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,33 +73,69 @@ public class MixedCPMStatScreen extends StatScreen {
 
     private void setupScreen(){
 
-        ManualParkingAreaConfig manualParkingAreaConfig = new ManualParkingAreaConfig(setupPanel);
-        manualParkingAreaConfig.setBorder(new EmptyBorder(10, 10, 10, 10));
+        SimulationStats simulationStats = new SimulationStats(setupPanel);
+        simulationStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
-        ManualParkingAreaSimulationStats manualParkingAreaSimulationStat = new ManualParkingAreaSimulationStats();
-        manualParkingAreaSimulationStat.setBorder(new EmptyBorder(10, 10, 10, 10));
+        CarParkEfficiencyStats carParkEfficiencyStats = new CarParkEfficiencyStats();
+        carParkEfficiencyStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        ManualAreaEfficiencyStats manualAreaEfficiencyStats = new ManualAreaEfficiencyStats();
+        manualAreaEfficiencyStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        AutomatedAreaEfficiencyStats automatedAreaEfficiencyStats = new AutomatedAreaEfficiencyStats();
+        automatedAreaEfficiencyStats.setBorder(new EmptyBorder(10, 10, 10, 10));
+
+        CarParkVehicleStats carParkVehicleStats = new CarParkVehicleStats();
+        carParkVehicleStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         ManualParkingAreaStats manualParkingAreaVehicleStats = new ManualParkingAreaStats();
         manualParkingAreaVehicleStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
+        AutomatedParkingAreaStats autoParkingAreaVehicleStats = new AutomatedParkingAreaStats();
+        autoParkingAreaVehicleStats.setBorder(new EmptyBorder(10, 10, 10, 10));
 
         CompletedVehiclesTable completedVehiclesTable = new CompletedVehiclesTable();
-        completedVehiclesTable.setMaximumSize(new Dimension(60, 60));
+        completedVehiclesTable.setMaximumSize(new Dimension(1000, 1000));
 
         setLayout(new FlowLayout());
 
         JPanel statsPanel = new JPanel();
         statsPanel.setLayout(new BoxLayout(statsPanel, 1));
+        JPanel areaStatsPanel = new JPanel();
+        areaStatsPanel.setLayout(new BoxLayout(areaStatsPanel, 1));
 
-        statsPanel.add("config", manualParkingAreaConfig);
-        statsPanel.add("simStats", manualParkingAreaSimulationStat);
-        statsPanel.add("vehicleStats", manualParkingAreaVehicleStats);
+
+        BasicMixedCPMSimSetup setup = (BasicMixedCPMSimSetup)setupPanel.getSimSetup();
+
+
+        statsPanel.add("simStats", simulationStats);
+        statsPanel.add("efficiencyStats", carParkEfficiencyStats);
+        areaStatsPanel.add("vehicleStats", carParkVehicleStats);
+
+        componentsToUpdate.add(simulationStats);
+        componentsToUpdate.add(carParkEfficiencyStats);
+        componentsToUpdate.add(carParkVehicleStats);
+        componentsToUpdate.add(completedVehiclesTable);
+
+        if (setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MANUAL
+                || setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MIXED){
+
+            componentsToUpdate.add(manualParkingAreaVehicleStats);
+            componentsToUpdate.add(manualAreaEfficiencyStats);
+            areaStatsPanel.add("manualStats", manualParkingAreaVehicleStats);
+            statsPanel.add("efficiencyStats", manualAreaEfficiencyStats);
+        }
+
+        if(setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MIXED){
+            componentsToUpdate.add(autoParkingAreaVehicleStats);
+            componentsToUpdate.add(automatedAreaEfficiencyStats);
+            areaStatsPanel.add("autoStats", autoParkingAreaVehicleStats);
+            statsPanel.add("efficiencyStats", automatedAreaEfficiencyStats);
+        }
 
         add(statsPanel);
+        add(areaStatsPanel);
         add(completedVehiclesTable);
 
-        componentsToUpdate.add(manualParkingAreaSimulationStat);
-        componentsToUpdate.add(manualParkingAreaVehicleStats);
-        componentsToUpdate.add(completedVehiclesTable);
     }
 }

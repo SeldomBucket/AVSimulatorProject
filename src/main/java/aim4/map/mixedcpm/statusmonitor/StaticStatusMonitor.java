@@ -5,6 +5,7 @@ import aim4.map.Road;
 import aim4.map.lane.Lane;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.parking.*;
+import aim4.vehicle.mixedcpm.MixedCPMBasicAutoVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicManualVehicle;
 import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 import javafx.util.Pair;
@@ -157,8 +158,8 @@ public class StaticStatusMonitor implements IStatusMonitor {
         return new ArrayList<>(vehicles.keySet());
     }
 
-    public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
-        return vehicles;
+    public List<MixedCPMBasicManualVehicle> getManualVehicles() {
+        return new ArrayList<>(vehicles.keySet());
     }
 
     public double getTotalAreaOfParkedVehicles(){
@@ -244,4 +245,109 @@ public class StaticStatusMonitor implements IStatusMonitor {
     public int getNumberOfAllowedEntries() { return numberOfAllowedEntries; }
 
     public int getMostNumberOfVehicles() { return mostNumberOfVehicles; }
+
+    @Override
+    public List<MixedCPMBasicAutoVehicle> getAutoVehicles() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public int getNoOfParkedManualVehicles() {
+        return getNoOfParkedVehicles();
+    }
+
+    @Override
+    public int getNumberOfCompletedManualVehicles() {
+        return getNumberOfCompletedVehicles();
+    }
+
+    @Override
+    public int getMostNumberOfParkedManualVehicles() {
+        return getMostNumberOfParkedVehicles();
+    }
+
+    @Override
+    public int getNumberOfDeniedManualEntries() {
+        return getNumberOfDeniedEntries();
+    }
+
+    @Override
+    public int getNumberOfAllowedManualEntries() {
+        return getNumberOfAllowedEntries();
+    }
+
+    @Override
+    public int getMostNumberOfManualVehicles() {
+        return getMostNumberOfVehicles();
+    }
+
+    @Override
+    public int getNoOfParkedAutoVehicles() {
+        return 0;
+    }
+
+    @Override
+    public int getNumberOfCompletedAutoVehicles() {
+        return 0;
+    }
+
+    @Override
+    public int getMostNumberOfParkedAutoVehicles() {
+        return 0;
+    }
+
+    @Override
+    public int getNumberOfDeniedAutoEntries() {
+        return 0;
+    }
+
+    @Override
+    public int getNumberOfAllowedAutoEntries() {
+        return 0;
+    }
+
+    @Override
+    public int getMostNumberOfAutoVehicles() {
+        return 0;
+    }
+
+    @Override
+    public double getCurrentManualEfficiency() {
+        return getCurrentEfficiency();
+    }
+
+    @Override
+    public double getMaxManualEfficiency() {
+        return getMaxEfficiency();
+    }
+
+    @Override
+    public double getAreaPerManualVehicle() {
+        return getAreaPerVehicle();
+    }
+
+    @Override
+    public double getMinAreaPerManualVehicle() {
+        return getMinAreaPerVehicle();
+    }
+
+    @Override
+    public double getCurrentAutoEfficiency() {
+        return 0;
+    }
+
+    @Override
+    public double getMaxAutoEfficiency() {
+        return 0;
+    }
+
+    @Override
+    public double getAreaPerAutoVehicle() {
+        return 0;
+    }
+
+    @Override
+    public double getMinAreaPerAutoVehicle() {
+        return 0;
+    }
 }

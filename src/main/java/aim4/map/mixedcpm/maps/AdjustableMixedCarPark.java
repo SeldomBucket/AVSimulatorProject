@@ -49,12 +49,18 @@ public class AdjustableMixedCarPark extends MixedCPMBasicMap {
     public boolean canResizeManualArea(double newMaxX) {
         boolean notOutsideArea = super.canResizeManualArea(newMaxX);
         boolean notOverlapAutomatedArea = newMaxX <= automatedParkingArea.getDimensions().getMinX();
+        if (!notOverlapAutomatedArea){
+            return notOutsideArea & notOverlapAutomatedArea;
+        }
         return notOutsideArea & notOverlapAutomatedArea;
     }
 
     public boolean canResizeAutomatedArea(double newMinX){
         boolean notOutsideArea = super.canResizeAutomatedArea(newMinX);
         boolean notOverlapManualArea = newMinX >= manualParkingArea.getDimensions().getMaxX();
+        if (!notOverlapManualArea){
+            return notOutsideArea & notOverlapManualArea;
+        }
         return notOutsideArea & notOverlapManualArea;
 
     }

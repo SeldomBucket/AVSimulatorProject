@@ -44,6 +44,29 @@ public class MixedStatusMonitor implements IStatusMonitor {
     private int mostNumberOfVehicles;
     /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
+
+    /** The number of manualVehicles denied entry due to not enough room.*/
+    private int numberOfDeniedManualEntries;
+    /** The number of manualVehicles allowed entry as there is enough room.*/
+    private int numberOfAllowedManualEntries;
+    /** The number of manualVehicles exited the car park*/
+    private int numberOfCompletedManualVehicles;
+    /** The most number of manualVehicles that have been in the car park at any one time during simulation.*/
+    private int mostNumberOfManualVehicles;
+    /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
+    private int mostNumberOfParkedManualVehicles;
+    
+    /** The number of manualVehicles denied entry due to not enough room.*/
+    private int numberOfDeniedAutoEntries;
+    /** The number of manualVehicles allowed entry as there is enough room.*/
+    private int numberOfAllowedAutoEntries;
+    /** The number of manualVehicles exited the car park*/
+    private int numberOfCompletedAutoVehicles;
+    /** The most number of manualVehicles that have been in the car park at any one time during simulation.*/
+    private int mostNumberOfAutoVehicles;
+    /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
+    private int mostNumberOfParkedAutoVehicles;
+    
     /** The max space efficiency of the parking area */
     private double maxEfficiency;
     /** The current space efficiency of the parking area */
@@ -52,6 +75,25 @@ public class MixedStatusMonitor implements IStatusMonitor {
     private double areaPerVehicle;
     /** The minimum area per vehicle the parking area */
     private double minAreaPerVehicle;
+
+
+    /** The max space efficiency of the parking area */
+    private double maxManualEfficiency;
+    /** The current space efficiency of the parking area */
+    private double currentManualEfficiency;
+    /** The current area per vehicle the parking area */
+    private double areaPerManualVehicle;
+    /** The minimum area per vehicle the parking area */
+    private double minAreaPerManualVehicle;
+
+    /** The max space efficiency of the parking area */
+    private double maxAutoEfficiency;
+    /** The current space efficiency of the parking area */
+    private double currentAutoEfficiency;
+    /** The current area per vehicle the parking area */
+    private double areaPerAutoVehicle;
+    /** The minimum area per vehicle the parking area */
+    private double minAreaPerAutoVehicle;
 
     /**
      * Create a AdjustableManualStatusMonitor to record the status of the parking area.
@@ -65,10 +107,26 @@ public class MixedStatusMonitor implements IStatusMonitor {
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
         numberOfCompletedVehicles = 0;
+        
+        numberOfDeniedManualEntries = 0;
+        numberOfAllowedManualEntries = 0;
+        mostNumberOfManualVehicles = 0;
+        numberOfCompletedManualVehicles = 0;
+
         maxEfficiency = 0;
         currentEfficiency = 0;
         areaPerVehicle = Double.MAX_VALUE;
         minAreaPerVehicle = Double.MAX_VALUE;
+
+        maxManualEfficiency = 0;
+        currentManualEfficiency = 0;
+        areaPerManualVehicle = Double.MAX_VALUE;
+        minAreaPerManualVehicle = Double.MAX_VALUE;
+
+        maxAutoEfficiency = 0;
+        currentAutoEfficiency = 0;
+        areaPerAutoVehicle = Double.MAX_VALUE;
+        minAreaPerAutoVehicle = Double.MAX_VALUE;
     }
 
 
@@ -107,6 +165,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
 
         if (allocatedStall == null){
             numberOfDeniedEntries++;
+            numberOfDeniedManualEntries++;
             return false;
         }
 
@@ -115,8 +174,8 @@ public class MixedStatusMonitor implements IStatusMonitor {
         for (Road road : allocatedStall.getJunction().getRoads()){
             if (road.getOnlyLane() != allocatedStall.getLane()){
                 pathToTargetStall.add(0, manualParkingArea.getRoadByName("topRoad").getOnlyLane()); // Top Road
-                pathToTargetStall.add(1, road.getOnlyLane());                                           // Parking Road Lane
-                pathToTargetStall.add(2, allocatedStall.getLane());                                     // Manual Stall Lane
+                pathToTargetStall.add(1, road.getOnlyLane());                                       // Parking Road Lane
+                pathToTargetStall.add(2, allocatedStall.getLane());                                 // Manual Stall Lane
                 break;
             }
         }
@@ -128,6 +187,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         // parking lane it has been allocated
         manualVehicles.put(vehicle, allocatedStall);
         numberOfAllowedEntries++;
+        numberOfAllowedManualEntries++;
         return true;
     }
 
@@ -141,6 +201,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
 
         if (allocatedLane == null) {
             numberOfDeniedEntries++;
+            numberOfDeniedAutoEntries++;
             return false;
         }
 
@@ -148,6 +209,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
 
         autoVehicles.put(vehicle, allocatedLane);
         numberOfAllowedEntries++;
+        numberOfAllowedAutoEntries++;
         return true;
     }
 
@@ -160,6 +222,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         vehicle.getTargetStall().delete();
         manualVehicles.remove(vehicle);
         numberOfCompletedVehicles++;
+        numberOfCompletedManualVehicles++;
     }
 
     /**
@@ -171,6 +234,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
         vehicle.getTargetLane().removeVehicle(vehicle.getSpec());
         autoVehicles.remove(vehicle);
         numberOfCompletedVehicles++;
+        numberOfCompletedAutoVehicles++;
     }
 
 
@@ -189,19 +253,20 @@ public class MixedStatusMonitor implements IStatusMonitor {
         return returnList;
     }
 
-    public Map<MixedCPMBasicManualVehicle, ManualStall> getManualVehicles() {
-        return manualVehicles;
+    public List<MixedCPMBasicManualVehicle> getManualVehicles() {
+        return new ArrayList<>(manualVehicles.keySet());
     }
 
-    public double getTotalAreaOfParkedVehicles(){
+    public List<MixedCPMBasicAutoVehicle> getAutoVehicles() {
+        return new ArrayList<>(autoVehicles.keySet());
+    }
+
+    private double getTotalAreaOfParkedVehicles(){
+        return getTotalAreaOfParkedAutoVehicles() + getTotalAreaOfParkedManualVehicles();
+    }
+
+    private double getTotalAreaOfParkedAutoVehicles(){
         double totalVehicleArea = 0;
-        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
-            if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
-                totalVehicleArea = totalVehicleArea +
-                        (vehicle.getSpec().getWidth() *
-                                vehicle.getSpec().getWidth());
-            }
-        }
         for (MixedCPMBasicAutoVehicle vehicle : autoVehicles.keySet()){
             if(((MixedCPMAutoDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
@@ -212,13 +277,34 @@ public class MixedStatusMonitor implements IStatusMonitor {
         return totalVehicleArea;
     }
 
+    private double getTotalAreaOfParkedManualVehicles(){
+        double totalVehicleArea = 0;
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
+            if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
+                totalVehicleArea = totalVehicleArea +
+                        (vehicle.getSpec().getWidth() *
+                                vehicle.getSpec().getWidth());
+            }
+        }
+        return totalVehicleArea;
+    }
+
     public int getNoOfParkedVehicles(){
+        return getNoOfParkedAutoVehicles() + getNoOfParkedManualVehicles();
+    }
+
+    public int getNoOfParkedManualVehicles(){
         int noOfParkedVehicles = 0;
         for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()) {
             if (((MixedCPMManualDriver) vehicle.getDriver()).isParked()) {
                 noOfParkedVehicles++;
             }
         }
+        return noOfParkedVehicles;
+    }
+
+    public int getNoOfParkedAutoVehicles(){
+        int noOfParkedVehicles = 0;
         for (MixedCPMBasicAutoVehicle vehicle : autoVehicles.keySet()) {
             if (((MixedCPMAutoDriver) vehicle.getDriver()).isParked()) {
                 noOfParkedVehicles++;
@@ -237,21 +323,55 @@ public class MixedStatusMonitor implements IStatusMonitor {
         if (currentNumberOfParkedVehicles > mostNumberOfParkedVehicles) {
             mostNumberOfParkedVehicles = currentNumberOfParkedVehicles;
         }
+
+        int currentNumberOfParkedManualVehicles = getNoOfParkedManualVehicles();
+        if (currentNumberOfParkedManualVehicles > mostNumberOfParkedManualVehicles) {
+            mostNumberOfParkedManualVehicles = currentNumberOfParkedManualVehicles;
+        }
+
+        int currentNumberOfParkedAutoVehicles = getNoOfParkedAutoVehicles();
+        if (currentNumberOfParkedAutoVehicles > mostNumberOfParkedAutoVehicles) {
+            mostNumberOfParkedAutoVehicles = currentNumberOfParkedAutoVehicles;
+        }
     }
 
     public void updateEfficiencyMeasurements(){
         double areaOfCarPark = map.getAreaOfCarPark();
-        double areaOfVehicles = getTotalAreaOfParkedVehicles();
+        double areaOfManualParkingArea = manualParkingArea.getDimensions().getWidth()*manualParkingArea.getDimensions().getHeight();
+        double areaOfAutomatedParkingArea = automatedParkingArea.getDimensions().getWidth()*automatedParkingArea.getDimensions().getHeight();
 
-        areaPerVehicle = areaOfCarPark/getNoOfParkedVehicles();
+
+        double areaOfVehicles = getTotalAreaOfParkedVehicles();
+        double areaOfManualVehicles = getTotalAreaOfParkedManualVehicles();
+        double areaOfAutoVehicles = getTotalAreaOfParkedAutoVehicles();
+
+        areaPerVehicle = areaOfCarPark / getNoOfParkedVehicles();
         currentEfficiency =  areaOfVehicles / areaOfCarPark;
+
+        areaPerManualVehicle = areaOfManualParkingArea / getNoOfParkedManualVehicles();
+        currentManualEfficiency =  areaOfManualVehicles / areaOfManualParkingArea;
+
+        areaPerAutoVehicle = areaOfAutomatedParkingArea / getNoOfParkedAutoVehicles();
+        currentAutoEfficiency =  areaOfAutoVehicles / areaOfAutomatedParkingArea;
 
         if (currentEfficiency > maxEfficiency){
             maxEfficiency = currentEfficiency;
         }
+        if (currentManualEfficiency > maxManualEfficiency){
+            maxManualEfficiency = currentManualEfficiency;
+        }
+        if (currentAutoEfficiency > maxAutoEfficiency){
+            maxAutoEfficiency = currentAutoEfficiency;
+        }
 
         if (areaPerVehicle < minAreaPerVehicle){
             minAreaPerVehicle = areaPerVehicle;
+        }
+        if (areaPerManualVehicle < minAreaPerManualVehicle){
+            minAreaPerManualVehicle = areaPerManualVehicle;
+        }
+        if (areaPerAutoVehicle < minAreaPerAutoVehicle){
+            minAreaPerAutoVehicle = areaPerAutoVehicle;
         }
     }
 
@@ -272,4 +392,94 @@ public class MixedStatusMonitor implements IStatusMonitor {
     public int getNumberOfAllowedEntries() { return numberOfAllowedEntries; }
 
     public int getMostNumberOfVehicles() { return mostNumberOfVehicles; }
+
+    @Override
+    public int getNumberOfDeniedManualEntries() {
+        return numberOfDeniedManualEntries;
+    }
+
+    @Override
+    public int getNumberOfAllowedManualEntries() {
+        return numberOfAllowedManualEntries;
+    }
+
+    @Override
+    public int getNumberOfCompletedManualVehicles() {
+        return numberOfCompletedManualVehicles;
+    }
+
+    @Override
+    public int getMostNumberOfManualVehicles() {
+        return mostNumberOfManualVehicles;
+    }
+
+    @Override
+    public int getMostNumberOfParkedManualVehicles() {
+        return mostNumberOfParkedManualVehicles;
+    }
+
+    @Override
+    public int getNumberOfDeniedAutoEntries() {
+        return numberOfDeniedAutoEntries;
+    }
+
+    @Override
+    public int getNumberOfAllowedAutoEntries() {
+        return numberOfAllowedAutoEntries;
+    }
+
+    @Override
+    public int getNumberOfCompletedAutoVehicles() {
+        return numberOfCompletedAutoVehicles;
+    }
+
+    @Override
+    public int getMostNumberOfAutoVehicles() {
+        return mostNumberOfAutoVehicles;
+    }
+
+    @Override
+    public int getMostNumberOfParkedAutoVehicles() {
+        return mostNumberOfParkedAutoVehicles;
+    }
+
+    @Override
+    public double getMaxManualEfficiency() {
+        return maxManualEfficiency;
+    }
+
+    @Override
+    public double getCurrentManualEfficiency() {
+        return currentManualEfficiency;
+    }
+
+    @Override
+    public double getAreaPerManualVehicle() {
+        return areaPerManualVehicle;
+    }
+
+    @Override
+    public double getMinAreaPerManualVehicle() {
+        return minAreaPerManualVehicle;
+    }
+
+    @Override
+    public double getMaxAutoEfficiency() {
+        return maxAutoEfficiency;
+    }
+
+    @Override
+    public double getCurrentAutoEfficiency() {
+        return currentAutoEfficiency;
+    }
+
+    @Override
+    public double getAreaPerAutoVehicle() {
+        return areaPerAutoVehicle;
+    }
+
+    @Override
+    public double getMinAreaPerAutoVehicle() {
+        return minAreaPerAutoVehicle;
+    }
 }
