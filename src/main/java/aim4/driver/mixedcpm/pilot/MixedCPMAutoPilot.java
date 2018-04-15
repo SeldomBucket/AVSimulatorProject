@@ -125,7 +125,8 @@ public class MixedCPMAutoPilot extends BasicPilot{
      */
     public void simpleThrottleAction() {
         cruise();
-        dontHitVehicleInFront();
+        // This is commented out because the automated parking area is abstracted in this version
+        //dontHitVehicleInFront();
     }
 
     /**
