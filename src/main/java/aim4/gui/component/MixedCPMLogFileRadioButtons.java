@@ -15,23 +15,29 @@ public class MixedCPMLogFileRadioButtons extends JPanel implements ChangeListene
 
     public MixedCPMLogFileRadioButtons(){
 
-        setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         label = new JLabel();
-        label.setText("Log vehicle spawns and statistics?:");
+        label.setText("Log vehicle spawns and statistics?");
+        label.setForeground(Color.RED);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(label);
 
+        Box radioButtonBox = Box.createVerticalBox();
+        radioButtonBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(radioButtonBox);
 
         JRadioButton noLogButton = new JRadioButton("DON'T log to file", false);
         noLogButton.setActionCommand("NO_LOG");
         noLogButton.setSelected(true);
-        this.add(noLogButton);
+        noLogButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        radioButtonBox.add(noLogButton);
 
         JRadioButton logButton = new JRadioButton("Log to file", false);
         logButton.setActionCommand("LOG");
         logButton.setSelected(false);
-        this.add(logButton);
+        logButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        radioButtonBox.add(logButton);
 
         group = new ButtonGroup();
         group.add(logButton);

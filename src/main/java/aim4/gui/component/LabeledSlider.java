@@ -30,7 +30,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 package aim4.gui.component;
 
-import java.awt.Component;
+import java.awt.*;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.Map;

@@ -1,6 +1,6 @@
 package aim4.gui.setuppanel;
 
-import aim4.gui.parampanel.mixedcpm.MixedCPMManualDriverParamPanel;
+import aim4.gui.parampanel.mixedcpm.MixedCPMParamPanel;
 import aim4.sim.setup.SimSetup;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
 import aim4.sim.setup.mixedcpm.MixedCPMAutoDriverSimSetup;
@@ -8,8 +8,6 @@ import javafx.util.Pair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
 
 /**
  * The SetupPanel for CPM.
@@ -24,7 +22,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
     /** The card layout */
     private CardLayout cardLayout;
     /** the auto driver only simulation setup panel */
-    private MixedCPMManualDriverParamPanel autoDriverOnlySetupPanel;
+    private MixedCPMParamPanel autoDriverOnlySetupPanel;
     /** The simulation setup panel */
     private BasicMixedCPMSimSetup simSetup;
 
@@ -43,7 +41,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
 
         // add the parameter panels
         autoDriverOnlySetupPanel =
-                new MixedCPMManualDriverParamPanel(simSetup);
+                new MixedCPMParamPanel(simSetup);
         addParamPanel(autoDriverOnlySetupPanel, MIXED_CPM_PROTOCOL_MANUAL_AREA_ONLY);
 
         // add the combo box pane and cards pane
@@ -76,6 +74,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
         newSimSetup.setUseCSVFile(new Pair<>(autoDriverOnlySetupPanel.getUseCsv(),
                                              autoDriverOnlySetupPanel.getCsvFilename()));
         newSimSetup.setLogToFile(autoDriverOnlySetupPanel.getUseLogFile());
+        newSimSetup.setNoOfVehiclesToSpawn(autoDriverOnlySetupPanel.getNoOfVehiclesToSpawn());
         return newSimSetup;
 
     }

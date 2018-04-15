@@ -18,22 +18,30 @@ public class MixedCPMMapTypeRadioButtons extends JPanel implements ChangeListene
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
 
         label = new JLabel();
-        label.setText("Choose map type:");
+        label.setText("Choose Map Type:");
+        label.setForeground(Color.RED);
         label.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(label);
 
-        JRadioButton adjustableMixedButton = new JRadioButton("Adjustable Car Park for Mixed Automated and Manual Vehicles", false);
+
+        Box radioButtonBox = Box.createVerticalBox();
+        radioButtonBox.setAlignmentX(Component.CENTER_ALIGNMENT);
+        this.add(radioButtonBox);
+
+        JRadioButton adjustableMixedButton = new JRadioButton("Adjustable Car Park", true);
         adjustableMixedButton.setActionCommand("ADJUSTABLE_MIXED");
         adjustableMixedButton.setSelected(true);
-        this.add(adjustableMixedButton);
+        adjustableMixedButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        radioButtonBox.add(adjustableMixedButton);
 
         JRadioButton adjustableManualButton = new JRadioButton("Adjustable Car Park for Manual Cars Only", false);
         adjustableManualButton.setActionCommand("ADJUSTABLE_MANUAL");
-        //this.add(adjustableManualButton);
+        //radioButtonBox.add(adjustableManualButton);
 
         JRadioButton staticButton = new JRadioButton("Static Car Park", false);
         staticButton.setActionCommand("STATIC");
-        this.add(staticButton);
+        staticButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        radioButtonBox.add(staticButton);
 
         group = new ButtonGroup();
         group.add(adjustableMixedButton);

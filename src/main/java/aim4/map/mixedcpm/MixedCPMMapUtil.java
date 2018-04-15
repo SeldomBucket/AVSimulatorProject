@@ -28,6 +28,10 @@ public class MixedCPMMapUtil {
      * The different spawn specification types.
      */
     public enum SpawnSpecType {
+        /** Single - a specific number of vehicles is spawned, and have the same specification */
+        FINITE_SINGLE,
+        /** Finite Random - a specific number of vehicles is spawned, and have a randomly selected specification */
+        FINITE_RANDOM,
         /** Single - all vehicles spawned will have the same specification */
         SINGLE,
         /** Random - all vehicles spawned will have a randomly selected specification */
@@ -63,12 +67,13 @@ public class MixedCPMMapUtil {
         private boolean isDone;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
+        private double automatedProbability;
 
         /**
          * Create a spec generator that generates the specified number
          * of vehicles. This only spawns one VehicleSpec.
          */
-        public FiniteSpawnSingleSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
+        public FiniteSpawnSingleSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel, double automatedProbability) {
             vehicleSpec = VehicleSpecDatabase.getVehicleSpecByName("COUPE");
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
             this.numberOfSpawnedVehicles = 0;
@@ -76,6 +81,8 @@ public class MixedCPMMapUtil {
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
+
+            this.automatedProbability = automatedProbability;
         }
 
         /**
@@ -92,8 +99,12 @@ public class MixedCPMMapUtil {
                 for(double time = initTime; time < initTime + timeStep;
                     time += SimConfig.SPAWN_TIME_STEP) {
                     if (Util.random.nextDouble() < spawnProbability) {
+                        boolean automated = false;
+                        if(Util.random.nextDouble() < automatedProbability){
+                            automated = true;
+                        }
                         double parkingTime = generateParkingTime();
-                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime));
+                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),vehicleSpec, parkingTime, false, automated));
                         numberOfSpawnedVehicles += 1;
                         System.out.println("Vehicle spawned!");
                     }
@@ -177,12 +188,17 @@ public class MixedCPMMapUtil {
         private boolean isDone;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
+        private double disabledProbability;
+        private double automatedProbability;
 
         /**
          * Create a spec generator that generates the specified number
          * of vehicles. The vehicle spec is chosen at random.
          */
-        public FiniteSpawnRandomSpecGenerator(int numberOfVehiclesToSpawn, double trafficLevel) {
+        public FiniteSpawnRandomSpecGenerator(int numberOfVehiclesToSpawn,
+                                              double trafficLevel,
+                                              double disabledProbability,
+                                              double automatedProbability) {
             this.numberOfVehiclesToSpawn = numberOfVehiclesToSpawn;
             this.numberOfSpawnedVehicles = 0;
             isDone = false;
@@ -197,6 +213,9 @@ public class MixedCPMMapUtil {
             spawnProbability = trafficLevel * SimConfig.SPAWN_TIME_STEP;
             // Cannot generate more than one vehicle in each spawn time step
             assert spawnProbability <= 1.0;
+
+            this.disabledProbability = disabledProbability;
+            this.automatedProbability = automatedProbability;
         }
 
         /**
@@ -217,9 +236,22 @@ public class MixedCPMMapUtil {
                         int i = Util.randomIndex(proportion);
                         VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
                         double parkingTime = generateParkingTime();
+
+                        boolean automated = false;
+                        if(Util.random.nextDouble() < automatedProbability){
+                            automated = true;
+                        }
+                        boolean disabled = false;
+                        if(Util.random.nextDouble() < disabledProbability){
+                            disabled = true;
+                        }
+
                         result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
                                 vehicleSpec,
-                                parkingTime));
+                                parkingTime,
+                                disabled,
+                                automated));
+
                         numberOfSpawnedVehicles += 1;
                         System.out.println("Vehicle " + vehicleSpec.getName() + " spawned!");
                     }
@@ -240,7 +272,7 @@ public class MixedCPMMapUtil {
         /** The proportion of each spec */
         private List<Double> proportion;
         /** The probability of a vehicle being a disabled vehicle */
-        private double disabledProbability = 0.048;
+        private double disabledProbability;
         /** The probability of generating a vehicle in each spawn time step */
         private double spawnProbability;
         private double automatedProbability;
@@ -279,24 +311,21 @@ public class MixedCPMMapUtil {
                     VehicleSpec vehicleSpec = VehicleSpecDatabase.getVehicleSpecById(i);
 
                     double parkingTime = generateParkingTime();// TODO ED HERE IS WHERE TO CHANGE GENERATE PARKING TIME
+
                     boolean automated = false;
                     if(Util.random.nextDouble() < automatedProbability){
                         automated = true;
                     }
-
+                    boolean disabled = false;
                     if(Util.random.nextDouble() < disabledProbability){
-                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
-                                vehicleSpec,
-                                parkingTime,
-                                true,
-                                automated));
-                    }else{
-                        result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
-                                vehicleSpec,
-                                parkingTime,
-                                false,
-                                automated));
+                        disabled = true;
                     }
+
+                    result.add(new MixedCPMSpawnSpec(spawnPoint.getCurrentTime(),
+                            vehicleSpec,
+                            parkingTime,
+                            disabled,
+                            automated));
 
 
                     // TODO ED Re-add this, maybe?
@@ -502,11 +531,12 @@ public class MixedCPMMapUtil {
 
     public static void setUpFiniteSingleSpecSpawnPoint(MixedCPMMap map,
                                                        int numberOfVehiclesToSpawn,
-                                                       double trafficLevel){
+                                                       double trafficLevel,
+                                                       double automatedProbability){
         // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
+                    new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel, automatedProbability));
         }
     }
 
@@ -528,11 +558,13 @@ public class MixedCPMMapUtil {
 
     public static void setUpFiniteRandomSpecSpawnPoint(MixedCPMMap map,
                                                        int numberOfVehiclesToSpawn,
-                                                       double trafficLevel){
+                                                       double trafficLevel,
+                                                       double disabledRate,
+                                                       double automatedRate){
         // The spawn point will only spawn numberOfVehiclesToSpawn, all of the same spec.
         for(MixedCPMSpawnPoint sp : map.getSpawnPoints()) {
             sp.setVehicleSpecChooser(
-                    new FiniteSpawnRandomSpecGenerator(numberOfVehiclesToSpawn, trafficLevel));
+                    new FiniteSpawnRandomSpecGenerator(numberOfVehiclesToSpawn, trafficLevel, disabledRate, automatedRate));
         }
     }
 

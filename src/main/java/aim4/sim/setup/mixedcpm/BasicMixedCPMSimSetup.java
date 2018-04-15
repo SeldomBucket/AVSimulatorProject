@@ -29,6 +29,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
     protected boolean logToFile;
+    protected int noOfVehiclesToSpawn;
 
     /**
      * Create a copy of a given basic simulator setup.
@@ -45,6 +46,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
         this.spawnSpecType = basicSimSetup.spawnSpecType;
         this.mapType = basicSimSetup.mapType;
         this.useCSVFile = basicSimSetup.useCSVFile;
+        this.noOfVehiclesToSpawn = basicSimSetup.noOfVehiclesToSpawn;
     }
 
     /**
@@ -64,6 +66,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
         this.spawnSpecType = spawnSpecType;
         this.mapType = mapType;
         this.useCSVFile = useCSVFile;
+        this.noOfVehiclesToSpawn = 100;
     }
 
     @Override
@@ -143,5 +146,13 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
 
     public void setLogToFile(boolean logToFile){
         this.logToFile = logToFile;
+    }
+
+    public int getNoOfVehiclesToSpawn() {
+        return noOfVehiclesToSpawn;
+    }
+
+    public void setNoOfVehiclesToSpawn(int noOfVehiclesToSpawn) {
+        this.noOfVehiclesToSpawn = noOfVehiclesToSpawn;
     }
 }

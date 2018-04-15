@@ -8,11 +8,12 @@ import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * The manual driver only simulation parameter panel for CPM.
  */
-public class MixedCPMManualDriverParamPanel extends JPanel {
+public class MixedCPMParamPanel extends JPanel {
     private static final long serialVersionUID = 1L;
 
     LabeledSlider carParkWidthSlider;
@@ -30,9 +31,9 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
      * @param simSetup  the simulation setup
      */
 
-    public MixedCPMManualDriverParamPanel(BasicMixedCPMSimSetup simSetup) {
+    public MixedCPMParamPanel(BasicMixedCPMSimSetup simSetup) {
         setLayout(new BoxLayout(this, BoxLayout.PAGE_AXIS));
-
+        Dimension size = new Dimension(1000, 500);
         // create the components
 
         carParkWidthSlider =
@@ -41,6 +42,8 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         10.0, 1.0,
                         "Width of car park: %.1f meters",
                         "%.1f");
+        carParkWidthSlider.setMaximumSize(size);
+        carParkWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(carParkWidthSlider);
 
         carParkHeightSlider =
@@ -49,6 +52,8 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         10.0, 1.0,
                         "Height of car park: %.1f meters",
                         "%.1f");
+        carParkHeightSlider.setMaximumSize(size);
+        carParkHeightSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(carParkHeightSlider);
 
         laneWidthSlider =
@@ -57,7 +62,9 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         1.0, 0.5,
                         "Width of Lanes (parking lanes and roads): %.1f meters \r\n (not used in static car park type)",
                         "%.1f");
-        add(laneWidthSlider);
+        laneWidthSlider.setMaximumSize(size);
+        laneWidthSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
+        //add(laneWidthSlider);
 
 
         automatedVehiclesRateSlider =
@@ -66,6 +73,8 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         10.0, 1.0,
                         "Percentage of automated vehicles spawned: %.0f percent \r\n (not used in static car park type, or when spawning vehicles from a csv file)",
                         "%.0f");
+        automatedVehiclesRateSlider.setMaximumSize(size);
+        automatedVehiclesRateSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(automatedVehiclesRateSlider);
 
         trafficRateSlider =
@@ -74,15 +83,20 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
                         500.0, 100.0,
                         "Traffic Level: %.0f vehicles/hour \r\n (not used when spawning vehicles from a csv file)",
                         "%.0f");
+        trafficRateSlider.setMaximumSize(size);
+        trafficRateSlider.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(trafficRateSlider);
 
         logFileRadioButtons = new MixedCPMLogFileRadioButtons();
+        logFileRadioButtons.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(logFileRadioButtons);
 
         mapTypeRadioButtons = new MixedCPMMapTypeRadioButtons();
+        logFileRadioButtons.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(mapTypeRadioButtons);
 
         spawnSpecRadioButtons = new MixedCPMSpawnSpecRadioButtons();
+        logFileRadioButtons.setAlignmentX(Component.CENTER_ALIGNMENT);
         add(spawnSpecRadioButtons);
 
 
@@ -128,5 +142,8 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         return logFileRadioButtons.getSelected();
     }
 
+    public int getNoOfVehiclesToSpawn(){
+        return spawnSpecRadioButtons.getNumberOfVehiclesToSpawn();
+    }
 
 }

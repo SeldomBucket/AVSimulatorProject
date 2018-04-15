@@ -42,7 +42,7 @@ public abstract class SimViewer extends JPanel implements
     /**
      * The inset size of the setup panels
      */
-    private static final int SIM_SETUP_PANE_GAP = 50;
+    private static final int SIM_SETUP_PANE_GAP = 10;
     /**
      * The simulation speed (simulation seconds per GUI second) at or beyond which
      * the turbo mode is on (i.e., the simulation will run as fast as possible)
@@ -515,8 +515,8 @@ public abstract class SimViewer extends JPanel implements
         panel1.setBackground(Canvas.GRASS_COLOR);
         panel1.setLayout(new GridBagLayout());
         GridBagConstraints c1 = new GridBagConstraints();
-        c1.gridx = 0;
-        c1.gridy = 0;
+        c1.gridx = 1;
+        c1.gridy = 1;
         c1.fill = GridBagConstraints.BOTH;
         c1.weightx = 1.0;
         c1.weighty = 1.0;
@@ -525,6 +525,7 @@ public abstract class SimViewer extends JPanel implements
                 SIM_SETUP_PANE_GAP,
                 SIM_SETUP_PANE_GAP);
         panel1.add(simSetupPanel, c1);
+
         // add the panel to the top layer
         this.add(panel1, "SIM_SETUP_PANEL");
         // add the canvas or the stat screen to the second layer
