@@ -85,7 +85,7 @@ public class AutomatedAreaEfficiencyStats extends JPanel implements MixedCPMStat
         // Split the text so we can remove the old value and reuse the label
         String[] labelSplit = labelText.split(":");
         String labelOnly = labelSplit [0];
-        label.setText(labelOnly + ": " + Util.roundToDecimalPlaces(newValue,2));
+        label.setText(labelOnly + ": " + Util.roundToDecimalPlaces(newValue,4));
     }
 
 
