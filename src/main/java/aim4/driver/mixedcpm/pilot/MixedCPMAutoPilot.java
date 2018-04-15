@@ -152,7 +152,7 @@ public class MixedCPMAutoPilot extends BasicPilot{
     }
 
     public boolean parkedInLane(){
-        return vehicle.gaugeVelocity() == 0;
+        return frontOfVehicleNearOrPastEndOfLane();
     }
 
     private boolean frontOfVehicleNearOrPastEndOfLane(){

@@ -27,7 +27,7 @@ public class AutomatedParkingRoad extends Road {
         Rectangle2D topRoadShape = topRoad.getOnlyLane().getShape().getBounds2D();
         Rectangle2D bottomRoadShape = bottomRoad.getOnlyLane().getShape().getBounds2D();
 
-        this.startOfLaneYCoord = topRoadShape.getMaxX();
+        this.startOfLaneYCoord = topRoadShape.getMaxY();
         this.endOfLaneYCoord = bottomRoadShape.getMinY();
 
         this.backOfVehiclesPointer = this.endOfLaneYCoord;
@@ -45,6 +45,10 @@ public class AutomatedParkingRoad extends Road {
             return true;
         }
         return false;
+    }
+
+    public void removeVehicle(VehicleSpec spec){
+        this.backOfVehiclesPointer += (spec.getLength()+minDistanceBetweenVehicles);
     }
 
     public double getEndOfLaneYCoord() {

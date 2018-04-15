@@ -29,6 +29,7 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
         this.roads.add(bottomRoad);
         this.map = map;
         this.dimensions = dimensions;
+        this.laneWidth = 2.5; // lane width is 2.5 as the largest vehicle is a VAN which is 2.014m wide
     }
 
     public AutomatedParkingRoad findTargetLane(VehicleSpec spec){
@@ -83,7 +84,7 @@ public class AutomatedParkingArea extends MixedCPMRoadMap  implements IAutomated
         double spacePointer = dimensions.getMaxX() - (parkingRoads.size() * laneWidth);
 
         // Don't add if it can't fit in the space
-        if (this.dimensions.getWidth() < spacePointer - this.laneWidth){
+        if (this.dimensions.getMinX() > spacePointer - this.laneWidth){
             if (parkingRoads.size() == 0){
                 if (!tryResize(this.dimensions.getMinX() - (this.laneWidth*2))){
                     return null;

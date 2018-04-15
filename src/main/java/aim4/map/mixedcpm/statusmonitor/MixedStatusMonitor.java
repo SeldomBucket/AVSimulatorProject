@@ -168,6 +168,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
      */
     private void vehicleOnExit(MixedCPMBasicAutoVehicle vehicle) {
         // Remove the vehicle from the status monitor's records
+        vehicle.getTargetLane().removeVehicle(vehicle.getSpec());
         autoVehicles.remove(vehicle);
         numberOfCompletedVehicles++;
     }
@@ -201,37 +202,33 @@ public class MixedStatusMonitor implements IStatusMonitor {
                                 vehicle.getSpec().getWidth());
             }
         }
+        for (MixedCPMBasicAutoVehicle vehicle : autoVehicles.keySet()){
+            if(((MixedCPMAutoDriver)vehicle.getDriver()).isParked()){
+                totalVehicleArea = totalVehicleArea +
+                        (vehicle.getSpec().getWidth() *
+                                vehicle.getSpec().getWidth());
+            }
+        }
         return totalVehicleArea;
     }
 
     public int getNoOfParkedVehicles(){
         int noOfParkedVehicles = 0;
-        int noOfVansNotParked = 0;
-        int noOfNonVansNotParked = 0;
-        int noOfVansParked = 0;
-        int noOfNonVansParked = 0;
-        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()){
-            if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()) {
+            if (((MixedCPMManualDriver) vehicle.getDriver()).isParked()) {
                 noOfParkedVehicles++;
-                if (vehicle.getSpec().getName() == "VAN"){
-                    noOfVansParked++;
-                }else{
-                    noOfNonVansParked++;
-                }
-            }else{
-                //here
-                if (vehicle.getSpec().getName() == "VAN"){
-                    noOfVansNotParked++;
-                }else{
-                    noOfNonVansNotParked++;
-                }
+            }
+        }
+        for (MixedCPMBasicAutoVehicle vehicle : autoVehicles.keySet()) {
+            if (((MixedCPMAutoDriver) vehicle.getDriver()).isParked()) {
+                noOfParkedVehicles++;
             }
         }
         return noOfParkedVehicles;
     }
 
     public void updateMostNumberOfVehicles(){
-        int currentNumberOfVehicles = manualVehicles.size();
+        int currentNumberOfVehicles = manualVehicles.size() + autoVehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
             mostNumberOfVehicles = currentNumberOfVehicles;
         }
