@@ -29,7 +29,6 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
     @Override
     public Simulator getSimulator() {
         double currentTime = 0.0;
-        double automatedProbability = 0.5;
         double disabledProbability = 0.048;
         MixedCPMBasicMap layout = null;
 
@@ -41,7 +40,7 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
                                        6.0, // From essex2009parking
                                        speedLimit,
                                        currentTime);
-                automatedProbability = 0;
+                this.automatedVehiclesRate = 0;
                 break;
             case ADJUSTABLE_MANUAL:
                 layout = new AdjustableManualCarPark(carParkHeight,
@@ -64,13 +63,13 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
         // Set up the correct spawn point (Don't log if reading from CSV)
         switch(spawnSpecType) {
             case SINGLE:
-                MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel, automatedProbability);
+                MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel, automatedVehiclesRate);
                 if (logToFile) {
                     Logging.initialiseLogWriters();
                 }
                 break;
             case RANDOM:
-                MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel, disabledProbability, automatedProbability);
+                MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel, disabledProbability, automatedVehiclesRate);
                 if (logToFile) {
                     Logging.initialiseLogWriters();
                 }

@@ -67,6 +67,7 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
     public SimSetup getSimSetup() {
         MixedCPMAutoDriverSimSetup newSimSetup = new MixedCPMAutoDriverSimSetup(simSetup);
         newSimSetup.setTrafficLevel(autoDriverOnlySetupPanel.getTrafficRate());
+        newSimSetup.setAutomatedVehiclesRate(autoDriverOnlySetupPanel.getAutomatedVehiclesRate());
         newSimSetup.setLaneWidth(autoDriverOnlySetupPanel.getLaneWidth());
         newSimSetup.setCarParkHeight(autoDriverOnlySetupPanel.getCarParkHeight());
         newSimSetup.setCarParkWidth(autoDriverOnlySetupPanel.getCarParkWidth());

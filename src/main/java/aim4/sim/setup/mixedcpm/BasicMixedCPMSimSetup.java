@@ -17,6 +17,8 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     protected double speedLimit;
     /** The traffic level */
     protected double trafficLevel;
+    /** The rate at which automated vehicles spawn */
+    protected double automatedVehiclesRate;
     /** The width of all lanes */
     // TODO CPM can separate this into lanes and parking lanes so can have different for both
     protected double laneWidth;
@@ -35,6 +37,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
      */
     public BasicMixedCPMSimSetup(BasicMixedCPMSimSetup basicSimSetup) {
         this.speedLimit = basicSimSetup.speedLimit;
+        this.automatedVehiclesRate = 0.5;
         this.trafficLevel = basicSimSetup.trafficLevel;
         this.laneWidth = basicSimSetup.laneWidth;
         this.carParkWidth = basicSimSetup.carParkWidth;
@@ -53,6 +56,7 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
                             double laneWidth, double carParkWidth, double carParkHeight,
                             SpawnSpecType spawnSpecType, MapType mapType, Pair<Boolean, String> useCSVFile) {
         this.speedLimit = speedLimit;
+        this.automatedVehiclesRate = 0.5;
         this.trafficLevel = trafficLevel;
         this.laneWidth = laneWidth;
         this.carParkWidth = carParkWidth;
@@ -73,6 +77,14 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
 
     public void setSpeedLimit(double speedLimit) {
         this.speedLimit = speedLimit;
+    }
+
+    public double getAutomatedVehiclesRate() {
+        return automatedVehiclesRate;
+    }
+
+    public void setAutomatedVehiclesRate(double automatedVehiclesRate) {
+        this.automatedVehiclesRate = automatedVehiclesRate;
     }
 
     public double getTrafficLevel() {

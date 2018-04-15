@@ -18,6 +18,7 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     LabeledSlider carParkWidthSlider;
     LabeledSlider carParkHeightSlider;
     LabeledSlider laneWidthSlider;
+    LabeledSlider automatedVehiclesRateSlider;
     LabeledSlider trafficRateSlider;
     MixedCPMLogFileRadioButtons logFileRadioButtons;
     MixedCPMSpawnSpecRadioButtons spawnSpecRadioButtons;
@@ -59,6 +60,14 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         add(laneWidthSlider);
 
 
+        automatedVehiclesRateSlider =
+                new LabeledSlider(0.0, 100.0,
+                        simSetup.getAutomatedVehiclesRate() * 100,
+                        10.0, 1.0,
+                        "Percentage of automated vehicles spawned: %.0f percent \r\n (not used in static car park type, or when spawning vehicles from a csv file)",
+                        "%.0f");
+        add(automatedVehiclesRateSlider);
+
         trafficRateSlider =
                 new LabeledSlider(0.0, 2500.0,
                         simSetup.getTrafficLevel() * 3600.0,
@@ -91,6 +100,9 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
         return laneWidthSlider.getValue();
     }
 
+    public double getAutomatedVehiclesRate(){
+        return automatedVehiclesRateSlider.getValue()/100;
+    }
 
     public double getTrafficRate() {
         return trafficRateSlider.getValue()/ 3600.0;
@@ -115,5 +127,6 @@ public class MixedCPMManualDriverParamPanel extends JPanel {
     public boolean getUseLogFile(){
         return logFileRadioButtons.getSelected();
     }
+
 
 }
