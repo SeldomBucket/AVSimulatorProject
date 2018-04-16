@@ -110,14 +110,18 @@ public final class Logging {
             logLine += "\t";
             logLine += monitor.getNumberOfCompletedManualVehicles();
             logLine += "\t";
-            logLine += monitor.getNoOfParkedManualVehicles();
+            logLine += monitor.getMostNumberOfParkedManualVehicles();
+            logLine += "\t";
+            logLine += monitor.getNoOfParkedDisabledVehicles();
+            logLine += "\t";
+            logLine += monitor.getMostNumberOfParkedDisabledVehicles();
             logFileWriter.println(logLine);
 
             logLine = timestamp.toString();
             logLine += "\t";
             logLine += "Automated Stats";
             logLine += "\t";
-            logLine += monitor.getNoOfParkedManualVehicles();
+            logLine += monitor.getNoOfParkedAutoVehicles();
             logLine += "\t";
             logLine += monitor.getCurrentAutoEfficiency();
             logLine += "\t";
@@ -129,7 +133,7 @@ public final class Logging {
             logLine += "\t";
             logLine += monitor.getNumberOfCompletedAutoVehicles();
             logLine += "\t";
-            logLine += monitor.getNoOfParkedAutoVehicles();
+            logLine += monitor.getMostNumberOfParkedAutoVehicles();
             logFileWriter.println(logLine);
         }
     }
@@ -140,28 +144,42 @@ public final class Logging {
             logFileWriter.println("FINAL STATISTICS");
             logFileWriter.println();
             logFileWriter.println("CAR PARK");
-            logFileWriter.println("Max Efficiency:\t" + String.valueOf(monitor.getMaxEfficiency()));
-            logFileWriter.println("Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerVehicle()));
-            logFileWriter.println("Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedVehicles()));
-            logFileWriter.println("No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedEntries()));
-            logFileWriter.println("No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedEntries()));
-            logFileWriter.println("No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedVehicles()));
+            logFileWriter.println("CAR PARK Max Efficiency:\t" + String.valueOf(monitor.getMaxEfficiency()));
+            logFileWriter.println("CAR PARK Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerVehicle()));
+            logFileWriter.println("CAR PARK Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedVehicles()));
+            logFileWriter.println("CAR PARK No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedEntries()));
+            logFileWriter.println("CAR PARK No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedEntries()));
+            logFileWriter.println("CAR PARK No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedVehicles()));
             logFileWriter.println();
             logFileWriter.println("MANUAL PARKING AREA");
-            logFileWriter.println("Max Efficiency:\t" + String.valueOf(monitor.getMaxManualEfficiency()));
-            logFileWriter.println("Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerManualVehicle()));
-            logFileWriter.println("Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedManualVehicles()));
-            logFileWriter.println("No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedManualEntries()));
-            logFileWriter.println("No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedManualEntries()));
-            logFileWriter.println("No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedManualVehicles()));
+            logFileWriter.println("MANUAL PARKING AREA Max Efficiency:\t" + String.valueOf(monitor.getMaxManualEfficiency()));
+            logFileWriter.println("MANUAL PARKING AREA Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerManualVehicle()));
+            logFileWriter.println("MANUAL PARKING AREA Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedManualVehicles()));
+            logFileWriter.println("MANUAL PARKING AREA Max No Of Parked Disabled Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedDisabledVehicles()));
+            logFileWriter.println("MANUAL PARKING AREA No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedManualEntries()));
+            logFileWriter.println("MANUAL PARKING AREA No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedManualEntries()));
+            logFileWriter.println("MANUAL PARKING AREA No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedManualVehicles()));
             logFileWriter.println();
             logFileWriter.println("AUTOMATED PARKING AREA");
-            logFileWriter.println("Max Efficiency:\t" + String.valueOf(monitor.getMaxAutoEfficiency()));
-            logFileWriter.println("Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerAutoVehicle()));
-            logFileWriter.println("Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedAutoVehicles()));
-            logFileWriter.println("No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedAutoEntries()));
-            logFileWriter.println("No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedAutoEntries()));
-            logFileWriter.println("No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedAutoVehicles()));
+            logFileWriter.println("AUTOMATED PARKING AREA Max Efficiency:\t" + String.valueOf(monitor.getMaxAutoEfficiency()));
+            logFileWriter.println("AUTOMATED PARKING AREA Min Area Per Vehicle:\t" + String.valueOf(monitor.getMinAreaPerAutoVehicle()));
+            logFileWriter.println("AUTOMATED PARKING AREA Max No Of Parked Vehicles:\t" + String.valueOf(monitor.getMostNumberOfParkedAutoVehicles()));
+            logFileWriter.println("AUTOMATED PARKING AREA No Of Allowed Entries:\t" + String.valueOf(monitor.getNumberOfAllowedAutoEntries()));
+            logFileWriter.println("AUTOMATED PARKING AREA No Of Denied Entries:\t" + String.valueOf(monitor.getNumberOfDeniedAutoEntries()));
+            logFileWriter.println("AUTOMATED PARKING AREA No Of Completed Vehicles:\t" + String.valueOf(monitor.getNumberOfCompletedAutoVehicles()));
+
+            /*
+            Final Efficiency
+            Final Automated Efficiency
+            Final Manual Efficiency
+            Final Area Per Vehicle
+            Final Automated APV
+            Final Manual APV
+            Final Capacity
+            Final Automated Capacity
+            Final Manual Capacity
+            Final Disabled Capacity
+            */
 
         }
     }
