@@ -8,3 +8,4 @@ results/
 .~lock.*.csv#
 *.pyc
 TEST_RESULTS/
+TEST_CSV_FILES/
