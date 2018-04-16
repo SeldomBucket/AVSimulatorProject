@@ -7,3 +7,4 @@ out/
 results/
 .~lock.*.csv#
 *.pyc
+TEST_RESULTS/
