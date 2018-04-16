@@ -279,7 +279,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
             if(((MixedCPMAutoDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
                         (vehicle.getSpec().getWidth() *
-                                vehicle.getSpec().getWidth());
+                                vehicle.getSpec().getLength());
             }
         }
         return totalVehicleArea;
@@ -291,7 +291,7 @@ public class MixedStatusMonitor implements IStatusMonitor {
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
                         (vehicle.getSpec().getWidth() *
-                                vehicle.getSpec().getWidth());
+                                vehicle.getSpec().getLength());
             }
         }
         return totalVehicleArea;

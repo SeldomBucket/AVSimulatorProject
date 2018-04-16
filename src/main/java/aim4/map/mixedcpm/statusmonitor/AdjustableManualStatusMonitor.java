@@ -151,7 +151,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
             if(((MixedCPMManualDriver)vehicle.getDriver()).isParked()){
                 totalVehicleArea = totalVehicleArea +
                                     (vehicle.getSpec().getWidth() *
-                                     vehicle.getSpec().getWidth());
+                                     vehicle.getSpec().getLength());
             }
         }
         return totalVehicleArea;
