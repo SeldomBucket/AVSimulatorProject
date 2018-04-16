@@ -15,22 +15,30 @@ public final class Logging {
     private static PrintWriter spawnLogFileWriter = null;
     private static PrintWriter logFileWriter = null;
 
-    public static void initialiseLogWriters(){
-        if (spawnLogFileWriter == null) {
-            try {
-                Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    public static void initialiseLogWriter(){
+        try {
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
-                String spawnLogFilename = "vehicleSpawnLog_" + timestamp.toString() + ".csv";
-                spawnLogFileWriter = new PrintWriter(spawnLogFilename, "UTF-8");
-                spawnLogFileWriter.println("Spec,Disabled,Automated,Entry,Parking");
 
-                String logFilename = "Log_" + timestamp.toString() + ".txt";
-                logFileWriter = new PrintWriter(logFilename, "UTF-8");
-                logFileWriter.println("Timestamp\tLineType\tNoOfParkedVehicles\tEfficiency\tAreaPerVehicle\tAllowedEntries\tDeniedEntries\tCompletedVehicles\tParkedVehicles");
+            String logFilename = "Log_" + timestamp.toString() + ".txt";
+            logFileWriter = new PrintWriter(logFilename, "UTF-8");
+            logFileWriter.println("Timestamp\tLineType\tNoOfParkedVehicles\tEfficiency\tAreaPerVehicle\tAllowedEntries\tDeniedEntries\tCompletedVehicles\tParkedVehicles");
 
-            } catch (FileNotFoundException ex){ }
-            catch (UnsupportedEncodingException ex) { }
-        }
+        } catch (FileNotFoundException ex){ }
+        catch (UnsupportedEncodingException ex) { }
+    }
+
+    public static void initialiseSpawnLogWriter(){
+        try {
+
+            Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+            String spawnLogFilename = "vehicleSpawnLog_" + timestamp.toString() + ".csv";
+            spawnLogFileWriter = new PrintWriter(spawnLogFilename, "UTF-8");
+            spawnLogFileWriter.println("Spec,Disabled,Automated,Entry,Parking");
+
+        } catch (FileNotFoundException ex){ }
+        catch (UnsupportedEncodingException ex) { }
     }
 
     public static void logVehicleSpawn(MixedCPMBasicVehicle vehicle){

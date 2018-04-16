@@ -65,29 +65,36 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
             case FINITE_SINGLE:
                 MixedCPMMapUtil.setUpFiniteSingleSpecSpawnPoint(layout, noOfVehiclesToSpawn, trafficLevel, automatedVehiclesRate);
                 if (logToFile) {
-                    Logging.initialiseLogWriters();
+                    Logging.initialiseLogWriter();
+                    Logging.initialiseSpawnLogWriter();
                 }
                 break;
             case FINITE_RANDOM:
                 MixedCPMMapUtil.setUpFiniteRandomSpecSpawnPoint(layout, noOfVehiclesToSpawn, trafficLevel, disabledProbability, automatedVehiclesRate);
                 if (logToFile) {
-                    Logging.initialiseLogWriters();
+                    Logging.initialiseLogWriter();
+                    Logging.initialiseSpawnLogWriter();
                 }
                 break;
             case SINGLE:
                 MixedCPMMapUtil.setUpInfiniteSingleSpecVehicleSpawnPoint(layout, trafficLevel, automatedVehiclesRate);
                 if (logToFile) {
-                    Logging.initialiseLogWriters();
+                    Logging.initialiseLogWriter();
+                    Logging.initialiseSpawnLogWriter();
                 }
                 break;
             case RANDOM:
                 MixedCPMMapUtil.setUpInfiniteRandomSpecVehicleSpawnPoint(layout, trafficLevel, disabledProbability, automatedVehiclesRate);
                 if (logToFile) {
-                    Logging.initialiseLogWriters();
+                    Logging.initialiseLogWriter();
+                    Logging.initialiseSpawnLogWriter();
                 }
                 break;
             case CSV:
                 MixedCPMMapUtil.setUpSpecificSpecVehicleSpawnPoint(layout, useCSVFile);
+                if (logToFile) {
+                    Logging.initialiseLogWriter();
+                }
                 break;
         }
 
