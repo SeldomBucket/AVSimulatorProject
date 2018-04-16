@@ -117,14 +117,15 @@ public class MixedCPMStatScreen extends StatScreen {
         componentsToUpdate.add(carParkVehicleStats);
         componentsToUpdate.add(completedVehiclesTable);
 
-        if (setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MANUAL
+        componentsToUpdate.add(manualParkingAreaVehicleStats);
+        componentsToUpdate.add(manualAreaEfficiencyStats);
+        areaStatsPanel.add("manualStats", manualParkingAreaVehicleStats);
+        statsPanel.add("efficiencyStats", manualAreaEfficiencyStats);
+
+        /*if (setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MANUAL
                 || setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MIXED){
 
-            componentsToUpdate.add(manualParkingAreaVehicleStats);
-            componentsToUpdate.add(manualAreaEfficiencyStats);
-            areaStatsPanel.add("manualStats", manualParkingAreaVehicleStats);
-            statsPanel.add("efficiencyStats", manualAreaEfficiencyStats);
-        }
+        }*/
 
         if(setup.getMapType() == MixedCPMMapUtil.MapType.ADJUSTABLE_MIXED){
             componentsToUpdate.add(autoParkingAreaVehicleStats);
