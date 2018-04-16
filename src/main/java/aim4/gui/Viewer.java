@@ -32,6 +32,7 @@ package aim4.gui;
 
 import aim4.config.Debug;
 import aim4.gui.viewer.*;
+import aim4.map.BasicMap;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.sim.Simulator;
 import aim4.util.Logging;
@@ -218,6 +219,10 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         {
             public void windowClosing(WindowEvent e)
             {
+                BasicMap map = selectedViewer.getSimulator().getMap();
+                if(map instanceof MixedCPMBasicMap) {
+                    Logging.logFinalStats(((MixedCPMBasicMap)map).getStatusMonitor());
+                }
                 Logging.closeLogFiles();
             }
         });
