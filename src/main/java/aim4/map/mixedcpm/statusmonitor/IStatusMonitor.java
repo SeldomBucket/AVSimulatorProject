@@ -66,6 +66,10 @@ public interface IStatusMonitor {
 
         public double getMinAreaPerManualVehicle() ;
 
+        public int getNoOfParkedDisabledVehicles();
+
+        public int getMostNumberOfParkedDisabledVehicles();
+
         public int getNoOfParkedManualVehicles();
 
         public int getNumberOfCompletedManualVehicles() ;

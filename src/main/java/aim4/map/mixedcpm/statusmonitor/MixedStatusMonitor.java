@@ -55,6 +55,8 @@ public class MixedStatusMonitor implements IStatusMonitor {
     private int mostNumberOfManualVehicles;
     /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedManualVehicles;
+    /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
+    private int mostNumberOfParkedDisabledVehicles;
     
     /** The number of manualVehicles denied entry due to not enough room.*/
     private int numberOfDeniedAutoEntries;
@@ -112,6 +114,12 @@ public class MixedStatusMonitor implements IStatusMonitor {
         numberOfAllowedManualEntries = 0;
         mostNumberOfManualVehicles = 0;
         numberOfCompletedManualVehicles = 0;
+        mostNumberOfParkedDisabledVehicles = 0;
+        
+        numberOfDeniedAutoEntries = 0;
+        numberOfAllowedAutoEntries = 0;
+        mostNumberOfAutoVehicles = 0;
+        numberOfCompletedAutoVehicles = 0;
 
         maxEfficiency = 0;
         currentEfficiency = 0;
@@ -303,6 +311,18 @@ public class MixedStatusMonitor implements IStatusMonitor {
         return noOfParkedVehicles;
     }
 
+    @Override
+    public int getNoOfParkedDisabledVehicles() {
+        int noOfParkedDisabledVehicles = 0;
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()) {
+            if (vehicle.isDisabledVehicle()
+                && ((MixedCPMManualDriver) vehicle.getDriver()).isParked()) {
+                noOfParkedDisabledVehicles++;
+            }
+        }
+        return noOfParkedDisabledVehicles;
+    }
+
     public int getNoOfParkedAutoVehicles(){
         int noOfParkedVehicles = 0;
         for (MixedCPMBasicAutoVehicle vehicle : autoVehicles.keySet()) {
@@ -318,6 +338,16 @@ public class MixedStatusMonitor implements IStatusMonitor {
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
             mostNumberOfVehicles = currentNumberOfVehicles;
         }
+        
+        int currentNumberOfManualVehicles = manualVehicles.size();
+        if (currentNumberOfManualVehicles > mostNumberOfManualVehicles) {
+            mostNumberOfManualVehicles = currentNumberOfManualVehicles;
+        }
+
+        int currentNumberOfAutoVehicles = autoVehicles.size();
+        if (currentNumberOfAutoVehicles > mostNumberOfAutoVehicles) {
+            mostNumberOfAutoVehicles = currentNumberOfAutoVehicles;
+        }
 
         int currentNumberOfParkedVehicles = getNoOfParkedVehicles();
         if (currentNumberOfParkedVehicles > mostNumberOfParkedVehicles) {
@@ -327,6 +357,11 @@ public class MixedStatusMonitor implements IStatusMonitor {
         int currentNumberOfParkedManualVehicles = getNoOfParkedManualVehicles();
         if (currentNumberOfParkedManualVehicles > mostNumberOfParkedManualVehicles) {
             mostNumberOfParkedManualVehicles = currentNumberOfParkedManualVehicles;
+        }
+
+        int currentNumberOfParkedDisabledVehicles = getNoOfParkedDisabledVehicles();
+        if (mostNumberOfParkedDisabledVehicles < currentNumberOfParkedDisabledVehicles) {
+            mostNumberOfParkedDisabledVehicles = currentNumberOfParkedDisabledVehicles;
         }
 
         int currentNumberOfParkedAutoVehicles = getNoOfParkedAutoVehicles();
@@ -481,5 +516,9 @@ public class MixedStatusMonitor implements IStatusMonitor {
     @Override
     public double getMinAreaPerAutoVehicle() {
         return minAreaPerAutoVehicle;
+    }
+
+    public int getMostNumberOfParkedDisabledVehicles() {
+        return mostNumberOfParkedDisabledVehicles;
     }
 }

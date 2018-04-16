@@ -21,6 +21,8 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
     private JLabel maxVehiclesInCarParkLabel;
     private JLabel numOfVehiclesInCarParkLabel;
     private JLabel maxVehiclesParkedInCarParkLabel;
+    private JLabel numOfDisabledVehiclesInCarParkLabel;
+    private JLabel maxDisabledVehiclesInCarParkLabel;
     private JLabel numOfVehiclesParkedInCarParkLabel;
 
     public ManualParkingAreaStats() {
@@ -45,6 +47,12 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         maxVehiclesInCarParkLabel = new JLabel("Max no of manual vehicles in car park: ");
         maxVehiclesInCarParkLabel.setOpaque(true);
 
+        numOfDisabledVehiclesInCarParkLabel = new JLabel("No of disabled vehicles parked: ");
+        numOfDisabledVehiclesInCarParkLabel.setOpaque(true);
+
+        maxDisabledVehiclesInCarParkLabel = new JLabel("Max no of disabled vehicles parked: ");
+        maxDisabledVehiclesInCarParkLabel.setOpaque(true);
+
         numOfVehiclesParkedInCarParkLabel = new JLabel("No of manual vehicles parked: ");
         numOfVehiclesParkedInCarParkLabel.setOpaque(true);
 
@@ -61,6 +69,8 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         this.add(maxVehiclesInCarParkLabel);
         this.add(numOfVehiclesParkedInCarParkLabel);
         this.add(maxVehiclesParkedInCarParkLabel);
+        this.add(numOfDisabledVehiclesInCarParkLabel);
+        this.add(maxDisabledVehiclesInCarParkLabel);
     }
 
     @Override
@@ -70,6 +80,8 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         int numberOfCompletedVehicles = sim.getMap().getStatusMonitor().getNumberOfCompletedManualVehicles();
         int maxVehicles = sim.getMap().getStatusMonitor().getMostNumberOfManualVehicles();
         int numOfVehicles = sim.getMap().getStatusMonitor().getManualVehicles().size();
+        int numOfDisabledVehicles = sim.getMap().getStatusMonitor().getNoOfParkedDisabledVehicles();
+        int maxDisabledVehicles = sim.getMap().getStatusMonitor().getMostNumberOfParkedDisabledVehicles();
         int numOfParkedVehicles = sim.getMap().getStatusMonitor().getNoOfParkedManualVehicles();
         int maxParkedVehicles = sim.getMap().getStatusMonitor().getMostNumberOfParkedManualVehicles();
 
@@ -78,6 +90,8 @@ public class ManualParkingAreaStats extends JPanel implements MixedCPMStatScreen
         updateLabel(numberOfCompletedVehicles, numberOfCompletedVehiclesLabel);
         updateLabel(maxVehicles, maxVehiclesInCarParkLabel);
         updateLabel(numOfVehicles, numOfVehiclesInCarParkLabel);
+        updateLabel(maxDisabledVehicles, maxDisabledVehiclesInCarParkLabel);
+        updateLabel(numOfDisabledVehicles, numOfDisabledVehiclesInCarParkLabel);
         updateLabel(maxParkedVehicles, maxVehiclesParkedInCarParkLabel);
         updateLabel(numOfParkedVehicles, numOfVehiclesParkedInCarParkLabel);
     }

@@ -36,6 +36,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     private int mostNumberOfVehicles;
     /** The most number of manualVehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
+    private int mostNumberOfParkedDisabledVehicles;
     /** The max space efficiency of the parking area */
     private double maxEfficiency;
     /** The current space efficiency of the parking area */
@@ -55,6 +56,7 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
+        mostNumberOfParkedDisabledVehicles = 0;
         numberOfCompletedVehicles = 0;
         maxEfficiency = 0;
         currentEfficiency = 0;
@@ -181,6 +183,19 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         return noOfParkedVehicles;
     }
 
+
+    @Override
+    public int getNoOfParkedDisabledVehicles() {
+        int noOfParkedDisabledVehicles = 0;
+        for (MixedCPMBasicManualVehicle vehicle : manualVehicles.keySet()) {
+            if (vehicle.isDisabledVehicle()
+                    && ((MixedCPMManualDriver) vehicle.getDriver()).isParked()) {
+                noOfParkedDisabledVehicles++;
+            }
+        }
+        return noOfParkedDisabledVehicles;
+    }
+
     public void updateMostNumberOfVehicles(){
         int currentNumberOfVehicles = manualVehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
@@ -190,6 +205,11 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
         int currentNumberOfParkedVehicles = getNoOfParkedVehicles();
         if (currentNumberOfParkedVehicles > mostNumberOfParkedVehicles) {
             mostNumberOfParkedVehicles = currentNumberOfParkedVehicles;
+        }
+
+        int currentNumberOfParkedDisabledVehicles = getNoOfParkedDisabledVehicles();
+        if (mostNumberOfParkedDisabledVehicles < currentNumberOfParkedDisabledVehicles) {
+            mostNumberOfParkedDisabledVehicles = currentNumberOfParkedDisabledVehicles;
         }
     }
 
@@ -331,5 +351,10 @@ public class AdjustableManualStatusMonitor implements IStatusMonitor {
     @Override
     public double getMinAreaPerAutoVehicle() {
         return 0;
+    }
+
+    @Override
+    public int getMostNumberOfParkedDisabledVehicles() {
+        return mostNumberOfParkedDisabledVehicles;
     }
 }

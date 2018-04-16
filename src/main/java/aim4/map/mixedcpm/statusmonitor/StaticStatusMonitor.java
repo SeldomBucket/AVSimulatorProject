@@ -33,6 +33,8 @@ public class StaticStatusMonitor implements IStatusMonitor {
     private int mostNumberOfVehicles;
     /** The most number of vehicles that have been parked in the car park at any one time during simulation.*/
     private int mostNumberOfParkedVehicles;
+    private int mostNumberOfParkedDisabledVehicles;
+
     /** The max space efficiency of the parking area */
     private double maxEfficiency;
     /** The current space efficiency of the parking area */
@@ -58,6 +60,7 @@ public class StaticStatusMonitor implements IStatusMonitor {
         numberOfDeniedEntries = 0;
         numberOfAllowedEntries = 0;
         mostNumberOfVehicles = 0;
+        mostNumberOfParkedDisabledVehicles = 0;
         numberOfCompletedVehicles = 0;
         maxEfficiency = 0;
         currentEfficiency = 0;
@@ -200,6 +203,19 @@ public class StaticStatusMonitor implements IStatusMonitor {
         return noOfParkedVehicles;
     }
 
+
+    @Override
+    public int getNoOfParkedDisabledVehicles() {
+        int noOfParkedDisabledVehicles = 0;
+        for (MixedCPMBasicManualVehicle vehicle : vehicles.keySet()) {
+            if (vehicle.isDisabledVehicle()
+                    && ((MixedCPMManualDriver) vehicle.getDriver()).isParked()) {
+                noOfParkedDisabledVehicles++;
+            }
+        }
+        return noOfParkedDisabledVehicles;
+    }
+
     public void updateMostNumberOfVehicles(){
         int currentNumberOfVehicles = vehicles.size();
         if (currentNumberOfVehicles > mostNumberOfVehicles) {
@@ -209,6 +225,11 @@ public class StaticStatusMonitor implements IStatusMonitor {
         int currentNumberOfParkedVehicles = getNoOfParkedVehicles();
         if (currentNumberOfParkedVehicles > mostNumberOfParkedVehicles) {
             mostNumberOfParkedVehicles = currentNumberOfParkedVehicles;
+        }
+
+        int currentNumberOfParkedDisabledVehicles = getNoOfParkedDisabledVehicles();
+        if (mostNumberOfParkedDisabledVehicles > currentNumberOfParkedDisabledVehicles) {
+            mostNumberOfParkedDisabledVehicles = currentNumberOfParkedDisabledVehicles;
         }
     }
 
@@ -349,5 +370,10 @@ public class StaticStatusMonitor implements IStatusMonitor {
     @Override
     public double getMinAreaPerAutoVehicle() {
         return 0;
+    }
+
+
+    public int getMostNumberOfParkedDisabledVehicles() {
+        return mostNumberOfParkedDisabledVehicles;
     }
 }
