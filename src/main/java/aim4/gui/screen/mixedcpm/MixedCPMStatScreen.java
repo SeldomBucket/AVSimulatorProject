@@ -64,6 +64,7 @@ public class MixedCPMStatScreen extends StatScreen {
             assert(comp instanceof JComponent); //Should always be true.
             this.remove((JComponent) comp);
         }
+        this.removeAll();
         componentsToUpdate.clear();
     }
 
@@ -110,12 +111,17 @@ public class MixedCPMStatScreen extends StatScreen {
 
         statsPanel.add("simStats", simulationStats);
         statsPanel.add("efficiencyStats", carParkEfficiencyStats);
+        add(statsPanel);
+
         areaStatsPanel.add("vehicleStats", carParkVehicleStats);
+        add(areaStatsPanel);
 
         componentsToUpdate.add(simulationStats);
         componentsToUpdate.add(carParkEfficiencyStats);
         componentsToUpdate.add(carParkVehicleStats);
         componentsToUpdate.add(completedVehiclesTable);
+
+        add(completedVehiclesTable);
 
         componentsToUpdate.add(manualParkingAreaVehicleStats);
         componentsToUpdate.add(manualAreaEfficiencyStats);
@@ -134,9 +140,6 @@ public class MixedCPMStatScreen extends StatScreen {
             statsPanel.add("efficiencyStats", automatedAreaEfficiencyStats);
         }
 
-        add(statsPanel);
-        add(areaStatsPanel);
-        add(completedVehiclesTable);
 
     }
 }

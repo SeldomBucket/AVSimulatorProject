@@ -117,6 +117,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private JButton startButton;
     /** The Step Button */
     private JButton stepButton;
+    private JButton resetButton;
     // Menu Items
     /** Menu item "Autonomous Vehicles Only" */
     // private JCheckBoxMenuItem autoOnlySimTypeMenuItem;
@@ -219,9 +220,13 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         {
             public void windowClosing(WindowEvent e)
             {
-                BasicMap map = selectedViewer.getSimulator().getMap();
-                if(map instanceof MixedCPMBasicMap) {
-                    Logging.logFinalStats(((MixedCPMBasicMap)map).getStatusMonitor());
+                if (selectedViewer != null) {
+                    if (selectedViewer.getSimulator() != null) {
+                        BasicMap map = selectedViewer.getSimulator().getMap();
+                        if (map instanceof MixedCPMBasicMap) {
+                            Logging.logFinalStats(((MixedCPMBasicMap) map).getStatusMonitor());
+                        }
+                    }
                 }
                 Logging.closeLogFiles();
             }
@@ -396,6 +401,9 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         stepButton = new JButton("Step");
         stepButton.setEnabled(false);
         stepButton.addActionListener(this);
+        resetButton = new JButton("Reset");
+        resetButton.setEnabled(false);
+        resetButton.addActionListener(this);
     }
 
     /**
@@ -423,13 +431,16 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
                         DEFAULT_BUTTON_WIDTH).addComponent(
                         stepButton, DEFAULT_BUTTON_WIDTH,
                         GroupLayout.DEFAULT_SIZE,
+                        DEFAULT_BUTTON_WIDTH).addComponent(
+                        resetButton, DEFAULT_BUTTON_WIDTH,
+                        GroupLayout.DEFAULT_SIZE,
                         DEFAULT_BUTTON_WIDTH)).addComponent(
-                statusPanel)));
+                        statusPanel)));
         // layout for the vertical axis
         layout.setVerticalGroup(
                 layout.createSequentialGroup().addComponent(tabbedPane).addGroup(
                         layout.createParallelGroup(GroupLayout.Alignment.CENTER).addGroup(layout.createSequentialGroup().addComponent(
-                                startButton).addComponent(stepButton)).addComponent(statusPanel,
+                                startButton).addComponent(stepButton).addComponent(resetButton)).addComponent(statusPanel,
                                 DEFAULT_STATUS_PANE_HEIGHT,
                                 GroupLayout.DEFAULT_SIZE,
                                 DEFAULT_STATUS_PANE_HEIGHT)));
@@ -460,6 +471,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the buttons
         startButton.setText("Pause");
         stepButton.setEnabled(false);
+        resetButton.setEnabled(false);
         // update the menu items
     /*
     autoOnlySimTypeMenuItem.setEnabled(false);
@@ -468,7 +480,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     */
         startMenuItem.setText("Pause");
         stepMenuItem.setEnabled(false);
-        resetMenuItem.setEnabled(true);
+        resetMenuItem.setEnabled(false);
         dumpDataMenuItem.setEnabled(true);
         saveResultsMenuItem.setEnabled(true);
         startUdpListenerMenuItem.setEnabled(true);
@@ -498,6 +510,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the buttons
         startButton.setText("Start");
         stepButton.setEnabled(false);
+        resetButton.setEnabled(false);
         // update the menu items
     /*
     autoOnlySimTypeMenuItem.setSelected(true);
@@ -535,7 +548,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     /**
      * The handler when the user pressed the start button.
      */
-    private void startButtonHandler() {
+    public void startButtonHandler() {
         if (selectedViewer.isSimThreadNull()) {
             startSimProcess();
             tabbedPane.setEnabled(false);
@@ -568,6 +581,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // start the thread
         selectedViewer.startSimProcess();
         resetMenuItem.setEnabled(false);
+        selectedViewer.showCard(ViewerCardType.SCREEN);
     }
 
     /**
@@ -579,6 +593,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the buttons
         startButton.setText("Resume");
         stepButton.setEnabled(true);
+        resetButton.setEnabled(true);
         // update the menu items
         startMenuItem.setText("Resume");
         stepMenuItem.setEnabled(true);
@@ -594,6 +609,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         // update the buttons
         startButton.setText("Pause");
         stepButton.setEnabled(false);
+        resetButton.setEnabled(false);
         // update the menu items
         startMenuItem.setText("Pause");
         stepMenuItem.setEnabled(false);
@@ -673,7 +689,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         } else if (e.getSource() == stepMenuItem || e.getSource() == stepButton) {
             stepButtonHandler();
             selectedViewer.requestScreenFocusInWindow();
-        } else if (e.getSource() == resetMenuItem) {
+        } else if (e.getSource() == resetMenuItem || e.getSource() == resetButton) {
             resetSimProcess();
         } else if (e.getSource() == dumpDataMenuItem) {
             JFileChooser chooser = new JFileChooser();

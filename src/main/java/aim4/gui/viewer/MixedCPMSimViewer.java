@@ -5,11 +5,15 @@ import aim4.gui.Viewer;
 import aim4.gui.screen.mixedcpm.MixedCPMStatScreen;
 import aim4.gui.setuppanel.MixedCPMSimSetupPanel;
 import aim4.gui.setuppanel.SimSetupPanel;
+import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.Simulator;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
+import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
+import aim4.util.Logging;
 import javafx.util.Pair;
+import sun.rmi.runtime.Log;
 
 import java.awt.event.MouseEvent;
 
@@ -17,6 +21,7 @@ import java.awt.event.MouseEvent;
  * A Viewer for CPM.
  */
 public class MixedCPMSimViewer extends SimViewer {
+    Viewer viewer;
     /**
      * Creates the CPMSimViewer
      *
@@ -34,6 +39,7 @@ public class MixedCPMSimViewer extends SimViewer {
                 MapType.ADJUSTABLE_MANUAL,
                 new Pair<Boolean, String>(false, "")
         )), false);
+        this.viewer = viewer;
     }
 
     @Override
@@ -56,15 +62,15 @@ public class MixedCPMSimViewer extends SimViewer {
 
         return stepResult;
     }
-
-    @Override
     protected void runBeforeCreatingSimulator() {
-
+        //assert sim instanceof MixedCPMAutoDriverSimulator;
+        //statScreen = null;
+        //createStatScreen(this.viewer);
     }
 
-    @Override
     protected void runBeforeResettingSimulator() {
-
+        Logging.logFinalStats(((MixedCPMBasicMap)sim.getMap()).getStatusMonitor());
+        Logging.closeLogFiles();
     }
 
     @Override

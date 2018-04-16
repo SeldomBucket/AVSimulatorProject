@@ -28,6 +28,8 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
     protected MapType mapType;
     /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
     protected Pair<Boolean, String> useCSVFile;
+    /** Whether to use a CSV file for the spawn times and parking times, and the location of the file */
+    protected Pair<Boolean, String> useMultipleCSVFile;
     protected boolean logToFile;
     protected int noOfVehiclesToSpawn;
 
@@ -138,6 +140,14 @@ public class BasicMixedCPMSimSetup implements MixedCPMSimSetup {
 
     public void setUseCSVFile(Pair<Boolean, String> useCSVFile) {
         this.useCSVFile = useCSVFile;
+    }
+
+    public Pair<Boolean, String> getMultipleCSVFile() {
+        return useMultipleCSVFile;
+    }
+
+    public void setMultipleCSVFile(Pair<Boolean, String> useMultipleCSVFile) {
+        this.useMultipleCSVFile = useMultipleCSVFile;
     }
 
     public boolean isLogToFile() {

@@ -94,7 +94,7 @@ public abstract class SimViewer extends JPanel implements
     /**
      * The simulation's thread
      */
-    private SimThread simThread;
+    protected SimThread simThread;
     /**
      * The target simulation speed
      */
@@ -619,6 +619,7 @@ public abstract class SimViewer extends JPanel implements
      * Calls initWithGivenMap() on the canvas using the map provided by sim.getMap().
      */
     public void startViewer() {
+        runBeforeCreatingSimulator();
         if(liveViewSupported)
             canvas.initWithGivenMap(sim.getMap());
         else
