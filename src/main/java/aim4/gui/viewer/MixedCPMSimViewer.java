@@ -111,9 +111,13 @@ public class MixedCPMSimViewer extends SimViewer {
         Logging.closeLogFiles();
     }
 
+    public boolean runningMultipleTests(){
+        return csvFiles != null;
+    }
+
     @Override
     public boolean isRestartImmediately(){
-        return true;
+        return isRestartImmediately;
     }
 
     @Override

@@ -549,9 +549,16 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     /**
      * The handler when the user pressed the start button.
      */
-    public void startButtonHandler() {
+    private void startButtonHandler() {
         if (selectedViewer.isSimThreadNull()) {
             startSimProcess();
+            if (selectedViewer instanceof MixedCPMSimViewer){
+                if(((MixedCPMSimViewer)selectedViewer).runningMultipleTests()){
+                    resetButton.setText("Next CSV");
+                }else{
+                    resetButton.setText("Reset");
+                }
+            }
             tabbedPane.setEnabled(false);
         } else if (!selectedViewer.isSimThreadPaused()) {
             pauseSimProcess();
