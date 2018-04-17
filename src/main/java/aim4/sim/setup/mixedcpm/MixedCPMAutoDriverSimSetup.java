@@ -91,6 +91,7 @@ public class MixedCPMAutoDriverSimSetup extends BasicMixedCPMSimSetup {
                 }
                 break;
             case CSV:
+            case MULTIPLE_CSV:
                 MixedCPMMapUtil.setUpSpecificSpecVehicleSpawnPoint(layout, useCSVFile);
                 if (logToFile) {
                     Logging.initialiseLogWriter();

@@ -8,6 +8,7 @@ import aim4.gui.screen.aim.Canvas;
 import aim4.gui.frame.VehicleInfoFrame;
 import aim4.gui.screen.SimScreen;
 import aim4.gui.screen.StatScreen;
+import aim4.gui.setuppanel.MixedCPMSimSetupPanel;
 import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.sim.Simulator;
 import aim4.sim.setup.SimFactory;
@@ -634,6 +635,13 @@ public abstract class SimViewer extends JPanel implements
     }
 
     /**
+     * Whether the sim should be restarted immediately
+     */
+    public boolean isRestartImmediately(){
+        return false;
+    }
+
+    /**
      * Calls requestFocusInWindow() on the canvas
      */
     public void requestScreenFocusInWindow() {
@@ -699,7 +707,12 @@ public abstract class SimViewer extends JPanel implements
      */
     public void createSimulator() {
         runBeforeCreatingSimulator();
-        SimSetup simSetup = simSetupPanel.getSimSetup();
+        SimSetup simSetup;
+        if (this instanceof MixedCPMSimViewer) {
+            simSetup = ((MixedCPMSimViewer)this).getSetup();
+        }else {
+            simSetup = simSetupPanel.getSimSetup();
+        }
         assert sim == null && simSetup != null;
         // create the simulator
         sim = SimFactory.makeSimulator(simSetup);

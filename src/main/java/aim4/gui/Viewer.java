@@ -117,6 +117,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
     private JButton startButton;
     /** The Step Button */
     private JButton stepButton;
+    /** The Reset Button */
     private JButton resetButton;
     // Menu Items
     /** Menu item "Autonomous Vehicles Only" */
@@ -623,6 +624,11 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
         selectedViewer.resetSimProcess();
         setSimResetGUIsetting();
         tabbedPane.setEnabled(true);
+
+        if(selectedViewer.isRestartImmediately()) {
+            startButtonHandler();
+        }
+
     }
 
     public void startUdpListening() {

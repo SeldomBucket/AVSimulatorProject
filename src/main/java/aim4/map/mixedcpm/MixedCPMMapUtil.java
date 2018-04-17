@@ -37,7 +37,9 @@ public class MixedCPMMapUtil {
         /** Random - all vehicles spawned will have a randomly selected specification */
         RANDOM,
         /** CSV - vehicles are spawned in a specific order, described by a csv file */
-        CSV
+        CSV,
+        /** MULTIPLE_CSV - Several csv files are run in a row */
+        MULTIPLE_CSV
     }
 
     public enum MapType{

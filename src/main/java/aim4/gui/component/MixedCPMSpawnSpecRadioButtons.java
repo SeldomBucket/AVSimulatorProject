@@ -68,6 +68,11 @@ public class MixedCPMSpawnSpecRadioButtons extends JPanel implements ChangeListe
         useCsvFileButton.setAlignmentX(Component.LEFT_ALIGNMENT);
         radioButtonBox.add(useCsvFileButton);
 
+        JRadioButton useMultipleCsvFileButton = new JRadioButton("From multiple CSV files (type filename for list of files [one file per line] in box below)", false);
+        useMultipleCsvFileButton.setActionCommand("MULTIPLE_CSV");
+        useMultipleCsvFileButton.setAlignmentX(Component.LEFT_ALIGNMENT);
+        radioButtonBox.add(useMultipleCsvFileButton);
+
         fileLocationField = new JTextField(10);
         fileLocationField.setMaximumSize(new Dimension(500, 100));
         fileLocationField.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -80,6 +85,7 @@ public class MixedCPMSpawnSpecRadioButtons extends JPanel implements ChangeListe
         group.add(singleInfiniteSpecButton);
         group.add(randomInfiniteSpecButton);
         group.add(useCsvFileButton);
+        group.add(useMultipleCsvFileButton);
 
         this.setVisible(true);
 

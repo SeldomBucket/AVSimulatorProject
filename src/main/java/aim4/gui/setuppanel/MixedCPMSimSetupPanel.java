@@ -71,9 +71,13 @@ public class MixedCPMSimSetupPanel extends SimSetupPanel{
         newSimSetup.setCarParkWidth(autoDriverOnlySetupPanel.getCarParkWidth());
         newSimSetup.setSpawnSpecType(autoDriverOnlySetupPanel.getSpawnSpecType());
         newSimSetup.setMapType(autoDriverOnlySetupPanel.getMapType());
-        newSimSetup.setUseCSVFile(new Pair<>(autoDriverOnlySetupPanel.getUseCsv(),
-                                             autoDriverOnlySetupPanel.getCsvFilename()));
-        newSimSetup.setMultipleCSVFile(new Pair<>(autoDriverOnlySetupPanel.getMultipleRunCsv(),
+        if(autoDriverOnlySetupPanel.getIsMultipleRunCsv()) {
+
+        }else{
+            newSimSetup.setUseCSVFile(new Pair<>(autoDriverOnlySetupPanel.getUseCsv(),
+                    autoDriverOnlySetupPanel.getCsvFilename()));
+        }
+        newSimSetup.setMultipleCSVFile(new Pair<>(autoDriverOnlySetupPanel.getIsMultipleRunCsv(),
                                                      autoDriverOnlySetupPanel.getCsvFilename()));
         newSimSetup.setLogToFile(autoDriverOnlySetupPanel.getUseLogFile());
         newSimSetup.setNoOfVehiclesToSpawn(autoDriverOnlySetupPanel.getNoOfVehiclesToSpawn());

@@ -134,7 +134,7 @@ public class MixedCPMParamPanel extends JPanel {
         return spawnSpecRadioButtons.getSelected().getActionCommand().equals("CSV");
     }
 
-    public boolean getMultipleRunCsv(){
+    public boolean getIsMultipleRunCsv(){
         return spawnSpecRadioButtons.getSelected().getActionCommand().equals("MULTIPLE_CSV");
     }
 

@@ -8,20 +8,33 @@ import aim4.gui.setuppanel.SimSetupPanel;
 import aim4.map.mixedcpm.MixedCPMBasicMap;
 import aim4.map.mixedcpm.MixedCPMMapUtil.*;
 import aim4.sim.Simulator;
+import aim4.sim.setup.SimSetup;
+import aim4.sim.setup.aim.BasicSimSetup;
 import aim4.sim.setup.mixedcpm.BasicMixedCPMSimSetup;
+import aim4.sim.setup.mixedcpm.MixedCPMSimSetup;
 import aim4.sim.simulator.aim.AIMSimulator;
 import aim4.sim.simulator.mixedcpm.MixedCPMAutoDriverSimulator;
 import aim4.util.Logging;
 import javafx.util.Pair;
 import sun.rmi.runtime.Log;
 
-import java.awt.event.MouseEvent;
+import javax.swing.*;
+import java.awt.event.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A Viewer for CPM.
  */
 public class MixedCPMSimViewer extends SimViewer {
-    Viewer viewer;
+    private Viewer viewer;
+    private List<String> csvFiles;
+    private boolean isRestartImmediately = false;
+
     /**
      * Creates the CPMSimViewer
      *
@@ -40,6 +53,7 @@ public class MixedCPMSimViewer extends SimViewer {
                 new Pair<Boolean, String>(false, "")
         )), false);
         this.viewer = viewer;
+
     }
 
     @Override
@@ -62,15 +76,44 @@ public class MixedCPMSimViewer extends SimViewer {
 
         return stepResult;
     }
+
     protected void runBeforeCreatingSimulator() {
-        //assert sim instanceof MixedCPMAutoDriverSimulator;
-        //statScreen = null;
-        //createStatScreen(this.viewer);
+
+    }
+
+    protected SimSetup getSetup(){
+        BasicMixedCPMSimSetup setup = (BasicMixedCPMSimSetup)getSimSetupPanel().getSimSetup();
+        if (csvFiles == null) {
+            Pair<Boolean, String> csv = setup.getMultipleCSVFile();
+            if (csv.getKey()) {
+                try {
+                    Path path = Paths.get(csv.getValue());
+                    this.csvFiles = new ArrayList<>(Files.readAllLines(path));
+                    setup.setUseCSVFile(new Pair<Boolean, String>(true, csvFiles.get(0)));
+                    csvFiles.remove(0);
+                    isRestartImmediately = true;
+                }catch (IOException e){
+                    System.out.println(e.getStackTrace());
+                }
+            }
+        }else if (csvFiles.size() > 0){
+            setup.setUseCSVFile(new Pair<Boolean, String>(true, csvFiles.get(0)));
+            csvFiles.remove(0);
+        }else{
+            csvFiles = null;
+            isRestartImmediately = false;
+        }
+        return setup;
     }
 
     protected void runBeforeResettingSimulator() {
         Logging.logFinalStats(((MixedCPMBasicMap)sim.getMap()).getStatusMonitor());
         Logging.closeLogFiles();
+    }
+
+    @Override
+    public boolean isRestartImmediately(){
+        return true;
     }
 
     @Override
