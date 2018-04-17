@@ -118,6 +118,11 @@ public class MixedCPMMapUtil {
         public double generateParkingTime(){
             return 20000.0;
         }
+
+        @Override
+        public boolean isDone() {
+            return isDone;
+        }
     }
 
     /**
@@ -172,6 +177,11 @@ public class MixedCPMMapUtil {
             double rangeMax = 20000.0;
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
+        }
+
+        @Override
+        public boolean isDone() {
+            return false;
         }
     }
 
@@ -265,6 +275,11 @@ public class MixedCPMMapUtil {
         public double generateParkingTime(){
             return 20000.0;
         }
+
+        @Override
+        public boolean isDone() {
+            return isDone;
+        }
     }
 
     /**
@@ -346,6 +361,11 @@ public class MixedCPMMapUtil {
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
+
+        @Override
+        public boolean isDone() {
+            return false;
+        }
     }
 
     /**
@@ -412,7 +432,7 @@ public class MixedCPMMapUtil {
             assert useCSV;
 
             // Ensure the given location is valid
-            // TODO MixedCPM this check should be done way before now so user can try again.
+            // TODO MixedCPM this check should be isDone way before now so user can try again.
             String filepath = useCSVFilePair.getValue();
             File file = new File(filepath);
             if (!file.exists()){
@@ -529,6 +549,12 @@ public class MixedCPMMapUtil {
             Random r = new Random();
             return rangeMin + (rangeMax - rangeMin) * r.nextDouble();
         }
+
+
+        @Override
+        public boolean isDone() {
+            return isDone;
+        }
     }
 
     public static void setUpFiniteSingleSpecSpawnPoint(MixedCPMMap map,
@@ -540,6 +566,7 @@ public class MixedCPMMapUtil {
             sp.setVehicleSpecChooser(
                     new FiniteSpawnSingleSpecGenerator(numberOfVehiclesToSpawn, trafficLevel, automatedProbability));
         }
+
     }
 
     public static void setUpInfiniteSingleSpecVehicleSpawnPoint(MixedCPMMap map, double trafficLevel, double automatedProbability){

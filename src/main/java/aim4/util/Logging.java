@@ -16,6 +16,7 @@ public final class Logging {
     private static PrintWriter logFileWriter = null;
 
     public static void initialiseLogWriter(){
+        // TODO ED Log file name - make it more meaningful (include CSV filename if possible)
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 

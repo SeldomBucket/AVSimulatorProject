@@ -85,6 +85,7 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
     public static interface MixedCPMSpawnSpecGenerator {
         List<MixedCPMSpawnSpec> act(MixedCPMSpawnPoint spawnPoint, double timestep);
         double generateParkingTime();
+        boolean isDone();
     }
 
     /////////////////////////////////
@@ -166,5 +167,9 @@ public class MixedCPMSpawnPoint extends SpawnPoint {
      */
     public void setVehicleSpecChooser(MixedCPMSpawnSpecGenerator vehicleSpecChooser) {
         this.vehicleSpecChooser = vehicleSpecChooser;
+    }
+
+    public MixedCPMSpawnSpecGenerator getVehicleSpecChooser() {
+        return vehicleSpecChooser;
     }
 }

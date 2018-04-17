@@ -13,11 +13,9 @@ import aim4.map.mixedcpm.parking.SensoredLine;
 import aim4.map.mixedcpm.statusmonitor.IStatusMonitor;
 */
 import aim4.map.lane.Lane;
-import aim4.map.mixedcpm.maps.AdjustableMixedCarPark;
 import aim4.sim.Simulator;
 import aim4.sim.results.SimulatorResult;
 import aim4.util.Logging;
-import aim4.util.Util;
 import aim4.vehicle.VehicleSimModel;
 import aim4.vehicle.VehicleSpec;
 import aim4.vehicle.VinRegistry;
@@ -65,14 +63,16 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
 
         /** The VIN of the completed vehicles in this time step */
         List<MixedCPMBasicVehicle> completedVehicles;
+        boolean completed = false;
 
         /**
          * Create a result of a simulation step
          *
          * @param completedVehicles  the completed vehicles.
          */
-        public MixedCPMAutoDriverSimStepResult(List<MixedCPMBasicVehicle> completedVehicles) {
+        public MixedCPMAutoDriverSimStepResult(List<MixedCPMBasicVehicle> completedVehicles, boolean completed) {
             this.completedVehicles = completedVehicles;
+            this.completed = completed;
         }
 
         /**
@@ -82,6 +82,10 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
          */
         public List<MixedCPMBasicVehicle> getCompletedVehicles() {
             return completedVehicles;
+        }
+
+        public boolean isCompleted() {
+            return completed;
         }
     }
 
@@ -139,7 +143,10 @@ public class MixedCPMAutoDriverSimulator implements Simulator {
         logToggle = !logToggle;
 
         currentTime += timeStep;
-        return new MixedCPMAutoDriverSimStepResult(completedVehicles);
+
+        boolean completed = map.getSpawnPoints().get(0).getVehicleSpecChooser().isDone();
+
+        return new MixedCPMAutoDriverSimStepResult(completedVehicles, completed);
     }
 
     /////////////////////////////////

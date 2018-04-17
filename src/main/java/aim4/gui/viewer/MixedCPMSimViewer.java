@@ -73,7 +73,12 @@ public class MixedCPMSimViewer extends SimViewer {
         MixedCPMAutoDriverSimulator.MixedCPMAutoDriverSimStepResult cpmStepResult =
                 (MixedCPMAutoDriverSimulator.MixedCPMAutoDriverSimStepResult) stepResult;
         ((MixedCPMStatScreen) this.statScreen).addResultToProcess(cpmStepResult);
-
+        if(cpmStepResult.isCompleted() && csvFiles != null){
+            if (!isRestartImmediately){
+                csvFiles = null;
+            }
+            this.viewer.resetSimProcess();
+        }
         return stepResult;
     }
 
@@ -96,12 +101,12 @@ public class MixedCPMSimViewer extends SimViewer {
                     System.out.println(e.getStackTrace());
                 }
             }
-        }else if (csvFiles.size() > 0){
+        }else if (csvFiles.size() > 0) {
             setup.setUseCSVFile(new Pair<Boolean, String>(true, csvFiles.get(0)));
             csvFiles.remove(0);
-        }else{
-            csvFiles = null;
-            isRestartImmediately = false;
+            if (csvFiles.size() == 0) {
+                isRestartImmediately = false;
+            }
         }
         return setup;
     }

@@ -8,6 +8,7 @@ import aim4.vehicle.mixedcpm.MixedCPMBasicVehicle;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ConcurrentModificationException;
 import java.util.List;
 
 /**
@@ -44,19 +45,24 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
     @Override
     public void update(MixedCPMAutoDriverSimulator sim,
                        List<MixedCPMAutoDriverSimStepResult> results) {
-        for(MixedCPMAutoDriverSimStepResult stepResult : results) {
-            for (MixedCPMBasicVehicle vehicle : stepResult.getCompletedVehicles()) {
-                model.addOrUpdateRow(vehicle.getVIN(), new Object[]{
-                        vehicle.getVIN(),
-                        vehicle.getSpec().getName(),
-                        vehicle instanceof MixedCPMBasicManualVehicle? "Manual":"Automated",
-                        vehicle instanceof MixedCPMBasicManualVehicle? ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()?"Y":"N":"N/A",
-                        vehicle.getEntryTime(),
-                        vehicle.getParkingTime(),
-                        vehicle.getExitTime()
-                });
+        try{
+            for(MixedCPMAutoDriverSimStepResult stepResult : results) {
+                for (MixedCPMBasicVehicle vehicle : stepResult.getCompletedVehicles()) {
+                    model.addOrUpdateRow(vehicle.getVIN(), new Object[]{
+                            vehicle.getVIN(),
+                            vehicle.getSpec().getName(),
+                            vehicle instanceof MixedCPMBasicManualVehicle? "Manual":"Automated",
+                            vehicle instanceof MixedCPMBasicManualVehicle? ((MixedCPMBasicManualVehicle)vehicle).isDisabledVehicle()?"Y":"N":"N/A",
+                            vehicle.getEntryTime(),
+                            vehicle.getParkingTime(),
+                            vehicle.getExitTime()
+                    });
+                }
             }
+        }catch (ConcurrentModificationException e){
+
         }
+
         scrollPane.getVerticalScrollBar().setValue(scrollPane.getVerticalScrollBar().getMaximum());
     }
 

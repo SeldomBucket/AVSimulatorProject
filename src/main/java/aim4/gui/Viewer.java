@@ -628,6 +628,7 @@ public class Viewer extends JFrame implements ActionListener, ItemListener, KeyL
      * Reset the simulation process.
      */
     public void resetSimProcess() {
+        pauseSimProcess();
         selectedViewer.resetSimProcess();
         setSimResetGUIsetting();
         tabbedPane.setEnabled(true);
