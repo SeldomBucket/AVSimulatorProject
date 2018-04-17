@@ -59,7 +59,7 @@ public class CompletedVehiclesTable extends JPanel implements MixedCPMStatScreen
                     });
                 }
             }
-        }catch (ConcurrentModificationException e){
+        }catch (Exception e){
 
         }
 

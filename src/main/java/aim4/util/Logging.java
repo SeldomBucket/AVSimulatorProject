@@ -24,7 +24,7 @@ public final class Logging {
             logFilename = inputName[inputName.length-1].replace(".csv","");
         }
 
-        logFilename += "_log_" + timestamp.toString() + ".txt";
+        logFilename += "_log_" + timestamp.toString() + ".log";
         // TODO ED Log file name - make it more meaningful (include CSV filename if possible)
         try {
             logFileWriter = new PrintWriter(logFilename, "UTF-8");
@@ -40,7 +40,7 @@ public final class Logging {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
 
-            String logFilename = "Log_" + timestamp.toString() + ".txt";
+            String logFilename = "Log_" + timestamp.toString() + ".log";
             logFileWriter = new PrintWriter(logFilename, "UTF-8");
             logFileWriter.println("Timestamp\tLineType\tNoOfParkedVehicles\tEfficiency\tAreaPerVehicle\tAllowedEntries\tDeniedEntries\tCompletedVehicles\tParkedVehicles");
 
