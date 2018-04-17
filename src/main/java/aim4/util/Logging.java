@@ -15,8 +15,27 @@ public final class Logging {
     private static PrintWriter spawnLogFileWriter = null;
     private static PrintWriter logFileWriter = null;
 
-    public static void initialiseLogWriter(){
+    public static void initialiseLogWriter(String csvFilename){
+        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+        String logFilename = "";
+        String[] inputName = csvFilename.split("/");
+        if(inputName[inputName.length-1].endsWith(".csv")){
+            logFilename = inputName[inputName.length-1].replace(".csv","");
+        }
+
+        logFilename += "_log_" + timestamp.toString() + ".txt";
         // TODO ED Log file name - make it more meaningful (include CSV filename if possible)
+        try {
+            logFileWriter = new PrintWriter(logFilename, "UTF-8");
+            logFileWriter.println("Timestamp\tLineType\tNoOfParkedVehicles\tEfficiency\tAreaPerVehicle\tAllowedEntries\tDeniedEntries\tCompletedVehicles\tParkedVehicles");
+
+        } catch (FileNotFoundException ex){ }
+        catch (UnsupportedEncodingException ex) { }
+    }
+
+
+    public static void initialiseLogWriter(){
         try {
             Timestamp timestamp = new Timestamp(System.currentTimeMillis());
 
