@@ -124,6 +124,25 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
 
+        // Next, search for any space at all
+
+        for (ManualParkingRoad road: parkingRoads) {
+            tempStall = road.findNewSpace(stallSpec,
+                    ManualParkingRoad.SearchParameter.anyGap);
+            if (tempStall != null){
+                if (tempStall.getMaxX() > dimensions.getMaxX()){
+                    if (!tryResize(tempStall.getMaxX())) {
+                        tempStall.delete();
+                    }else{
+                        return tempStall;
+                    }
+                }else {
+                    return tempStall;
+                }
+            }
+        }
+
+
         //        Next, add new road and use that
         tempStall = addNewParkingRoadAndFindSpace(roadName, stallSpec);
         if (tempStall != null){
@@ -159,23 +178,6 @@ public class ManualParkingArea extends MixedCPMRoadMap implements IManualParking
             }
         }
 
-        // Finally, search for any space at all
-
-        for (ManualParkingRoad road: parkingRoads) {
-            tempStall = road.findNewSpace(stallSpec,
-                    ManualParkingRoad.SearchParameter.anyGap);
-            if (tempStall != null){
-                if (tempStall.getMaxX() > dimensions.getMaxX()){
-                    if (!tryResize(tempStall.getMaxX())) {
-                        tempStall.delete();
-                    }else{
-                        return tempStall;
-                    }
-                }else {
-                    return tempStall;
-                }
-            }
-        }
 
         return null;
     }
