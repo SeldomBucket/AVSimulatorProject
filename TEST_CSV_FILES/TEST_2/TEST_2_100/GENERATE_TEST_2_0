@@ -1,0 +1,4 @@
+python generateTestFile.py TEST_2_COUPE_100.csv 200 4.8 100 1000000 COUPE
+python generateTestFile.py TEST_2_SEDAN_100.csv 200 4.8 100 1000000 SEDAN
+python generateTestFile.py TEST_2_SUV_100.csv 200 4.8 100 1000000 SUV
+python generateTestFile.py TEST_2_VAN_100.csv 200 4.8 100 1000000 VAN
